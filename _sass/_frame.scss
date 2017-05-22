@@ -173,20 +173,16 @@ nav {
 
 @media (max-width: 480px) {
   nav ul li a {
-    margin: 0 2px;
-    font-size: 14px;
+    font-size: 16px;
+    padding: 0 8px;
   }
 }
 
 @media (max-width: 400px) {
   nav {
-    ul li a {
-      padding: 0;
-      font-size: 12px;
-    }
     #logo img {
-      margin: 30px 0 10px;
-      height: 40px;
+      margin: 25px 0;
+      height: 30px;
     }
   }
 }
