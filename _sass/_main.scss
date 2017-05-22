@@ -1,0 +1,162 @@
+$javalin-brand-primary: #008ab4;
+
+@mixin noselect() {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: #f9f9f9;
+  overflow-y: scroll;
+  color: #333;
+  line-height: 1.4;
+}
+
+a {
+  color: $javalin-brand-primary;
+  text-decoration: none;
+}
+
+h1 {
+  font-size: 36px;
+}
+
+h2 {
+  font-size: 28px;
+}
+
+h3 {
+  font-size: 22px;
+}
+
+h4 {
+  font-size: 20px;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: arial, sans-serif;
+  letter-spacing: -0.5px;
+  margin-top: 1.75em;
+  margin-bottom: 0.25em;
+  + p {
+    margin-top: 0.25em;
+  }
+}
+
+p {
+  margin: 1.5em 0 0.25em;
+  font-family: Verdana, sans-serif;
+}
+
+p,
+li {
+  code {
+    font-size: 90%;
+    letter-spacing: -0.5px;
+    border: 1px solid #ccc;
+    background: #f5f5f5;
+    padding: 1px 3px;
+    color: darken($javalin-brand-primary, 10%);
+    border-radius: 3px;
+    font-style: normal;
+  }
+}
+
+pre {
+  margin: .5em 0;
+  background: #333;
+  padding: 15px;
+  border-radius: 5px;
+  color: #f5f5f5;
+  overflow-x: scroll;
+}
+
+main {
+  padding: 40px 0;
+  img {
+    width: 100%;
+    display: block;
+    max-width: 100%;
+  }
+}
+
+.notification {
+  margin: 15px 0;
+  background: #f5f5f5;
+  padding: 15px;
+  border-left: 5px solid $javalin-brand-primary;
+  p {
+    margin: 0;
+  }
+}
+
+#githubStar {
+  display: inline-block;
+}
+
+.template-engine {
+  margin-top: 32px;
+  h2,
+  p {
+    margin: 5px 0;
+  }
+}
+
+.template-engine-list {
+  color: #777;
+}
+
+.small-list {
+  font-size: 80%;
+}
+
+blockquote {
+  background: #f9f9f9;
+  border-left: 10px solid #ccc;
+  margin: 0 0 20px 0;
+  padding: 0.5em 10px;
+  quotes: "\201C""\201D""\2018""\2019";
+  &:before {
+    color: #ccc;
+    content: open-quote;
+    font-size: 4em;
+    line-height: 0.1em;
+    margin-right: 5px;
+    vertical-align: -0.5em;
+  }
+  p {
+    line-height: 200%;
+    display: inline;
+  }
+}
+
+pre { // scrollbar in code examples
+  &::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #777;
+    border-radius: 5px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: #999;
+  }
+  &::-webkit-scrollbar-track {
+    background: #333;
+    border-radius: 5px;
+  }
+  &::-webkit-scrollbar-button {
+    width: 8px;
+    height: 8px;
+  }
+}
