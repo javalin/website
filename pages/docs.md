@@ -33,6 +33,7 @@ The documentation on this site is always for the latest version of Javalin.
 We don't have the capacity to maintain separate docs for each version, 
 but Javalin follows [semantic versioning](http://semver.org/).
 
+{% comment %}
 <p> 
     If you like Javalin, please help us out by starring us on GitHub:
     <div id="githubStar">
@@ -42,6 +43,7 @@ but Javalin follows [semantic versioning](http://semver.org/).
         </iframe>
     </div>
 </p>
+{% endcomment %}
 
 ## Getting started
 
