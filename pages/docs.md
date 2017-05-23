@@ -95,11 +95,11 @@ post("/", (req, res) -> {
 Handler paths can include path-parameters. These are available via `Request.param()`
 ~~~java
 get("/hello/:name", (req, res) -> {
-    response.body("Hello: " + request.params("name"));
+    response.body("Hello: " + request.param("name"));
 });
 ~~~
 
-Handler-paths can also include wildcard parameters (splats). These are available via `Request.param()`
+Handler-paths can also include wildcard parameters (splats). These are available via `Request.splat()`
 
 ~~~java
 get("/hello/*/and/*", (req, res) -> {
