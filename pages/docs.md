@@ -22,7 +22,7 @@ permalink: /documentation
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Start/stop](#starting-and-stopping)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Port](#port)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;SSL](#ssl)
-* [ &nbsp;&nbsp;&nbsp;&nbsp;ThreadPool](#threadpool)
+* [ &nbsp;&nbsp;&nbsp;&nbsp;Custom server](#custom-server)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Static Files](#static-files)
 * [Javadoc](#javadoc)
 </div>
@@ -489,21 +489,24 @@ app.ssl(keystoreFilePath, keystorePassword, truststoreFilePath, truststorePasswo
 
 *This has to be done before starting the server*.
 
-### ThreadPool
-
-You can configure the threadpool by using the `threadPool()` and `threadPoolConfig()` methods
-
+### Custom server
+If you need to customize the embedded server, you can call the `app.embeddedServer()` method:
 {% capture java %}
-app.threadPool(
-    threadPoolConfig()
-        .maxThreads(20)
-        .minThreads(4)
-        .threadIdleTimeoutMillis(60000)
-);
+app.embeddedServer(new EmbeddedJettyFactory(() -> {
+    Server server = new Server();
+    // do whatever you want here
+    return server;
+}));
 {% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=java %}
-
-*This has to be done before starting the server*.
+{% capture kotlin %}
+app.embeddedServer(EmbeddedJettyFactory({
+    val server = Server()
+    // do whatever you want here
+    server
+}))
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+*This has to be done before starting the server <small>(duh)</small>*.
 
 ### Static Files
 You can enabled static file serving by doing `app.enableStaticFiles("/classpath-folder")`.
