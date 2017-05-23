@@ -59,6 +59,7 @@ pre.code-toolbar > .toolbar span {
 
 // multi tab
 .multitab-code {
+  margin-top: 8px;
   ul {
     @include noselect;
     background: #30312a;

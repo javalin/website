@@ -9,7 +9,7 @@ permalink: /
 Get your REST API up and running in seconds.
 Add the [dependency](/download) and copy example:
 
-{% include macros/gettingStarted.html %}
+{% include macros/gettingStarted.md %}
 
 ## REST API Simplicity
 Javalin started as a fork of [Spark](http://sparkjava.com), but quickly 

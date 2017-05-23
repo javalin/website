@@ -51,7 +51,7 @@ Add the dependency:
 {% include macros/mavenDep.md %}
 
 Start coding:
-{% include macros/gettingStarted.html %}
+{% include macros/gettingStarted.md %}
 
 ## Handlers
 Javalin has a three main handler types: before-handlers, endpoint-handlers, and after-handlers. 
@@ -67,62 +67,104 @@ The `Handler` interface has a void return type, so you should update the `respon
 ### Before handlers
 Before-handlers are matched before every request (including static files, if you enable those).
 
-~~~java
-before("/some-path/*", (req, res) -> { 
+{% capture java %}
+app.before("/some-path/*", (req, res) -> {
     // runs before all request to /some-path/*
 });
-
-before((req, res) -> {
+app.before((req, res) -> {
     // calls before("/*", handler)
 });
-~~~
+{% endcapture %}
+{% capture kotlin %}
+app.before("/some-path/*") { req, res ->
+    // runs before all request to /some-path/*
+}
+app.before({ req, res ->
+    // calls before("/*", handler)
+})
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ### Endpoint handlers
 Endpoint handlers are matched in the order they are defined.
 
-~~~java
-get("/", (req, res) -> {
+{% capture java %}
+app.get("/", (req, res) -> {
     //some code
     response.json(object)
 });
 
-post("/", (req, res) -> {
+app.post("/", (req, res) -> {
     // some code
     response.status(201)
 });
-~~~
+{% endcapture %}
+{% capture kotlin %}
+app.get("/") { req, res ->
+    //some code
+    response.json(object)
+}
+
+app.post("/") { req, res ->
+    // some code
+    response.status(201)
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 Handler paths can include path-parameters. These are available via `Request.param()`
-~~~java
+{% capture java %}
 get("/hello/:name", (req, res) -> {
     response.body("Hello: " + request.param("name"));
 });
-~~~
+{% endcapture %}
+{% capture kotlin %}
+get("/hello/:name") { req, res ->
+    response.body("Hello: " + request.param("name"))
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 Handler-paths can also include wildcard parameters (splats). These are available via `Request.splat()`
 
-~~~java
+{% capture java %}
 get("/hello/*/and/*", (req, res) -> {
     response.body("Hello: " + request.splat(0) + " and " + request.splat(1));
 });
-~~~
+{% endcapture %}
+{% capture kotlin %}
+get("/hello/*/and/*") { req, res ->
+    response.body("Hello: " + request.splat(0) + " and " + request.splat(1))
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ### After handlers
 After handlers
-~~~java
-after("/some-path/*", (req, res) -> { 
+{% capture java %}
+app.after("/some-path/*", (req, res) -> {
     // runs after all request to /some-path/* (excluding static files)
 });
 
-after((req, res) -> {
+app.after((req, res) -> {
     // run after every request (excluding static files)
 });
-~~~
+{% endcapture %}
+{% capture kotlin %}
+app.after("/some-path/*") { req, res ->
+    // runs after all request to /some-path/* (excluding static files)
+}
+
+app.after({ req, res ->
+    // run after every request (excluding static files)
+})
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ## Handler groups
 You can group your endpoints by using the `routes()` and `path()` methods. `routes()` creates 
 a temporary static instance of Javalin so you can skip the `app.` prefix before your handlers:
-~~~java
+{% capture java %}
 app.routes(() -> {
     get("/endpoint",                    SomeClass::someMethod);
     get("/endpoint",                    SomeClass::someMethod);
@@ -138,7 +180,25 @@ app.routes(() -> {
         });
     });
 });
-~~~
+{% endcapture %}
+{% capture kotlin %}
+app.routes {
+    get("/endpoint",                    SomeClass::someMethod);
+    get("/endpoint",                    SomeClass::someMethod);
+    path("/path") {
+        get("/endpoint",                SomeClass::someMethod);
+        get("/endpoint",                SomeClass::someMethod);
+        delete("/endpoint",             SomeClass::someMethod);
+        post("/endpoint",               SomeClass::someMethod);
+        path("/path") {
+            get("/endpoint",            SomeClass::someMethod);
+            post("/endpoint",           SomeClass::someMethod);
+            put("/endpoint",            SomeClass::someMethod);
+        }
+    }
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ## Access manager
 Javalin has a functional interface `AccessManager`, which let's you 
@@ -146,7 +206,7 @@ set per-endpoint authentication or authorization. It's common to use before-hand
 but per-endpoint security handlers give you much more explicit and readable code. You can implement your 
 access-manager however you want, but here is an example implementation:
 
-~~~java
+{% capture java %}
 // Set the access-manager that Javalin should use
 app.accessManager(handler, req, res, permittedRoles) -> {
     MyRole userRole = ...
@@ -167,10 +227,33 @@ app.routes(() -> {
     get("/un-secured",   (req, res) -> res.body("Hello"),   roles(ANYONE));
     get("/secured",      (req, res) -> res.body("Hello"),   roles(ROLE_ONE));
 });
-~~~
+{% endcapture %}
+{% capture kotlin %}
+// Set the access-manager that Javalin should use
+app.accessManager({ handler, req, res, permittedRoles ->
+    val userRole = ...
+    if (permittedRoles.contains(currentUserRole)) {
+        handler.handle(request, response)
+    } else {
+        response.status(401).body("Unauthorized")
+    }
+}
+
+// Create an enum implementing 'Role':
+internal enum class MyRoles:Role {
+    ANYONE, ROLE_ONE, ROLE_TWO, ROLE_THREE
+}
+
+// Declare explicitly secured endpoint handlers:
+app.routes {
+    get("/un-secured",   { req, res -> res.body("Hello")},   roles(ANYONE));
+    get("/secured",      { req, res -> res.body("Hello")},   roles(ROLE_ONE));
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ## Request
-~~~java
+{% capture java %}
 request.unwrap();                   // get underlying HttpServletRequest
 request.body();                     // get the request body as string
 request.bodyAsBytes();              // get the request body as byte-array
@@ -203,20 +286,22 @@ request.scheme();                   // get request scheme
 request.uri();                      // get request uri
 request.url();                      // get request url
 request.userAgent();                // get request user agent
-~~~
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=java %}
 
 ### Session
 Javalin doesn't directly expose the servlet session, 
 but you can access the underlying session object by unwrapping the request if you must:
-~~~java
+{% capture java %}
 request.unwrap().getSession().setAttribute("locale","EN");
 request.unwrap().getSession().getAttribute("locale");
-~~~
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=java %}
 
 ## Response
 All Response-setters return the response object, meaning you can chain calls.  
 For example: `response.status(200).body("body");`
-~~~java
+{% capture java %}
 response.unwrap();                      // get underlying HttpServletResponse
 response.contentType();                 // get response content type
 response.contentType("type");           // set response content type
@@ -237,13 +322,14 @@ response.cookie("key", "value", 0);     // set cookie with key, value, and maxag
 response.cookie(cookieBuilder);         // set cookie using cookiebuilder
 response.removeCookie("key");           // remove cookie by key
 response.removeCookie("/path", "key");  // remove cookie by path and key
-~~~
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=java %}
 
 ## Exception Mapping
 All handlers (before, endpoint, after) can throw `Exception`
 (and any subclass of `Exception`) 
 The `app.exception()` method gives you a way of handling these exceptions:
-~~~java
+{% capture java %}
 app.exception(NullPointerException.class, (e, req, res) -> {
     // handle nullpointers here
 });
@@ -252,40 +338,73 @@ app.exception(Exception.class, (e, req, res) -> {
     // handle general exceptions here
     // will not trigger if more specific exception-mapper found
 });
-~~~
+{% endcapture %}
+{% capture kotlin %}
+app.exception(NullPointerException::class.java) { e, req, res ->
+    // handle nullpointers here
+}
+
+app.exception(Exception::class.java) { e, req, res ->
+    // handle general exceptions here
+    // will not trigger if more specific exception-mapper found
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ### HaltException
 Javalin has a `HaltException` which is handled before other exceptions.
 When throwing a `HaltException` you can include a status code, a message, or both:
-~~~java
+{% capture java %}
 throw new HaltException();                     // (status: 200, message: "Execution halted")
 throw new HaltException(401);                  // (status: 401, message: "Execution halted")
 throw new HaltException("My message");         // (status: 200, message: "My message")
 throw new HaltException(401, "Unauthorized");  // (status: 401, message: "Unauthorized")
-~~~
+{% endcapture %}
+{% capture kotlin %}
+throw HaltException()                          // (status: 200, message: "Execution halted")
+throw HaltException(401)                       // (status: 401, message: "Execution halted")
+throw HaltException("My message")              // (status: 200, message: "My message")
+throw HaltException(401, "Unauthorized")       // (status: 401, message: "Unauthorized")
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
 
 ## Error Mapping
 Error mapping is similar to exception mapping, but it operates on HTTP status codes instead of Exceptions:
-~~~java
+{% capture java %}
 app.error(404, (req, res) -> {
     response.body("Generic 404 message")
 });
-~~~
+{% endcapture %}
+{% capture kotlin %}
+app.error(404) { req, res) ->
+    response.body("Generic 404 message")
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 It can make sense to use them together:
 
-~~~java
+{% capture java %}
 app.exception(FileNotFoundException.class, (e, req, res) -> {
     res.status(404);
 }).error(404, (req, res) -> {
     res.body("Generic 404 message")
 });
-~~~
+{% endcapture %}
+{% capture kotlin %}
+app.exception(FileNotFoundException::class.java, { e, req, res ->
+    res.status(404)
+}).error(404, { req, res ->
+    res.body("Generic 404 message")
+})
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ## Lifecycle events
 Javalin has four lifecycle events: `SERVER_STARTING`, `SERVER_STARTED`, `SERVER_STOPPING` and `SERVER_STOPPED`.
 The snippet below shows all of them in action:
-~~~java
+{% capture java %}
 Javalin app = Javalin.create()
     .event(Event.Type.SERVER_STARTING, e -> { ... })
     .event(Event.Type.SERVER_STARTED, e -> { ... })
@@ -296,15 +415,23 @@ app.start() // SERVER_STARTING
     .awaitInitialization() // SERVER_STARTED
     .stop() // SERVER_STOPPING
     .awaitTermination(); // SERVER_STOPPED
-~~~
+{% endcapture %}
+{% capture kotlin %}
+Javalin app = Javalin.create()
+    .event(Event.Type.SERVER_STARTING, { e -> ... })
+    .event(Event.Type.SERVER_STARTED, { e -> ... })
+    .event(Event.Type.SERVER_STOPPING, { e -> ... })
+    .event(Event.Type.SERVER_STOPPED, { e -> ... });
+
+app.start() // SERVER_STARTING
+    .awaitInitialization() // SERVER_STARTED
+    .stop() // SERVER_STOPPING
+    .awaitTermination(); // SERVER_STOPPED
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 The lambda takes an `Event` object, which contains the type of event that happened,
 and a reference to the `this` (the javalin object which triggered the event).
-~~~java
-app.event(Event.Type.SERVER_STOPPED, event -> {
-    // do something after the server has stopped
-});
-~~~
 
 ## Server configuration
 
@@ -317,13 +444,14 @@ To start and stop the server, use the appropriately named `start()` and `stop` m
 The process of starting and stopping the server is asynchronous, 
 but you can use `awaitInitialization()` and `awaitTermination()` if you need it to be synchronous:
 
-~~~java
+{% capture java %}
 Javalin app = Javalin.create()
     .start() // starting server (async)
     .awaitInitialization() // block until server is started
     .stop() // stopping server (async)
     .awaitTermination(); // block until server is stopped
-~~~
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=java %}
 
 Declaring handlers (`get`, `before`, etc) automatically calls `start()` on the instance.
 
@@ -335,25 +463,29 @@ private Consumer<Exception> startupExceptionHandler = (e) -> {
 };
 ~~~
 
-You can specify the behavior of this cosumer by calling the `startupExceptionHandler()` method: 
-~~~java
+You can specify the behavior of this cosumer by calling the `startupExceptionHandler()` method:
+{% capture java %}
 startupExceptionHandler((e) -> System.out.println("Uh-oh"));
-~~~
+{% endcapture %}
+{% capture kotlin %}
+startupExceptionHandler({ e -> println("Uh-oh") })
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 *This has to be done before starting the server*.
 
 ### Port
 By default, Javalin runs on port 7000. If you want to set another port, use `app.port()`.   
 *This has to be done before starting the server*.
 
-### Secure (HTTPS/SSL) {#ssl}
+### Ssl
 
-You can set the connection to be secure via the `ssl()` method.
-
-~~~java
+You can set the connection to be secure via the `ssl()` methods:
+{% capture java %}
 app.ssl(keystoreFilePath, keystorePassword); // re-use keystore for truststore
 
 app.ssl(keystoreFilePath, keystorePassword, truststoreFilePath, truststorePassword);
-~~~
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=java %}
 
 *This has to be done before starting the server*.
 
@@ -361,14 +493,15 @@ app.ssl(keystoreFilePath, keystorePassword, truststoreFilePath, truststorePasswo
 
 You can configure the threadpool by using the `threadPool()` and `threadPoolConfig()` methods
 
-~~~java
+{% capture java %}
 app.threadPool(
     threadPoolConfig()
         .maxThreads(20)
         .minThreads(4)
         .threadIdleTimeoutMillis(60000)
 );
-~~~
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=java %}
 
 *This has to be done before starting the server*.
 
