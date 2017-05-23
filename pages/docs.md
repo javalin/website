@@ -68,8 +68,8 @@ The `Handler` interface has a void return type, so you should update the `respon
 Before-handlers are matched before every request (including static files, if you enable those).
 
 ~~~java
-before("/some-path", (req, res) -> { 
-    // runs before all request to /some-path*
+before("/some-path/*", (req, res) -> { 
+    // runs before all request to /some-path/*
 });
 
 before((req, res) -> {
@@ -110,8 +110,12 @@ get("/hello/*/and/*", (req, res) -> {
 ### After handlers
 After handlers
 ~~~java
+after("/some-path/*", (req, res) -> { 
+    // runs after all request to /some-path/* (excluding static files)
+});
+
 after((req, res) -> {
-    // run after every request, excluding static files
+    // run after every request (excluding static files)
 });
 ~~~
 
