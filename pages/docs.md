@@ -21,8 +21,8 @@ permalink: /documentation
 * [Server configuration](#server-configuration)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Start/stop](#starting-and-stopping)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Port](#port)
-* [ &nbsp;&nbsp;&nbsp;&nbsp;SSL](#ssl)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Custom server](#custom-server)
+* [ &nbsp;&nbsp;&nbsp;&nbsp;SSL](#ssl)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Static Files](#static-files)
 * [Javadoc](#javadoc)
 </div>
@@ -477,18 +477,6 @@ startupExceptionHandler({ e -> println("Uh-oh") })
 By default, Javalin runs on port 7000. If you want to set another port, use `app.port()`.   
 *This has to be done before starting the server*.
 
-### Ssl
-
-You can set the connection to be secure via the `ssl()` methods:
-{% capture java %}
-app.ssl(keystoreFilePath, keystorePassword); // re-use keystore for truststore
-
-app.ssl(keystoreFilePath, keystorePassword, truststoreFilePath, truststorePassword);
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=java %}
-
-*This has to be done before starting the server*.
-
 ### Custom server
 If you need to customize the embedded server, you can call the `app.embeddedServer()` method:
 {% capture java %}
@@ -507,6 +495,12 @@ app.embeddedServer(EmbeddedJettyFactory({
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 *This has to be done before starting the server <small>(duh)</small>*.
+
+### Ssl
+
+To configure SSL you need to use a custom server (see previous section).\\
+An example of a custom server with SSL can be found
+[here](https://github.com/tipsy/javalin/blob/master/src/test/java/javalin/examples/HelloWorldSecure.java).
 
 ### Static Files
 You can enabled static file serving by doing `app.enableStaticFiles("/classpath-folder")`.
