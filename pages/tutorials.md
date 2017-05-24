@@ -6,7 +6,8 @@ permalink: /tutorials/
 
 <h1 class="no-margin-top">Tutorials</h1>
 
-[Setting up Javalin with Maven](/tutorials/maven-setup)
+* [Setting up Javalin with Maven](/tutorials/maven-setup)
+* [Creating a simple CRUD REST API in Kotlin](/tutorials/simple-kotlin-example)
 
 More tutorials coming soon. Planned tutorials:
 

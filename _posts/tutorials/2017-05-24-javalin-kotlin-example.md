@@ -1,0 +1,249 @@
+---
+layout: tutorial
+title: "Using Javalin with Kotlin to create a simple CRUD REST API"
+author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
+date: 2017-05-24 11:11:11
+permalink: /tutorials/simple-kotlin-example
+github: https://github.com/tipsy/javalin-kotlin-example
+summarytitle: Using Javalin with Kotlin
+summary: Use Kotlin with Javalin to create a simple CRUD REST API.
+---
+
+## What You Will Learn
+
+* Setting up Kotlin with Maven
+* Creating a Javalin/Kotlin CRUD REST API (no database)
+* Some neat Kotlin features
+
+The instructions for this tutorial will focus on IntelliJ IDEA,
+as it's made by JetBrains, the same people who make Kotlin.
+We recommend downloading the free [community edition](https://www.jetbrains.com/idea/download)
+of IDEA while following this tutorial, but there is also Kotlin support in Eclipse.
+
+## Setting up Kotlin with Maven (in IntelliJ IDEA)
+
+The good people over at [JetBrains](https://www.jetbrains.com) have an up-to-date
+[archetype](https://maven.apache.org/guides/introduction/introduction-to-archetypes.html)
+for Kotlin. To use it, do as follows:
+ 
+ * `File` `->` `New` `->` `Project`
+ * `Maven` `->` `Create from archetype` `->` `org.jetbrains.kotlin:kotlin-archetype-jvm` `->` `Next`
+ * Follow the instructions and pick a project name
+ * Create `src/main/kotlin/app/Main.kt`
+ 
+ There is no `public static void main(String[] args)` in Kotlin, instead you have a `fun main(args: Array<String>)`.
+ 
+~~~kotlin
+ fun main(args: Array<String>) {
+    println("Hello, world!")
+}
+~~~
+ 
+<div class="comment">
+You'll have to point to the file (not class) containing this main function (not method)
+from your pom.xml if you want to build a jar. Doing this is not necessary for this tutorial,
+but the code on GitHub demonstrates how to do it for those interested.
+</div>
+
+## Using Javalin with Kotlin
+
+Since this is just a normal Maven project, we can add Javalin as we always do:
+
+~~~markup
+<dependency>
+    <groupId>io.javalin</groupId>
+    <artifactId>javalin</artifactId>
+    <version>{{site.javalinversion}}</version>
+</dependency>
+~~~
+
+And the Javalin `Hello World` example in Kotlin becomes:
+
+~~~kotlin
+import javalin.Javalin.*
+
+fun main(args: Array<String>) {
+    get("/hello") { req, res -> "Hello World" }
+}
+~~~
+
+Even smaller than before, and it looks pretty similar to Java8:
+<br>
+Java8: `get("/path", (req, res) -> { ... });`
+<br>
+Kotlin: `get("/path") { req, res -> ...}`. 
+
+The syntax `(){}` might look a little strange to Java programmers.
+Kotlin supports [trailing closures](https://kotlinlang.org/docs/reference/lambdas.html#closures)
+and provides [semicolon inference](https://kotlinlang.org/docs/reference/grammar.html#semicolons).
+Simplified, this means you don't have to wrap closures in parentheses and end every statement with a semicolon.
+
+## Creating a Javalin/Kotlin CRUD microservice
+
+### Kotlin data-classes
+
+Kotlin has a really neat feature called
+[Data classes](https://kotlinlang.org/docs/reference/data-classes.html).
+To create a data class you just have to write:
+
+~~~kotlin
+data class User(val name: String, val email: String, val id: Int);
+~~~
+
+... and you're done! If you declare all parameters as `val` you get an immutable class similar to the
+[Lombok @Value](https://projectlombok.org/features/Value.html) annotation, only better.
+Regardless of if you use `var` or `val` (or a mix) for your data class,
+you get toString, hashCode/equals, copying and destructuring included:
+
+~~~kotlin
+val alice = User(name = "Alice", email = "alice@alice.kt", id = 0)
+val aliceNewEmail = alice.copy(email = "alice@bob.kt") // new object with only email changed
+
+val (name, email) = aliceNewEmail // choose the fields you want
+println("$name's new email is $email") // prints "Alice's new email is alice@bob.kt"
+~~~
+
+### Initializing some data
+Let's initialize our fake user-database with four users:
+
+~~~kotlin
+val users = hashMapOf(
+        0 to User(name = "Alice", email = "alice@alice.kt", id = 0),
+        1 to User(name = "Bob", email = "bob@bob.kt", id = 1),
+        2 to User(name = "Carol", email = "carol@carol.kt", id = 2),
+        3 to User(name = "Dave", email = "dave@dave.kt", id = 3)
+)
+~~~
+
+Kotlin has type inference and named paramters (we could have written our arguments in any order).
+It also has a nice standard library providing map-literal-like functions (so you won't have to include guava in every project).
+
+### Creating a data access object
+We need to be able to read out data somehow, so let's set up some
+basic CRUD functionality, with one added function for finding user by email:
+
+~~~kotlin
+class UserDao {
+
+    val users = hashMapOf(
+            0 to User(name = "Alice", email = "alice@alice.kt", id = 0),
+            1 to User(name = "Bob", email = "bob@bob.kt", id = 1),
+            2 to User(name = "Carol", email = "carol@carol.kt", id = 2),
+            3 to User(name = "Dave", email = "dave@dave.kt", id = 3)
+    )
+
+    var lastId: AtomicInteger = AtomicInteger(users.size - 1)
+
+    fun save(name: String, email: String) {
+        val id = lastId.incrementAndGet()
+        users.put(id, User(name = name, email = email, id = id))
+    }
+
+    fun findById(id: Int): User? {
+        return users[id]
+    }
+
+    fun findByEmail(email: String): User? {
+        return users.values.find { it.email == email }
+    }
+
+    fun update(id: Int, name: String, email: String) {
+        users.put(id, User(name = name, email = email, id = id))
+    }
+
+    fun delete(id: Int) {
+        users.remove(id)
+    }
+
+}
+~~~
+
+The `findByEmail` function shows of some neat features. In addition to the
+trailing closures that we saw earlier, Kotlin also has a very practical `find` function
+and a special `it` keyword, which replaces `user -> user` style declarations with just `it`
+([docs](https://kotlinlang.org/docs/reference/lambdas.html#it-implicit-name-of-a-single-parameter)).
+The function also demonstrates that `==` is the structural equality operator for Strings in Kotlin
+(equivalent to `.equals()` in Java). If you want to check for referential equality in Kotlin you can use `===`.
+Another thing worth noticing is that the find-functions return `User?`, which means the function will
+return either a `User` or `null`. In Kotlin you have to specify the possibility of a null-return.
+
+`findByEmail()`, Kotlin vs Java:
+
+~~~kotlin
+// Kotlin 
+fun findByEmail(email: String): User? {
+    return users.values.find { it.email == email }
+}
+
+// Java
+public User findByEmail(String email) {
+    return users.values().stream()
+            .filter(user -> user.getEmail().equals(email))
+            .findFirst()
+            .orElse(null);
+}
+~~~
+
+### Creating the REST API
+
+Kotlin and Javalin play very well together (in fact, Kotlin seems to play well with all Java dependencies).
+We can use trailing closures to create very clean api declarations:
+
+~~~kotlin
+fun main(args: Array<String>) {
+
+    val userDao = UserDao()
+
+    val app = Javalin.create().port(7000)
+
+    app.exception(Exception::class.java) { e, req, res -> e.printStackTrace() }
+
+    app.get("/users") { req, res ->
+        res.json(userDao.users)
+    }
+
+    app.get("/users/:id") { req, res ->
+        res.json(userDao.findById(req.param("id").toInt()))
+    }
+
+    app.get("/users/email/:email") { req, res ->
+        res.json(userDao.findByEmail(req.param("email")))
+    }
+
+    app.post("/users/create") { req, res ->
+        userDao.save(name = req.bp("name"), email = req.bp("email"))
+        res.status(201)
+    }
+
+    app.patch("/users/update/:id") { req, res ->
+        userDao.update(
+                id = req.param("id").toInt(),
+                name = req.bp("name"),
+                email = req.bp("email")
+        )
+        res.status(204)
+    }
+
+    app.delete("/users/delete/:id") { req, res ->
+        userDao.delete(req.param("id").toInt())
+        res.status(204)
+    }
+
+}
+
+//add .bp alias for .bodyParam on Request object
+fun Request.bp(key: String): String = this.bodyParam(key)
+~~~
+
+Our app references `req.bp()` a lot, which is a method that doesn't exist natively on a Javalin `Request`.
+This works because we defined an [extension function](https://kotlinlang.org/docs/reference/extensions.html)
+on the Request object (last line).
+
+## Conclusion
+I have only worked with Kotlin for a few hours while writing this tutorial,
+but I'm already a very big fan of the language. Everything just seems to make sense, and the interoperability with Java is great.
+IntelliJ will also automatically convert Java code into Kotlin if you paste it into your project.
+Please clone the repo and give it a try!
+
+
+<div class="notification"><em>The source code for this tutorial can be found on <a href="https://github.com/tipsy/javalin-kotlin-example" target="_blank">GitHub</a>.</em></div>

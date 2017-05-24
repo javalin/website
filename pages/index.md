@@ -43,10 +43,8 @@ to be used with both Java and Kotlin. The library itself is written in Java, as
 Javalin is intended as a "foot in the door" to Kotlin development for companies
 that already write a lot of Java. You can easily set up a microservice REST API in 
 Kotlin and try it out. 
-{% comment %}
-Go through the [Kotlin REST API tutorial](/tutorials/kotlin) 
+Go through the [Kotlin REST API tutorial](/tutorials/simple-kotlin-example)
 to see how to setup Kotlin with Maven, and how to use it with Javalin.
-{% endcomment %}
 
 ## Embedded Web-server
 Javalin comes with an embedded Jetty, but other embedded server would 
