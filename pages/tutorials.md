@@ -6,15 +6,15 @@ permalink: /tutorials/
 
 <h1 class="no-margin-top">Tutorials</h1>
 
-Tutorials coming soon. There is some work left to be done on the Javalin core,
-tutorials will be coming within the next few weeks. Planned tutorials:
+[Setting up Javalin with Maven](/tutorials/maven-setup)
 
-* Setting up Javalin with Maven/gradle
+More tutorials coming soon. Planned tutorials:
+
 * Deploying Javalin to Heroku
 * Basic REST API architecture (Java)
 * Basic REST API architecture (Kotlin)
-* Basic website architecture (Java)
 * REST API + Single page app tutorial (Java/Intercooler)
+* Basic website architecture (Java)
 
 {% assign tutorials = (site.posts | where: "layout" , "tutorial") %}
 

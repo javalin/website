@@ -18,9 +18,7 @@
     <version>{{site.javalinversion}}</version>
 </dependency>
 ~~~
-{% comment %}
 [Not familiar with Maven? Click here for more detailed instructions.](/tutorials/maven-setup)
-{% endcomment %}
 </div>
 
 <div data-tab="2" markdown="1">
