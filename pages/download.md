@@ -16,8 +16,6 @@ your dependencies.
 ## Download Javalin
 {% include macros/mavenDep.md %}
 
-{% comment %}
 ## Download source manually
 Clone the repo from [GitHub](https://github.com/tipsy/javalin).\\
 If you really want to, you can also download Javalin as a [ZIP (from GitHub)](https://github.com/tipsy/javalin/archive/master.zip)
-{% endcomment %}
