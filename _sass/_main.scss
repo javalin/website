@@ -99,8 +99,18 @@ main {
   }
 }
 
-#githubStar {
-  display: inline-block;
+.star-us {
+  overflow: auto;
+  padding: 10px;
+  margin: 25px 0 10px;
+  background: #fff;
+  border: 1px dashed #bbb;
+  > * {
+    height: 30px;
+    line-height: 30px;
+    float: left;
+    margin-right: 10px;
+  }
 }
 
 .template-engine {

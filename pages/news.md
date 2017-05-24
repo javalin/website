@@ -11,12 +11,10 @@ Release notes for minor releases will be posted here.
 
 {% comment %}
 <div id="spy-nav" class="right-menu" markdown="1">
-* [Javalin Beta available](#javalin-beta-avaliable)
+* [Hellow world!](#hello-world)
 </div>
 {% endcomment %}
 
-## Javalin beta available {#javalin-beta-available-1}
-The first Javalin beta is now available. 
-Beta versioning will try to follow semantic versioning, with a 
-`Beta-Major.Minor.Patch` format, eks. Beta-0.0.1. Be prepared for breaking changes
-When the beta is over, Javalin. 1.0.0 will be released.
+## Hello world! {#hello-world}
+The first Javalin version is now available (0.0.1).
+Javalin will try to follow semantic versioning, but be prepared for breaking changes.
