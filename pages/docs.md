@@ -498,7 +498,7 @@ app.embeddedServer(EmbeddedJettyFactory({
 
 To configure SSL you need to use a custom server (see previous section).\\
 An example of a custom server with SSL can be found
-[here](https://github.com/tipsy/javalin/blob/master/src/test/java/javalin/examples/HelloWorldSecure.java).
+[here](https://github.com/tipsy/javalin/blob/master/src/test/java/javalin/examples/HelloWorldSecure.java#L18-L26).
 
 ### Static Files
 You can enabled static file serving by doing `app.enableStaticFiles("/classpath-folder")`.
