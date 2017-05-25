@@ -89,23 +89,23 @@ Endpoint handlers are matched in the order they are defined.
 {% capture java %}
 app.get("/", (req, res) -> {
     //some code
-    response.json(object)
+    res.json(object)
 });
 
 app.post("/", (req, res) -> {
     // some code
-    response.status(201)
+    res.status(201)
 });
 {% endcapture %}
 {% capture kotlin %}
 app.get("/") { req, res ->
     //some code
-    response.json(object)
+    res.json(object)
 }
 
 app.post("/") { req, res ->
     // some code
-    response.status(201)
+    res.status(201)
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -113,12 +113,12 @@ app.post("/") { req, res ->
 Handler paths can include path-parameters. These are available via `Request.param()`
 {% capture java %}
 get("/hello/:name", (req, res) -> {
-    response.body("Hello: " + request.param("name"));
+    res.body("Hello: " + request.param("name"));
 });
 {% endcapture %}
 {% capture kotlin %}
 get("/hello/:name") { req, res ->
-    response.body("Hello: " + request.param("name"))
+    res.body("Hello: " + request.param("name"))
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -127,12 +127,12 @@ Handler-paths can also include wildcard parameters (splats). These are available
 
 {% capture java %}
 get("/hello/*/and/*", (req, res) -> {
-    response.body("Hello: " + request.splat(0) + " and " + request.splat(1));
+    res.body("Hello: " + request.splat(0) + " and " + request.splat(1));
 });
 {% endcapture %}
 {% capture kotlin %}
 get("/hello/*/and/*") { req, res ->
-    response.body("Hello: " + request.splat(0) + " and " + request.splat(1))
+    res.body("Hello: " + request.splat(0) + " and " + request.splat(1))
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -211,7 +211,7 @@ app.accessManager(handler, req, res, permittedRoles) -> {
     if (permittedRoles.contains(currentUserRole)) {
         handler.handle(request, response);
     } else {
-        response.status(401).body("Unauthorized");
+        res.status(401).body("Unauthorized");
     }
 };
 
@@ -233,7 +233,7 @@ app.accessManager({ handler, req, res, permittedRoles ->
     if (permittedRoles.contains(currentUserRole)) {
         handler.handle(request, response)
     } else {
-        response.status(401).body("Unauthorized")
+        res.status(401).body("Unauthorized")
     }
 }
 
@@ -371,12 +371,12 @@ throw HaltException(401, "Unauthorized")       // (status: 401, message: "Unauth
 Error mapping is similar to exception mapping, but it operates on HTTP status codes instead of Exceptions:
 {% capture java %}
 app.error(404, (req, res) -> {
-    response.body("Generic 404 message")
+    res.body("Generic 404 message")
 });
 {% endcapture %}
 {% capture kotlin %}
 app.error(404) { req, res) ->
-    response.body("Generic 404 message")
+    res.body("Generic 404 message")
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
