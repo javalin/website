@@ -2,7 +2,7 @@
 layout: tutorial
 title: "Setting up Javalin with Maven"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
-date: 2017-05-24 11:34:52
+date: 2017-05-24
 permalink: /tutorials/maven-setup
 summarytitle: Maven setup
 summary: Set up a Javalin project using Maven in IntelliJ IDEA and Eclipse.
@@ -93,6 +93,5 @@ and choose `Set language level to 8 - Lambdas, type annotations, etc`.*
 Finally, paste the Javalin "Hello World" snippet into a new file, `Main.java`:
 
 {% include macros/gettingStarted.md %}
-
 
 Now everything is ready for you to run your main Class. Enjoy!

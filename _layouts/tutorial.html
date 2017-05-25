@@ -26,5 +26,12 @@ istutorial: true
     <div class="post-content" itemprop="articleBody">
         {{ content }}
     </div>
+    {% if page.github %}
+    <div class="notification">
+        <em>
+            The source code for this tutorial can be found on <a href="https://github.com/tipsy/javalin-heroku-example">GitHub</a>.
+        </em>
+    </div>
+    {% endif %}
 </article>
 {% comment %} {% include socialButtons.html %} {% endcomment %}

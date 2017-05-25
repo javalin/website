@@ -2,7 +2,7 @@
 layout: tutorial
 title: "Creating an AJAX todo-list without writing JavaScript"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
-date: 2016-06-26 11:11:11
+date: 2016-06-26
 permalink: /tutorials/ajax-without-writing-javascript
 github: https://github.com/tipsy/javalin-intercooler-example
 summarytitle: JavaScript todo-list app

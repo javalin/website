@@ -2,7 +2,7 @@
 layout: tutorial
 title: "Creating a library website with login and multiple languages"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
-date: 2016-06-10 11:11:11
+date: 2016-06-10
 permalink: /tutorials/application-structure
 github: https://github.com/tipsy/javalin-structure-example
 summarytitle: Basic webapp structure

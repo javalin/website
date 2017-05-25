@@ -8,10 +8,10 @@ permalink: /tutorials/
 
 * [Setting up Javalin with Maven](/tutorials/maven-setup)
 * [Creating a simple CRUD REST API in Kotlin](/tutorials/simple-kotlin-example)
+* [Deploying Javalin to Heroku](/tutorials/heroku)
 
 More tutorials coming soon. Planned tutorials:
 
-* Deploying Javalin to Heroku
 * Basic REST API architecture (Java)
 * Basic REST API architecture (Kotlin)
 * REST API + Single page app tutorial (Java/Intercooler)

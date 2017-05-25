@@ -33,7 +33,7 @@ The documentation on this site is always for the latest version of Javalin.
 We don't have the capacity to maintain separate docs for each version, 
 but Javalin follows [semantic versioning](http://semver.org/).
 
-<div class="star-us">
+<div class="notification star-us">
     <div>
         If you like Javalin, please consider starring us on GitHub:
     </div>

@@ -2,7 +2,7 @@
 layout: tutorial
 title: "Using Javalin with Kotlin to create a simple CRUD REST API"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
-date: 2017-05-24 11:11:11
+date: 2017-05-24
 permalink: /tutorials/simple-kotlin-example
 github: https://github.com/tipsy/javalin-kotlin-example
 summarytitle: Using Javalin with Kotlin
@@ -244,6 +244,3 @@ I have only worked with Kotlin for a few hours while writing this tutorial,
 but I'm already a very big fan of the language. Everything just seems to make sense, and the interoperability with Java is great.
 IntelliJ will also automatically convert Java code into Kotlin if you paste it into your project.
 Please clone the repo and give it a try!
-
-
-<div class="notification"><em>The source code for this tutorial can be found on <a href="https://github.com/tipsy/javalin-kotlin-example" target="_blank">GitHub</a>.</em></div>
