@@ -255,6 +255,7 @@ app.routes {
 request.unwrap();                   // get underlying HttpServletRequest
 request.body();                     // get the request body as string
 request.bodyAsBytes();              // get the request body as byte-array
+request.bodyAsClass(clazz);         // convert json body to object (requires jackson)
 request.bodyParam("key");           // get parameter from request body
 request.formParam("key");           // get parameter from form-post request
 request.param("key");               // get a path-parameter, ex "/:id" -> param("id")
@@ -310,7 +311,7 @@ response.encoding("charset");           // set response encoding
 response.header("key");                 // get response header
 response.header("key", "value");        // set response header
 response.html("body html");             // set response body and html content type
-response.json(jsonObject);              // set response body and json content type
+response.json(object);                  // set response body to object-as-json (requires jackson)
 response.redirect("/location");         // redirect to location
 response.redirect("/location", 302);    // redirect to location with code
 response.status();                      // get response status
