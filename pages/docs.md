@@ -25,6 +25,7 @@ permalink: /documentation
 * [ &nbsp;&nbsp;&nbsp;&nbsp;SSL](#ssl)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Static Files](#static-files)
 * [Javadoc](#javadoc)
+* [FAQ](#faq)
 </div>
 
 <h1 class="no-margin-top">Documentation</h1>
@@ -529,6 +530,25 @@ internal apis/control flow.
 
 Pull-requests adding Javadoc comments in the source code are not welcome.
 
-<br>
+## FAQ
 
-<a href="#getting-started">Back to the top</a>
+### Adding a logger {#logging}
+
+Like a lot of other Java projects, Javalin does not have a logger included,
+which means that you have to add your own logger. If you don't know/care
+a lot about Java loggers, the easiest way to fix this is to add the following
+dependency to your project:
+
+~~~markup
+<dependency>
+    <groupId>org.slf4j</groupId>
+    <artifactId>slf4j-simple</artifactId>
+    <version>1.7.25</version>
+</dependency>
+~~~
+
+This will remove the warning from SLF4J, and enable
+helpful debug messages while running Javalin.
+
+<br><br><br><br><br><br><br>
+
