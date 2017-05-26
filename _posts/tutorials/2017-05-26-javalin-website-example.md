@@ -18,6 +18,8 @@ basic structure, with certain points of the code highlighted. To get the full
 benefit of this tutorial, please clone the example on
 [GitHub](https://github.com/tipsy/javalin-website-example) run it, and play around.
 
+[A live demo can be found here](http://javalin-website-example.herokuapp.com/index)
+
 ## Package structure
 <img src="/img/posts/websiteExample/packageOverview.png" alt="Package Structure">
 
