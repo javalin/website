@@ -60,10 +60,11 @@ Since this is just a normal Maven project, we can add Javalin as we always do:
 And the Javalin `Hello World` example in Kotlin becomes:
 
 ~~~kotlin
-import javalin.Javalin.*
+import javalin.Javalin
 
 fun main(args: Array<String>) {
-    get("/hello") { req, res -> "Hello World" }
+    val app = Javalin.create().port(7000)
+    app.get("/", { req, res-> res.body("Hello World") })
 }
 ~~~
 
