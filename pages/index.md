@@ -20,15 +20,14 @@ Javalin shouldn't feel *too* unfamiliar.
 
 Javalin is currently not aiming to be a full "web framework", 
 but rather just a very lightweight REST API library.
-There is no websocket or template engine support, but there is support 
-for static files for convenience. That way you can use Javalin to both create 
+There is no websocket support or a concept of MVC, but there is support
+for template engines and static files for convenience. That way you can use Javalin to both create
 your RESTful API backend, as well as serve an `index.html` and static resources
 in case you're creating an SPA. This can be practical if you don't want to deploy
 to apache or nginx in addition to your Javalin service.
 
 If you wish to use Javalin to create web-pages instead of just REST APIs, 
-you can use [Spark](http://sparkjava.com)'s template engine wrappers for a 
-quick and easy setup.
+there are some simple template engine wrappers available for a quick and easy setup.
 
 ## Fully Fluent API
 All the methods on the Javalin instance return `this`, making the API fully fluent. 

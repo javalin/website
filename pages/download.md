@@ -8,10 +8,9 @@ permalink: /download
 <h1 class="no-margin-top">A Lightweight REST API library</h1>
 
 Javalin is a true micro Java REST API library and has no required external dependencies 
-other than the embedded web-server. It has optional dependencies for Jackson and GSON, 
+other than the embedded web-server. It has an optional dependency for Jackson,
 in order to provide out-of-the-box object mapping support (`response.json(object)`).
-To use this feature you need to have either Jackson or GSON included in 
-your dependencies.
+To use this feature you need to have Jackson included as a dependency.
 
 ## Download Javalin
 {% include macros/mavenDep.md %}
