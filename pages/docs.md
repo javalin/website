@@ -534,6 +534,16 @@ Pull-requests adding Javadoc comments in the source code are not welcome.
 
 ### Adding a logger {#logging}
 
+If you're reading this, you've probably seen the following message while running Javalin:
+
+~~~text
+SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+~~~
+
+This is nothing to worry about.
+
 Like a lot of other Java projects, Javalin does not have a logger included,
 which means that you have to add your own logger. If you don't know/care
 a lot about Java loggers, the easiest way to fix this is to add the following
