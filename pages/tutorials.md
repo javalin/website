@@ -9,6 +9,7 @@ permalink: /tutorials/
 * [Setting up Javalin with Maven](/tutorials/maven-setup)
 * [Creating a simple CRUD REST API in Kotlin](/tutorials/simple-kotlin-example)
 * [Deploying Javalin to Heroku](/tutorials/heroku)
+* [Kotlin + Vue.js single page app](/tutorials/vuejs-example)
 * [Basic website example (java)](/tutorials/website-example)
 
 More tutorials coming soon. Planned tutorials:
