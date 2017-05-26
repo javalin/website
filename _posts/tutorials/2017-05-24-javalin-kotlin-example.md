@@ -57,7 +57,7 @@ Since this is just a normal Maven project, we can add Javalin as we always do:
 </dependency>
 ~~~
 
-And the Javalin `Hello World` example in Kotlin becomes:
+And paste the "Hello world" example:
 
 ~~~kotlin
 import javalin.Javalin
@@ -68,7 +68,7 @@ fun main(args: Array<String>) {
 }
 ~~~
 
-Even smaller than before, and it looks pretty similar to Java8:
+It looks pretty similar to Java8:
 <br>
 Java8: `get("/path", (req, res) -> { ... });`
 <br>
@@ -77,7 +77,7 @@ Kotlin: `get("/path") { req, res -> ...}`.
 The syntax `(){}` might look a little strange to Java programmers.
 Kotlin supports [trailing closures](https://kotlinlang.org/docs/reference/lambdas.html#closures)
 and provides [semicolon inference](https://kotlinlang.org/docs/reference/grammar.html#semicolons).
-Simplified, this means you don't have to wrap closures in parentheses and end every statement with a semicolon.
+Simplified, this means you don't have to wrap closures in parentheses and end statements with semicolons.
 
 ## Creating a Javalin/Kotlin CRUD microservice
 
@@ -109,14 +109,14 @@ Let's initialize our fake user-database with four users:
 
 ~~~kotlin
 val users = hashMapOf(
-        0 to User(name = "Alice", email = "alice@alice.kt", id = 0),
-        1 to User(name = "Bob", email = "bob@bob.kt", id = 1),
-        2 to User(name = "Carol", email = "carol@carol.kt", id = 2),
-        3 to User(name = "Dave", email = "dave@dave.kt", id = 3)
+    0 to User(name = "Alice", email = "alice@alice.kt", id = 0),
+    1 to User(name = "Bob", email = "bob@bob.kt", id = 1),
+    2 to User(name = "Carol", email = "carol@carol.kt", id = 2),
+    3 to User(name = "Dave", email = "dave@dave.kt", id = 3)
 )
 ~~~
 
-Kotlin has type inference and named paramters (we could have written our arguments in any order).
+Kotlin has type inference and named parameters (we could have written our arguments in any order).
 It also has a nice standard library providing map-literal-like functions (so you won't have to include guava in every project).
 
 ### Creating a data access object
@@ -127,10 +127,10 @@ basic CRUD functionality, with one added function for finding user by email:
 class UserDao {
 
     val users = hashMapOf(
-            0 to User(name = "Alice", email = "alice@alice.kt", id = 0),
-            1 to User(name = "Bob", email = "bob@bob.kt", id = 1),
-            2 to User(name = "Carol", email = "carol@carol.kt", id = 2),
-            3 to User(name = "Dave", email = "dave@dave.kt", id = 3)
+        0 to User(name = "Alice", email = "alice@alice.kt", id = 0),
+        1 to User(name = "Bob", email = "bob@bob.kt", id = 1),
+        2 to User(name = "Carol", email = "carol@carol.kt", id = 2),
+        3 to User(name = "Dave", email = "dave@dave.kt", id = 3)
     )
 
     var lastId: AtomicInteger = AtomicInteger(users.size - 1)
