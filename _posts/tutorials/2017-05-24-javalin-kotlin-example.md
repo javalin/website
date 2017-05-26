@@ -34,7 +34,7 @@ for Kotlin. To use it, do as follows:
  There is no `public static void main(String[] args)` in Kotlin, instead you have a `fun main(args: Array<String>)`.
  
 ~~~kotlin
- fun main(args: Array<String>) {
+fun main(args: Array<String>) {
     println("Hello, world!")
 }
 ~~~
