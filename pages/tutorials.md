@@ -13,9 +13,9 @@ permalink: /tutorials/
 
 More tutorials coming soon. Planned tutorials:
 
-* Basic REST API architecture (Java)
-* Basic REST API architecture (Kotlin)
-* REST API + Single page app tutorial (Java/Intercooler)
+* REST API architecture (Java)
+* REST API architecture (Kotlin)
+* REST API + Single page app tutorial (Kotlin + Vue.js)
 
 {% assign tutorials = (site.posts | where: "layout" , "tutorial") %}
 
