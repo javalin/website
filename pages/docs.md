@@ -88,7 +88,7 @@ Endpoint handlers are matched in the order they are defined.
 
 {% capture java %}
 app.get("/", (req, res) -> {
-    //some code
+    // some code
     res.json(object)
 });
 
@@ -99,7 +99,7 @@ app.post("/", (req, res) -> {
 {% endcapture %}
 {% capture kotlin %}
 app.get("/") { req, res ->
-    //some code
+    // some code
     res.json(object)
 }
 
