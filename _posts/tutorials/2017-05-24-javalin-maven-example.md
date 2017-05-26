@@ -85,7 +85,7 @@ and choose `Set language level to 8 - Lambdas, type annotations, etc`.*
     <dependency>
         <groupId>io.javalin</groupId>
         <artifactId>javalin</artifactId>
-        <version>0.0.1</version>
+        <version>{{site.javalinversion}}</version>
     </dependency>
 </dependencies>
 ~~~
