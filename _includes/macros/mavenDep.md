@@ -25,6 +25,7 @@
 ~~~java
 compile 'io.javalin:javalin:{{site.javalinversion}}'
 ~~~
+[Not familiar with Gradle? Click here for more detailed instructions.](/tutorials/gradle-setup)
 </div>
 
 <div data-tab="3" markdown="1">
