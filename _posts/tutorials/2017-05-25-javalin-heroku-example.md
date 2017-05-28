@@ -114,7 +114,7 @@ Heroku assigns your application a new port every time you deploy it,
 so we have to get this port and tell Javalin to use it:
 
 ~~~java
-import javalin.Javalin;
+import io.javalin.Javalin;
 
 public class Main {
 

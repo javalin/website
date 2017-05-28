@@ -1,5 +1,5 @@
 {% capture java %}
-import javalin.Javalin;
+import io.javalin.Javalin;
 
 public class HelloWorld {
     public static void main(String[] args) {
@@ -10,7 +10,7 @@ public class HelloWorld {
 {% endcapture %}
 
 {% capture kotlin %}
-import javalin.Javalin
+import io.javalin.Javalin
 
 fun main(args: Array<String>) {
     val app = Javalin.create().port(7000)

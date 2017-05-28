@@ -60,7 +60,7 @@ Since this is just a normal Maven project, we can add Javalin as we always do:
 And paste the "Hello world" example:
 
 ~~~kotlin
-import javalin.Javalin
+import io.javalin.Javalin
 
 fun main(args: Array<String>) {
     val app = Javalin.create().port(7000)
