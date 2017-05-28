@@ -47,15 +47,9 @@ but the code on GitHub demonstrates how to do it for those interested.
 
 ## Using Javalin with Kotlin
 
-Since this is just a normal Maven project, we can add Javalin as we always do:
+Add the dependency:
 
-~~~markup
-<dependency>
-    <groupId>io.javalin</groupId>
-    <artifactId>javalin</artifactId>
-    <version>{{site.javalinversion}}</version>
-</dependency>
-~~~
+{% include macros/mavenDep.md %}
 
 And paste the "Hello world" example:
 
