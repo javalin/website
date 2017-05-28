@@ -184,7 +184,7 @@ This code snippet shows the view for the `fetchOneBook` `Handler`, which display
     #if($book)
         <h1>$book.getTitle()</h1>
         <h2>$book.getAuthor()</h2>
-        <img src="$book.getLargeCover()" alt="$book.getTitle()">
+        <img src="$book.largeCover" alt="$book.title">
     #else
         <h1>$msg.get("BOOKS_BOOK_NOT_FOUND")</h1>
     #end
