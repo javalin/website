@@ -188,7 +188,8 @@ public User findByEmail(String email) {
 ### Creating the REST API
 
 Kotlin and Javalin play very well together (in fact, Kotlin seems to play well with all Java dependencies).
-We can use trailing closures to create very clean api declarations:
+We can use `with` ([docs](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/with.html))
+and trailing closures to create very clean api declarations:
 
 ~~~kotlin
 fun main(args: Array<String>) {
