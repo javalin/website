@@ -17,7 +17,6 @@ More tutorials coming soon. Planned tutorials:
 
 * REST API architecture (Java)
 * REST API architecture (Kotlin)
-* REST API + Single page app tutorial (Kotlin + Vue.js)
 
 {% assign tutorials = (site.posts | where: "layout" , "tutorial") %}
 
