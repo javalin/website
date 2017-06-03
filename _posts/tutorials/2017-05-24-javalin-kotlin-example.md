@@ -142,8 +142,8 @@ class UserDao {
         return users.values.find { it.email == email }
     }
 
-    fun update(id: Int, name: String, email: String) {
-        users.put(id, User(name = name, email = email, id = id))
+    fun update(id: Int, user: User) {
+        users.put(id, User(name = user.name, email = user.email, id = id))
     }
 
     fun delete(id: Int) {
@@ -207,15 +207,16 @@ fun main(args: Array<String>) {
         }
 
         post("/users/create") { req, res ->
-            userDao.save(name = req.bp("name"), email = req.bp("email"))
+            val user = req.bodyAsClass(User::class.java)
+            userDao.save(name = user.name, email = user.email)
             res.status(201)
         }
 
         patch("/users/update/:id") { req, res ->
+            val user = req.bodyAsClass(User::class.java)
             userDao.update(
                     id = req.param("id").toInt(),
-                    name = req.bp("name"),
-                    email = req.bp("email")
+                    user = user
             )
             res.status(204)
         }
@@ -237,16 +238,10 @@ fun main(args: Array<String>) {
 
 }
 
-//adds .bp alias for .bodyParam on Request object
-fun Request.bp(key: String): String = this.bodyParam(key)
 ~~~
 
-Our app references `req.bp()` a lot, which is a method that doesn't exist natively on a Javalin `Request`.
-This works because we defined an [extension function](https://kotlinlang.org/docs/reference/extensions.html)
-on the Request object (last line).
-
 ## Conclusion
-I have only worked with Kotlin for a few hours while writing this tutorial,
+I had only worked with Kotlin for a few hours before writing this tutorial,
 but I'm already a very big fan of the language. Everything just seems to make sense, and the interoperability with Java is great.
 IntelliJ will also automatically convert Java code into Kotlin if you paste it into your project.
 Please clone the repo and give it a try!
