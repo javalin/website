@@ -154,9 +154,9 @@ app.after("/some-path/*") { req, res ->
     // runs after all request to /some-path/* (excluding static files)
 }
 
-app.after({ req, res ->
+app.after { req, res ->
     // run after every request (excluding static files)
-})
+}
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
