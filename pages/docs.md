@@ -78,9 +78,9 @@ app.before((req, res) -> {
 app.before("/some-path/*") { req, res ->
     // runs before all request to /some-path/*
 }
-app.before({ req, res ->
+app.before { req, res ->
     // calls before("/*", handler)
-})
+}
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
@@ -188,17 +188,17 @@ app.routes(() -> {
 {% endcapture %}
 {% capture kotlin %}
 app.routes {
-    get("/endpoint",                    SomeClass::someMethod);
-    get("/endpoint",                    SomeClass::someMethod);
+    get("/endpoint",                    SomeClass::someMethod)
+    get("/endpoint",                    SomeClass::someMethod)
     path("/path") {
-        get("/endpoint",                SomeClass::someMethod);
-        get("/endpoint",                SomeClass::someMethod);
-        delete("/endpoint",             SomeClass::someMethod);
-        post("/endpoint",               SomeClass::someMethod);
+        get("/endpoint",                SomeClass::someMethod)
+        get("/endpoint",                SomeClass::someMethod)
+        delete("/endpoint",             SomeClass::someMethod)
+        post("/endpoint",               SomeClass::someMethod)
         path("/path") {
-            get("/endpoint",            SomeClass::someMethod);
-            post("/endpoint",           SomeClass::someMethod);
-            put("/endpoint",            SomeClass::someMethod);
+            get("/endpoint",            SomeClass::someMethod)
+            post("/endpoint",           SomeClass::someMethod)
+            put("/endpoint",            SomeClass::someMethod)
         }
     }
 }
