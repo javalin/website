@@ -39,8 +39,8 @@ but Javalin follows [semantic versioning](http://semver.org/).
         If you like Javalin, please consider starring us on GitHub:
     </div>
     <iframe id="starFrame" class="githubStar"
-            src="https://ghbtns.com/github-btn.html?user=tipsy&amp;repo=javalin&amp;type=star&amp;count=false&size=large"
-            frameborder="0" scrolling="0" width="75px" height="30px">
+            src="https://ghbtns.com/github-btn.html?user=tipsy&amp;repo=javalin&amp;type=star&amp;count=true&size=large"
+            frameborder="0" scrolling="0" width="150px" height="30px">
     </iframe>
 </div>
 
