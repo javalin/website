@@ -199,11 +199,11 @@ fun main(args: Array<String>) {
         }
 
         get("/users/:id") { req, res ->
-            res.json(userDao.findById(req.param("id").toInt()))
+            res.json(userDao.findById(req.param("id")!!.toInt())!!)
         }
 
         get("/users/email/:email") { req, res ->
-            res.json(userDao.findByEmail(req.param("email")))
+            res.json(userDao.findByEmail(req.param("email")!!)!!)
         }
 
         post("/users/create") { req, res ->
@@ -215,14 +215,14 @@ fun main(args: Array<String>) {
         patch("/users/update/:id") { req, res ->
             val user = req.bodyAsClass(User::class.java)
             userDao.update(
-                    id = req.param("id").toInt(),
+                    id = req.param("id")!!.toInt(),
                     user = user
             )
             res.status(204)
         }
 
         delete("/users/delete/:id") { req, res ->
-            userDao.delete(req.param("id").toInt())
+            userDao.delete(req.param("id")!!.toInt())
             res.status(204)
         }
 
@@ -231,7 +231,7 @@ fun main(args: Array<String>) {
         }
 
         error(404) { req, res ->
-            res.json("""{"error": "Not found"}""");
+            res.json("error");
         };
 
     }

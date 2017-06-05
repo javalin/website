@@ -160,6 +160,12 @@ app.after({ req, res ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
+
+### Reverse path lookup
+You can look up the path for a specific `Handler` by calling `app.pathFinder(handler)`
+or `app.pathFinder(handler, handlerType)`. If the `Handler` is registered on multiple
+paths, the first matching path will be returned.
+
 ## Handler groups
 You can group your endpoints by using the `routes()` and `path()` methods. `routes()` creates 
 a temporary static instance of Javalin so you can skip the `app.` prefix before your handlers:
@@ -254,6 +260,7 @@ app.routes {
 ## Request
 {% capture java %}
 request.unwrap();                   // get underlying HttpServletRequest
+request.async();                    // run the request asynchronously
 request.body();                     // get the request body as string
 request.bodyAsBytes();              // get the request body as byte-array
 request.bodyAsClass(clazz);         // convert json body to object (requires jackson)
@@ -274,6 +281,7 @@ request.header("key");              // get a header
 request.headerMap();                // get all header key/values as map
 request.host();                     // get request host
 request.ip();                       // get request up
+request.next();                     // pass the request to the next handler
 request.path();                     // get request path
 request.port();                     // get request port
 request.protocol();                 // get request protocol
@@ -307,6 +315,7 @@ response.contentType();                 // get response content type
 response.contentType("type");           // set response content type
 response.body();                        // get response body
 response.body("body");                  // set response body
+response.body(inputStream);             // set response body
 response.encoding();                    // get response encoding
 response.encoding("charset");           // set response encoding
 response.header("key");                 // get response header

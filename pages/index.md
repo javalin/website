@@ -37,10 +37,11 @@ in your `public static void main` method.
 
 ## Works well with both Java and Kotlin
 The name Javalin comes from <b>Java</b> and Kot<b>lin</b>, and is meant 
-to be used with both Java and Kotlin. The library itself is written in Java, as 
+to be used with both Java and Kotlin. The library itself is written in a mix of
+Java and Kotlin in order to achieve the best interoperability between the two languages.
 Javalin is intended as a "foot in the door" to Kotlin development for companies
-that already write a lot of Java. You can easily set up a microservice REST API in 
-Kotlin and try it out. 
+that already write a lot of Java, and anyone can easily set up a microservice REST API in
+Kotlin and try it out.  
 Go through the [Kotlin REST API tutorial](/tutorials/simple-kotlin-example)
 to see how to setup Kotlin with Maven, and how to use it with Javalin.
 
