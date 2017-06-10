@@ -12,9 +12,8 @@ permalink: /documentation
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Endpoint](#endpoint-handlers)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;After](#after-handlers)
 * [Handler groups](#handler-groups)
+* [Context (ctx)](#context)
 * [Access manager](#access-manager)
-* [Request](#request)
-* [Response](#response)
 * [Exception Mapping](#exception-mapping)
 * [Error Mapping](#error-mapping)
 * [Lifecycle events](#lifecycle-events)
@@ -55,11 +54,11 @@ Start coding:
 ## Handlers
 Javalin has a three main handler types: before-handlers, endpoint-handlers, and after-handlers. 
 (There are also exception-handlers and error-handlers, but we'll get to them later). 
-The before-, endpoint- and after-handlers required three parts:
+The before-, endpoint- and after-handlers require three parts:
 
 * A verb, ex: `before`, `get`, `post`, `put`, `delete`, `after`
 * A path, ex: `/`, `/hello-world`
-* A handler implementation `(req, res) -> { ... }`
+* A handler implementation `ctx -> { ... }`
 
 The `Handler` interface has a void return type, so you should update the `response` object to return data to the user.
 
@@ -67,18 +66,18 @@ The `Handler` interface has a void return type, so you should update the `respon
 Before-handlers are matched before every request (including static files, if you enable those).
 
 {% capture java %}
-app.before("/some-path/*", (req, res) -> {
+app.before("/some-path/*", ctx -> {
     // runs before all request to /some-path/*
 });
-app.before((req, res) -> {
+app.before(ctx -> {
     // calls before("/*", handler)
 });
 {% endcapture %}
 {% capture kotlin %}
-app.before("/some-path/*") { req, res ->
+app.before("/some-path/*") { ctx ->
     // runs before all request to /some-path/*
 }
-app.before { req, res ->
+app.before { ctx ->
     // calls before("/*", handler)
 }
 {% endcapture %}
@@ -88,52 +87,52 @@ app.before { req, res ->
 Endpoint handlers are matched in the order they are defined.
 
 {% capture java %}
-app.get("/", (req, res) -> {
+app.get("/", ctx -> {
     // some code
-    res.json(object)
+    ctx.json(object)
 });
 
-app.post("/", (req, res) -> {
+app.post("/", ctx -> {
     // some code
-    res.status(201)
-});
-{% endcapture %}
-{% capture kotlin %}
-app.get("/") { req, res ->
-    // some code
-    res.json(object)
-}
-
-app.post("/") { req, res ->
-    // some code
-    res.status(201)
-}
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
-Handler paths can include path-parameters. These are available via `Request.param()`
-{% capture java %}
-get("/hello/:name", (req, res) -> {
-    res.body("Hello: " + request.param("name"));
+    ctx.status(201)
 });
 {% endcapture %}
 {% capture kotlin %}
-get("/hello/:name") { req, res ->
-    res.body("Hello: " + request.param("name"))
+app.get("/") { ctx ->
+    // some code
+    ctx.json(object)
+}
+
+app.post("/") { ctx ->
+    // some code
+    ctx.status(201)
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-Handler-paths can also include wildcard parameters (splats). These are available via `Request.splat()`
-
+Handler paths can include path-parameters. These are available via `Context.param()`
 {% capture java %}
-get("/hello/*/and/*", (req, res) -> {
-    res.body("Hello: " + request.splat(0) + " and " + request.splat(1));
+get("/hello/:name", ctx -> {
+    ctx.result("Hello: " + ctx.param("name"));
 });
 {% endcapture %}
 {% capture kotlin %}
-get("/hello/*/and/*") { req, res ->
-    res.body("Hello: " + request.splat(0) + " and " + request.splat(1))
+get("/hello/:name") { ctx ->
+    ctx.result("Hello: " + ctx.param("name"))
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+Handler-paths can also include wildcard parameters (splats). These are available via `Context.splat()`
+
+{% capture java %}
+get("/hello/*/and/*", ctx -> {
+    ctx.result("Hello: " + ctx.splat(0) + " and " + ctx.splat(1));
+});
+{% endcapture %}
+{% capture kotlin %}
+get("/hello/*/and/*") { ctx ->
+    ctx.result("Hello: " + ctx.splat(0) + " and " + ctx.splat(1))
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -141,20 +140,20 @@ get("/hello/*/and/*") { req, res ->
 ### After handlers
 After handlers
 {% capture java %}
-app.after("/some-path/*", (req, res) -> {
+app.after("/some-path/*", ctx -> {
     // runs after all request to /some-path/* (excluding static files)
 });
 
-app.after((req, res) -> {
+app.after(ctx -> {
     // run after every request (excluding static files)
 });
 {% endcapture %}
 {% capture kotlin %}
-app.after("/some-path/*") { req, res ->
+app.after("/some-path/*") { ctx ->
     // runs after all request to /some-path/* (excluding static files)
 }
 
-app.after { req, res ->
+app.after { ctx ->
     // run after every request (excluding static files)
 }
 {% endcapture %}
@@ -205,6 +204,80 @@ app.routes {
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
+## Context
+The `Context` object provides you with everything you need to handle a http-request.
+It contains the underlying servlet-request and servlet-response, and a bunch of getters
+and setters. The getters operate mostly on the request-object, while the setters operate exclusively on
+the response object.
+```java
+// request methods:
+ctx.request();                     // get underlying HttpServletRequest
+ctx.async();                       // run the request asynchronously
+ctx.body();                        // get the request body as string
+ctx.bodyAsBytes();                 // get the request body as byte-array
+ctx.bodyAsClass(clazz);            // convert json body to object (requires jackson)
+ctx.bodyParam("key");              // get parameter from request body
+ctx.formParam("key");              // get parameter from form-post request
+ctx.param("key");                  // get a path-parameter, ex "/:id" -> param("id")
+ctx.paramMap();                    // get all param key/values as map
+ctx.splat(0);                      // get splat by nr, ex "/*" -> splat(0)
+ctx.splats();                      // get array of splat-values
+ctx.attribute("key", "value");     // set a request attribute
+ctx.attribute("key");              // get a request attribute
+ctx.attributeMap();                // get all attribute key/values as map
+ctx.contentLength();               // get request content length
+ctx.contentType();                 // get request content type
+ctx.cookie("key");                 // get cookie by name
+ctx.cookieMap();                   // get all cookie key/values as map
+ctx.header("key");                 // get a header
+ctx.headerMap();                   // get all header key/values as map
+ctx.host();                        // get request host
+ctx.ip();                          // get request up
+ctx.next();                        // pass the request to the next handler
+ctx.path();                        // get request path
+ctx.port();                        // get request port
+ctx.protocol();                    // get request protocol
+ctx.queryParam("key");             // get query param
+ctx.queryParams("key");            // get query param with multiple values
+ctx.queryParamMap();               // get all query param key/values as map
+ctx.queryString();                 // get request query string
+ctx.method();                      // get request method
+ctx.scheme();                      // get request scheme
+ctx.uri();                         // get request uri
+ctx.url();                         // get request url
+ctx.userAgent();                   // get request user agent
+// response methods
+ctx.response();                    // get underlying HttpServletResponse
+ctx.contentType();                 // get response content type
+ctx.contentType("type");           // set response content type
+ctx.result("body");                // set response body (string)
+ctx.result(inputStream);           // set response body (stream)
+ctx.resultString();                // get response result (string)
+ctx.resultStream();                // get response result (stream)
+ctx.encoding();                    // get response encoding
+ctx.encoding("charset");           // set response encoding
+ctx.header("key", "value");        // set response header
+ctx.html("body html");             // set response body and html content type
+ctx.json(object);                  // set response body to object-as-json (requires jackson)
+ctx.redirect("/location");         // redirect to location
+ctx.redirect("/location", 302);    // redirect to location with code
+ctx.status();                      // get response status
+ctx.status(404);                   // set response status
+ctx.cookie("key", "value");        // set cookie with key and value
+ctx.cookie("key", "value", 0);     // set cookie with key, value, and maxage
+ctx.cookie(cookieBuilder);         // set cookie using cookiebuilder
+ctx.removeCookie("key");           // remove cookie by key
+ctx.removeCookie("/path", "key");  // remove cookie by path and key
+```
+
+### Session
+Javalin doesn't directly expose the servlet session,
+but you can access the underlying session object by unwrapping the request if you must:
+```java
+ctx.request().getSession().setAttribute("locale","EN");
+ctx..request().getSession().getAttribute("locale");
+```
+
 ## Access manager
 Javalin has a functional interface `AccessManager`, which let's you 
 set per-endpoint authentication or authorization. It's common to use before-handlers for this,
@@ -213,12 +286,12 @@ access-manager however you want, but here is an example implementation:
 
 {% capture java %}
 // Set the access-manager that Javalin should use
-app.accessManager(handler, req, res, permittedRoles) -> {
+app.accessManager(handler, ctx, permittedRoles) -> {
     MyRole userRole = ...
     if (permittedRoles.contains(currentUserRole)) {
-        handler.handle(request, response);
+        handler.handle(ctx);
     } else {
-        res.status(401).body("Unauthorized");
+        ctx.status(401).body("Unauthorized");
     }
 };
 
@@ -229,18 +302,18 @@ enum MyRoles implements Role {
 
 // Declare explicitly secured endpoint handlers:
 app.routes(() -> {
-    get("/un-secured",   (req, res) -> res.body("Hello"),   roles(ANYONE));
-    get("/secured",      (req, res) -> res.body("Hello"),   roles(ROLE_ONE));
+    get("/un-secured",   ctx -> ctx.result("Hello"),   roles(ANYONE));
+    get("/secured",      ctx -> ctx.result("Hello"),   roles(ROLE_ONE));
 });
 {% endcapture %}
 {% capture kotlin %}
 // Set the access-manager that Javalin should use
-app.accessManager({ handler, req, res, permittedRoles ->
+app.accessManager({ handler, ctx, permittedRoles ->
     val userRole = ...
     if (permittedRoles.contains(currentUserRole)) {
-        handler.handle(request, response)
+        handler.handle(ctx)
     } else {
-        res.status(401).body("Unauthorized")
+        ctx.status(401).body("Unauthorized")
     }
 }
 
@@ -251,109 +324,32 @@ internal enum class MyRoles:Role {
 
 // Declare explicitly secured endpoint handlers:
 app.routes {
-    get("/un-secured",   { req, res -> res.body("Hello")},   roles(ANYONE));
-    get("/secured",      { req, res -> res.body("Hello")},   roles(ROLE_ONE));
+    get("/un-secured",   { ctx -> ctx.result("Hello")},   roles(ANYONE));
+    get("/secured",      { ctx -> ctx.result("Hello")},   roles(ROLE_ONE));
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
-## Request
-{% capture java %}
-request.unwrap();                   // get underlying HttpServletRequest
-request.async();                    // run the request asynchronously
-request.body();                     // get the request body as string
-request.bodyAsBytes();              // get the request body as byte-array
-request.bodyAsClass(clazz);         // convert json body to object (requires jackson)
-request.bodyParam("key");           // get parameter from request body
-request.formParam("key");           // get parameter from form-post request
-request.param("key");               // get a path-parameter, ex "/:id" -> param("id")
-request.paramMap();                 // get all param key/values as map
-request.splat(0);                   // get splat by nr, ex "/*" -> splat(0)
-request.splats();                   // get array of splat-values
-request.attribute("key", "value");  // set a request attribute
-request.attribute("key");           // get a request attribute
-request.attributeMap();             // get all attribute key/values as map
-request.contentLength();            // get request content length
-request.contentType();              // get request content type
-request.cookie("key");              // get cookie by name
-request.cookieMap();                // get all cookie key/values as map
-request.header("key");              // get a header
-request.headerMap();                // get all header key/values as map
-request.host();                     // get request host
-request.ip();                       // get request up
-request.next();                     // pass the request to the next handler
-request.path();                     // get request path
-request.port();                     // get request port
-request.protocol();                 // get request protocol
-request.queryParam("key");          // get query param
-request.queryParams("key");         // get query param with multiple values
-request.queryParamMap();            // get all query param key/values as map
-request.queryString();              // get request query string
-request.requestMethod();            // get request method
-request.scheme();                   // get request scheme
-request.uri();                      // get request uri
-request.url();                      // get request url
-request.userAgent();                // get request user agent
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=java %}
-
-### Session
-Javalin doesn't directly expose the servlet session, 
-but you can access the underlying session object by unwrapping the request if you must:
-{% capture java %}
-request.unwrap().getSession().setAttribute("locale","EN");
-request.unwrap().getSession().getAttribute("locale");
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=java %}
-
-## Response
-All Response-setters return the response object, meaning you can chain calls.  
-For example: `response.status(200).body("body");`
-{% capture java %}
-response.unwrap();                      // get underlying HttpServletResponse
-response.contentType();                 // get response content type
-response.contentType("type");           // set response content type
-response.body();                        // get response body
-response.body("body");                  // set response body
-response.body(inputStream);             // set response body
-response.encoding();                    // get response encoding
-response.encoding("charset");           // set response encoding
-response.header("key");                 // get response header
-response.header("key", "value");        // set response header
-response.html("body html");             // set response body and html content type
-response.json(object);                  // set response body to object-as-json (requires jackson)
-response.redirect("/location");         // redirect to location
-response.redirect("/location", 302);    // redirect to location with code
-response.status();                      // get response status
-response.status(404);                   // set response status
-response.cookie("key", "value");        // set cookie with key and value
-response.cookie("key", "value", 0);     // set cookie with key, value, and maxage
-response.cookie(cookieBuilder);         // set cookie using cookiebuilder
-response.removeCookie("key");           // remove cookie by key
-response.removeCookie("/path", "key");  // remove cookie by path and key
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=java %}
 
 ## Exception Mapping
 All handlers (before, endpoint, after) can throw `Exception`
 (and any subclass of `Exception`) 
 The `app.exception()` method gives you a way of handling these exceptions:
 {% capture java %}
-app.exception(NullPointerException.class, (e, req, res) -> {
+app.exception(NullPointerException.class, (e, ctx) -> {
     // handle nullpointers here
 });
 
-app.exception(Exception.class, (e, req, res) -> {
+app.exception(Exception.class, (e, ctx) -> {
     // handle general exceptions here
     // will not trigger if more specific exception-mapper found
 });
 {% endcapture %}
 {% capture kotlin %}
-app.exception(NullPointerException::class.java) { e, req, res ->
+app.exception(NullPointerException::class.java) { e, ctx ->
     // handle nullpointers here
 }
 
-app.exception(Exception::class.java) { e, req, res ->
+app.exception(Exception::class.java) { e, ctx ->
     // handle general exceptions here
     // will not trigger if more specific exception-mapper found
 }
@@ -381,13 +377,13 @@ throw HaltException(401, "Unauthorized")       // (status: 401, message: "Unauth
 ## Error Mapping
 Error mapping is similar to exception mapping, but it operates on HTTP status codes instead of Exceptions:
 {% capture java %}
-app.error(404, (req, res) -> {
-    res.body("Generic 404 message")
+app.error(404, ctx -> {
+    ctx.result("Generic 404 message")
 });
 {% endcapture %}
 {% capture kotlin %}
-app.error(404) { req, res) ->
-    res.body("Generic 404 message")
+app.error(404) { ctx) ->
+    ctx.result("Generic 404 message")
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -395,17 +391,17 @@ app.error(404) { req, res) ->
 It can make sense to use them together:
 
 {% capture java %}
-app.exception(FileNotFoundException.class, (e, req, res) -> {
-    res.status(404);
-}).error(404, (req, res) -> {
-    res.body("Generic 404 message")
+app.exception(FileNotFoundException.class, (e, ctx) -> {
+    ctx.status(404);
+}).error(404, ctx -> {
+    ctx.result("Generic 404 message")
 });
 {% endcapture %}
 {% capture kotlin %}
-app.exception(FileNotFoundException::class.java, { e, req, res ->
-    res.status(404)
-}).error(404, { req, res ->
-    res.body("Generic 404 message")
+app.exception(FileNotFoundException::class.java, { e, ctx ->
+    ctx.status(404)
+}).error(404, { ctx ->
+    ctx.result("Generic 404 message")
 })
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -453,34 +449,15 @@ To start and stop the server, use the appropriately named `start()` and `stop` m
 The process of starting and stopping the server is asynchronous, 
 but you can use `awaitInitialization()` and `awaitTermination()` if you need it to be synchronous:
 
-{% capture java %}
+```java
 Javalin app = Javalin.create()
     .start() // starting server (async)
     .awaitInitialization() // block until server is started
     .stop() // stopping server (async)
     .awaitTermination(); // block until server is stopped
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=java %}
+```
 
 Declaring handlers (`get`, `before`, etc) automatically calls `start()` on the instance.
-
-If there are problems while starting the server, there is a special handler that catches them:
-
-~~~java
-private Consumer<Exception> startupExceptionHandler = (e) -> {
-    log.error("Failed to start Javalin", e);
-};
-~~~
-
-You can specify the behavior of this cosumer by calling the `startupExceptionHandler()` method:
-{% capture java %}
-startupExceptionHandler((e) -> System.out.println("Uh-oh"));
-{% endcapture %}
-{% capture kotlin %}
-startupExceptionHandler({ e -> println("Uh-oh") })
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
-*This has to be done before starting the server*.
 
 ### Port
 By default, Javalin runs on port 7000. If you want to set another port, use `app.port()`.   
@@ -509,7 +486,7 @@ app.embeddedServer(EmbeddedJettyFactory({
 
 To configure SSL you need to use a custom server (see previous section).\\
 An example of a custom server with SSL can be found
-[here](https://github.com/tipsy/javalin/blob/master/src/test/java/javalin/examples/HelloWorldSecure.java#L18-L26).
+[here](https://github.com/tipsy/javalin/blob/master/src/test/java/io/javalin/examples/HelloWorldSecure.java#L25-L33).
 
 ### Static Files
 You can enabled static file serving by doing `app.enableStaticFiles("/classpath-folder")`.

@@ -99,44 +99,44 @@ All my handlers are declared as `static Handler` fields, grouping together
 functionality in the same classes (based on feature). Let's have a look at the `LoginController`:
 
 ~~~java
-public static Handler serveLoginPage = (Request req, Response res) -> {
+public static Handler serveLoginPage = ctx -> {
     Map<String, Object> model = ViewUtil.baseModel(req);
     model.put("loggedOut", removeSessionAttrLoggedOut(req));
     model.put("loginRedirect", removeSessionAttrLoginRedirect(req));
-    res.renderVelocity(Path.Template.LOGIN, model);
+    ctx.renderVelocity(Path.Template.LOGIN, model);
 };
 
-public static Handler handleLoginPost = (Request req, Response res) -> {
+public static Handler handleLoginPost = ctx -> {
     Map<String, Object> model = ViewUtil.baseModel(req);
     if (!UserController.authenticate(getQueryUsername(req), getQueryPassword(req))) {
         model.put("authenticationFailed", true);
-        res.renderVelocity(Path.Template.LOGIN, model);
+        ctx.renderVelocity(Path.Template.LOGIN, model);
     } else {
-        req.unwrap().getSession().setAttribute("currentUser", getQueryUsername(req));
+        ctx.request().getSession().setAttribute("currentUser", getQueryUsername(req));
         model.put("authenticationSucceeded", true);
         model.put("currentUser", getQueryUsername(req));
         if (getQueryLoginRedirect(req) != null) {
-            res.redirect(getQueryLoginRedirect(req));
+            ctx.redirect(getQueryLoginRedirect(req));
         }
-        res.renderVelocity(Path.Template.LOGIN, model);
+        ctx.renderVelocity(Path.Template.LOGIN, model);
     }
 };
 
-public static Handler handleLogoutPost = (Request req, Response res) -> {
-    req.unwrap().getSession().removeAttribute("currentUser");
-    req.unwrap().getSession().setAttribute("loggedOut", "true");
-    res.redirect(Path.Web.LOGIN);
+public static Handler handleLogoutPost = ctx -> {
+    ctx.request().getSession().removeAttribute("currentUser");
+    ctx.request().getSession().setAttribute("loggedOut", "true");
+    ctx.redirect(Path.Web.LOGIN);
 };
 
-// The origin of the request (request.pathInfo()) is saved in the session so
+// The origin of the request (ctx.path()) is saved in the session so
 // the user can be redirected back after login
-public static Handler ensureLoginBeforeViewingBooks = (Request req, Response res) -> {
-    if (!req.path().startsWith("/books")) {
+public static Handler ensureLoginBeforeViewingBooks = ctx -> {
+    if (!ctx.path().startsWith("/books")) {
         return;
     }
-    if (req.unwrap().getSession().getAttribute("currentUser") == null) {
-        req.unwrap().getSession().setAttribute("loginRedirect", req.path());
-        res.redirect(Path.Web.LOGIN);
+    if (ctx.request().getSession().getAttribute("currentUser") == null) {
+        ctx.request().getSession().setAttribute("loginRedirect", ctx.path());
+        ctx.redirect(Path.Web.LOGIN);
     }
 };
 ~~~
@@ -165,11 +165,11 @@ Javalin has native support on the `Response` object for rendering templates.
 Let's look at the login-page again:
 
 ~~~java
-public static Handler serveLoginPage = (Request req, Response res) -> {
+public static Handler serveLoginPage = ctx -> {
     Map<String, Object> model = ViewUtil.baseModel(req);
     model.put("loggedOut", removeSessionAttrLoggedOut(req));
     model.put("loginRedirect", removeSessionAttrLoginRedirect(req));
-    res.renderVelocity(Path.Template.LOGIN, model);
+    ctx.renderVelocity(Path.Template.LOGIN, model);
 };
 ~~~
 The template needs access to the request to check the locale and the current users,
