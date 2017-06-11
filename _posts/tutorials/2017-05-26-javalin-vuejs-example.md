@@ -47,12 +47,12 @@ fun main(args: Array<String>) {
             .enableStaticFiles("/public")
 
     app.routes {
-        get("/todos") { req, res ->
-            res.json(todos)
+        get("/todos") { ctx ->
+            ctx.json(todos)
         }
-        put("/todos") { req, res ->
-            todos = req.bodyAsClass(Array<Todo>::class.java)
-            res.status(204)
+        put("/todos") { ctx ->
+            todos = ctx.bodyAsClass(Array<Todo>::class.java)
+            ctx.status(204)
         }
     }
 
@@ -62,7 +62,7 @@ fun main(args: Array<String>) {
 We're use Javalin to serve our static files, as well as
 handle two endpoints: `get` and `put`.
 
-Most of the work here is being done by `res.json` and `req.bodyAsClass`,
+Most of the work here is being done by `ctx.json` and `ctx.bodyAsClass`,
 which map a Todo data-class:
 
 ~~~kotlin

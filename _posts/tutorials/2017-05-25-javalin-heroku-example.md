@@ -121,7 +121,7 @@ public class Main {
     public static void main(String[] args) {
         Javalin app = Javalin.create()
             .port(getHerokuAssignedPort())
-            .get("/", (req, res) -> res.body("Hello Heroku"));
+            .get("/", ctx -> ctx.result("Hello Heroku"));
     }
 
     private static int getHerokuAssignedPort() {

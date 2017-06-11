@@ -13,8 +13,8 @@ Add the [dependency](/download) and copy example:
 
 ## REST API Simplicity
 Javalin started as a fork of the [Spark](http://sparkjava.com) framework but quickly
-turned into a ground-up rewrite influenced by [express.js](https://expressjs.com/).
-Both of these web frameworks are inspired by the modern micro web framework 
+turned into a ground-up rewrite influenced by [express.js](https://expressjs.com/) and [koa.js](http://koajs.com/).
+All of these web frameworks are inspired by the modern micro web framework
 grandfather: [Sinatra](http://www.sinatrarb.com/), so if you're coming from Ruby then
 Javalin shouldn't feel *too* unfamiliar.
 
