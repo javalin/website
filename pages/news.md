@@ -33,8 +33,8 @@ app.get("/") { req, res -> res.body("Hello World") } // old syntax
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-Most getters (`body()`, `header(name)`, `cookie(name)`, etc) operate on the underlying request,
-while all setters (`result(content)`, `header(name, value)`, `cookie(name, value)`, etc) operate on the underlying response.
+Most getters (`header(name)`, `cookie(name)`, etc) operate on the underlying request,
+while all setters (`header(name, value)`, `cookie(name, value)`, etc) operate on the underlying response.
 Since `request` and `response` don't share any methods, this approach seems to work well.
 
 ## Kotlin rewrite {#kotlin-rewrite}
