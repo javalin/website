@@ -60,7 +60,7 @@ The before-, endpoint- and after-handlers require three parts:
 * A path, ex: `/`, `/hello-world`
 * A handler implementation `ctx -> { ... }`
 
-The `Handler` interface has a void return type, so you should update the `response` object to return data to the user.
+The `Handler` interface has a void return type, so you have to use  `ctx.result()` to return data to the user.
 
 ### Before handlers
 Before-handlers are matched before every request (including static files, if you enable those).
@@ -248,17 +248,14 @@ ctx.url();                         // get request url
 ctx.userAgent();                   // get request user agent
 // response methods
 ctx.response();                    // get underlying HttpServletResponse
-ctx.contentType();                 // get response content type
-ctx.contentType("type");           // set response content type
-ctx.result("body");                // set response body (string)
-ctx.result(inputStream);           // set response body (stream)
+ctx.result("result");              // set result (string)
+ctx.result(inputStream);           // set result (stream)
 ctx.resultString();                // get response result (string)
 ctx.resultStream();                // get response result (stream)
-ctx.encoding();                    // get response encoding
-ctx.encoding("charset");           // set response encoding
+ctx.charset("charset");            // set response character encoding
 ctx.header("key", "value");        // set response header
-ctx.html("body html");             // set response body and html content type
-ctx.json(object);                  // set response body to object-as-json (requires jackson)
+ctx.html("body html");             // set result and html content type
+ctx.json(object);                  // set result with object-as-json (requires jackson)
 ctx.redirect("/location");         // redirect to location
 ctx.redirect("/location", 302);    // redirect to location with code
 ctx.status();                      // get response status
