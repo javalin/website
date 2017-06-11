@@ -272,7 +272,7 @@ Javalin doesn't directly expose the servlet session,
 but you can access the underlying session object by unwrapping the request if you must:
 ```java
 ctx.request().getSession().setAttribute("locale","EN");
-ctx..request().getSession().getAttribute("locale");
+ctx.request().getSession().getAttribute("locale");
 ```
 
 ## Access manager
