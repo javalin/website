@@ -486,7 +486,8 @@ An example of a custom server with SSL can be found
 [here](https://github.com/tipsy/javalin/blob/master/src/test/java/io/javalin/examples/HelloWorldSecure.java#L25-L33).
 
 ### Static Files
-You can enabled static file serving by doing `app.enableStaticFiles("/classpath-folder")`.
+You can enabled static file serving by doing `app.enableStaticFiles("/classpath-folder")`, or
+`app.enableStaticFiles("/folder", Location.EXTERNAL)`.
 Static resource handling is done **after** endpoint matching, 
 meaning your self-defined endpoints have higher priority. The process looks like this:
 ~~~bash
