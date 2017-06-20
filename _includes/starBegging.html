@@ -1,0 +1,49 @@
+<div id="star-begging">
+    <style>
+        #star-begging {
+            transition: transform .25s;
+            transform: scale(0);
+            border-radius: 3px;
+            width: 200px;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 40px 8px 12px;
+            background: #fff;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, .3), 0 1px 20px rgba(0, 0, 0, .2);
+        }
+        #star-begging.in {
+            transform: scale(1);
+        }
+        #star-begging.out {
+            transform: translateX(400px);
+        }
+        #star-begging p {
+            font-size: 15px;
+            margin: 0 0 10px;
+        }
+        #star-begging .close {
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+        }
+    </style>
+    <p>Like Javalin?</p>
+    <span class="close">✖</span>
+    <iframe id="starFrame" class="githubStar"
+            src="https://ghbtns.com/github-btn.html?user=tipsy&amp;repo=javalin&amp;type=star&amp;count=true&size=large"
+            frameborder="0" scrolling="0" width="150px" height="30px">
+    </iframe>
+    <script>
+        if (sessionStorage.getItem("dismissed") !== "true") {
+            setTimeout(function () {
+                document.querySelector("#star-begging").classList.add("in");
+            }, 15000);
+            document.querySelector("#star-begging .close").addEventListener("click", function () {
+                document.querySelector("#star-begging").classList.add("out");
+                sessionStorage.setItem("dismissed", "true");
+            });
+        }
+    </script>
+</div>
