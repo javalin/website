@@ -110,3 +110,11 @@ pre.code-toolbar > .toolbar span {
     }
   }
 }
+
+@media (max-width: 480px) {
+  pre,
+  code {
+    font-size: 12px !important;
+    letter-spacing: -0.5px !important;
+  }
+}
