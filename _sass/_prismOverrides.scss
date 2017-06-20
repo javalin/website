@@ -110,3 +110,11 @@ pre.code-toolbar > .toolbar span {
     }
   }
 }
+
+@media (max-width: 480px) {
+  .multitab-code pre code,
+  .highlighter-rouge pre code {
+    font-size: 12px;
+    letter-spacing: -0.5px;
+  }
+}
