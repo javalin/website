@@ -404,14 +404,15 @@ app.exception(FileNotFoundException::class.java, { e, ctx ->
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ## Lifecycle events
-Javalin has four lifecycle events: `SERVER_STARTING`, `SERVER_STARTED`, `SERVER_STOPPING` and `SERVER_STOPPED`.
+Javalin has five lifecycle events: `SERVER_STARTING`, `SERVER_STARTED`, `SERVER_START_FAILED`, `SERVER_STOPPING` and `SERVER_STOPPED`.
 The snippet below shows all of them in action:
 {% capture java %}
 Javalin app = Javalin.create()
-    .event(Event.Type.SERVER_STARTING, e -> { ... })
-    .event(Event.Type.SERVER_STARTED, e -> { ... })
-    .event(Event.Type.SERVER_STOPPING, e -> { ... })
-    .event(Event.Type.SERVER_STOPPED, e -> { ... });
+    .event(EventType.SERVER_STARTING, e -> { ... })
+    .event(EventType.SERVER_STARTED, e -> { ... })
+    .event(EventType.SERVER_START_FAILED, e -> { ... })
+    .event(EventType.SERVER_STOPPING, e -> { ... })
+    .event(EventType.SERVER_STOPPED, e -> { ... });
 
 app.start() // SERVER_STARTING
     .awaitInitialization() // SERVER_STARTED
@@ -420,10 +421,11 @@ app.start() // SERVER_STARTING
 {% endcapture %}
 {% capture kotlin %}
 Javalin app = Javalin.create()
-    .event(Event.Type.SERVER_STARTING, { e -> ... })
-    .event(Event.Type.SERVER_STARTED, { e -> ... })
-    .event(Event.Type.SERVER_STOPPING, { e -> ... })
-    .event(Event.Type.SERVER_STOPPED, { e -> ... });
+    .event(EventType.SERVER_STARTING, { e -> ... })
+    .event(EventType.SERVER_STARTED, { e -> ... })
+    .event(EventType.SERVER_START_FAILED, { e -> ... })
+    .event(EventType.SERVER_STOPPING, { e -> ... })
+    .event(EventType.SERVER_STOPPED, { e -> ... });
 
 app.start() // SERVER_STARTING
     .awaitInitialization() // SERVER_STARTED
