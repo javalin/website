@@ -3,7 +3,7 @@ layout: tutorial
 title: "Use Vue.js and Kotlin to create the famous TODO MVC app"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2017-05-24
-permalink: /tutorials/vuejs-example
+permalink: /tutorials/kotlin-vuejs-example
 github: https://github.com/tipsy/javalin-vuejs-example
 summarytitle: SPA using Javalin, Kotlin and Vue.js
 summary: Use Vue.js and Kotlin to create the famous TODO MVC app
