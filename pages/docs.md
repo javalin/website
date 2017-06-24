@@ -414,10 +414,8 @@ Javalin app = Javalin.create()
     .event(EventType.SERVER_STOPPING, e -> { ... })
     .event(EventType.SERVER_STOPPED, e -> { ... });
 
-app.start() // SERVER_STARTING
-    .awaitInitialization() // SERVER_STARTED
-    .stop() // SERVER_STOPPING
-    .awaitTermination(); // SERVER_STOPPED
+app.start(); // SERVER_STARTING -> (SERVER_STARTED || SERVER_START_FAILED)
+app.stop(); // SERVER_STOPPING -> SERVER_STOPPED
 {% endcapture %}
 {% capture kotlin %}
 Javalin app = Javalin.create()
@@ -427,10 +425,8 @@ Javalin app = Javalin.create()
     .event(EventType.SERVER_STOPPING, { e -> ... })
     .event(EventType.SERVER_STOPPED, { e -> ... });
 
-app.start() // SERVER_STARTING
-    .awaitInitialization() // SERVER_STARTED
-    .stop() // SERVER_STOPPING
-    .awaitTermination(); // SERVER_STOPPED
+app.start() // SERVER_STARTING -> (SERVER_STARTED || SERVER_START_FAILED)
+app.stop() // SERVER_STOPPING -> SERVER_STOPPED
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
@@ -445,15 +441,11 @@ The architecture for adding other embedded servers is in place, and pull request
 
 ### Starting and stopping
 To start and stop the server, use the appropriately named `start()` and `stop` methods. 
-The process of starting and stopping the server is asynchronous, 
-but you can use `awaitInitialization()` and `awaitTermination()` if you need it to be synchronous:
 
 ```java
 Javalin app = Javalin.create()
-    .start() // starting server (async)
-    .awaitInitialization() // block until server is started
-    .stop() // stopping server (async)
-    .awaitTermination(); // block until server is stopped
+    .start() // starting server (sync)
+    .stop() // stopping server (sync)
 ```
 
 Declaring handlers (`get`, `before`, etc) automatically calls `start()` on the instance.
