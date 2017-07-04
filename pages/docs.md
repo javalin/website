@@ -170,39 +170,34 @@ You can group your endpoints by using the `routes()` and `path()` methods. `rout
 a temporary static instance of Javalin so you can skip the `app.` prefix before your handlers:
 {% capture java %}
 app.routes(() -> {
-    get("/endpoint",                    SomeClass::someMethod);
-    get("/endpoint",                    SomeClass::someMethod);
-    path("/path", () -> {
-        get("/endpoint",                SomeClass::someMethod);
-        get("/endpoint",                SomeClass::someMethod);
-        delete("/endpoint",             SomeClass::someMethod);
-        post("/endpoint",               SomeClass::someMethod);
-        path("/path", () -> {
-            get("/endpoint",            SomeClass::someMethod);
-            post("/endpoint",           SomeClass::someMethod);
-            put("/endpoint",            SomeClass::someMethod);
+    path("users", () -> {
+        get(UserController::getAllUsers);
+        post(UserController::createUser);
+        path(":id", () -> {
+            get(UserController::getUser);
+            patch(UserController::updateUser);
+            delete(UserController::deleteUser);
         });
     });
 });
 {% endcapture %}
 {% capture kotlin %}
 app.routes {
-    get("/endpoint",                    SomeClass::someMethod)
-    get("/endpoint",                    SomeClass::someMethod)
-    path("/path") {
-        get("/endpoint",                SomeClass::someMethod)
-        get("/endpoint",                SomeClass::someMethod)
-        delete("/endpoint",             SomeClass::someMethod)
-        post("/endpoint",               SomeClass::someMethod)
-        path("/path") {
-            get("/endpoint",            SomeClass::someMethod)
-            post("/endpoint",           SomeClass::someMethod)
-            put("/endpoint",            SomeClass::someMethod)
+    path("users") {
+        get(userController::getAllUsers);
+        post(userController::createUser);
+        path(":id") {
+            get(userController::getUser);
+            patch(userController::updateUser);
+            delete(userController::deleteUser);
         }
     }
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+Note that `path()` prefixes your paths with `/` (if you don't add it yourself).\\
+This means that `path("api", ...)` and `path("/api", ...)` are equivalent.
 
 ## Context
 The `Context` object provides you with everything you need to handle a http-request.
