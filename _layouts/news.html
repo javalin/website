@@ -1,0 +1,14 @@
+---
+layout: default
+---
+
+<article class="news" itemscope itemtype="http://schema.org/BlogPosting">
+    <h1 class="no-margin-top" itemprop="name headline">{{ page.title }}</h1>
+    <time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{{ page.date | date: "%b %-d, %Y" }}</time>
+    <hr>
+    <div class="post-content" itemprop="articleBody">
+        {{ content }}
+    </div>
+</article>
+<hr>
+{% include socialButtons.html %}
