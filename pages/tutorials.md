@@ -6,29 +6,14 @@ permalink: /tutorials/
 
 <h1 class="no-margin-top">Tutorials</h1>
 
-* [Setting up Javalin with Maven](/tutorials/maven-setup)
-* [Setting up Javalin with Gradle](/tutorials/gradle-setup)
-* [Creating a simple CRUD REST API in Kotlin](/tutorials/simple-kotlin-example)
-* [Deploying Javalin to Heroku](/tutorials/heroku)
-* [Kotlin + Vue.js single page app](/tutorials/kotlin-vuejs-example)
-* [Basic website example (java)](/tutorials/website-example)
-
-More tutorials coming soon. Planned tutorials:
-
-* REST API architecture (Java)
-* REST API architecture (Kotlin)
-
-{% assign tutorials = (site.posts | where: "layout" , "tutorial") %}
-
-{% comment %}
+{% assign tutorials = (site.posts | where: "layout" , "tutorial") | sort: 'date' | reverse %}
 
 <div class="tutorials-header" markdown="1">
-We recommend starting with either the [Maven setup](maven-setup) or [Gradle setup](gradle-setup) tutorial, then going through the [Basic webapp structure](application-structure) tutorial.
+We recommend starting with either the [Maven setup](maven-setup) or [Gradle setup](gradle-setup) tutorial, then going through the [Kotlin CRUD REST API](/tutorials/simple-kotlin-example) tutorial.
 </div>
 
 <div class="tutorial-overview">
     <ul class="tutorial-list">
-        <h2>Tutorials</h2>
         {% for tutorial in tutorials %}
         <li class="tutorial-summary">
           <h2><a href="{{ tutorial.url }}">{{ tutorial.summarytitle }}</a></h2>
@@ -38,8 +23,6 @@ We recommend starting with either the [Maven setup](maven-setup) or [Gradle setu
     </ul>
 </div>
 <div class="tutorials-footer" markdown="1">
-The tutorials here are written by Javalin users and reposted with their permission.
-If you have have a tutorial you want to submit, please create a pull request on [GitHub](https://github.com/javalin/javalin.github.io), or send us an email.
+The tutorials here are written by Javalin users and posted with their permission.
+If you have have a tutorial you want to submit, please create a pull request on [GitHub](https://github.com/javalin/javalin.github.io).
 </div>
-
-{% endcomment %}

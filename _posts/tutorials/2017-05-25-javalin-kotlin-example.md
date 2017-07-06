@@ -2,10 +2,10 @@
 layout: tutorial
 title: "Using Javalin with Kotlin to create a simple CRUD REST API"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
-date: 2017-05-24
+date: 2017-05-25
 permalink: /tutorials/simple-kotlin-example
 github: https://github.com/tipsy/javalin-kotlin-example
-summarytitle: Using Javalin with Kotlin
+summarytitle: Kotlin CRUD REST API
 summary: Use Kotlin with Javalin to create a simple CRUD REST API.
 ---
 
