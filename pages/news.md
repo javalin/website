@@ -6,8 +6,8 @@ permalink: /news/
 ---
 
 <h1 class="no-margin-top">News</h1>
-Most Javalin releases are very small, most of these links are not worth the click. \\
-Pre `1.0.0`, the `0.X` releases are probably the only ones worth clicking.
+Most Javalin releases are very small, so the majority of these links are not worth the click. \\
+Pre `1.0.0`, the `0.X` releases are probably the only ones worth reading about.
 
 {% assign newsposts = (site.posts | where: "category" , "news") | sort: 'date' | reverse %}
 {% assign firstpost = (site.posts | first %}
