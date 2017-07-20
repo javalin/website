@@ -207,6 +207,7 @@ the response object.
 ```java
 // request methods:
 ctx.request();                     // get underlying HttpServletRequest
+ctx.anyQueryParamNull("k1", "k2")  // returns true if any query-param is null
 ctx.async();                       // run the request asynchronously
 ctx.body();                        // get the request body as string
 ctx.bodyAsBytes();                 // get the request body as byte-array
@@ -228,6 +229,7 @@ ctx.header("key");                 // get a header
 ctx.headerMap();                   // get all header key/values as map
 ctx.host();                        // get request host
 ctx.ip();                          // get request up
+ctx.mapQueryParams("k1", "k2")     // map qps to their values, returns null if any qp is missing
 ctx.next();                        // pass the request to the next handler
 ctx.path();                        // get request path
 ctx.port();                        // get request port
