@@ -43,8 +43,8 @@ setTimeout(function () {
 
 // multi-tab code 
 document.addEventListener("click", function (e) {
-    var grandParent = e.target.parentElement.parentElement;
-    if (grandParent !== null && grandParent.className === "multitab-code") {
-        grandParent.setAttribute("data-tab", e.target.getAttribute("data-tab"));
+    var targetTab = e.target.getAttribute("data-tab");
+    if (targetTab > 0) {
+        e.target.parentElement.parentElement.setAttribute("data-tab", targetTab);
     }
 });
