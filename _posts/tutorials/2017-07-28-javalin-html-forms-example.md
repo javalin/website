@@ -134,3 +134,46 @@ The values of the form are added to the URL as query-parameters.
 * `POST` requests have their information stored in the request body. In order to extract information from this body you have to use `ctx.formParam(key)` in Javalin.
 * `GET` Performing a series of `GET` request should always return the same result (if no other `POST` request was performed in-between)
 * `GET` requests have no request body, and form information is sent as query-parameters in the URL. In order to extract information from this body you have to use `ctx.queryParam(key)` in Javalin.
+
+## File upload example
+Let's expand our example a bit to include file uploads.
+We need to add a new dependency, a new endpoint, and a new form.
+
+### Dependency
+We need to add a dependency for handling file-uploads:
+```markup
+<dependency>
+    <groupId>commons-fileupload</groupId>
+    <artifactId>commons-fileupload</artifactId>
+    <version>1.3.3</version>
+</dependency>
+```
+
+### Endpoint
+```java
+app.post("/upload-example", ctx -> {
+    ctx.uploadedFiles("files").forEach(file -> {
+        try {
+            FileUtils.copyInputStreamToFile(file.getContent(), new File("upload/" + file.getName()));
+            ctx.html("Upload successful");
+        } catch (IOException e) {
+            ctx.html("Upload failed");
+        }
+    });
+});
+```
+`ctx.uploadedFiles("files")` gives us a list of files matching the name `files`.
+We then save these files to an `upload` folder.
+
+### HTML form
+
+```markup
+<h1>Upload example</h1>
+<form method="post" action="/upload-example" enctype="multipart/form-data">
+    <input type="file" name="files" multiple>
+    <button>Submit</button>
+</form>
+```
+
+When uploading files you need to add `enctype="multipart/form-data"` to your `<form>`.
+If you want to upload multiple files, add the `multiple` attribute to your `<input>`.
