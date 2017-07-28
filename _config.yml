@@ -1,4 +1,4 @@
-javalinversion: 0.3.5
+javalinversion: 0.3.6
 description: Javalin - Create microservice REST APIs in Java or Kotlin. Javalin is a lightweight REST library for the JVM.
 baseurl: "" # the subpath of your site, e.g. /blog
 

@@ -240,6 +240,8 @@ ctx.queryParamMap();               // get all query param key/values as map
 ctx.queryString();                 // get request query string
 ctx.method();                      // get request method
 ctx.scheme();                      // get request scheme
+ctx.uploadedFile("key");           // get file from multipart form
+ctx.uploadedFiles("key");          // get files from multipart form
 ctx.uri();                         // get request uri
 ctx.url();                         // get request url
 ctx.userAgent();                   // get request user agent
