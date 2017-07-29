@@ -104,7 +104,7 @@ which can be specified by adding `method="post"` to the `<form>` element.
 
 In our Java code, we have a post endpoint: `app.post("/make-reservation", ctx -> {...}`. We
 need to tell our form to use this endpoint with the action attribute: `action="/make-reservation"`.
-actions are relative, so when you click submit, the browser will create a `POST` request
+Actions are relative, so when you click submit, the browser will create a `POST` request
 to `http://localhost:7777/make-reservation` with the `day`/`time` values as the request body.
 
 ### Check reservation form
