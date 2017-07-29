@@ -105,7 +105,7 @@ which can be specified by adding `method="post"` to the `<form>` element.
 In our Java code, we have a post endpoint: `app.post("/make-reservation", ctx -> {...}`. We
 need to tell our form to use this endpoint with the action attribute: `action="/make-reservation"`.
 Actions are relative, so when you click submit, the browser will create a `POST` request
-to `http://localhost:7777/make-reservation` with the `day`/`time` values as the request body.
+to `http://localhost:7777/make-reservation` with the `day`/`time` values as the request-body.
 
 ### Check reservation form
 ```markup
@@ -131,9 +131,9 @@ The values of the form are added to the URL as query-parameters.
 
 ### HTML form GET vs POST summary
 * `POST` requests should be used if the request can change the server state.
-* `POST` requests have their information stored in the request body. In order to extract information from this body you have to use `ctx.formParam(key)` in Javalin.
-* `GET` Performing a series of `GET` request should always return the same result (if no other `POST` request was performed in-between)
-* `GET` requests have no request body, and form information is sent as query-parameters in the URL. In order to extract information from this body you have to use `ctx.queryParam(key)` in Javalin.
+* `POST` requests have their information stored in the request-body. In order to extract information from this body you have to use `ctx.formParam(key)` in Javalin.
+* Performing a series of `GET` requests should always return the same result (if no other `POST` request was performed in-between).
+* `GET` requests have no request-body, and form information is sent as query-parameters in the URL. In order to extract information from this body you have to use `ctx.queryParam(key)` in Javalin.
 
 ## File upload example
 Let's expand our example a bit to include file uploads.
