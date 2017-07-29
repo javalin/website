@@ -44,8 +44,8 @@ fun main(args: Array<String>) {
 
     val app = Javalin.create()
             .port(7000)
-            .start()
             .enableStaticFiles("/public")
+            .start()
 
     app.routes {
         get("/todos") { ctx ->
