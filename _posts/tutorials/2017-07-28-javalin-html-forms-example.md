@@ -125,7 +125,7 @@ To check a reservation we need to tell the server which day we're interested in.
 In this case we're not creating anything, and our action does not change the state
 of the server in any way, which makes it a good candidate for a `GET` request.
 
-`GET` request don't have a request-body so when you click submit the browser
+`GET` requests don't have a request-body so when you click submit the browser
 creates a `GET` request to `http://localhost:7777/check-reservation?day=saturday`.
 The values of the form are added to the URL as query-parameters.
 
