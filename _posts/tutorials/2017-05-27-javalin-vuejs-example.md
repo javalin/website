@@ -44,6 +44,7 @@ fun main(args: Array<String>) {
 
     val app = Javalin.create()
             .port(7000)
+            .start()
             .enableStaticFiles("/public")
 
     app.routes {
