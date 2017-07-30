@@ -11,11 +11,11 @@ summary: Set up a Javalin project using Maven in IntelliJ IDEA and Eclipse.
 ## IDE Guides
 <a href="#intellij">- Instructions for IntelliJ IDEA</a><br>
 <a href="#eclipse">- Instructions for Eclipse</a><br>
- 
+
 ## About Maven
 Maven is a build automation tool used primarily for Java projects. It addresses two aspects of building software: First, it describes how software is built, and second, it describes its dependencies.
 
-Maven projects are configured using a 
+Maven projects are configured using a
 <a href="https://en.wikipedia.org/wiki/Apache_Maven#Project_Object_Model">
     Project Object Model</a>, which is stored in a pom.<a href="https://en.wikipedia.org/wiki/XML" target="_blank">xml</a>-file. <br>Here's a minimal example:
 
@@ -28,7 +28,7 @@ Maven projects are configured using a
     <groupId>com.mygroup</groupId>
     <artifactId>my-javalin-project</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    
+
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -54,11 +54,13 @@ Maven projects are configured using a
 * Paste the Javalin dependency into the generated pom.xml. If prompted, tell IntelliJ to enable auto-import.
 
 ~~~markup
-<dependency>
-    <groupId>io.javalin</groupId>
-    <artifactId>javalin</artifactId>
-    <version>{{site.javalinversion}}</version>
-</dependency>
+<dependencies>
+    <dependency>
+        <groupId>io.javalin</groupId>
+        <artifactId>javalin</artifactId>
+        <version>{{site.javalinversion}}</version>
+    </dependency>
+</dependencies>
 ~~~
 
 Finally, paste the Javalin "Hello World" snippet into a new file, `Main.java`:
