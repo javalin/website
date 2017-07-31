@@ -7,6 +7,7 @@ permalink: /tutorials/heroku
 github: https://github.com/tipsy/javalin-heroku-example
 summarytitle: Deploying to Heroku
 summary: Deploy a Javalin Hello World application on Heroku!
+language: java
 ---
 
 ## What is Heroku?

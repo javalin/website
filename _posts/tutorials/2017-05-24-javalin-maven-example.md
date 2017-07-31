@@ -6,6 +6,7 @@ date: 2017-05-24
 permalink: /tutorials/maven-setup
 summarytitle: Maven setup
 summary: Set up a Javalin project using Maven in IntelliJ IDEA and Eclipse.
+language: java
 ---
 
 ## IDE Guides

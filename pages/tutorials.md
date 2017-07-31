@@ -7,18 +7,32 @@ permalink: /tutorials/
 <h1 class="no-margin-top">Tutorials</h1>
 
 {% assign tutorials = (site.posts | where: "layout" , "tutorial") | sort: 'date' | reverse %}
+{% assign jTuts = (tutorials | where: "language" , "java") %}
+{% assign kTuts = (tutorials | where: "language" , "kotlin") %}
 
 <div class="tutorials-header" markdown="1">
-We recommend starting with either the [Maven setup](maven-setup) or [Gradle setup](gradle-setup) tutorial, then going through the [Kotlin CRUD REST API](/tutorials/simple-kotlin-example) tutorial.
+We recommend starting with either the [Maven setup](maven-setup) or [Gradle setup](gradle-setup) tutorial,
+then going through the [Kotlin CRUD REST API](/tutorials/simple-kotlin-example) tutorial.
+All of the tutorials can be followed in either language.
 </div>
 
 <div class="tutorial-overview">
     <ul class="tutorial-list">
-        {% for tutorial in tutorials %}
+        <h2>Java tutorials</h2>
+        {% for tutorial in jTuts %}
         <li class="tutorial-summary">
           <h2><a href="{{ tutorial.url }}">{{ tutorial.summarytitle }}</a></h2>
           <p>{{ tutorial.summary }}</p>
         </li>
+        {% endfor %}
+    </ul>
+    <ul class="tutorial-list">
+        <h2>Kotlin tutorials</h2>
+        {% for tutorial in kTuts %}
+            <li class="tutorial-summary">
+                <h2><a href="{{ tutorial.url }}">{{ tutorial.summarytitle }}</a></h2>
+                <p>{{ tutorial.summary }}</p>
+            </li>
         {% endfor %}
     </ul>
 </div>

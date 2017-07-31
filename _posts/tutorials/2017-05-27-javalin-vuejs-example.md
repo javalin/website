@@ -7,6 +7,7 @@ permalink: /tutorials/kotlin-vuejs-example
 github: https://github.com/tipsy/javalin-vuejs-example
 summarytitle: Single-page-application using Javalin, Kotlin and Vue.js
 summary: Use Vue.js and Kotlin to create the famous TODO MVC app
+language: kotlin
 ---
 
 ## This is a very short tutorial

@@ -49,8 +49,10 @@
 
 ul.tutorial-list {
   list-style: none;
-  padding: 0;
+  padding: 0 30px 0 0;
   margin: 0;
+  width: 50%;
+  float: left;
   h2 {
     margin-top: 0;
   }

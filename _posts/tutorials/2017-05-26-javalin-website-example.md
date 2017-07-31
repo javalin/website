@@ -7,6 +7,7 @@ permalink: /tutorials/website-example
 github: https://github.com/tipsy/javalin-website-example
 summarytitle: Basic website structure
 summary: Create a basic website in Javalin with controllers, authentication, localization, etc.
+language: java
 ---
 
 ## What You Will Learn

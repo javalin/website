@@ -6,6 +6,7 @@ date: 2017-05-24
 permalink: /tutorials/gradle-setup
 summarytitle: Gradle setup
 summary: Set up a Javalin project using Gradle in IntelliJ IDEA
+language: kotlin
 ---
 
 When you're done with this tutorial, your `build.gradle` file

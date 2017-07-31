@@ -7,6 +7,7 @@ permalink: /tutorials/simple-kotlin-example
 github: https://github.com/tipsy/javalin-kotlin-example
 summarytitle: Kotlin CRUD REST API
 summary: Use Kotlin with Javalin to create a simple CRUD REST API.
+language: kotlin
 ---
 
 ## What You Will Learn

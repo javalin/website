@@ -1,80 +1,74 @@
 ---
 layout: tutorial
-title: "Working with HTML forms and a Java backend"
+title: "Working with HTML forms and a Kotlin backend"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2017-07-28
-permalink: /tutorials/html-forms-example
+permalink: /tutorials/html-forms-example-kotlin
 github: https://github.com/tipsy/javalin-html-forms-example
-summarytitle: HTML forms & Java backend
-summary: Learn how to get/post HTML forms to a Java backend
-language: java
+summarytitle: HTML forms & Kotlin backend
+summary: Learn how to get/post HTML forms to a Kotlin backend
+language: kotlin
 ---
 
 ## Dependencies
 
-First, we need to create a project with these dependencies: [(→ Tutorial)](/tutorials/maven-setup)
+First, we need to create a project with these dependencies: [(→ Tutorial)](/tutorials/gradle-setup)
 
-~~~markup
-<dependencies>
-    <dependency>
-        <groupId>io.javalin</groupId>
-        <artifactId>javalin</artifactId>
-        <version>{{site.javalinversion}}</version>
-    </dependency>
-    <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-simple</artifactId>
-        <version>1.7.13</version>
-    </dependency>
-</dependencies>
+~~~java
+dependencies {
+    compile "io.javalin:javalin:{{site.javalinversion}}"
+    compile "org.slf4j:slf4j-simple:1.7.13"
+    compile "commons-fileupload:commons-fileupload:1.3.3"
+}
 ~~~
 
 ## Setting up the backend
 
-Create a Java file, for example `Main.java`, that has the following code:
+Create a Kotlin file, for example `Main.kt`, that has the following code:
 
-```java{% raw %}
-import java.util.HashMap;
-import java.util.Map;
+```kotlin
+import io.javalin.Javalin
+import org.apache.commons.io.FileUtils
+import java.io.File
 
-import io.javalin.Javalin;
+val reservations = mutableMapOf<String?, String?>(
+        "saturday" to "No reservation",
+        "sunday" to "No reservation"
+)
 
-public class Main {
+fun main(args: Array<String>) {
 
-    static Map<String, String> reservations = new HashMap<String, String>() {{
-        put("saturday", "No reservation");
-        put("sunday", "No reservation");
-    }};
-
-    public static void main(String[] args) {
-
-        Javalin app = Javalin.create()
+    val app = Javalin.create()
             .port(7777)
             .enableStaticFiles("/public")
-            .start();
+            .start()
 
-        app.post("/make-reservation", ctx -> {
-            reservations.put(ctx.formParam("day"), ctx.formParam("time"));
-            ctx.html("Your reservation has been saved");
-        });
+    app.post("/make-reservation") { ctx ->
+        reservations[ctx.formParam("day")] = ctx.formParam("time")
+        ctx.html("Your reservation has been saved")
+    }
 
-        app.get("/check-reservation", ctx -> {
-            ctx.html(reservations.get(ctx.queryParam("day")));
-        });
+    app.get("/check-reservation") { ctx ->
+        ctx.html(reservations[ctx.queryParam("day")]!!)
+    }
 
+    app.post("/upload-example") { ctx ->
+        ctx.uploadedFiles("files").forEach { (_, content, name) ->
+            FileUtils.copyInputStreamToFile(content, File("upload/" + name))
+        }
+        ctx.html("Upload complete")
     }
 
 }
-{% endraw %}```
+```
 
 This will create an app which listens on port `7777`,
 and looks for static files in your `/src/resources/public` folder.
-We have two endpoints mapped, one `post`, which will make a reservation,
-and one `get`, which will check your reservation.
+We have three endpoints mapped, two `post`s for uploading data, and one `get` for retrieving data we've stored.
 
-## Settings up the HTML forms
+## Reservation example
 
-Now we have to make two HTML forms for interacting with these endpoints.
+We have to make HTML forms for interacting with our endpoints.
 We can put these forms in a file `/resources/public/index.html`, which will be
 available at `http://localhost:7777/`.
 
@@ -103,7 +97,7 @@ To make a reservation we need to create something on the server
 When creating something on the server, you should use the `POST` method,
 which can be specified by adding `method="post"` to the `<form>` element.
 
-In our Java code, we have a post endpoint: `app.post("/make-reservation", ctx -> {...}`. We
+In our Kotlin code, we have a post endpoint: `app.post("/make-reservation") {...}`. We
 need to tell our form to use this endpoint with the action attribute: `action="/make-reservation"`.
 Actions are relative, so when you click submit, the browser will create a `POST` request
 to `http://localhost:7777/make-reservation` with the `day`/`time` values as the request-body.
@@ -137,36 +131,6 @@ The values of the form are added to the URL as query-parameters.
 * `GET` requests have no request-body, and form information is sent as query-parameters in the URL. In order to extract information from this body you have to use `ctx.queryParam(key)` in Javalin.
 
 ## File upload example
-Let's expand our example a bit to include file uploads.
-We need to add a new dependency, a new endpoint, and a new form.
-
-### Dependency
-We need to add a dependency for handling file-uploads:
-```markup
-<dependency>
-    <groupId>commons-fileupload</groupId>
-    <artifactId>commons-fileupload</artifactId>
-    <version>1.3.3</version>
-</dependency>
-```
-
-### Endpoint
-```java
-app.post("/upload-example", ctx -> {
-    ctx.uploadedFiles("files").forEach(file -> {
-        try {
-            FileUtils.copyInputStreamToFile(file.getContent(), new File("upload/" + file.getName()));
-            ctx.html("Upload successful");
-        } catch (IOException e) {
-            ctx.html("Upload failed");
-        }
-    });
-});
-```
-`ctx.uploadedFiles("files")` gives us a list of files matching the name `files`.
-We then save these files to an `upload` folder.
-
-### HTML form
 
 ```markup
 <h1>Upload example</h1>
