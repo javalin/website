@@ -490,7 +490,7 @@ if no-endpoint-handler-found
     run static-file-handler
     if static-file-found
         static-file-handler finishes response and
-        sends to user, no after-filter is run
+        sends to user, no after-handlers are run
     else 
         response is 404, javalin finishes the response
         with after-handlers and error-mapping
