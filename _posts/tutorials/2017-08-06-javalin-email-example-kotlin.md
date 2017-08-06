@@ -12,7 +12,7 @@ language: kotlin
 
 ## Dependencies
 
-First, we need to create a Maven project with some dependencies: [(→ Tutorial)](/tutorials/gradle-setup)
+First, we need to create a Gradle project with some dependencies: [(→ Tutorial)](/tutorials/gradle-setup)
 
 ~~~java
 dependencies {
