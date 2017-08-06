@@ -25,10 +25,11 @@ istutorial: true
     <div class="post-content" itemprop="articleBody">
         {{ content }}
     </div>
+    <h3>Thanks for reading</h3>
+    If you find any errors, please <a href="{{site.repourl}}/blob/master/{{page.path}}">edit this page on GitHub</a>.
+    <br>
     {% if page.github %}
-    <div class="notification">
-        <em>The source code for this tutorial can be found on <a href="{{page.github}}">GitHub</a>.</em>
-    </div>
+        The full source code for this tutorial can also be found on <a href="{{page.github}}">GitHub</a>.
     {% endif %}
 </article>
 {% include socialButtons.html %}
