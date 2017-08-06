@@ -1,6 +1,6 @@
 ---
 layout: tutorial
-title: "Creating a 'Contact us' form with email sending (via gmail)"
+title: "Creating a 'Contact us' form with email-sending (via gmail)"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2017-08-06
 permalink: /tutorials/email-sending-example
@@ -69,9 +69,9 @@ public class Main {
             Email email = new SimpleEmail();
             email.setHostName("smtp.googlemail.com");
             email.setSmtpPort(465);
-            email.setAuthenticator(new DefaultAuthenticator("YOUR_EMAIL_HERE", "YOUR_PASSWORD_HERE"));
+            email.setAuthenticator(new DefaultAuthenticator("YOUR_EMAIL", "YOUR_PASSWORD"));
             email.setSSLOnConnect(true);
-            email.setFrom("YOUR_EMAIL_HERE");
+            email.setFrom("YOUR_EMAIL");
             email.setSubject(ctx.formParam("subject")); // subject from HTML-form
             email.setMsg(ctx.formParam("message")); // message from HTML-form
             email.addTo("RECEIVING_ADDRESS");
@@ -88,15 +88,15 @@ public class Main {
 
 In order to get the above code to work, you need to make some changes:
 
-* Change `YOUR_EMAIL_HERE` to your gmail account <small>(youremail@gmail.com)</small>
-* Change `YOUR_PASSWORD_HERE` to your gmail password*
+* Change `YOUR_EMAIL` to your gmail account <small>(youremail@gmail.com)</small>
+* Change `YOUR_PASSWORD` to your gmail password*
 * Change `RECEIVING_ADDRESS` to where you want the email to be sent
 
 <small>**It might be a good idea to create a test-account instead of using your real gmail credentials.*</small>
 
-When you have made the changes to the file, run the program and go to `http://localhost:7000`.
-You will see a simple unstyled form with an input field, a textarea and button.
+When you have made the changes to the code, run the program and go to `http://localhost:7000`.
+You will see a simple unstyled form with an input field, a textarea and a button.
 Fill in the form and click the button to test your email server. After you click the button, your browser
-is redirected to `/contact-us/success` if the email was sent.
+is redirected to `/contact-us/success` (if the email was sent).
 
 Any emails you have sent will show up in your `Sent` folder in the gmail web-interface.
