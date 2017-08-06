@@ -10,33 +10,33 @@ permalink: /tutorials/
 {% assign jTuts = (tutorials | where: "language" , "java") %}
 {% assign kTuts = (tutorials | where: "language" , "kotlin") %}
 
-<div class="tutorials-header" markdown="1">
+<div class="posts-header" markdown="1">
 We recommend starting with either the [Maven setup](maven-setup) or [Gradle setup](gradle-setup) tutorial,
 then going through the [Kotlin CRUD REST API](/tutorials/simple-kotlin-example) tutorial.
 All of the tutorials can be followed in either language.
 </div>
 
-<div class="tutorial-overview">
-    <ul class="tutorial-list">
+<div class="posts-overview">
+    <ul class="post-list half">
         <h2>Java tutorials</h2>
         {% for tutorial in jTuts %}
-        <li class="tutorial-summary">
+        <li class="post-summary">
           <h2><a href="{{ tutorial.url }}">{{ tutorial.summarytitle }}</a></h2>
           <p>{{ tutorial.summary }}</p>
         </li>
         {% endfor %}
     </ul>
-    <ul class="tutorial-list">
+    <ul class="post-list half">
         <h2>Kotlin tutorials</h2>
         {% for tutorial in kTuts %}
-            <li class="tutorial-summary">
+            <li class="post-summary">
                 <h2><a href="{{ tutorial.url }}">{{ tutorial.summarytitle }}</a></h2>
                 <p>{{ tutorial.summary }}</p>
             </li>
         {% endfor %}
     </ul>
 </div>
-<div class="tutorials-footer" markdown="1">
+<div class="posts-footer" markdown="1">
 The tutorials here are written by Javalin users and posted with their permission.
 If you have have a tutorial you want to submit, please create a pull request on [GitHub](https://github.com/javalin/javalin.github.io).
 </div>

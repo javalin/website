@@ -12,10 +12,10 @@ Pre `1.0.0`, the `0.X` releases are probably the only ones worth reading about.
 {% assign newsposts = (site.posts | where: "category" , "news") | sort: 'date' | reverse %}
 {% assign firstpost = (site.posts | first %}
 
-<div class="tutorial-overview">
-    <ul class="tutorial-list">
+<div class="posts-overview">
+    <ul class="post-list">
         {% for post in newsposts %}
-            <li class="tutorial-summary">
+            <li class="post-summary">
                 <h2>
                     <a href="{{ post.url }}">{{ post.title }}</a>
                     {% if post.url != firstpost.url %}

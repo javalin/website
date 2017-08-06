@@ -17,9 +17,9 @@ permalink: /documentation
 * [Exception Mapping](#exception-mapping)
 * [Error Mapping](#error-mapping)
 * [Lifecycle events](#lifecycle-events)
-* [Server configuration](#server-configuration)
+* [Server setup](#server-setup)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Start/stop](#starting-and-stopping)
-* [ &nbsp;&nbsp;&nbsp;&nbsp;Port](#port)
+* [ &nbsp;&nbsp;&nbsp;&nbsp;Configuration](#configuration)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Custom server](#custom-server)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;SSL](#ssl)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Static Files](#static-files)
@@ -207,6 +207,7 @@ the response object.
 ```java
 // request methods:
 ctx.request();                     // get underlying HttpServletRequest
+ctx.anyFormParamNull("k1", "k2")   // returns true if any form-param is null
 ctx.anyQueryParamNull("k1", "k2")  // returns true if any query-param is null
 ctx.async();                       // run the request asynchronously
 ctx.body();                        // get the request body as string
@@ -229,7 +230,8 @@ ctx.header("key");                 // get a header
 ctx.headerMap();                   // get all header key/values as map
 ctx.host();                        // get request host
 ctx.ip();                          // get request up
-ctx.mapQueryParams("k1", "k2")     // map qps to their values, returns null if any qp is missing
+ctx.mapFormParams("k1", "k2")      // map form params to their values, returns null if any form param is missing
+ctx.mapQueryParams("k1", "k2")     // map query params to their values, returns null if any query param is missing
 ctx.next();                        // pass the request to the next handler
 ctx.path();                        // get request path
 ctx.port();                        // get request port
@@ -432,9 +434,9 @@ app.stop() // SERVER_STOPPING -> SERVER_STOPPED
 The lambda takes an `Event` object, which contains the type of event that happened,
 and a reference to the `this` (the javalin object which triggered the event).
 
-## Server configuration
+## Server setup
 
-Javalin runs on an embedded [Jetty](http://eclipse.org/jetty/). 
+Javalin runs on an embedded [Jetty](http://eclipse.org/jetty/).
 The architecture for adding other embedded servers is in place, and pull requests are welcome.
 
 
@@ -447,11 +449,36 @@ Javalin app = Javalin.create()
     .stop() // stopping server (sync)
 ```
 
-Declaring handlers (`get`, `before`, etc) automatically calls `start()` on the instance.
+#### Quick-start
+If you don't need a lot custom configuration, you can use the `Javalin.start(port)` method.
+```java
+Javalin app = Javalin.start(7000);
+```
+This creates a new server which listens on port 7000,
+serves static files from the folder `/public` (on the classpath), and starts it.
 
-### Port
-By default, Javalin runs on port 7000. If you want to set another port, use `app.port()`.   
-*This has to be done before starting the server*.
+### Configuration
+The following snippet shows all the configuration currently available in Javalin:
+
+{% capture java %}
+Javalin.create() // this has to be called first
+    .dontIgnoreTrailingSlashes() // treat '/test' and '/test/' as different URLs
+    .ipAddress(ip) // set the ip
+    .embeddedServer( ... ) // see section below
+    .enableStaticFiles("/public") // enable static files (opt. second param Location.CLASSPATH/Location.EXTERNAL)
+    .port(port) // set the port
+    .start(); // this has to be called last
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create().apply { // this has to be called first
+    dontIgnoreTrailingSlashes() // treat '/test' and '/test/' as different URLs
+    ipAddress(ip) // set the ip
+    embeddedServer( ... ) // see section below
+    enableStaticFiles("/public") // enable static files (opt. second param Location.CLASSPATH/Location.EXTERNAL)
+    port(port) // set the port
+}.start() // this has to be called last
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ### Custom server
 If you need to customize the embedded server, you can call the `app.embeddedServer()` method:
@@ -470,7 +497,6 @@ app.embeddedServer(EmbeddedJettyFactory({
 }))
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
-*This has to be done before starting the server <small>(duh)</small>*.
 
 ### Ssl
 
