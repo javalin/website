@@ -419,7 +419,7 @@ app.start(); // SERVER_STARTING -> (SERVER_STARTED || SERVER_START_FAILED)
 app.stop(); // SERVER_STOPPING -> SERVER_STOPPED
 {% endcapture %}
 {% capture kotlin %}
-Javalin app = Javalin.create()
+var app = Javalin.create()
     .event(EventType.SERVER_STARTING, { e -> ... })
     .event(EventType.SERVER_STARTED, { e -> ... })
     .event(EventType.SERVER_START_FAILED, { e -> ... })
