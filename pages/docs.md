@@ -419,7 +419,7 @@ app.start(); // SERVER_STARTING -> (SERVER_STARTED || SERVER_START_FAILED)
 app.stop(); // SERVER_STOPPING -> SERVER_STOPPED
 {% endcapture %}
 {% capture kotlin %}
-var app = Javalin.create()
+val app = Javalin.create()
     .event(EventType.SERVER_STARTING, { e -> ... })
     .event(EventType.SERVER_STARTED, { e -> ... })
     .event(EventType.SERVER_START_FAILED, { e -> ... })
@@ -450,12 +450,11 @@ Javalin app = Javalin.create()
 ```
 
 #### Quick-start
-If you don't need a lot custom configuration, you can use the `Javalin.start(port)` method.
+If you don't need any custom configuration, you can use the `Javalin.start(port)` method.
 ```java
 Javalin app = Javalin.start(7000);
 ```
-This creates a new server which listens on port 7000,
-serves static files from the folder `/public` (on the classpath), and starts it.
+This creates a new server which listens on the specified port (here, `7000`), and starts it.
 
 ### Configuration
 The following snippet shows all the configuration currently available in Javalin:
@@ -465,6 +464,7 @@ Javalin.create() // this has to be called first
     .dontIgnoreTrailingSlashes() // treat '/test' and '/test/' as different URLs
     .ipAddress(ip) // set the ip
     .embeddedServer( ... ) // see section below
+    .enableCorsForOrigin("origin") // enables cors for the specified origin(s)
     .enableStaticFiles("/public") // enable static files (opt. second param Location.CLASSPATH/Location.EXTERNAL)
     .port(port) // set the port
     .start(); // this has to be called last
@@ -474,6 +474,7 @@ Javalin.create().apply { // this has to be called first
     dontIgnoreTrailingSlashes() // treat '/test' and '/test/' as different URLs
     ipAddress(ip) // set the ip
     embeddedServer( ... ) // see section below
+    enableCorsForOrigin("origin") // enables cors for the specified origin(s)
     enableStaticFiles("/public") // enable static files (opt. second param Location.CLASSPATH/Location.EXTERNAL)
     port(port) // set the port
 }.start() // this has to be called last
