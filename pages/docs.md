@@ -213,8 +213,9 @@ ctx.async();                       // run the request asynchronously
 ctx.body();                        // get the request body as string
 ctx.bodyAsBytes();                 // get the request body as byte-array
 ctx.bodyAsClass(clazz);            // convert json body to object (requires jackson)
-ctx.bodyParam("key");              // get parameter from request body
-ctx.formParam("key");              // get parameter from form-post request
+ctx.formParam("key");              // get form param
+ctx.formParams("key");             // get form param with multiple values
+ctx.formParamMap();                // get all form param key/values as map
 ctx.param("key");                  // get a path-parameter, ex "/:id" -> param("id")
 ctx.paramMap();                    // get all param key/values as map
 ctx.splat(0);                      // get splat by nr, ex "/*" -> splat(0)
@@ -465,6 +466,7 @@ Javalin.create() // this has to be called first
     .ipAddress(ip) // set the ip
     .embeddedServer( ... ) // see section below
     .enableCorsForOrigin("origin") // enables cors for the specified origin(s)
+    .enableStandardRequestLogging() // does requestLogLevel(LogLevel.STANDARD)
     .enableStaticFiles("/public") // enable static files (opt. second param Location.CLASSPATH/Location.EXTERNAL)
     .port(port) // set the port
     .start(); // this has to be called last
@@ -475,6 +477,7 @@ Javalin.create().apply { // this has to be called first
     ipAddress(ip) // set the ip
     embeddedServer( ... ) // see section below
     enableCorsForOrigin("origin") // enables cors for the specified origin(s)
+    enableStandardRequestLogging() // does requestLogLevel(LogLevel.STANDARD)
     enableStaticFiles("/public") // enable static files (opt. second param Location.CLASSPATH/Location.EXTERNAL)
     port(port) // set the port
 }.start() // this has to be called last
