@@ -2,7 +2,7 @@
 layout: news
 category: blogpost
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
-date: 2020-12-31 00:00:01
+date: 2018-12-31 00:00:01
 title: Writing a library for both Java and Kotlin
 permalink: /blog/writing-a-library-for-both-java-and-kotlin
 ---
