@@ -125,7 +125,7 @@ It takes a `Handler` a `Context` and a list of `Role`s.
 The idea is that you implement code to run the handler
 based on what's in the context, and what roles are set for the endpoint.
 
-The rules for our access manager are also simple
+The rules for our access manager are also simple:
 * When endpoint has `ApiRole.ANYONE`, all requests will be handled
 * When endpoint has another role set and the request has matching credentials, the request will be handled
 * Else we ignore the request and send `401 Unauthorized` back to the client
