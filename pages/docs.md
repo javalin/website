@@ -279,14 +279,14 @@ ctx.request().getSession().getAttribute("locale");
 
 ## Access manager
 Javalin has a functional interface `AccessManager`, which let's you 
-set per-endpoint authentication or authorization. It's common to use before-handlers for this,
+set per-endpoint authentication and/or authorization. It's common to use before-handlers for this,
 but per-endpoint security handlers give you much more explicit and readable code. You can implement your 
 access-manager however you want, but here is an example implementation:
 
 {% capture java %}
 // Set the access-manager that Javalin should use
 app.accessManager(handler, ctx, permittedRoles) -> {
-    MyRole userRole = ...
+    MyRole userRole = getUserRole(ctx);
     if (permittedRoles.contains(currentUserRole)) {
         handler.handle(ctx);
     } else {
@@ -294,12 +294,15 @@ app.accessManager(handler, ctx, permittedRoles) -> {
     }
 };
 
-// Create an enum implementing 'Role':
-enum MyRoles implements Role {
+Role getUserRole(Context ctx) {
+    // determine user role based on request
+    // typically done by inspecting headers
+}
+
+enum MyRole implements Role {
     ANYONE, ROLE_ONE, ROLE_TWO, ROLE_THREE;
 }
 
-// Declare explicitly secured endpoint handlers:
 app.routes(() -> {
     get("/un-secured",   ctx -> ctx.result("Hello"),   roles(ANYONE));
     get("/secured",      ctx -> ctx.result("Hello"),   roles(ROLE_ONE));
@@ -308,7 +311,7 @@ app.routes(() -> {
 {% capture kotlin %}
 // Set the access-manager that Javalin should use
 app.accessManager({ handler, ctx, permittedRoles ->
-    val userRole = ...
+    val userRole = getUserRole(ctx) // determine user role based on request
     if (permittedRoles.contains(currentUserRole)) {
         handler.handle(ctx)
     } else {
@@ -316,15 +319,18 @@ app.accessManager({ handler, ctx, permittedRoles ->
     }
 }
 
-// Create an enum implementing 'Role':
-internal enum class MyRoles:Role {
+fun getUserRole(ctx: Context) : Role {
+    // determine user role based on request
+    // typically done by inspecting headers
+}
+
+internal enum class MyRole : Role {
     ANYONE, ROLE_ONE, ROLE_TWO, ROLE_THREE
 }
 
-// Declare explicitly secured endpoint handlers:
 app.routes {
-    get("/un-secured",   { ctx -> ctx.result("Hello")},   roles(ANYONE));
-    get("/secured",      { ctx -> ctx.result("Hello")},   roles(ROLE_ONE));
+    get("/un-secured",   { ctx -> ctx.result("Hello")},   roles(MyRole.ANYONE));
+    get("/secured",      { ctx -> ctx.result("Hello")},   roles(MyRole.ROLE_ONE));
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
