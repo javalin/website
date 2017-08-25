@@ -67,10 +67,9 @@ object UserController {
 }
 ```
 
-<small><em>
-Making controllers with robust error handling is outside of the scope of this tutorial,
-but try to avoid `!!` in Kotlin unless you're sure about what you're doing.
-</em></small>
+<small><em>We're using `!!` to convert nullables to non-nullables.
+If `:user-id` is missing or `users[id]` returns null, we'll get a NullPointerException
+and our application will crash. Handling this is outside the scope of the tutorial.</em></small>
 
 ## Creating roles
 Now that we have our functionality, we need to define a set of roles for our system.
@@ -141,25 +140,47 @@ fun accessManager(handler: Handler, ctx: Context, permittedRoles: List<Role>) {
 }
 ```
 
-We're not done though. There is no `ctx.userRoles` concept in Javalin,
-so we need to implement a way of getting user-roles from the context.
-We'll create a `Pair<String, String>, List<Role>` map where the `Pair` contains the
-username and password in cleartext (please don't do this for a real service). Then we'll
-get the username/password from the [Basic-auth-header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#Basic_authentication_scheme)
-and use them as a key to access roles from our map:
-
+### Extracting user-roles from the context
+There is no `ctx.userRoles` concept in Javalin, so we need to implement it.
+First we need a user-table. We'll create a `map(Pair<String, String>, List<Role>)` where keys are
+username+password in cleartext (please don't do this for a real service), and values are user-roles:
 
 ```kotlin
 private val userRoleMap = hashMapOf(
         Pair("alice", "weak-password") to listOf(ApiRole.USER_READ),
         Pair("bob", "better-password") to listOf(ApiRole.USER_READ, ApiRole.USER_WRITE)
 )
+```
 
+Now that we have a user-table, we need to authenticate the requests.
+We do this by getting the username+password from the [Basic-auth-header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#Basic_authentication_scheme)
+and using them as keys for the `userRoleMap`:
+
+```kotlin
 private val Context.userRoles: List<ApiRole>
     get() = try {
-        val credentials = String(Base64.getDecoder().decode(this.header("Basic")!!.removePrefix("Basic "))).split(":")
-        userRoleMap[Pair(credentials[0], credentials[1])] ?: listOf()
+        val (username, password) = String(Base64.getDecoder().decode(this.header("Basic")!!.removePrefix("Basic "))).split(":")
+        userRoleMap[Pair(username, password)] ?: listOf()
     } catch (e: Exception) {
         listOf()
     }
+```
+
+<small><em>
+When using basic auth, credentials are transferred as plain text (although base64-encoded).
+**Remember to enable SSL if you're using basic-auth for a real service.**
+</em></small>
+
+## Conclusion
+This tutorial showed one possible way of implementing an `AccessManager` in Javalin, but
+the interface is very flexible and you can really do whatever you want:
+```kotlin
+app.accessManager(handler, ctx, permittedRoles) -> {
+    when {
+        ctx.host().contains("localhost") -> handler.handle(ctx)
+        Math.random() > 0.5 -> handler.handle(ctx)
+        dayOfWeek == Calendar.SUNDAY -> handler.handle(ctx)
+        else -> ctx.status(401).json("Unauthorized")
+    }
+};
 ```
