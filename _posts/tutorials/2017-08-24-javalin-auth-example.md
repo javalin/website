@@ -98,7 +98,7 @@ fun main(vararg args: String) {
     app.routes {
         path("users") {
             get(UserController::getAllUserIds, roles(ApiRole.ANYONE))
-            get(UserController::createUser, roles(ApiRole.USER_WRITE))
+            post(UserController::createUser, roles(ApiRole.USER_WRITE))
             path(":user-id") {
                 get(UserController::getUser, roles(ApiRole.USER_READ))
                 patch(UserController::updateUser, roles(ApiRole.USER_WRITE))
