@@ -159,7 +159,7 @@ and using them as keys for the `userRoleMap`:
 ```kotlin
 private val Context.userRoles: List<ApiRole>
     get() = try {
-        val (username, password) = String(Base64.getDecoder().decode(this.header("Basic")!!.removePrefix("Basic "))).split(":")
+        val (username, password) = String(Base64.getDecoder().decode(this.header("Authorization")!!.removePrefix("Basic "))).split(":")
         userRoleMap[Pair(username, password)] ?: listOf()
     } catch (e: Exception) {
         listOf()
