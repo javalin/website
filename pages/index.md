@@ -34,7 +34,7 @@ If you want a more feature rich Kotlin web framework, you can try the [Spark Kot
 All the methods on the Javalin instance return `this`, making the API fully fluent. 
 This will let you create a declarative and predictive REST API, 
 that will be very easy to reason about for new developers joining your project. Javalin
-is at its best when you declare the whole application config and the full REST API
+is at its best when you declare the application config and the REST API
 together:
 
 {% capture java %}
