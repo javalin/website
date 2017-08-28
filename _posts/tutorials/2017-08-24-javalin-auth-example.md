@@ -93,7 +93,7 @@ fun main(vararg args: String) {
 
     val app = Javalin.create().apply {
         accessManager(Auth::accessManager)
-    }.start();
+    }.start()
 
     app.routes {
         path("users") {
