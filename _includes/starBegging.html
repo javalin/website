@@ -36,13 +36,13 @@
             frameborder="0" scrolling="0" width="150px" height="30px">
     </iframe>
     <script>
-        if (sessionStorage.getItem("dismissed") !== "true") {
+        if (localStorage.getItem("dismissed") !== "true") {
             setTimeout(function () {
                 document.querySelector("#star-begging").classList.add("in");
             }, 15000);
             document.querySelector("#star-begging .close").addEventListener("click", function () {
                 document.querySelector("#star-begging").classList.add("out");
-                sessionStorage.setItem("dismissed", "true");
+                localStorage.setItem("dismissed", "true");
             });
         }
     </script>
