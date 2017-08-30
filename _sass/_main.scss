@@ -39,6 +39,18 @@ h4 {
   font-size: 20px;
 }
 
+.news {
+  h1 {
+    font-size: 30px;
+  }
+  h2 {
+    font-size: 26px;
+  }
+  h3 {
+    font-size: 20px;
+  }
+}
+
 h1,
 h2,
 h3,
@@ -127,22 +139,6 @@ main {
     float: left;
     margin-right: 10px;
   }
-}
-
-.template-engine {
-  margin-top: 32px;
-  h2,
-  p {
-    margin: 5px 0;
-  }
-}
-
-.template-engine-list {
-  color: #777;
-}
-
-.small-list {
-  font-size: 80%;
 }
 
 blockquote {

@@ -231,6 +231,7 @@ ctx.header("key");                 // get a header
 ctx.headerMap();                   // get all header key/values as map
 ctx.host();                        // get request host
 ctx.ip();                          // get request up
+ctx.isMultipart();                 // check if request is multipart
 ctx.mapFormParams("k1", "k2")      // map form params to their values, returns null if any form param is missing
 ctx.mapQueryParams("k1", "k2")     // map query params to their values, returns null if any query param is missing
 ctx.next();                        // pass the request to the next handler
@@ -526,7 +527,7 @@ if no-endpoint-handler-found
     run static-file-handler
     if static-file-found
         static-file-handler finishes response and
-        sends to user, no after-handlers are run
+        sends to user (response is commited)
     else 
         response is 404, javalin finishes the response
         with after-handlers and error-mapping
@@ -534,6 +535,18 @@ if no-endpoint-handler-found
 If you do `app.enableStaticFiles("/classpath-folder")`.
 Your `index.html` file at `/classpath-folder/index.html` will be available 
 at `http://{host}:{port}/index.html` and `http://{host}:{port}/`.
+
+#### Caching
+Javalin serves static files with the `Cache-Control` header set to `max-age=0`. This means
+that browsers will always ask if the file is still valid. If the version the browser has in cache
+is the same as the version on the server, Javalin will respond with a `304 Not modified` status,
+and no response body. This tells the browser that it's okay to keep using the cached version.
+If you want to skip this check, you can put files in a dir called `immutable`,
+and Javalin will set `max-age=31622400`, which means that the browser will wait
+one year before checking if the file is still valid.
+This should only be used for versioned library files, like `vue-2.4.2.min.js`, to avoid
+the browser ending up with an outdated version if you change the file content.
+
 
 ## Javadoc
 There is a Javadoc available at [javadoc.io](http://javadoc.io/doc/io.javalin/javalin), 
