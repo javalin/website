@@ -13,6 +13,7 @@ permalink: /documentation
 * [ &nbsp;&nbsp;&nbsp;&nbsp;After](#after-handlers)
 * [Handler groups](#handler-groups)
 * [Context (ctx)](#context)
+* [ &nbsp;&nbsp;&nbsp;&nbsp;Cookie Store](#cookie-store)
 * [Access manager](#access-manager)
 * [Exception Mapping](#exception-mapping)
 * [Error Mapping](#error-mapping)
@@ -223,6 +224,7 @@ ctx.splats();                      // get array of splat-values
 ctx.attribute("key", "value");     // set a request attribute
 ctx.attribute("key");              // get a request attribute
 ctx.attributeMap();                // get all attribute key/values as map
+ctx.basicAuthCredentials()         // get username and password used for basic-auth
 ctx.contentLength();               // get request content length
 ctx.contentType();                 // get request content type
 ctx.cookie("key");                 // get cookie by name
@@ -269,6 +271,52 @@ ctx.cookie(cookieBuilder);         // set cookie using cookiebuilder
 ctx.removeCookie("key");           // remove cookie by key
 ctx.removeCookie("/path", "key");  // remove cookie by path and key
 ```
+
+### Cookie Store
+
+The `ctx.cookieStore()` functions provide a convenient way for sharing information between handlers, request, or even servers:
+```java
+ctx.cookieStore(key, value); // store any type of value
+ctx.cookieStore(key); // read any type of value
+ctx.clearCookieStore(); // clear the cookie-store
+```
+The cookieStore works like this:
+1. The first handler that matches the incoming request will populate the cookie-store-map with the data currently stored in the cookie (if any).
+2. This map can now be used as a state between handlers on the same request-cycle, pretty much in the same way as `ctx.attribute()`
+3. At the end of the request-cycle, the cookie-store-map is serialized, base64-encoded and written to the response as a cookie.
+   This allows you to share the map between requests and servers (in case you are running multiple servers behind a load-balancer)
+
+### Example:
+{% capture java %}
+serverOneApp.post("/cookie-storer") { ctx ->
+    ctx.cookieStore("string", "Hello world!");
+    ctx.cookieStore("int", 42);
+    ctx.cookieStore("list", Arrays.asList("One", "Two", "Three"));
+}
+serverTwoApp.get("/cookie-reader") { ctx -> // runs on a different server than serverOneApp
+    String string = ctx.cookieStore("string")
+    int i = ctx.cookieStore<Int>("i")
+    List<String> list = ctx.cookieStore("list")
+}
+{% endcapture %}
+{% capture kotlin %}
+serverOneApp.post("/cookie-storer") { ctx ->
+    ctx.cookieStore("string", "Hello world!")
+    ctx.cookieStore("int", 42)
+    ctx.cookieStore("list", listOf("One", "Two", "Three"))
+}
+serverTwoApp.get("/cookie-reader") { ctx -> // runs on a different server than serverOneApp
+    val string = ctx.cookieStore<String>("string")
+    val i = ctx.cookieStore<Int>("i")
+    val list = ctx.cookieStore<List<String>>("list")
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+Since the cookie is stored in the browser, the `get` request to `serverTwoApp`
+will be able to retrieve the information that was passed in the `post` to `serverOneApp`.
+
+Please note that cookies have a max-size of 4kb.
 
 ### Session
 Javalin doesn't directly expose the servlet session,
