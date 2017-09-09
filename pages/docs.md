@@ -295,7 +295,7 @@ serverOneApp.post("/cookie-storer") { ctx ->
 }
 serverTwoApp.get("/cookie-reader") { ctx -> // runs on a different server than serverOneApp
     String string = ctx.cookieStore("string")
-    int i = ctx.cookieStore<Int>("i")
+    int i = ctx.cookieStore("i")
     List<String> list = ctx.cookieStore("list")
 }
 {% endcapture %}
