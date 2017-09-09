@@ -290,7 +290,7 @@ The cookieStore works like this:
 {% capture java %}
 serverOneApp.post("/cookie-storer") { ctx ->
     ctx.cookieStore("string", "Hello world!");
-    ctx.cookieStore("int", 42);
+    ctx.cookieStore("i", 42);
     ctx.cookieStore("list", Arrays.asList("One", "Two", "Three"));
 }
 serverTwoApp.get("/cookie-reader") { ctx -> // runs on a different server than serverOneApp
@@ -302,7 +302,7 @@ serverTwoApp.get("/cookie-reader") { ctx -> // runs on a different server than s
 {% capture kotlin %}
 serverOneApp.post("/cookie-storer") { ctx ->
     ctx.cookieStore("string", "Hello world!")
-    ctx.cookieStore("int", 42)
+    ctx.cookieStore("i", 42)
     ctx.cookieStore("list", listOf("One", "Two", "Three"))
 }
 serverTwoApp.get("/cookie-reader") { ctx -> // runs on a different server than serverOneApp
