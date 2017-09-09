@@ -313,7 +313,7 @@ serverTwoApp.get("/cookie-reader") { ctx -> // runs on a different server than s
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-Since the cookie is stored in the browser, the `get` request to `serverTwoApp`
+Since the client stores the cookie, the `get` request to `serverTwoApp`
 will be able to retrieve the information that was passed in the `post` to `serverOneApp`.
 
 Please note that cookies have a max-size of 4kb.
