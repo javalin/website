@@ -38,7 +38,7 @@ is at its best when you declare the application config and the REST API
 together:
 
 {% capture java %}
-Javalin.create()
+Javalin app = Javalin.create()
     .enableStaticFiles("/public")
     .enableStandardRequestLogging()
     .port(port)
@@ -57,7 +57,7 @@ app.routes(() -> {
 });
 {% endcapture %}
 {% capture kotlin %}
-Javalin.create().apply {
+val app = Javalin.create().apply {
     enableStaticFiles("/public")
     enableStandardRequestLogging()
     port(port)
