@@ -24,6 +24,7 @@ permalink: /documentation
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Custom server](#custom-server)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;SSL](#ssl)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Static Files](#static-files)
+* [ &nbsp;&nbsp;&nbsp;&nbsp;WebSockets](#websockets)
 * [Javadoc](#javadoc)
 * [FAQ](#faq)
 </div>
@@ -595,6 +596,50 @@ one year before checking if the file is still valid.
 This should only be used for versioned library files, like `vue-2.4.2.min.js`, to avoid
 the browser ending up with an outdated version if you change the file content.
 
+
+### WebSockets
+
+WebSockets are handled entirely by Jetty and must be declared before starting the server.
+There are three different ways of using WebSockets:
+
+### Lambda approach
+{% capture java %}
+app.ws("/websocket", ws -> {
+    ws.onConnect(session -> System.out.println("Connected"));
+    ws.onMessage((session, message) -> {
+        System.out.println("Received: " + message);
+        session.getRemote().sendString("Echo: " + message);
+    });
+    ws.onClose((session, statusCode, reason) -> System.out.println("Closed"));
+    ws.onError((session, throwable) -> System.out.println("Errored"));
+});
+{% endcapture %}
+{% capture kotlin %}
+app.ws("/websocket") { ws ->
+    ws.onConnect { session -> println("Connected") }
+    ws.onMessage { session, message ->
+        println("Received: " + message)
+        session.remote.sendString("Echo: " + message)
+    }
+    ws.onClose { session, statusCode, reason -> println("Closed") }
+    ws.onError { session, throwable -> println("Errored") }
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+### Annotated class
+You can pass an annotated class to the `ws()` function:
+```java
+app.ws("/websocket", WebSocketClass.class);
+```
+
+Annotation API can be found on [Jetty's docs page](http://www.eclipse.org/jetty/documentation/9.4.x/jetty-websocket-api-annotations.html)
+
+### WebSocket object
+You can pass any object that fulfills Jetty's requirements (annotated/implementing `WebSocketListener`, etc):
+```java
+app.ws("/websocket", new WebSocketObject());
+```
 
 ## Javadoc
 There is a Javadoc available at [javadoc.io](http://javadoc.io/doc/io.javalin/javalin), 
