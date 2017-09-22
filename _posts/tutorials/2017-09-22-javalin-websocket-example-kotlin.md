@@ -12,6 +12,15 @@ language: kotlin
 
 A live demo of this app can be found [here](http://javalin-websocket-example.herokuapp.com) (loads slowly first time)
 
+## What You Will Learn
+In this tutorial we will create a simple real-time chat application.
+It will feature a chat-panel that stores messages received after you join,
+a list of currently connected users, and an input field to send messages from.
+We will be using WebSockets for this, as WebSockets provides us with full-duplex
+communication channels over a single TCP connection, meaning we won't have to
+make additional HTTP requests to send and receive messages.
+A WebSocket connection stays open, greatly reducing latency (and complexity).
+
 ## Dependencies
 
 First, we need to create a Maven project with some dependencies: [(→ Tutorial)](/tutorials/maven-setup)
