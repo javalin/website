@@ -120,7 +120,7 @@ public class Chat {
 ```
 
 ## Building a JavaScript Client
-In order to use demonstrate that our application works, we can build a JavaScript client.
+In order to demonstrate that our application works, we can build a JavaScript client.
 First we create our index.html:
 
 ```markup
