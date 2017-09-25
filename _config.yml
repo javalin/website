@@ -1,6 +1,6 @@
 javalinversion: 0.5.1
 repourl: https://github.com/javalin/javalin.github.io
-description: Javalin - Create microservice REST APIs in Java or Kotlin. Javalin is a lightweight REST library for the JVM.
+description: Javalin - Create REST APIs in Java or Kotlin. Javalin is a lightweight Java and Kotlin web framework.
 baseurl: "" # the subpath of your site, e.g. /blog
 
 # Build settings

@@ -18,7 +18,7 @@ All of these web frameworks are inspired by the modern micro web framework
 grandfather: [Sinatra](http://www.sinatrarb.com/), so if you're coming from Ruby then
 Javalin shouldn't feel *too* unfamiliar.
 
-Javalin is currently not aiming to be a full web framework, but rather
+Javalin is not aiming to be a full web framework, but rather
 just a very lightweight REST API library. There is no concept of MVC,
 but there is support for template engines and static file serving for convenience.
 This allows you to use Javalin for both creating your RESTful API backend, as well as serving
