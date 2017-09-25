@@ -5,7 +5,7 @@
     <meta property="og:title" content="{% if page.title %}{{ page.title }} - {% endif %}Javalin: Simple REST APIs for Java and Kotlin">
     <meta property="og:site_name" content="Javalin">
     <meta property="og:url" content="https://javalin.io">
-    <meta property="og:description" content="Javalin - Create microservice REST APIs in Java or Kotlin. Javalin is a lightweight REST library for the JVM.">
+    <meta property="og:description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
     <meta property="og:image" content="https://javalin.io/img/javalin.png">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
