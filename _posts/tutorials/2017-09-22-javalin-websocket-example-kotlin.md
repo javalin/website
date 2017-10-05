@@ -35,7 +35,7 @@ First, we need to create a Maven project with some dependencies: [(→ Tutorial)
     <dependency>
         <groupId>org.eclipse.jetty.websocket</groupId>
         <artifactId>websocket-server</artifactId>
-        <version>9.4.6.v20170531</version>
+        <version>9.4.7.v20170914</version>
     </dependency>
     <dependency>
         <groupId>org.slf4j</groupId>
