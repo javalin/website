@@ -7,7 +7,7 @@ permalink: /
 <h1 class="no-margin-top">Simple REST APIs for Java and Kotlin</h1>
 
 Get your REST API up and running in seconds.
-Add the [dependency](/download) and copy example:
+Add the <a id="dependency-modal-link" href="/download">dependency</a> and copy example:
 
 {% include macros/gettingStarted.md %}
 
@@ -91,3 +91,8 @@ to see how to setup Kotlin with Maven, and how to use it with Javalin.
 Javalin runs on a fully configurable embedded web-server (jetty). This means that you can write your entire
 application in Javalin, and deploy it as a fat jar.\\
 Pull requests for other embedded servers would be welcome (netty, undertow, etc).
+
+<div id="dependency-modal">
+    <span class="close">✖</span>
+    {% include macros/mavenDep.md %}
+</div>

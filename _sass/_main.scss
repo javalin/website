@@ -76,9 +76,11 @@ p {
   margin: 1.5em 0 0.25em;
   font-family: Verdana, sans-serif;
 }
+
 li {
   margin: 3px 0;
 }
+
 p,
 li {
   > code {
@@ -180,5 +182,37 @@ pre { // scrollbar in code examples
   &::-webkit-scrollbar-button {
     width: 8px;
     height: 8px;
+  }
+}
+
+#dependency-modal {
+  visibility: hidden;
+  opacity: 0;
+  min-width: 650px;
+  position: fixed;
+  left: 50%;
+  top: 200px;
+  transform: translateX(-50%);
+  padding: 50px 20px 20px;
+  background: #fff;
+  box-shadow: 0 0 calc(100vw + 100vh) calc(100vw + 100vh) rgba(0, 0, 0, 0.5), 0 0 25px rgba(0, 0, 0, 0.5);
+  border-radius: 3px;
+  z-index: 999999;
+  &.open {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.2s;
+  }
+  .close {
+    height: 50px;
+    line-height: 50px;
+    padding: 0 15px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+  }
+  .multitab-code {
+    margin: 0;
   }
 }
