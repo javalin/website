@@ -569,7 +569,7 @@ You can enabled static file serving by doing `app.enableStaticFiles("/classpath-
 `app.enableStaticFiles("/folder", Location.EXTERNAL)`.
 Static resource handling is done **after** endpoint matching, 
 meaning your self-defined endpoints have higher priority. The process looks like this:
-~~~bash
+```bash
 run before-handlers
 run endpoint-handlers
 if no-endpoint-handler-found
@@ -580,7 +580,7 @@ if no-endpoint-handler-found
     else 
         response is 404, javalin finishes the response
         with after-handlers and error-mapping
-~~~
+```
 If you do `app.enableStaticFiles("/classpath-folder")`.
 Your `index.html` file at `/classpath-folder/index.html` will be available 
 at `http://{host}:{port}/index.html` and `http://{host}:{port}/`.
@@ -655,11 +655,11 @@ Pull-requests adding Javadoc comments in the source code are not welcome.
 
 If you're reading this, you've probably seen the following message while running Javalin:
 
-~~~text
+```text
 SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
 SLF4J: Defaulting to no-operation (NOP) logger implementation
 SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
-~~~
+```
 
 This is nothing to worry about.
 
@@ -668,16 +668,42 @@ which means that you have to add your own logger. If you don't know/care
 a lot about Java loggers, the easiest way to fix this is to add the following
 dependency to your project:
 
-~~~markup
+```markup
 <dependency>
     <groupId>org.slf4j</groupId>
     <artifactId>slf4j-simple</artifactId>
     <version>1.7.25</version>
 </dependency>
-~~~
+```
 
 This will remove the warning from SLF4J, and enable
 helpful debug messages while running Javalin.
 
-<br><br><br><br><br><br><br>
+### Configuring Jackson
 
+Jackson can be configured by calling
+```kotlin
+JavalinJacksonPlugin.configure(objectMapper)
+```
+Note that this is a global setting, and can't be configured per instance of Javalin.
+
+### Views and Templates {#views-and-templates}
+
+Javalin currently supports four template engines, as well as markdown:
+```kotlin
+ctx.renderThymeleaf("/templateFile", mapOf("key", "value"))
+ctx.renderVelocity("/templateFile", mapOf("key", "value"))
+ctx.renderFreemarker("/templateFile", mapOf("key", "value"))
+ctx.renderMustache("/templateFile", mapOf("key", "value"))
+ctx.renderMarkdown("/markdownFile")
+// Javalin looks for templates/markdown files in src/resources
+```
+Configure:
+```kotlin
+JavalinThymeleafPlugin.configure(templateEngine)
+JavalinVelocityPlugin.configure(velocityEngine)
+JavalinFreemarkerPlugin.configure(configuration)
+JavalinMustachePlugin.configure(mustacheFactory)
+JavalinCommonmarkPlugin.configure(htmlRenderer, markdownParser)
+```
+Note that these are global settings, and can't be configured per instance of Javalin.
