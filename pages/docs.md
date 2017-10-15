@@ -653,7 +653,7 @@ Pull-requests adding Javadoc comments in the source code are not welcome.
 
 ### Uploads
 
-Uploaded files are easily accessible via: `ctx.uploadedFiles()`
+Uploaded files are easily accessible via `ctx.uploadedFiles()`:
 {% capture java %}
 app.post("/upload", ctx -> {
     ctx.uploadedFiles("files").forEach(file -> {
@@ -672,7 +672,7 @@ app.post("/upload") { ctx ->
 
 The corresponding HTML would be something like:
 ```markup
-<form method="post" action="/upload-example" enctype="multipart/form-data">
+<form method="post" action="/upload" enctype="multipart/form-data">
     <input type="file" name="files" multiple>
     <button>Submit</button>
 </form>
