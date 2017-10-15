@@ -651,7 +651,34 @@ Pull-requests adding Javadoc comments in the source code are not welcome.
 
 ## FAQ
 
-### Adding a logger {#logging}
+### Uploads
+
+Uploaded files are easily accessible via: `ctx.uploadedFiles()`
+{% capture java %}
+app.post("/upload", ctx -> {
+    ctx.uploadedFiles("files").forEach(file -> {
+        FileUtils.copyInputStreamToFile(file.getContent(), new File("upload/" + file.getName()));
+    });
+});
+{% endcapture %}
+{% capture kotlin %}
+app.post("/upload") { ctx ->
+    ctx.uploadedFiles("files").forEach { (contentType, content, name, extension) ->
+        FileUtils.copyInputStreamToFile(content, File("upload/" + name))
+    }
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+The corresponding HTML would be something like:
+```markup
+<form method="post" action="/upload-example" enctype="multipart/form-data">
+    <input type="file" name="files" multiple>
+    <button>Submit</button>
+</form>
+```
+
+<h3 id="logging">Adding a logger</h3>
 
 If you're reading this, you've probably seen the following message while running Javalin:
 
@@ -687,7 +714,7 @@ JavalinJacksonPlugin.configure(objectMapper)
 ```
 Note that this is a global setting, and can't be configured per instance of Javalin.
 
-### Views and Templates {#views-and-templates}
+### Views and Templates
 
 Javalin currently supports four template engines, as well as markdown:
 ```kotlin
