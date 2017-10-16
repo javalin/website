@@ -502,8 +502,8 @@ To start and stop the server, use the appropriately named `start()` and `stop` m
 
 ```java
 Javalin app = Javalin.create()
-    .start() // starting server (sync)
-    .stop() // stopping server (sync)
+    .start() // start server (sync/blocking)
+    .stop() // stop server (sync/blocking)
 ```
 
 #### Quick-start
@@ -517,7 +517,8 @@ This creates a new server which listens on the specified port (here, `7000`), an
 The following snippet shows all the configuration currently available in Javalin:
 
 {% capture java %}
-Javalin.create() // this has to be called first
+Javalin.create() // create has to be called first
+    .contextPath("/context-path") // set a context path (default is "/")
     .dontIgnoreTrailingSlashes() // treat '/test' and '/test/' as different URLs
     .ipAddress(ip) // set the ip
     .embeddedServer( ... ) // see section below
@@ -525,10 +526,11 @@ Javalin.create() // this has to be called first
     .enableStandardRequestLogging() // does requestLogLevel(LogLevel.STANDARD)
     .enableStaticFiles("/public") // enable static files (opt. second param Location.CLASSPATH/Location.EXTERNAL)
     .port(port) // set the port
-    .start(); // this has to be called last
+    .start(); // start has to be called last
 {% endcapture %}
 {% capture kotlin %}
-Javalin.create().apply { // this has to be called first
+Javalin.create().apply { // create has to be called first
+    contextPath("/context-path") // set a context path (default is "/")
     dontIgnoreTrailingSlashes() // treat '/test' and '/test/' as different URLs
     ipAddress(ip) // set the ip
     embeddedServer( ... ) // see section below
@@ -536,9 +538,11 @@ Javalin.create().apply { // this has to be called first
     enableStandardRequestLogging() // does requestLogLevel(LogLevel.STANDARD)
     enableStaticFiles("/public") // enable static files (opt. second param Location.CLASSPATH/Location.EXTERNAL)
     port(port) // set the port
-}.start() // this has to be called last
+}.start() // start has to be called last
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+Any argument to `contextPath()` will be normalized to the form `/path` (slash, path, no-slash)
 
 ### Custom server
 If you need to customize the embedded server, you can call the `app.embeddedServer()` method:
