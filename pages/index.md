@@ -19,16 +19,16 @@ grandfather: [Sinatra](http://www.sinatrarb.com/), so if you're coming from Ruby
 Javalin shouldn't feel *too* unfamiliar.
 
 Javalin is not aiming to be a full web framework, but rather
-just a very lightweight REST API library. There is no concept of MVC,
-but there is support for template engines and static file serving for convenience.
+just a lightweight REST API library. There is no concept of MVC,
+but there is support for template engines, websockets, and static file serving for convenience.
 This allows you to use Javalin for both creating your RESTful API backend, as well as serving
 an `index.html` with static resources (in case you're creating an SPA). This is practical
 if you don't want to deploy to apache or nginx in addition to your Javalin service.
 If you wish to use Javalin to create web-pages instead of just REST APIs,
 there are some simple template engine wrappers available for a quick and easy setup.
 
-If you need a more feature rich Java web framework, you could try [Spark](https://github.com/perwendel/spark).
-If you want a more feature rich Kotlin web framework, you can try the [Spark Kotlin Wrapper](https://github.com/perwendel/spark-kotlin).
+If you want a more established Java web framework, you could try [Spark](https://github.com/perwendel/spark).
+If you want a more established Kotlin web framework, you can try the [Spark Kotlin Wrapper](https://github.com/perwendel/spark-kotlin).
 
 ## Fluent and readable API
 All the methods on the Javalin instance return `this`, making the API fully fluent. 
