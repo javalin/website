@@ -143,6 +143,12 @@ main {
   }
 }
 
+@media (max-width: 480px) {
+  #starFrame {
+    float: right;
+  }
+}
+
 blockquote {
   background: #f2f2f2;
   border-left: 10px solid #ccc;
