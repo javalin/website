@@ -13,7 +13,7 @@ Add the <a id="dependency-modal-link" href="/download">dependency</a> and copy e
 
 ## REST API Simplicity
 Javalin started as a fork of the [Spark](http://sparkjava.com) Java and Kotlin web framework but quickly
-turned into a ground-up rewrite influenced by [express.js](https://expressjs.com/) and [koa.js](http://koajs.com/).
+turned into a ground-up rewrite influenced by [koa.js](http://koajs.com/#application).
 All of these web frameworks are inspired by the modern micro web framework
 grandfather: [Sinatra](http://www.sinatrarb.com/), so if you're coming from Ruby then
 Javalin shouldn't feel *too* unfamiliar.
@@ -46,12 +46,12 @@ Javalin app = Javalin.create()
 
 app.routes(() -> {
     path("users"(() -> {
-        get(UserController::getAllUserIds)
-        post(UserController::createUser)
+        get(UserController::getAllUserIds);
+        post(UserController::createUser);
         path(":user-id"(() -> {
-            get(UserController::getUser)
-            patch(UserController::updateUser)
-            delete(UserController::deleteUser)
+            get(UserController::getUser);
+            patch(UserController::updateUser);
+            delete(UserController::deleteUser);
         });
     });
 });

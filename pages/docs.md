@@ -517,7 +517,6 @@ The following snippet shows all the configuration currently available in Javalin
 Javalin.create() // create has to be called first
     .contextPath("/context-path") // set a context path (default is "/")
     .dontIgnoreTrailingSlashes() // treat '/test' and '/test/' as different URLs
-    .ipAddress(ip) // set the ip
     .embeddedServer( ... ) // see section below
     .enableCorsForOrigin("origin") // enables cors for the specified origin(s)
     .enableStandardRequestLogging() // does requestLogLevel(LogLevel.STANDARD)
@@ -529,7 +528,6 @@ Javalin.create() // create has to be called first
 Javalin.create().apply { // create has to be called first
     contextPath("/context-path") // set a context path (default is "/")
     dontIgnoreTrailingSlashes() // treat '/test' and '/test/' as different URLs
-    ipAddress(ip) // set the ip
     embeddedServer( ... ) // see section below
     enableCorsForOrigin("origin") // enables cors for the specified origin(s)
     enableStandardRequestLogging() // does requestLogLevel(LogLevel.STANDARD)

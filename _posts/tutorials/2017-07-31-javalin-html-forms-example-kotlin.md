@@ -38,10 +38,10 @@ val reservations = mutableMapOf<String?, String?>(
 
 fun main(args: Array<String>) {
 
-    val app = Javalin.create()
-            .port(7777)
-            .enableStaticFiles("/public")
-            .start()
+    val app = Javalin.create().apply {
+            port(7777)
+            enableStaticFiles("/public")
+        }.start()
 
     app.post("/make-reservation") { ctx ->
         reservations[ctx.formParam("day")] = ctx.formParam("time")

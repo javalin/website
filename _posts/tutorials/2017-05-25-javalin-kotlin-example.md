@@ -191,9 +191,13 @@ fun main(args: Array<String>) {
 
     val userDao = UserDao()
 
-    val app = Javalin.create().port(7000)
+    val app = Javalin.create().apply {
+        port(7000)
+        exception(Exception::class.java) { e, ctx -> e.printStackTrace() }
+        error(404) { ctx -> ctx.json("not found") }
+    }.start()
 
-    with(app) {
+    app.routes {
 
         get("/users") { ctx ->
             ctx.json(userDao.users)
@@ -226,14 +230,6 @@ fun main(args: Array<String>) {
             userDao.delete(ctx.param("id")!!.toInt())
             ctx.status(204)
         }
-
-        exception(Exception::class.java) { e, ctx ->
-            e.printStackTrace()
-        }
-
-        error(404) { ctx ->
-            ctx.json("error");
-        };
 
     }
 

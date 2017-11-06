@@ -43,10 +43,10 @@ fun main(args: Array<String>) {
 
     var todos = arrayOf(Todo(123123123, "My very first todo", false))
 
-    val app = Javalin.create()
-            .port(7000)
-            .enableStaticFiles("/public")
-            .start()
+    val app = Javalin.create().apply {
+        port(7000)
+        enableStaticFiles("/public")
+    }.start()
 
     app.routes {
         get("/todos") { ctx ->
