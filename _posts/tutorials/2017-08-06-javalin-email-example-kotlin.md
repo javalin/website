@@ -72,7 +72,7 @@ In order to get the above code to work, you need to make some changes:
 
 <small>**It might be a good idea to create a test-account instead of using your real gmail credentials.*</small>
 
-When you have made the changes to the code, run the program and go to `http://localhost:7000`.
+When you've made the changes to the code, run the program and go to `http://localhost:7000`.
 You will see a simple unstyled form with an input field, a textarea and a button.
 Fill in the form and click the button to test your email server. After you click the button, your browser
 is redirected to `/contact-us/success` (if the email was sent).
