@@ -139,7 +139,7 @@ public class Main {
 
 Now we can deploy our application using `mvn heroku:deploy`.
 
-Again, make sure you are in your project root, then enter:
+Again, make sure you're in your project root, then enter:
 ~~~bash
 mvn heroku:deploy
 ~~~
