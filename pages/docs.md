@@ -518,7 +518,6 @@ Javalin.create() // create has to be called first
     .contextPath("/context-path") // set a context path (default is "/")
     .dontIgnoreTrailingSlashes() // treat '/test' and '/test/' as different URLs
     .embeddedServer( ... ) // see section below
-    .enableCorsForAllOrigins("origin") // enables cors for all origins
     .enableCorsForOrigin("origin") // enables cors for the specified origin(s)
     .enableDynamicGzip() // gzip response (if client accepts gzip and response is more than 1500 bytes)
     .enableStandardRequestLogging() // does requestLogLevel(LogLevel.STANDARD)
@@ -531,7 +530,6 @@ Javalin.create().apply { // create has to be called first
     contextPath("/context-path") // set a context path (default is "/")
     dontIgnoreTrailingSlashes() // treat '/test' and '/test/' as different URLs
     embeddedServer( ... ) // see section below
-    enableCorsForAllOrigins("origin") // enables cors for all origins
     enableCorsForOrigin("origin") // enables cors for the specified origin(s)
     enableDynamicGzip() // gzip response (if client accepts gzip and response is more than 1500 bytes)
     enableStandardRequestLogging() // does requestLogLevel(LogLevel.STANDARD)
