@@ -108,6 +108,7 @@ it should look like [this](https://github.com/prasad-marne/javalin-docker/blob/m
 
 To build a docker image for your application we will use dockerfile-maven-plugin
  [(dockerfile-maven-plugin)](https://github.com/spotify/dockerfile-maven).
+ Set DOCKER_HOST environment variable as mentioned [(here)](https://github.com/spotify/docker-maven-plugin#setup).
  In the repository section "localhost:5000" is the registry url.
 ~~~markup
 <plugin>
