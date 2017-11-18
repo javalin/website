@@ -518,7 +518,9 @@ Javalin.create() // create has to be called first
     .contextPath("/context-path") // set a context path (default is "/")
     .dontIgnoreTrailingSlashes() // treat '/test' and '/test/' as different URLs
     .embeddedServer( ... ) // see section below
+    .enableCorsForAllOrigins("origin") // enables cors for all origins
     .enableCorsForOrigin("origin") // enables cors for the specified origin(s)
+    .enableDynamicGzip() // gzip response (if client accepts gzip and response is more than 1500 bytes)
     .enableStandardRequestLogging() // does requestLogLevel(LogLevel.STANDARD)
     .enableStaticFiles("/public") // enable static files (opt. second param Location.CLASSPATH/Location.EXTERNAL)
     .port(port) // set the port
@@ -529,7 +531,9 @@ Javalin.create().apply { // create has to be called first
     contextPath("/context-path") // set a context path (default is "/")
     dontIgnoreTrailingSlashes() // treat '/test' and '/test/' as different URLs
     embeddedServer( ... ) // see section below
+    enableCorsForAllOrigins("origin") // enables cors for all origins
     enableCorsForOrigin("origin") // enables cors for the specified origin(s)
+    enableDynamicGzip() // gzip response (if client accepts gzip and response is more than 1500 bytes)
     enableStandardRequestLogging() // does requestLogLevel(LogLevel.STANDARD)
     enableStaticFiles("/public") // enable static files (opt. second param Location.CLASSPATH/Location.EXTERNAL)
     port(port) // set the port
@@ -638,6 +642,18 @@ Annotation API can be found on [Jetty's docs page](http://www.eclipse.org/jetty/
 You can pass any object that fulfills Jetty's requirements (annotated/implementing `WebSocketListener`, etc):
 ```java
 app.ws("/websocket", new WebSocketObject());
+```
+
+### WsSession
+Javalin 1.1.0 added a `WsSession` wrapper around Jetty's `Session`. It adds the following methods:
+```java
+session.send("message") // send a message to session remote (the ws client)
+session.queryString() // get query-string from upgrade-request
+session.queryParam("key") // get query-param from upgrade-request
+session.queryParams("key") // get query-params from upgrade-request
+session.queryParamMap() // get query-param-map from upgrade-request
+session.mapQueryParams("k1", "k2") // map query-params to values (only useful in kotlin)
+session.anyQueryParamNull("k1", "k2") // check if any query-param from upgrade-request is null
 ```
 
 ## Javadoc
