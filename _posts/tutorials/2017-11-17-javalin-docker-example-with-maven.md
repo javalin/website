@@ -1,11 +1,11 @@
 ---
 layout: tutorial
-title: "Deploying Javalin on Docker Container"
+title: "Deploying Javalin on Docker Container with Maven"
 author: <a href="https://www.linkedin.com/in/prasad-marne-7bb85b100/" target="_blank">Prasad Marne</a>
 date: 2017-11-17
 permalink: /tutorials/docker
 github: https://github.com/prasad-marne/javalin-docker
-summarytitle: Deploying to Docker Container
+summarytitle: Deploying to Docker Container with Maven
 summary: Deploy a Javalin Hello World application on Docker Container!
 language: java
 ---
@@ -92,8 +92,8 @@ following configuration (below your dependencies tag):
 
 ## Configuring Docker
 Before we can configure anything we must create a Dockerfile.
-we can create a text file using any editor and name it https://github.com/prasad-marne/javalin-docker/blob/master/Dockerfile 
-Copy below contents to the file and move this file to root of your project.
+We can create a text file using any editor and name it Dockerfile. 
+Copy below contents to the Dockerfile and move this file to root of your project.
 ~~~markup
 FROM openjdk:8-jre-alpine
 
