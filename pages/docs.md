@@ -334,7 +334,7 @@ access-manager however you want, but here is an example implementation:
 // Set the access-manager that Javalin should use
 app.accessManager((handler, ctx, permittedRoles) -> {
     MyRole userRole = getUserRole(ctx);
-    if (permittedRoles.contains(currentUserRole)) {
+    if (permittedRoles.contains(userRole)) {
         handler.handle(ctx);
     } else {
         ctx.status(401).result("Unauthorized");
@@ -359,7 +359,7 @@ app.routes(() -> {
 // Set the access-manager that Javalin should use
 app.accessManager { handler, ctx, permittedRoles ->
     val userRole = getUserRole(ctx) // determine user role based on request
-    if (permittedRoles.contains(currentUserRole)) {
+    if (permittedRoles.contains(userRole)) {
         handler.handle(ctx)
     } else {
         ctx.status(401).result("Unauthorized")
