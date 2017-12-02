@@ -559,6 +559,34 @@ app.embeddedServer(EmbeddedJettyFactory({
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
+#### Custom jetty handlers
+You can configure your embedded jetty-server with a handler-chain
+([example](https://github.com/tipsy/javalin/blob/master/src/test/java/io/javalin/TestCustomJetty.java#L66-L82)),
+and Javalin will attach it's own handlers to the end of this chain.
+{% capture java %}
+StatisticsHandler statisticsHandler = new StatisticsHandler();
+
+Javalin.create()
+    .embeddedServer(new EmbeddedJettyFactory(() -> {
+        Server server = new Server();
+        server.setHandler(statisticsHandler);
+        return server;
+    }))
+    .start();
+{% endcapture %}
+{% capture kotlin %}
+val statisticsHandler = StatisticsHandler()
+
+Javalin.create().apply {
+    embeddedServer(EmbeddedJettyFactory({
+        val server = Server()
+        server.handler = statisticsHandler
+        server
+    }))
+}.start();
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
 ### Ssl
 
 To configure SSL you need to use a custom server (see previous section).\\
