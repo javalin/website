@@ -2,7 +2,7 @@
 layout: tutorial
 title: "Setting up monitoring in Javalin with Prometheus (and grafana)"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
-date: 2017-12-05
+date: 2017-12-02
 permalink: /tutorials/prometheus-example
 github: https://github.com/tipsy/javalin-prometheus-example
 summarytitle: Creating monitoring dashboards
