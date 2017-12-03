@@ -80,7 +80,8 @@ If not, please read on.
 
 ## Exporting statistics using Prometheus-client
 To collect data using Prometheus you need to create object which extends `Collector`.
-In the source code you'll find two such objects: `StatisticsHandlerCollector` and `QueuedThreadPoolCollector`.
+In the source code you'll find two such objects: [StatisticsHandlerCollector](https://github.com/tipsy/javalin-prometheus-example/blob/master/src/main/java/StatisticsHandlerCollector.java)
+and [QueuedThreadPoolCollector](https://github.com/tipsy/javalin-prometheus-example/blob/master/src/main/java/QueuedThreadPoolCollector.java).
 You have to call `.register()` when creating a collector, and you have to override the `collect()` method.
 
 The two collectors included in the source code could also be included as a maven dependency,
