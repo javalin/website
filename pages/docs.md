@@ -579,9 +579,9 @@ val statisticsHandler = StatisticsHandler()
 
 Javalin.create().apply {
     embeddedServer(EmbeddedJettyFactory({
-        val server = Server()
-        server.handler = statisticsHandler
-        server
+        Server(queuedThreadPool).apply {
+            handler = statisticsHandler
+        }
     }))
 }.start();
 {% endcapture %}
