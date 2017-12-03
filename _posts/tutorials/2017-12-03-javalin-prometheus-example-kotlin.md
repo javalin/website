@@ -89,7 +89,7 @@ but I included them to illustrate how you can create custom collectors.
 
 ## Simulating some traffic
 To make sure that everything works, it's good to have some traffic to look at.
-So, we need to declare a few endpoints and make requests to them. Let's add this to our `public static void main`:
+So, we need to declare a few endpoints and make requests to them. Let's add this to our `fun main`:
 ```kotlin
 app.routes {
     get("/1") { ctx -> ctx.result("Hello World") }
