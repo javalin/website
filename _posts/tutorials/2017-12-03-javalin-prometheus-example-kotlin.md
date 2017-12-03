@@ -2,12 +2,12 @@
 layout: tutorial
 title: "Setting up monitoring in Javalin with Prometheus (and grafana)"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
-date: 2017-12-02
-permalink: /tutorials/prometheus-example
+date: 2017-12-03
+permalink: /tutorials/prometheus-example-kotlin
 github: https://github.com/tipsy/javalin-prometheus-example
 summarytitle: Creating monitoring dashboards
 summary: Learn how to setup monitoring using Prometheus (and Grafana)
-language: java
+language: kotlin
 ---
 
 ## Dependencies
@@ -47,27 +47,27 @@ Luckily there is a handler in Jetty called `StatisticsHandler`.
 We can add this to Javalin's embedded server, and use it to expose statistics to prometheus.
 We can also do the same with the `QueuedThreadPool` that Jetty uses:
 
-```java
-public static void main(String[] args) throws Exception {
+```kotlin
+fun main(args: Array<String>) {
 
-    StatisticsHandler statisticsHandler = new StatisticsHandler();
-    QueuedThreadPool queuedThreadPool = new QueuedThreadPool(200, 8, 60_000);
-    initializePrometheus(statisticsHandler, queuedThreadPool);
+    val statisticsHandler = StatisticsHandler()
+    val queuedThreadPool = QueuedThreadPool(200, 8, 60_000)
+    initializePrometheus(statisticsHandler, queuedThreadPool)
 
-    Javalin app = Javalin.create()
-        .port(7070)
-        .embeddedServer(new EmbeddedJettyFactory(() -> {
-            Server server = new Server(queuedThreadPool);
-            server.setHandler(statisticsHandler);
-            return server;
-        }))
-        .start();
+    val app = Javalin.create().apply {
+        port(7070)
+        embeddedServer(EmbeddedJettyFactory {
+            Server(queuedThreadPool).apply {
+                handler = statisticsHandler
+            }
+        })
+    }.start()
 }
 
-private static void initializePrometheus(StatisticsHandler statisticsHandler, QueuedThreadPool queuedThreadPool) throws IOException {
-    StatisticsHandlerCollector.initialize(statisticsHandler); // collector is included in source code
-    QueuedThreadPoolCollector.initialize(queuedThreadPool); // collector is included in source code
-    HTTPServer prometheusServer = new HTTPServer(7080);
+private fun initializePrometheus(statisticsHandler: StatisticsHandler, queuedThreadPool: QueuedThreadPool) {
+    StatisticsHandlerCollector.initialize(statisticsHandler)
+    QueuedThreadPoolCollector.initialize(queuedThreadPool)
+    val prometheusServer = HTTPServer(7080)
 }
 ```
 
@@ -89,36 +89,33 @@ but I included them to illustrate how you can create custom collectors.
 ## Simulating some traffic
 To make sure that everything works, it's good to have some traffic to look at.
 So, we need to declare a few endpoints and make requests to them. Let's add this to our `public static void main`:
-```java
-app.routes(() -> {
-    get("/1", ctx -> ctx.result("Hello World"));
-    get("/2", ctx -> {
-        Thread.sleep((long) (Math.random() * 2000));
-        ctx.result("Slow Hello World");
-    });
-    get("/3", ctx -> ctx.redirect("/2"));
-    get("/4", ctx -> ctx.status(400));
-    get("/5", ctx -> ctx.status(500));
-});
+```kotlin
+app.routes {
+    get("/1") { ctx -> ctx.result("Hello World") }
+    get("/2") { ctx ->
+        Thread.sleep((Math.random() * 2000).toLong())
+        ctx.result("Slow Hello World")
+    }
+    get("/3") { ctx -> ctx.redirect("/2") }
+    get("/4") { ctx -> ctx.status(400) }
+    get("/5") { ctx -> ctx.status(500) }
+}
 
 while (true) {
-    spawnRandomRequests();
+    spawnRandomRequests()
 }
 ```
 
 `spawnRandomRequests()` doesn't exist yet, so we need to create that too:
-```java
-private static void spawnRandomRequests() throws InterruptedException {
-    new Thread(() -> {
-        try {
-            for (int i = 0; i < new Random().nextInt(50); i++) {
-                Unirest.get("http://localhost:7070/1").asString(); // we want a lot more "200 - OK" traffic
-                Unirest.get("http://localhost:7070/" + (1 + new Random().nextInt(5))).asString(); // hit a random (1-5) endpoint
-            }
-        } catch (UnirestException ignored) {
+```kotlin
+private fun spawnRandomRequests() {
+    Thread {
+        for (i in 0 until (0..50).shuffled()[0]) {
+            Unirest.get("http://localhost:7070/1").asString() // we want a lot more "200 - OK" traffic
+            Unirest.get("http://localhost:7070/" + (1..5).shuffled()[0]).asString() // hit a random (1-5) endpoint
         }
-    }).start();
-    Thread.sleep((int) (Math.random() * 250));
+    }.start()
+    Thread.sleep((Math.random() * 250).toLong())
 }
 ```
 
