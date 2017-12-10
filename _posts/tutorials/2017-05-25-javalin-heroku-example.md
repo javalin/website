@@ -144,4 +144,4 @@ Again, make sure you're in your project root, then enter:
 mvn heroku:deploy
 ~~~
 
-That's it. Our application is now available at [https://javalin-heroku-example.herokuapp.com/](https://javalin-heroku-example.herokuapp.com/)
+That's it. Our application is now available at `https://<appname>.herokuapp.com/`
