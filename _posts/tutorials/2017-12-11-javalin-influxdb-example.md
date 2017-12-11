@@ -1,12 +1,12 @@
 ---
 layout: tutorial
-title: "Collecting real time analytics with javalin and influxDB"
+title: "Collecting real time analytics with influxDB"
 author: <a href="https://www.linkedin.com/in/ricardo-baumann-594b6b31/" target="_blank">Ricardo Baumann</a>
 date: 2017-12-11
 permalink: /tutorials/influxdb
 github: https://github.com/ricardobaumann/real-time-statistics
-summarytitle: Collecting real time analytics with javalin and influxDB
-summary: Collecting real time analytics with javalin and influxDB
+summarytitle: Collecting real time analytics with Javalin and influxDB
+summary: Learn how to setup Javalin with docker and influxDB
 language: kotlin
 ---
 
