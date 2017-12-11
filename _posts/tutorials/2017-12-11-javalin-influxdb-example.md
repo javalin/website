@@ -140,6 +140,7 @@ With the service running, try POSTing to `/upload` with
 `{
  	"count" : 40
 }`
+
 And then, GET the summary from `/statistics`. 
 
 Voila, boys and girls. Please let me know your insights about it. Thanks.  
