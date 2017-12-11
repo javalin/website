@@ -33,7 +33,8 @@ The is a javalin microservice application, with 2 endpoints:
 ## Implementation
 The application is made of 2 simple kotlin files:
 - `realtimestatistics.Main`: Creates the endpoints and application settings
-~~~kotlin
+
+```kotlin
 data class Statistic(val count: Int = 0, val timestamp: Long = Date().time)
 
 data class Total(val count: Double, val sum: Double, val min: Double, val max: Double)
@@ -77,59 +78,59 @@ class Controller(private val statisticService: StatisticsService) {
         ctx.json(statisticService.aggregated())
     }
 }
-~~~
+```
 - `realtimestatistics.StatisticsService`: Contains the business logic to create and retrieve the metrics, plus the database initialization
-~~~kotlin
-    private val timeFrameInMillis = 60000
 
-    private val aggregateQuery = """
-        SELECT  count(s_count) as count,
-                sum(s_count) as sum,
-                min(s_count) as min,
-                max(s_count) as max
-        FROM uploads
-        where time > now() - 60s
-        """
+```kotlin
+private val timeFrameInMillis = 60000
 
-    init {
-        influxDB.createDatabase(dbName)
+private val aggregateQuery = """
+    SELECT  count(s_count) as count,
+            sum(s_count) as sum,
+            min(s_count) as min,
+            max(s_count) as max
+    FROM uploads
+    where time > now() - 60s
+    """
+
+init {
+    influxDB.createDatabase(dbName)
+}
+
+fun create(statistic: Statistic): StatisticResult {
+    val now = Date().time
+    if ((statistic.timestamp + timeFrameInMillis) >= now) {
+        influxDB.write(dbName, "", Point.measurement("uploads")
+                .time(statistic.timestamp, TimeUnit.MILLISECONDS)
+                .addField("s_count", statistic.count)
+                .addField("s_timestamp", statistic.timestamp)
+                .build())
+        return StatisticResult.OK
     }
+    return StatisticResult.OLD
+}
 
-    fun create(statistic: Statistic): StatisticResult {
-        val now = Date().time
-        if ((statistic.timestamp + timeFrameInMillis) >= now) {
-            influxDB.write(dbName, "", Point.measurement("uploads")
-                    .time(statistic.timestamp, TimeUnit.MILLISECONDS)
-                    .addField("s_count", statistic.count)
-                    .addField("s_timestamp", statistic.timestamp)
-                    .build())
-            return StatisticResult.OK
-        }
-        return StatisticResult.OLD
+fun aggregated(): Total {
+    val query = Query(
+            aggregateQuery,
+            dbName
+    )
+    val results = influxDB.query(query)
+            .results
+    if (results.first().series == null) {
+        return Total(0.0, 0.0, 0.0, 0.0)
     }
-
-    fun aggregated(): Total {
-        val query = Query(
-                aggregateQuery,
-                dbName
-        )
-        val results = influxDB.query(query)
-                .results
-        if (results.first().series == null) {
-            return Total(0.0, 0.0, 0.0, 0.0)
-        }
-        return results.first().series.first().values
-                .map { mutableList ->
-                    Total(mutableList[1].toString().toDouble(),
-                            mutableList[2].toString().toDouble(),
-                            mutableList[3].toString().toDouble(),
-                            mutableList[4].toString().toDouble()
-                    )
-                }[0]
-    }
-
-~~~
-For the full source code, check https://github.com/ricardobaumann/real-time-statistics
+    return results.first().series.first().values
+            .map { mutableList ->
+                Total(mutableList[1].toString().toDouble(),
+                        mutableList[2].toString().toDouble(),
+                        mutableList[3].toString().toDouble(),
+                        mutableList[4].toString().toDouble()
+                )
+            }[0]
+}
+```
+For the full source code, check [https://github.com/ricardobaumann/real-time-statistics](https://github.com/ricardobaumann/real-time-statistics)
 ## Running locally
 For local running, I am using docker compose. So, on the root folder, run
 `docker-compose up`
