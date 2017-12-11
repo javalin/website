@@ -2,7 +2,7 @@
 layout: tutorial
 title: "Collecting real time analytics with javalin and influxDB"
 author: <a href="https://www.linkedin.com/in/ricardo-baumann-594b6b31/" target="_blank">Ricardo Baumann</a>
-date: 2017-11-17
+date: 2017-12-11
 permalink: /tutorials/influxdb
 github: https://github.com/ricardobaumann/real-time-statistics
 summarytitle: Collecting real time analytics with javalin and influxDB
