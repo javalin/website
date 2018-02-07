@@ -48,7 +48,7 @@ app.routes(() -> {
     path("users", () -> {
         get(UserController::getAllUserIds);
         post(UserController::createUser);
-        path(":user-id"(() -> {
+        path(":user-id", () -> {
             get(UserController::getUser);
             patch(UserController::updateUser);
             delete(UserController::deleteUser);
