@@ -45,7 +45,7 @@ Javalin app = Javalin.create()
     .start();
 
 app.routes(() -> {
-    path("users"(() -> {
+    path("users", () -> {
         get(UserController::getAllUserIds);
         post(UserController::createUser);
         path(":user-id"(() -> {
