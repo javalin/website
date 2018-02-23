@@ -694,6 +694,12 @@ Pull-requests adding Javadoc comments in the source code are not welcome.
 
 ## FAQ
 
+### Deploying
+To deploy Javalin, simply create a [jar with dependencies](https://maven.apache.org/plugins/maven-assembly-plugin/usage.html), 
+then launch the jar with `java -jar filename.jar`. That's it.  
+Javalin has an embedded server, so you don't need an application server.  
+There is also a tutorial on [deploying Javalin to Heroku](/tutorials/heroku).
+
 ### Uploads
 
 Uploaded files are easily accessible via `ctx.uploadedFiles()`:
