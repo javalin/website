@@ -66,6 +66,7 @@ The `Handler` interface has a void return type, so you have to use  `ctx.result(
 
 ### Before handlers
 Before-handlers are matched before every request (including static files, if you enable those).
+<div class="comment">You might know before-handlers as filters, interceptors, or middleware from other libraries.</div>
 
 {% capture java %}
 app.before("/some-path/*", ctx -> {
@@ -87,6 +88,7 @@ app.before { ctx ->
 
 ### Endpoint handlers
 Endpoint-handlers are matched in the order they are defined.
+<div class="comment">You might know endpoint-handlers as routes or middleware from other libraries.</div>
 
 {% capture java %}
 app.get("/", ctx -> {
@@ -140,7 +142,9 @@ get("/hello/*/and/*") { ctx ->
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ### After handlers
-After-handlers run after every request (even if an exception occurred in the `before` or `endpoint` handler)
+After-handlers run after every request (even if an exception occurred)
+<div class="comment">You might know after-handlers as filters, interceptors, or middleware from other libraries.</div>
+
 {% capture java %}
 app.after("/some-path/*", ctx -> {
     // runs after all request to /some-path/* (excluding static files)
@@ -409,7 +413,8 @@ app.exception(Exception::class.java) { e, ctx ->
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ### HaltException
-Javalin has a `HaltException` which is handled before other exceptions.
+Javalin has a `HaltException` which is handled before other exceptions. It can be used to short-circuit the request-lifecycle. 
+If you throw a `HaltException` in a `before`-handler, no `endpoint`-handler will fire.
 When throwing a `HaltException` you can include a status code, a message, or both:
 {% capture java %}
 throw new HaltException();                     // (status: 200, message: "Execution halted")
