@@ -86,7 +86,7 @@ app.before { ctx ->
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ### Endpoint handlers
-Endpoint handlers are matched in the order they are defined.
+Endpoint-handlers are matched in the order they are defined.
 
 {% capture java %}
 app.get("/", ctx -> {
@@ -140,7 +140,7 @@ get("/hello/*/and/*") { ctx ->
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ### After handlers
-After handlers
+After-handlers run after every request (even if an exception occurred in the `before` or `endpoint` handler)
 {% capture java %}
 app.after("/some-path/*", ctx -> {
     // runs after all request to /some-path/* (excluding static files)
