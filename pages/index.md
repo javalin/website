@@ -7,35 +7,36 @@ permalink: /
 <h1 class="no-margin-top">Simple REST APIs for Java and Kotlin</h1>
 
 Get your REST API up and running in seconds.
-Add the <a id="dependency-modal-link" href="/download">dependency</a> and copy example:
+Add the <a id="dependency-modal-link" href="/download">dependency</a> and copy the example:
 
 {% include macros/gettingStarted.md %}
 
-## REST API Simplicity
-Javalin started as a fork of the [Spark](http://sparkjava.com) Java and Kotlin web framework but quickly
+## REST API simplicity
+Javalin started as a fork of the Java and Kotlin web framework [Spark](http://sparkjava.com), but quickly
 turned into a ground-up rewrite influenced by [koa.js](http://koajs.com/#application).
-All of these web frameworks are inspired by the modern micro web framework
+Both of these web frameworks are inspired by the modern micro web framework
 grandfather: [Sinatra](http://www.sinatrarb.com/), so if you're coming from Ruby then
 Javalin shouldn't feel *too* unfamiliar.
 
-Javalin is not aiming to be a full web framework, but rather
-just a lightweight REST API library. There is no concept of MVC,
-but there is support for template engines, websockets, and static file serving for convenience.
+Like Sinatra, Javalin is not aiming to be a full web framework, but rather
+just a lightweight REST API library (or a micro framework, if you must). There is no concept of MVC,
+but there is support for template engines, WebSockets, and static file serving for convenience.
 This allows you to use Javalin for both creating your RESTful API backend, as well as serving
 an `index.html` with static resources (in case you're creating an SPA). This is practical
-if you don't want to deploy to apache or nginx in addition to your Javalin service.
-If you wish to use Javalin to create web-pages instead of just REST APIs,
-there are some simple template engine wrappers available for a quick and easy setup.
+if you don't want to deploy an apache or nginx server in addition to your Javalin service.
+If you wish to use Javalin to create a more traditional website instead of a REST APIs,
+there are several template engine wrappers available for a quick and easy setup.
 
-If you want a more established Java web framework, you could try [Spark](https://github.com/perwendel/spark).
-If you want a more established Kotlin web framework, you can try the [Spark Kotlin Wrapper](https://github.com/perwendel/spark-kotlin).
+Javalin is both a Kotlin web framework and a Java web framework, meaning the API is 
+being developed with focus on great interoperability between the two languages.
+Switch between the languages in the next section for an example.
 
 ## Fluent and readable API
 All the methods on the Javalin instance return `this`, making the API fully fluent. 
 This will let you create a declarative and predictive REST API, 
-that will be very easy to reason about for new developers joining your project. Javalin
-is at its best when you declare the application config and the REST API
-together:
+that will be very easy to reason about for new developers joining your project.
+
+Javalin is at its best when you declare the application config and the REST API together:
 
 {% capture java %}
 Javalin app = Javalin.create()
@@ -89,8 +90,7 @@ to see how to setup Kotlin with Maven, and how to use it with Javalin.
 
 ## Embedded Web-server
 Javalin runs on a fully configurable embedded web-server (jetty). This means that you can write your entire
-application in Javalin, and deploy it as a fat jar.\\
-Pull requests for other embedded servers would be welcome (netty, undertow, etc).
+application in Javalin, and deploy it as a fat jar.
 
 <div id="dependency-modal">
     <span class="close">✖</span>
