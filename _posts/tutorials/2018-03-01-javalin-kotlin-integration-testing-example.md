@@ -17,7 +17,7 @@ In this tutorial, you'll be walked through creating a very limited CRUD app and 
 ## Dependencies 
 First, get your workspace set up with gradle. Then you're going to need to add some dependencies to your project. Below are the relevant bits that you should pay attention to. 
 
-```
+```java
 repositories {
     mavenCentral()
     jcenter()
@@ -60,7 +60,7 @@ src
 
 
 First and foremost, to be able to test anything we need to be able to start and stop the server from our tests. The way the docs outline how to do this in a functional manner makes it difficult to do this. 
-```
+```kotlin
 // Main.kt
 fun main(args: Array<String>) {
     val app = Javalin.start(7000)
@@ -69,7 +69,7 @@ fun main(args: Array<String>) {
 ```
 A simple workaround for this is wrapping all of that in a dummy class. 
 
-```
+```kotlin
 // Main.kt
 fun main(args: Array<String>) {
 
@@ -96,7 +96,7 @@ class JavalinApp(private val port: Int) {
 
 Now that we don't depend on the `main` entrypoint, we can start and stop the server from our test runner. 
 
-```
+```kotlin
 // TestIntegration.kt
 class TestIntegration : TestCase() {
 
@@ -125,7 +125,7 @@ To actually be able to test anything, we need to have something to test!
 
 First we need to have some data to back out API. I'm not going to do anything fancy right now, so let's settle for a data class and a map of some items. 
 
-```
+```kotlin
 // FoodItem.kt
 data class FoodItem(val name: String, val calories: Int)
 
@@ -138,7 +138,7 @@ val foodItems = hashMapOf(
 
 To serialize your data to JSON, just pass the object to the `context.json(...)` method.
 
-```
+```kotlin
 // FoodItemController.kt
 class FoodItemController(private val data: Map<Int, FoodItem>) {
 
@@ -160,7 +160,7 @@ We have most of the wiring done, let's revisit `Main.kt` to add in some stuff I 
 
 In your app routes, add the url path for the request and make the call from the controller. 
 
-```
+```kotlin
 // Main.kt, class JavalinApp
 
 val controller = FoodItemController(foodItems)
@@ -181,7 +181,7 @@ Now if you launch your server and make a request to `/api/food/[0-2]` you should
 
 To make things a bit cleaner for ourselvs, let's create an extension function in our test util package that knows how to deserialize `String`s to objects. 
 
-```
+```kotlin
 // Extensions.kt
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -194,7 +194,7 @@ inline fun <reified T : Any> String.deserialize(): T =
 
 We can leverage our deserialization method in our tests and also take advantage of kotlin data classes free `equals` method here. 
 
-```
+```kotlin
 // TestIntegration.kt
 
 import io.javalin.Javalin
