@@ -25,7 +25,7 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    compile 'io.javalin:javalin:1.3.0'
+    compile 'io.javalin:javalin:{{site.javalinversion}}'
     compile "org.slf4j:slf4j-api:1.7.25"
     compile "org.slf4j:slf4j-simple:1.7.25"
     compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.+"
