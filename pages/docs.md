@@ -522,11 +522,14 @@ The following snippet shows all the configuration currently available in Javalin
 Javalin.create() // create has to be called first
     .contextPath("/context-path") // set a context path (default is "/")
     .dontIgnoreTrailingSlashes() // treat '/test' and '/test/' as different URLs
+    .defaultContentType(string) // set a default content-type for responses
+    .defaultCharacterEncoding(string) // set a default character-encoding for responses
     .embeddedServer( ... ) // see section below
     .enableCorsForOrigin("origin") // enables cors for the specified origin(s)
     .enableDynamicGzip() // gzip response (if client accepts gzip and response is more than 1500 bytes)
     .enableStandardRequestLogging() // does requestLogLevel(LogLevel.STANDARD)
     .enableStaticFiles("/public") // enable static files (opt. second param Location.CLASSPATH/Location.EXTERNAL)
+    .maxBodySizeForRequestCache(long) // set max body size for request cache
     .port(port) // set the port
     .start(); // start has to be called last
 {% endcapture %}
@@ -534,11 +537,14 @@ Javalin.create() // create has to be called first
 Javalin.create().apply { // create has to be called first
     contextPath("/context-path") // set a context path (default is "/")
     dontIgnoreTrailingSlashes() // treat '/test' and '/test/' as different URLs
+    defaultContentType(string) // set a default content-type for responses
+    defaultCharacterEncoding(string) // set a default character-encoding for responses
     embeddedServer( ... ) // see section below
     enableCorsForOrigin("origin") // enables cors for the specified origin(s)
     enableDynamicGzip() // gzip response (if client accepts gzip and response is more than 1500 bytes)
     enableStandardRequestLogging() // does requestLogLevel(LogLevel.STANDARD)
     enableStaticFiles("/public") // enable static files (opt. second param Location.CLASSPATH/Location.EXTERNAL)
+    maxBodySizeForRequestCache(long) // set max body size for request cache
     port(port) // set the port
 }.start() // start has to be called last
 {% endcapture %}
