@@ -13,7 +13,7 @@ permalink: /tutorials/
 <div class="posts-header" markdown="1">
 We recommend starting with either the [Maven setup](maven-setup) or [Gradle setup](gradle-setup) tutorial,
 then going through the [Kotlin CRUD REST API](/tutorials/simple-kotlin-example) tutorial.
-All of the tutorials can be followed in either language.
+Most of the tutorials can be followed in either language.
 </div>
 
 <div class="posts-overview">
