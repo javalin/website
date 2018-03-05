@@ -696,12 +696,8 @@ session.anyQueryParamNull("k1", "k2") // check if any query-param from upgrade-r
 ```
 
 ## Javadoc
-There is a Javadoc available at [javadoc.io](http://javadoc.io/doc/io.javalin/javalin), 
-but Javalin doesn't really have lot of comments. Please use the website to learn how to
-use Javalin, the only comments in the source code are to understand the 
-internal apis/control flow.
-
-Pull-requests adding Javadoc comments in the source code are not welcome.
+There is a Javadoc available at [javadoc.io](http://javadoc.io/doc/io.javalin/javalin).  
+Please contribute to the Javadoc if you can.
 
 ## FAQ
 
