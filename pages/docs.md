@@ -790,3 +790,10 @@ JavalinMustachePlugin.configure(mustacheFactory)
 JavalinCommonmarkPlugin.configure(htmlRenderer, markdownParser)
 ```
 Note that these are global settings, and can't be configured per instance of Javalin.
+
+
+### TimeoutExceptions and ClosedChannelExceptions
+So, you're seeing `TimeoutExceptions` and `ClosedChannelExceptions` in your DEBUG logs?
+There is nothing to worry about, typically a browser will keep the HTTP connection open until the
+server terminates it. When this happens is decided by the server's `idleTimeout` setting, 
+which is 30 seconds by default in Jetty/Javalin. This is not a bug.
