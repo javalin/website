@@ -1,19 +1,8 @@
 .tutorial {
-  h1, h2, h3, h4 {
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
-    font-weight: 400;
-  }
   h1 {
-    font-size: 26px;
-  }
-  h2 {
-    font-size: 22px;
-  }
-  h3 {
-    font-size: 20px;
-  }
-  h4 {
-    font-size: 18px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   #timeToRead {
     float: right;

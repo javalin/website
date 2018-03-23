@@ -1,9 +1,7 @@
 .posts-overview {
   overflow: hidden;
   margin: 24px 0;
-  padding: 24px 0;
   border-bottom: 1px solid #ddd;
-  border-top: 1px solid #ddd;
 }
 
 .posts-header,
@@ -63,4 +61,9 @@ ul.post-list {
       font-size: 13px;
     }
   }
+}
+
+.subtitle {
+  margin-top: 16px;
+  font-size: 18px;
 }

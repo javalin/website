@@ -3,15 +3,14 @@ layout: default
 ---
 
 <article class="news" itemscope itemtype="http://schema.org/BlogPosting">
-    <h1 class="no-margin-top" itemprop="name headline">Javalin {{ page.version }} released - {{ page.title }}</h1>
-    <time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{{ page.date | date: "%b %-d, %Y" }}</time>
+    <h1 class="no-margin-top" itemprop="name headline">Javalin {{ page.version }} released</h1>
+    <em><time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{{ page.date | date: "%b %-d, %Y" }}</time></em>
+    <div class="subtitle">{{ page.title }}</div>
     {% if page.author %}
         • Written by <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">{{ page.author }}</span></span>
     {% endif %}
-    <hr>
     <div class="post-content" itemprop="articleBody">
         {{ content }}
     </div>
 </article>
-<hr>
 {% include socialButtons.html %}
