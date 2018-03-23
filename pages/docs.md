@@ -17,6 +17,7 @@ permalink: /documentation
 * [Access manager](#access-manager)
 * [Exception Mapping](#exception-mapping)
 * [Error Mapping](#error-mapping)
+* [WebSockets](#websockets)
 * [Lifecycle events](#lifecycle-events)
 * [Server setup](#server-setup)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Start/stop](#starting-and-stopping)
@@ -24,7 +25,7 @@ permalink: /documentation
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Custom server](#custom-server)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;SSL](#ssl)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Static Files](#static-files)
-* [ &nbsp;&nbsp;&nbsp;&nbsp;WebSockets](#websockets)
+* [ &nbsp;&nbsp;&nbsp;&nbsp;Jetty WebSockets](#jetty-websockets)
 * [Javadoc](#javadoc)
 * [FAQ](#faq)
 </div>
@@ -463,6 +464,51 @@ app.exception(FileNotFoundException::class.java, { e, ctx ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
+## WebSockets 
+
+Javalin has a very intuitive way of handling WebSockets, similar to most node frameworks:
+
+{% capture java %}
+app.ws("/websocket/:path", ws -> {
+    ws.onConnect(session -> System.out.println("Connected"));
+    ws.onMessage((session, message) -> {
+        System.out.println("Received: " + message);
+        session.getRemote().sendString("Echo: " + message);
+    });
+    ws.onClose((session, statusCode, reason) -> System.out.println("Closed"));
+    ws.onError((session, throwable) -> System.out.println("Errored"));
+});
+{% endcapture %}
+{% capture kotlin %}
+app.ws("/websocket/:path") { ws ->
+    ws.onConnect { session -> println("Connected") }
+    ws.onMessage { session, message ->
+        println("Received: " + message)
+        session.remote.sendString("Echo: " + message)
+    }
+    ws.onClose { session, statusCode, reason -> println("Closed") }
+    ws.onError { session, throwable -> println("Errored") }
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+### WsSession
+The `WsSession` object wraps Jetty's `Session` and adds the following methods:
+```java
+session.send("message") // send a message to session remote (the ws client)
+session.queryString() // get query-string from upgrade-request
+session.queryParam("key") // get query-param from upgrade-request
+session.queryParams("key") // get query-params from upgrade-request
+session.queryParamMap() // get query-param-map from upgrade-request
+session.mapQueryParams("k1", "k2") // map query-params to values (only useful in kotlin)
+session.anyQueryParamNull("k1", "k2") // check if any query-param from upgrade-request is null
+session.param("key") // get a path-parameter, ex "/:id" -> param("id")
+session.paramMap() // get all param key/values as map
+session.header("key") // get a header
+session.headerMap() // get all header key/values as map
+session.host() // get request host
+```
+
 ## Lifecycle events
 Javalin has five lifecycle events: `SERVER_STARTING`, `SERVER_STARTED`, `SERVER_START_FAILED`, `SERVER_STOPPING` and `SERVER_STOPPED`.
 The snippet below shows all of them in action:
@@ -527,6 +573,7 @@ Javalin.create() // create has to be called first
     .embeddedServer( ... ) // see section below
     .enableCorsForOrigin("origin") // enables cors for the specified origin(s)
     .enableDynamicGzip() // gzip response (if client accepts gzip and response is more than 1500 bytes)
+    .enableRouteOverview("/path") // render a HTML page showing all mapped routes
     .enableStandardRequestLogging() // does requestLogLevel(LogLevel.STANDARD)
     .enableStaticFiles("/public") // enable static files (opt. second param Location.CLASSPATH/Location.EXTERNAL)
     .maxBodySizeForRequestCache(long) // set max body size for request cache
@@ -541,6 +588,7 @@ Javalin.create().apply { // create has to be called first
     defaultCharacterEncoding(string) // set a default character-encoding for responses
     embeddedServer( ... ) // see section below
     enableCorsForOrigin("origin") // enables cors for the specified origin(s)
+    enableRouteOverview("/path") // render a HTML page showing all mapped routes
     enableDynamicGzip() // gzip response (if client accepts gzip and response is more than 1500 bytes)
     enableStandardRequestLogging() // does requestLogLevel(LogLevel.STANDARD)
     enableStaticFiles("/public") // enable static files (opt. second param Location.CLASSPATH/Location.EXTERNAL)
@@ -639,35 +687,10 @@ This should only be used for versioned library files, like `vue-2.4.2.min.js`, t
 the browser ending up with an outdated version if you change the file content.
 
 
-### WebSockets
+### Jetty WebSockets
 
-WebSockets are handled entirely by Jetty and must be declared before starting the server.
-There are three different ways of using WebSockets:
-
-### Lambda approach
-{% capture java %}
-app.ws("/websocket", ws -> {
-    ws.onConnect(session -> System.out.println("Connected"));
-    ws.onMessage((session, message) -> {
-        System.out.println("Received: " + message);
-        session.getRemote().sendString("Echo: " + message);
-    });
-    ws.onClose((session, statusCode, reason) -> System.out.println("Closed"));
-    ws.onError((session, throwable) -> System.out.println("Errored"));
-});
-{% endcapture %}
-{% capture kotlin %}
-app.ws("/websocket") { ws ->
-    ws.onConnect { session -> println("Connected") }
-    ws.onMessage { session, message ->
-        println("Received: " + message)
-        session.remote.sendString("Echo: " + message)
-    }
-    ws.onClose { session, statusCode, reason -> println("Closed") }
-    ws.onError { session, throwable -> println("Errored") }
-}
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+Javalin supports native Jetty WebSockets, but these must be declared before starting the server.
+There are two different ways of using these WebSockets:
 
 ### Annotated class
 You can pass an annotated class to the `ws()` function:
@@ -681,18 +704,6 @@ Annotation API can be found on [Jetty's docs page](http://www.eclipse.org/jetty/
 You can pass any object that fulfills Jetty's requirements (annotated/implementing `WebSocketListener`, etc):
 ```java
 app.ws("/websocket", new WebSocketObject());
-```
-
-### WsSession
-Javalin 1.1.0 added a `WsSession` wrapper around Jetty's `Session`. It adds the following methods:
-```java
-session.send("message") // send a message to session remote (the ws client)
-session.queryString() // get query-string from upgrade-request
-session.queryParam("key") // get query-param from upgrade-request
-session.queryParams("key") // get query-params from upgrade-request
-session.queryParamMap() // get query-param-map from upgrade-request
-session.mapQueryParams("k1", "k2") // map query-params to values (only useful in kotlin)
-session.anyQueryParamNull("k1", "k2") // check if any query-param from upgrade-request is null
 ```
 
 ## Javadoc
@@ -720,7 +731,7 @@ app.post("/upload", ctx -> {
 {% capture kotlin %}
 app.post("/upload") { ctx ->
     ctx.uploadedFiles("files").forEach { (contentType, content, name, extension) ->
-        FileUtils.copyInputStreamToFile(content, File("upload/" + name))
+        content.copyTo(File("upload/" + name))
     }
 }
 {% endcapture %}

@@ -21,6 +21,9 @@ ul.post-list {
   &.half {
     width: 50%;
     float: left;
+    li a h2 {
+      font-size: 18px;
+    }
   }
   h2 {
     margin-top: 0;
@@ -29,12 +32,32 @@ ul.post-list {
     + li {
       margin-top: 24px;
     }
-    h2 {
-      font-size: 20px;
-      max-width: 100%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    a {
+      color: #444;
+      display: block;
+      padding: 15px;
+      background: #fff;
+      border: 1px solid #ddd;
+      &:hover {
+        box-shadow: inset 2px 0 0 0 $javalin-brand-primary;
+      }
+      h2 {
+        color: $javalin-brand-primary;
+        font-size: 24px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        .date {
+          font-size: 65%;
+          font-weight: 300;
+          color: #666;
+          float: right;
+        }
+      }
+      h3 {
+        margin-top: 5px;
+        font-size: 20px;
+      }
     }
     p {
       font-size: 13px;

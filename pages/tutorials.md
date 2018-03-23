@@ -21,8 +21,10 @@ Most of the tutorials can be followed in either language.
         <h2>Java tutorials</h2>
         {% for tutorial in jTuts %}
         <li class="post-summary">
-          <h2><a href="{{ tutorial.url }}">{{ tutorial.summarytitle }}</a></h2>
-          <p>{{ tutorial.summary }}</p>
+            <a href="{{ tutorial.url }}">
+                <h2>{{ tutorial.summarytitle }}</h2>
+                <p>{{ tutorial.summary }}</p>
+            </a>
         </li>
         {% endfor %}
     </ul>
@@ -30,8 +32,10 @@ Most of the tutorials can be followed in either language.
         <h2>Kotlin tutorials</h2>
         {% for tutorial in kTuts %}
             <li class="post-summary">
-                <h2><a href="{{ tutorial.url }}">{{ tutorial.summarytitle }}</a></h2>
-                <p>{{ tutorial.summary }}</p>
+                <a href="{{ tutorial.url }}">
+                  <h2>{{ tutorial.summarytitle }}</h2>
+                  <p>{{ tutorial.summary }}</p>
+              </a>
             </li>
         {% endfor %}
     </ul>
