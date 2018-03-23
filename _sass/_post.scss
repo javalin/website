@@ -1,7 +1,6 @@
 .posts-overview {
   overflow: hidden;
   margin: 24px 0;
-  border-bottom: 1px solid #ddd;
 }
 
 .posts-header,
@@ -73,4 +72,27 @@ ul.post-list {
 .subtitle {
   margin-top: 16px;
   font-size: 18px;
+}
+
+@media (max-width: 480px) {
+  ul.post-list {
+    &.half {
+      width: 100%;
+      &:first-of-type,
+      &:last-of-type {
+        margin: 0;
+      }
+      + .half {
+        margin-top: 24px;
+      }
+    }
+    li a {
+      h2 {
+        font-size: 18px;
+        .date {
+          margin-top: 3px;
+        }
+      }
+    }
+  }
 }
