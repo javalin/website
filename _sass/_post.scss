@@ -14,11 +14,17 @@
 
 ul.post-list {
   list-style: none;
-  padding: 0 30px 0 0;
+  padding: 0;
   margin: 0;
   &.half {
-    width: 50%;
     float: left;
+    width: calc(50% - 20px);
+    &:first-of-type {
+      margin-right: 20px;
+    }
+    &:last-of-type {
+      margin-left: 20px;
+    }
     li a h2 {
       font-size: 18px;
     }
@@ -36,6 +42,7 @@ ul.post-list {
       padding: 15px;
       background: #fff;
       border: 1px solid #ddd;
+      min-height: 100px;
       &:hover {
         box-shadow: inset 2px 0 0 0 $javalin-brand-primary;
       }
