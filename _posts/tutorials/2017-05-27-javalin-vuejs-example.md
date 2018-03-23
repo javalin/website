@@ -1,11 +1,11 @@
 ---
 layout: tutorial
-title: "Use Vue.js and Kotlin to create the famous TODO MVC app"
+title: "TODO MVC with Vue.js and Kotlin"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2017-05-27
 permalink: /tutorials/kotlin-vuejs-example
 github: https://github.com/tipsy/javalin-vuejs-example
-summarytitle: Single-page-application using Javalin, Kotlin and Vue.js
+summarytitle: Single-page app with Kotlin and Vue.js
 summary: Use Vue.js and Kotlin to create the famous TODO MVC app
 language: kotlin
 ---
