@@ -5,7 +5,7 @@ author: <a href="https://www.linkedin.com/in/ricardo-baumann-594b6b31/" target="
 date: 2017-12-11
 permalink: /tutorials/influxdb
 github: https://github.com/ricardobaumann/real-time-statistics
-summarytitle: Collecting real time analytics with influxDB and Javalin 
+summarytitle: Real time analytics with influxDB 
 summary: Learn how to setup Javalin with docker and influxDB
 language: kotlin
 ---

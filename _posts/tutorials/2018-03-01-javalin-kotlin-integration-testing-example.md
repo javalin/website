@@ -1,12 +1,12 @@
 ---
 layout: tutorial
-title: "Integration Testing with khttp"
+title: "Integration testing with khttp"
 author: <a href="https://www.linkedin.com/in/kevin-cianfarini-b37807101/" target="_blank">Kevin Cianfarini</a>
 date: 2018-03-01
 permalink: /tutorials/integration-testing-kotlin
 github: https://github.com/kevincianfarini/fastfood
-summarytitle: Integration Testing With khttp
-summary: Learn How to Build Integration Tests For Your Server
+summarytitle: Integration testing with khttp
+summary: Learn how to build integration tests for your server
 language: kotlin
 ---
 
