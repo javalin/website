@@ -23,10 +23,9 @@ permalink: /documentation
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Start/stop](#starting-and-stopping)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Configuration](#configuration)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Custom server](#custom-server)
-* [ &nbsp;&nbsp;&nbsp;&nbsp;SSL](#ssl)
+* [ &nbsp;&nbsp;&nbsp;&nbsp;SSL/HTTP2](#sslhttp2)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Static Files](#static-files)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Jetty WebSockets](#jetty-websockets)
-* [Javadoc](#javadoc)
 * [FAQ](#faq)
 </div>
 
@@ -646,11 +645,14 @@ Javalin.create().apply {
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-### Ssl
+### SSL/HTTP2
 
-To configure SSL you need to use a custom server (see previous section).\\
-An example of a custom server with SSL can be found
-[here](https://github.com/tipsy/javalin/blob/master/src/test/java/io/javalin/examples/HelloWorldSecure.java#L25-L33).
+To configure SSL or HTTP2 you need to use a custom server (see previous section).\\
+An example of a custom server with SSL can be found in the examples, 
+[HelloWorldSecure](https://github.com/tipsy/javalin/blob/master/src/test/java/io/javalin/examples/HelloWorldSecure.java#L24-L32).
+
+A custom HTTP2 server is a bit more work to set up, but we have a repo with a
+fully functioning example server in both Kotlin and Java: [javalin-http2-example](https://github.com/tipsy/javalin-http2-example)
 
 ### Static Files
 You can enabled static file serving by doing `app.enableStaticFiles("/classpath-folder")`, and/or
@@ -706,11 +708,12 @@ You can pass any object that fulfills Jetty's requirements (annotated/implementi
 app.ws("/websocket", new WebSocketObject());
 ```
 
-## Javadoc
+## FAQ
+
+### Javadoc
 There is a Javadoc available at [javadoc.io](http://javadoc.io/doc/io.javalin/javalin).  
 Please contribute to the Javadoc if you can.
 
-## FAQ
 
 ### Deploying
 To deploy Javalin, simply create a [jar with dependencies](https://maven.apache.org/plugins/maven-assembly-plugin/usage.html), 
