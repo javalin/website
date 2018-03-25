@@ -48,6 +48,8 @@ footer {
 }
 
 nav {
+  font-family: 'Encode Sans', sans-serif;
+  font-weight: 500;
   height: 80px;
   position: relative;
   #logo img {
@@ -71,7 +73,7 @@ nav {
         color: #333;
         text-decoration: none;
         padding: 0 15px;
-        line-height: 40px;
+        line-height: 32px;
         &:hover {
           color: #000;
         }

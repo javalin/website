@@ -13,6 +13,7 @@ $javalin-brand-primary: #008ab4;
 
 html {
   background: #f9f9f9;
+  background: linear-gradient(#f9f9f9, #fcfcfc);
   overflow-y: scroll;
   color: #333;
   line-height: 1.4;
@@ -44,7 +45,8 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: arial, sans-serif;
+  font-family: 'Encode Sans', sans-serif;
+  font-weight: 700;
   letter-spacing: -0.5px;
   margin-top: 1.75em;
   margin-bottom: 0.25em;
@@ -53,17 +55,9 @@ h4 {
   }
 }
 
-hr {
-  overflow: visible;
-  border: 0;
-  height: 1px;
-  background: #ddd;
-  margin: 15px 0;
-}
-
 p {
-  margin: 1.5em 0 0.25em;
   font-family: Verdana, sans-serif;
+  margin: 1.5em 0 0.25em;
 }
 
 li {
