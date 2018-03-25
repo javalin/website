@@ -1,0 +1,144 @@
+main {
+    padding: 0;
+}
+
+#fork-me {
+    display: none;
+}
+
+header nav {
+    text-align: center;
+}
+
+header nav ul {
+    display: none;
+}
+
+main.width-limit {
+    max-width: 100%;
+    padding: 0;
+}
+
+header {
+    position: absolute;
+    border: 0;
+    background: #028fbf;
+}
+
+nav ul li + li {
+    border: 0;
+}
+
+nav ul li a {
+    color: rgba(255, 255, 255, 0.95);
+}
+
+nav ul li a:hover {
+    color: white;
+}
+
+.landing h1 {
+    text-align: center;
+}
+
+.bluepart ::selection {
+    background: #027aa3;
+}
+
+.bluepart {
+    background: radial-gradient(#02a2d7, #028ebc);
+    padding: 80px 20px;
+}
+
+.bluepart .multitab-code {
+    max-width: 500px;
+    margin: 32px auto 0;
+}
+
+.bluepart .multitab-code ul {
+    background: rgba(0, 0, 0, 0.15);
+}
+
+.bluepart .multitab-code pre {
+    background: rgba(0, 0, 0, 0.15);
+}
+
+.bluepart .multitab-code pre code {
+    line-height: 1.4;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+.bluepart .multitab-code pre code .token.number {
+    color: #ffbbea;
+}
+
+.bluepart .multitab-code pre code .token.function {
+    color: #ffe200;
+}
+
+.bluepart .multitab-code pre code .token.string {
+    color: #9be800;
+}
+
+.bluepart .multitab-code pre code .token.keyword {
+    color: #54e3ff;
+}
+
+.bluepart h1 {
+    text-align: center;
+    color: white;
+    font-weight: 500;
+    margin: 0;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
+}
+
+.bluepart > p {
+    text-align: center;
+    color: white;
+}
+
+.center {
+    text-align: center;
+}
+
+.landing-btn {
+    margin: 32px 8px 0;
+    text-align: center;
+    display: inline-block;
+    border: 1px solid white;
+    color: white;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 50px;
+}
+
+.boxes {
+    padding: 20px;
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto 32px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.boxes .box {
+    text-align: left;
+    flex-basis: calc(50% - 16px);
+    border: 1px solid #ddd;
+    padding: 15px;
+    background: #fff;
+    font-size: 14px;
+    margin-bottom: 32px;
+}
+
+.boxes .box h3 {
+    margin-top: 0;
+    font-weight: 500;
+    text-transform: none;
+}
+
+@media (max-width: 480px) {
+    .boxes .box {
+        flex-basis: 100%;
+    }
+}

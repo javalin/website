@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <link href="https://fonts.googleapis.com/css?family=Encode+Sans:500,700" rel="stylesheet">
-    <meta property="og:title" content="{% if page.title %}{{ page.title }} - {% endif %}Javalin: Simple REST APIs for Java and Kotlin">
+    <meta property="og:title" content="{% if page.title %}{{ page.title }} - {% endif %}Javalin - A lightweight Java and Kotlin web framework. Create REST APIs in Java or Kotlin easily.">
     <meta property="og:site_name" content="Javalin">
     <meta property="og:url" content="https://javalin.io">
     <meta property="og:description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="google-site-verification" content="liMtSlffOZROWLqoiOZdSx-luH9_Siq5-Ot6xqHZwq8">
     <title>
-        {% if page.title %}{{ page.title }} - {% endif %}Javalin: Simple REST APIs for Java and Kotlin
+        {% if page.title %}{{ page.title }} - {% endif %}Javalin - A lightweight Java and Kotlin web framework
     </title>
     <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
     <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
@@ -32,7 +32,9 @@
     {% include forkMe.html %}
     <header>
         <nav class="width-limit">
-            <a id="logo" href="/"><img src="/img/logo.svg"></a>
+            <a id="logo" href="/">
+                {% if page.splash %}<img src="/img/logo_inv.svg">{% else %}<img src="/img/logo.svg">{% endif %}
+            </a>
             <ul>
                 <li><a href="/download">Download</a></li>
                 <li><a href="/documentation">Docs</a></li>
@@ -45,8 +47,9 @@
         {{ content }}
     </main>
     <footer>
-        Javalin is a free and open source REST API library for Java and Kotlin, released under the
-        <a href="https://tldrlegal.com/license/apache-license-2.0-(apache-2.0)" target="_blank">Apache 2 License</a>
+        Javalin is a Java and Kotlin web framework, open sourced under Apache 2
+        | <a href="/about">About</a>
+        | <a href="/about#contact">Contact</a>
     </footer>
     {% include starBegging.html %}
     <script src="/js/scripts.js"></script>

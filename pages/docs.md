@@ -709,6 +709,7 @@ app.ws("/websocket", new WebSocketObject());
 ```
 
 ## FAQ
+Frequently asked questions
 
 ### Javadoc
 There is a Javadoc available at [javadoc.io](http://javadoc.io/doc/io.javalin/javalin).  

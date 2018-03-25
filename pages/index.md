@@ -1,47 +1,65 @@
 ---
 layout: default
-rightmenu: false
+splash: true
 permalink: /
 ---
 
-<h1 class="no-margin-top">Simple REST APIs for Java and Kotlin</h1>
+<style>{% include landing.css %}</style>
 
-Get your REST API up and running in seconds.
-Add the <a id="dependency-modal-link" href="/download">dependency</a> and copy the example:
+<div class="landing bluepart">
+    <h1>A simple web framework<br>for Java and Kotlin</h1>
+    {% include macros/gettingStarted.md %}
+    <div class="center">
+        <a class="landing-btn" href="/documentation">Show me the docs</a>
+        <a class="landing-btn" href="/tutorials">Show me tutorials</a>
+    </div>
+</div>
 
-{% include macros/gettingStarted.md %}
+<div class="landing whitepart">
+    <h1>Why Javalin?</h1>
+    <div class="boxes">
+        <div class="box">
+            <h3>Simple</h3>
+            <p>
+                Unlike other Java and Kotlin web frameworks, Javalin has very few concepts that the end-user needs to learn.
+                You never have to extend a class and you rarely have to implement an interface.
+            </p>
+        </div>
+        <div class="box">
+            <h3>Lightweight</h3>
+            <p>
+                Javalin is just a few thousand lines of code on top of Jetty, which
+                means its performance is almost equivalent to pure Jetty. It also means it's
+                very easy to reason about the source code.
+            </p>
+        </div>
+        <div class="box">
+            <h3>Active</h3>
+            <p>
+                A new version of Javalin has been released twice a month (on average) since the first version.
+                Don't worry though, every version is backwards compatible.
+                PRs and issues are reviewed swiftly, normally every week.
+            </p>
+        </div>
+        <div class="box">
+            <h3>Great interoperability</h3>
+            <p>
+                Other Java and Kotlin web frameworks offer separate version for each language.
+                Javalin is being developed with interoperability in mind, so apps are built the same way in both Java and Kotlin.
+            </p>
+        </div>
+    </div>
+</div>
 
-## REST API simplicity
-Javalin started as a fork of the Java and Kotlin web framework [Spark](http://sparkjava.com), but quickly
-turned into a ground-up rewrite influenced by [koa.js](http://koajs.com/#application).
-Both of these web frameworks are inspired by the modern micro web framework
-grandfather: [Sinatra](http://www.sinatrarb.com/), so if you're coming from Ruby then
-Javalin shouldn't feel *too* unfamiliar.
-
-Like Sinatra, Javalin is not aiming to be a full web framework, but rather
-just a lightweight REST API library (or a micro framework, if you must). There is no concept of MVC,
-but there is support for template engines, WebSockets, and static file serving for convenience.
-This allows you to use Javalin for both creating your RESTful API backend, as well as serving
-an `index.html` with static resources (in case you're creating an SPA). This is practical
-if you don't want to deploy an apache or nginx server in addition to your Javalin service.
-If you wish to use Javalin to create a more traditional website instead of a REST APIs,
-there are several template engine wrappers available for a quick and easy setup.
-
-Javalin is both a Kotlin web framework and a Java web framework, meaning the API is 
-being developed with focus on great interoperability between the two languages.
-Switch between the languages in the next section for an example.
-
-## Fluent and readable API
-All the methods on the Javalin instance return `this`, making the API fully fluent. 
-This will let you create a declarative and predictive REST API, 
-that will be very easy to reason about for new developers joining your project.
-
-Javalin is at its best when you declare the application config and the REST API together:
-
+<div class="landing bluepart">
+<h1>Declare your server and API<br> all in one file</h1>
 {% capture java %}
+import io.javalin.ApiBuilder.*
+import io.javalin.Javalin;
+
 Javalin app = Javalin.create()
-    .enableStaticFiles("/public")
     .enableStandardRequestLogging()
+    .enableDynamicGzip()
     .port(port)
     .start();
 
@@ -58,9 +76,12 @@ app.routes(() -> {
 });
 {% endcapture %}
 {% capture kotlin %}
+import io.javalin.ApiBuilder.*
+import io.javalin.Javalin;
+
 val app = Javalin.create().apply {
-    enableStaticFiles("/public")
     enableStandardRequestLogging()
+    enableDynamicGzip()
     port(port)
 }.start()
 
@@ -78,21 +99,32 @@ app.routes {
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-## Works well with both Java and Kotlin
-The name Javalin comes from <b>Java</b> and Kot<b>lin</b>, and is meant 
-to be used with both Java and Kotlin. The library itself is written primarily in Kotlin, but has a few
-core classes written in Java to achieve the best interoperability between the two languages.
-Javalin is intended as a "foot in the door" to Kotlin development for companies
-that already write a lot of Java, and anyone can easily set up a microservice REST API in
-Kotlin and try it out.  
-Go through the [Kotlin REST API tutorial](/tutorials/simple-kotlin-example)
-to see how to setup Kotlin with Maven, and how to use it with Javalin.
+<p>Creating a REST API has never been easier</p>
 
-## Embedded Web-server
-Javalin runs on a fully configurable embedded web-server (jetty). This means that you can write your entire
-application in Javalin, and deploy it as a fat jar.
+<div class="center">
+    <a class="landing-btn" href="/documentation">Show me the docs</a>
+    <a class="landing-btn" href="/tutorials">Show me tutorials</a>
+</div>
+</div>
 
-<div id="dependency-modal">
-    <span class="close">✖</span>
-    {% include macros/mavenDep.md %}
+<div class="landing whitepart">
+    <h1>Built on a solid foundation</h1>
+    <div class="boxes">
+        <div class="box">
+            <h3>Jetty</h3>
+            <p>
+                Javalin runs on top of Jetty, one of the most used and stable web-servers on the JVM.
+                You can configure the Jetty server fully, so you can easily get SSL and HTTP2 and everything else
+                that Jetty has to offer.
+            </p>
+        </div>
+        <div class="box">
+            <h3>SparkJava and Koa.js</h3>
+            <p>
+                Javalin started as a fork of the Java and Kotlin web framework SparkJava,
+                but quickly turned into a ground-up rewrite influenced by the Javascript framework koa.js.
+                Javalin implements lessons learned from working extensively with both of these frameworks.
+            </p>
+        </div>
+    </div>
 </div>

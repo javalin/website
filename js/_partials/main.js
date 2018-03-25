@@ -48,17 +48,3 @@ document.addEventListener("click", function (e) {
         e.target.parentElement.parentElement.setAttribute("data-tab", targetTab);
     }
 });
-
-document.addEventListener("click", function (e) {
-    var modal = document.querySelector("#dependency-modal");
-    if (modal === null || window.innerWidth < 800) {
-        return;
-    }
-    if (e.target.classList.contains("close") || !e.path.includes(modal)) {
-        modal.classList.remove("open");
-    }
-    if (e.target.id === "dependency-modal-link") {
-        e.preventDefault();
-        modal.classList.add("open");
-    }
-});
