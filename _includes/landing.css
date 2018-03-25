@@ -141,4 +141,7 @@ nav ul li a:hover {
     .boxes .box {
         flex-basis: 100%;
     }
+    .bluepart {
+        padding: 40px 20px;
+    }
 }
