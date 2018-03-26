@@ -187,6 +187,11 @@ We can use `with` ([docs](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/wi
 and trailing closures to create very clean api declarations:
 
 ~~~kotlin
+import app.user.User
+import app.user.UserDao
+import io.javalin.ApiBuilder.*
+import io.javalin.Javalin
+
 fun main(args: Array<String>) {
 
     val userDao = UserDao()
