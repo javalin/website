@@ -6,7 +6,7 @@ permalink: /for-educators
 ---
 
 <h1 class="no-margin-top">For educators</h1>
-Javalin is often used in programming courses and for demos/prototypes. This page explains why.
+Javalin is well suited for programming courses and for demos/prototypes. This page explains why.
 
 ## Simple setup and configuration
 A lot of universities still use application servers such as Glassfish or Tomcat when teaching Java web development.
@@ -51,7 +51,7 @@ This lets new users discover the API with their IDE:
 <img src="/img/pages/for-educators-discoverability.png" alt="Discoverability">
 
 ## Good documentation and tutorials
-Javalin's documentation is example based rather than technical, which allows new users to copy snippets and experiment.
+Javalin's documentation is example-based rather than technical, which allows new users to copy snippets and experiment with them.
 Javalin also has tutorials for most common tasks that developers have to solve when starting web-programming.
 
 ## Active development
