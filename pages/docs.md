@@ -215,7 +215,6 @@ the response object.
 ctx.request();                      // get underlying HttpServletRequest
 ctx.anyFormParamNull("k1", "k2");   // returns true if any form-param is null
 ctx.anyQueryParamNull("k1", "k2");  // returns true if any query-param is null
-ctx.async();                        // run the request asynchronously
 ctx.body();                         // get the request body as string
 ctx.bodyAsBytes();                  // get the request body as byte-array
 ctx.bodyAsClass(clazz);             // convert json body to object (requires jackson)
@@ -265,8 +264,10 @@ ctx.userAgent();                    // get request user agent
 ctx.response();                     // get underlying HttpServletResponse
 ctx.result("result");               // set result (string)
 ctx.result(inputStream);            // set result (stream)
+ctx.result(future);                 // set result (future)
 ctx.resultString();                 // get response result (string)
 ctx.resultStream();                 // get response result (stream)
+ctx.resultFuture();                 // get response result (future)
 ctx.charset("charset");             // set response character encoding
 ctx.header("key", "value");         // set response header
 ctx.html("body html");              // set result and html content type
@@ -776,6 +777,30 @@ dependency to your project:
 
 This will remove the warning from SLF4J, and enable
 helpful debug messages while running Javalin.
+
+### Asynchronous requests
+Javalin 1.6.0 introduced future results. While the default threadpool (200 threads) is enough for most use cases,
+sometimes slow operations should be run asynchronously. Luckily it's very easy in Javalin, just
+pass a `CompletableFuture` to `ctx.result()`:
+
+```kotlin
+import io.javalin.Javalin
+
+fun main(args: Array<String>) {
+    val app = Javalin.start(7000)
+    app.get("/") { ctx -> ctx.result(getFuture()) }
+}
+
+// hopefully your future is less pointless than this:
+private fun getFuture() = CompletableFuture<String>().apply {
+    Executors.newSingleThreadScheduledExecutor().schedule({ this.complete("Hello World!") }, 1, TimeUnit.SECONDS)
+}
+```
+<div class="comment">Synonyms for ctrl+f: Async, CompletableFuture, Future, Concurrent, Concurrency</div>
+
+You can only set future-results in endpoint handlers (get/post/put/etc).\\
+After-handlers, exception-handlers and error-handlers run like you'd expect them to after
+the future has been resolved or rejected.
 
 ### Configuring Jackson
 
