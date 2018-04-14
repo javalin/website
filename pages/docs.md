@@ -798,7 +798,7 @@ private fun getFuture() = CompletableFuture<String>().apply {
 ```
 <div class="comment">Synonyms for ctrl+f: Async, CompletableFuture, Future, Concurrent, Concurrency</div>
 
-You can only set future-results in endpoint handlers (get/post/put/etc).\\
+You can only set future results in endpoint handlers (get/post/put/etc).\\
 After-handlers, exception-handlers and error-handlers run like you'd expect them to after
 the future has been resolved or rejected.
 
