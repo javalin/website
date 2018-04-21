@@ -42,10 +42,25 @@ permalink: /
             </p>
         </div>
         <div class="box">
-            <h3>Great interoperability</h3>
+            <h3>Interoperable</h3>
             <p>
                 Other Java and Kotlin web frameworks offer separate version for each language.
                 Javalin is being developed with interoperability in mind, so apps are built the same way in both Java and Kotlin.
+            </p>
+        </div>
+        <div class="box">
+            <h3>Flexible</h3>
+            <p>
+                Javalin is designed to be simple and blocking, as this is the easiest programming model to reason about.
+                However, if you set a <code>Future</code> as a result, Javalin switches into asynchronous mode.
+            </p>
+        </div>
+        <div class="box">
+            <h3>Educational</h3>
+            <p>
+                Visit our <a href="/for-educators">educators page</a> if you're teaching web programming
+                and looking for a web framework which will get out of your way and let you focus on the
+                core concepts of your curriculum.
             </p>
         </div>
     </div>
