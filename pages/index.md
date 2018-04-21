@@ -21,7 +21,7 @@ permalink: /
         <div class="box">
             <h3>Simple</h3>
             <p>
-                Unlike other Java and Kotlin web frameworks, Javalin has very few concepts that the end-user needs to learn.
+                Unlike other Java and Kotlin web frameworks, Javalin has very few concepts that you need to learn.
                 You never have to extend a class and you rarely have to implement an interface.
             </p>
         </div>
