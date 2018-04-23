@@ -19,7 +19,8 @@ A WebSocket connection stays open, greatly reducing latency (and complexity).
 
 ## Dependencies
 
-First we create a Maven project with our dependencies: [(→ Tutorial)](/tutorials/maven-setup)
+First we create a Maven project with our dependencies: [(→ Tutorial)](/tutorials/maven-setup)\\
+We will be using Javalin for our web-server and WebSockets, and slf4j for logging:
 
 ```xml
 <dependencies>
