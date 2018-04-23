@@ -5,7 +5,7 @@ author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Å
 date: 2017-09-22
 permalink: /tutorials/websocket-example-kotlin
 github: https://github.com/tipsy/javalin-websocket-example
-summarytitle: Creating a chat-app with WebSockets
+summarytitle: WebSockets chat application
 summary: Learn how to create a simple chat-app with WebSockets in Kotlin
 language: kotlin
 ---

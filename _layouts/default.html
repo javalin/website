@@ -46,7 +46,8 @@
     <main class="width-limit{% if page.rightmenu %} has-right-menu{% endif %}">
         {% if page.splash != true %}
             <script>
-                if (localStorage.getItem("survey-dismissed") !== "true") {
+                const hasBeenDismissed = localStorage.getItem("survey-dismissed") === "true";
+                if (true === false) { // replace with !hasBeenDismissed after tutorial traffic is gone.
                     document.write(`
                         <div id="usage-survey">
                             <div class="pulsating-circle"></div>
