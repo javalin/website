@@ -142,7 +142,9 @@ It's very basic though, some things to add could include:
 
 * Show who is currently editing the document
 * Persist the data in a database at periodic intervals
-* Replace the textarea with a code editor such as [ace](https://ace.c9.io/) for collaborative programming.
+* Replace the textarea with a rich text editor, such as [quill](https://quilljs.com)
+* Replace the textarea with a code editor such as [ace](https://ace.c9.io/) for collaborative programming
+* Improving the collaborative aspects with [operational transformation](https://en.wikipedia.org/wiki/Operational_transformation)
 
 The use cases are not limited to text and documents though, you should use WebSockets
 for any project which requires a lot of interactions with low latency. Have fun!
