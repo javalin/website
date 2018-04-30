@@ -14,46 +14,46 @@ language: java
 In this tutorial we will learn how to create modular application on top of the Javalin.
 
 We will use [Google Guice](https://github.com/google/guice/wiki/Motivation) to enable modularity 
-and [Java 10](http://www.oracle.com/technetwork/java/javase/downloads/jdk10-downloads-4416644.html) to do
+and [Java 10](http://www.oracle.com/technetwork/java/javase/downloads/jdk10-downloads-4416644.html) to do Java 10 things:
 
 ~~~java
-var amazingFramework = "Javalin";
-//vs
-String amazingFramework = "Javalin";
+var amazingFramework = "Javalin"; // java10
+// vs
+String amazingFramework = "Javalin"; // not java10
 ~~~
 
 ## Dependencies
 
 Lets create a Maven project with our dependencies [(→ Tutorial)](/tutorials/maven-setup).
-We will be using Javalin for our web-server, slf4j for logging, jackson to render response in JSON and Guice for dependency injection:
+We will be using Javalin for our web-server, slf4j for logging, jackson to render response as JSON and Guice for dependency injection:
 
 ```xml
 <dependencies>
-	<dependency>
-		<groupId>io.javalin</groupId>
-		<artifactId>javalin</artifactId>
-		<version>1.6.0</version>
-	</dependency>
-	<dependency>
-		<groupId>org.slf4j</groupId>
-		<artifactId>slf4j-simple</artifactId>
-		<version>1.7.13</version>
-	</dependency>
-	<dependency>
-		<groupId>com.google.inject</groupId>
-		<artifactId>guice</artifactId>
-		<version>4.2.0</version>
-	</dependency>
-	<dependency>
-		<groupId>com.google.inject.extensions</groupId>
-		<artifactId>guice-multibindings</artifactId>
-		<version>4.2.0</version>
-	</dependency>
-	<dependency>
-		<groupId>com.fasterxml.jackson.core</groupId>
-		<artifactId>jackson-databind</artifactId>
-		<version>2.9.5</version>
-	</dependency>
+    <dependency>
+        <groupId>io.javalin</groupId>
+        <artifactId>javalin</artifactId>
+        <version>1.6.0</version>
+    </dependency>
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>1.7.13</version>
+    </dependency>
+    <dependency>
+        <groupId>com.google.inject</groupId>
+        <artifactId>guice</artifactId>
+        <version>4.2.0</version>
+    </dependency>
+    <dependency>
+        <groupId>com.google.inject.extensions</groupId>
+        <artifactId>guice-multibindings</artifactId>
+        <version>4.2.0</version>
+    </dependency>
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>2.9.5</version>
+    </dependency>
 </dependencies>
 ```
 
@@ -61,27 +61,26 @@ And add properties for Java 10
 
 ```xml
 <properties>
-	<maven.compiler.source>10</maven.compiler.source>
-	<maven.compiler.target>10</maven.compiler.target>
+    <maven.compiler.source>10</maven.compiler.source>
+    <maven.compiler.target>10</maven.compiler.target>
 </properties>
 ```
 
 ## High level architecture
 
 * Controller
-	* Responsible for request handling. It is a bouncer or face control if you wish, nothing more
+  * Responsible for request handling. It is a bouncer or face control if you wish, nothing more
 * Service
-	* Actual business logic executor, may or may not require other services
+  * Actual business logic executor, may or may not require other services
 * Repository
-	* Communication with any data storage, nothing more
+  * Communication with any data storage, nothing more
 
 ## The Java application
 
 
-First, lets create a controller in `io.kidbank.user` package.
+First, lets create a controller in the `io.kidbank.user` package.
 
-`UserController` is responsible for handling the request, business logic is provided by `UserService`. As the name of method 
-states, it returns all user names in uppercase.
+`UserController` is responsible for handling the request, while business logic is provided by `UserService`.
 
 ~~~java
 package io.kidbank.user;
@@ -101,15 +100,15 @@ class UserController {
         this.userService = userService;
     }
 
-    public void index (Context ctx) {
+    public void index(Context ctx) {
         ctx.json(userService.getAllUsersUppercase());
     }
 }
 ~~~
 
-Now that we have controller, we should bind endpoints to `UserController`. `Routing` class 
-helps us to resolve the `UserController` from Google Guice. It guarantees, that there is a method 
-`bindRoutes()`, which we will used later on.
+Now that we have controller, we should bind endpoints to `UserController`. The `Routing` class 
+helps us to resolve the `UserController` from Google Guice. It guarantees that there is a method 
+`bindRoutes()`, which we will use later on.
 
 ~~~java
 package io.kidbank.user;
@@ -169,13 +168,13 @@ public class UserModule extends AbstractModule {
 }
 ~~~
 
-Bind `Javalin` with routes and strart the web-server. This isn't a black magic, just injection, keep that in mind.
+Bind `Javalin` with routes and start the web-server. This isn't a black magic, just injection, keep that in mind.
 
 Take a closer look at `private Set<Routing> routes`. This is where Google Guice injects all `Routes` which were 
-binded by `Multibinder`. 
+bound by `Multibinder`. 
 
-Remeber, we were talking about `Routing` class and guarantees it provides, based on that, we can call method `bindRoutes()` 
-on each record in `Set<Routing>`. And puff! We fill `Javalin` with routes.
+Remeber, we were talking about `Routing` class and the guarantees it provides. Based on that, we can call the method `bindRoutes()` 
+on each record in `Set<Routing>`. And poof, we fill `Javalin` with routes.
 
 ~~~java
 package io.kidbank;
@@ -214,10 +213,9 @@ class WebEntrypoint implements AppEntrypoint {
 }
 ~~~ 
 
-Create `WebModule` for our `Kid bank` project. Inside module we define, that our project "Runs As" web-server.
+Create `WebModule` for our `Kid bank` project. Inside the module we define that our project "Runs As" web-server.
 
-`MapBinder`, it is a similar trick as we did with `Routing`, but instead of `Multibinder` we use a `MapBinder`. 
-So that we can store multiple "Runs As" into `HashMap<EntrypointType, AppEntrypoint>`
+Now we will use `MapBinder`. It is a similar to what we did with `Routing`, but instead of `Multibinder` we use a `MapBinder` so that we can store multiple "Runs As" into `HashMap<EntrypointType, AppEntrypoint>`
 
 ~~~java
 package io.kidbank;
@@ -249,7 +247,7 @@ class WebModule extends AbstractModule {
 }
 ~~~
 
-We need some kind of resolver, who will decide, which "Run as" has to be executed. For that we create class `Startup` and injeect 
+We need some kind of resolver that will decide which "Run as" has to be executed. For that we create class `Startup` and inject 
 all possible entrypoints.
 
 ~~~java
