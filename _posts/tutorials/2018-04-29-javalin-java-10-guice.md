@@ -1,18 +1,18 @@
 ---
 layout: tutorial
-title: "Java 10 and Google Guice"
+title: "Javalin with Java 10 and Google Guice"
 author: <a href="https://www.linkedin.com/in/kristapsvitolins/" target="_blank">Kristaps Vītoliņš</a>
 date: 2018-04-29
 permalink: /tutorials/javalin-java-10-google-guice
 github: https://github.com/alzuma/javalin-java-10-guice.git
 summarytitle: Java 10 and Google Guice
-summary: Learn how to create Javalin application with Google Guice
+summary: Learn how to create Javalin application with Java 10 and Google Guice
 language: java
 ---
 
 ## What You Will Learn
-In this tutorial we will learn how to create modular application. \\
-\\
+In this tutorial we will learn how to create modular application on top of the Javalin.
+
 We will use [Google Guice](https://github.com/google/guice/wiki/Motivation) to enable modularity 
 and [Java 10](http://www.oracle.com/technetwork/java/javase/downloads/jdk10-downloads-4416644.html) to do
 
@@ -24,8 +24,8 @@ String amazingFramework = "Javalin";
 
 ## Dependencies
 
-Lets create a Maven project with our dependencies [(→ Tutorial)](/tutorials/maven-setup).\\
-We will be using Javalin for our web-server, slf4j for logging, jackson to render respons in JSON and Guice for dependency injection:
+Lets create a Maven project with our dependencies [(→ Tutorial)](/tutorials/maven-setup).
+We will be using Javalin for our web-server, slf4j for logging, jackson to render response in JSON and Guice for dependency injection:
 
 ```xml
 <dependencies>
@@ -69,19 +69,19 @@ And add properties for Java 10
 ## High level architecture
 
 * Controller
-	* Responsible for request handling. I always see it as bouncer or face control if you wish, nothing more
+	* Responsible for request handling. It is a bouncer or face control if you wish, nothing more
 * Service
-	* Actual business logic executor, may or may not require other services to done its job
+	* Actual business logic executor, may or may not require other services
 * Repository
-	* Communication with any data storage nothing more
+	* Communication with any data storage, nothing more
 
 ## The Java application
 
 
 First, lets create a controller in `io.kidbank.user` package.
 
-`UserController` is responsible for handling the request, business logic we implement inside `UserService`. As the method name 
-allready states, it returns all user names in uppercase. How that is done, it is up to the service.
+`UserController` is responsible for handling the request, business logic is provided by `UserService`. As the name of method 
+states, it returns all user names in uppercase.
 
 ~~~java
 package io.kidbank.user;
@@ -107,9 +107,9 @@ class UserController {
 }
 ~~~
 
-Now that we have controller, we should bind endpoints to `UserController`. There is `Routing` class 
-which helps us to get the `UserController` from Google Guice. And it guarantees that there is method 
-`bindRoutes()`, which we will use later on.
+Now that we have controller, we should bind endpoints to `UserController`. `Routing` class 
+helps us to resolve the `UserController` from Google Guice. It guarantees, that there is a method 
+`bindRoutes()`, which we will used later on.
 
 ~~~java
 package io.kidbank.user;
@@ -142,7 +142,12 @@ class UserRouting extends Routing<UserController> {
 }
 ~~~
 
-Install and bind all dependencies for `io.kidbank.user` package. To enable more than one `Routing`, we use Google Guice extension `Multibinder`.
+Install and bind all dependencies for `io.kidbank.user` package.
+
+Take a look at `Multibinder`, it is a Google Guice extension. This is how we 
+enable multiple routings in application. To add more routings, just add `Multibinder.newSetBinder(...)`.
+
+Later on we will inject all routes, to bind them in `Javalin` web-server.
 
 ~~~java
 package io.kidbank.user;
@@ -164,7 +169,13 @@ public class UserModule extends AbstractModule {
 }
 ~~~
 
-Connect `Javalin` with routes and strart the web-server.
+Bind `Javalin` with routes and strart the web-server. This isn't a black magic, just injection, keep that in mind.
+
+Take a closer look at `private Set<Routing> routes`. This is where Google Guice injects all `Routes` which were 
+binded by `Multibinder`. 
+
+Remeber, we were talking about `Routing` class and guarantees it provides, based on that, we can call method `bindRoutes()` 
+on each record in `Set<Routing>`. And puff! We fill `Javalin` with routes.
 
 ~~~java
 package io.kidbank;
@@ -203,9 +214,10 @@ class WebEntrypoint implements AppEntrypoint {
 }
 ~~~ 
 
-Create `WebModule` for our `Kid bank` project. Inside module define that project, can be run as web-server. 
-Similar trick we did with `Routing`,but instead of `Multibinder` we use a `MapBinder`. So that we can store 
-"Run As" into `HashMap<EntrypointType, AppEntrypoint>`
+Create `WebModule` for our `Kid bank` project. Inside module we define, that our project "Runs As" web-server.
+
+`MapBinder`, it is a similar trick as we did with `Routing`, but instead of `Multibinder` we use a `MapBinder`. 
+So that we can store multiple "Runs As" into `HashMap<EntrypointType, AppEntrypoint>`
 
 ~~~java
 package io.kidbank;
@@ -237,8 +249,8 @@ class WebModule extends AbstractModule {
 }
 ~~~
 
-Create `Startup` which will serve as entrypoint resolver. Entrypoints are injected by Guice, rember `WebModule` where we used `MapBinder` that is why  
-there is something to inject.
+We need some kind of resolver, who will decide, which "Run as" has to be executed. For that we create class `Startup` and injeect 
+all possible entrypoints.
 
 ~~~java
 import com.google.inject.Inject;
@@ -262,7 +274,7 @@ public class Startup {
 }
 ~~~
 
-As for the last module we define `AppModule`
+As for our last module we define `AppModule`. Where we install our project module.
 
 ~~~java
 import com.google.inject.AbstractModule;
@@ -276,8 +288,10 @@ public class AppModule extends AbstractModule {
 }
 ~~~
 
-Now we are ready to start our web-server. Create injector from `AppModule` which will trigger all binding and installations 
-down the path. And resolve `Startup` and boot the REST with Javalin.
+Now we are ready to start our web-server. 
+
+Create injector from `AppModule` which will trigger all the bindings and installations down the path. 
+Resolve `Startup` and boot the REST with Javalin.
 
 ~~~java
 public class App {
@@ -291,7 +305,7 @@ public class App {
 Open in browser `http://localhost:7000/api/kidbank/users` and wait for response `["BOB","KATE","JOHN"]`
 
 ## Conclusion
-We created modular web application, with capabilities to run it self not only as a web-server. It takes 
-time to get use to Guice modules, but once you get the idea the sky is your limit!
+* We created modular application, with capabilities to run it self not only as a web-server. 
+* It takes time, to get use to Guice modules, but once you get, the idea the sky is your limit!
 
 Most important part. Have fun!
