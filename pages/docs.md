@@ -456,11 +456,11 @@ app.exception(FileNotFoundException.class, (e, ctx) -> {
 });
 {% endcapture %}
 {% capture kotlin %}
-app.exception(FileNotFoundException::class.java, { e, ctx ->
+app.exception(FileNotFoundException::class.java) { e, ctx ->
     ctx.status(404)
-}).error(404, { ctx ->
+}.error(404) { ctx ->
     ctx.result("Generic 404 message")
-})
+}
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
