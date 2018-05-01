@@ -440,9 +440,9 @@ app.error(404, ctx -> {
 });
 {% endcapture %}
 {% capture kotlin %}
-app.error(404) { ctx) ->
+app.error(404, { ctx ->
     ctx.result("Generic 404 message")
-}
+})
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
