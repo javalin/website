@@ -44,7 +44,7 @@ permalink: /
         <div class="box">
             <h3>Interoperable</h3>
             <p>
-                Other Java and Kotlin web frameworks offer separate version for each language.
+                Other Java and Kotlin web frameworks usually offer separate version for each language.
                 Javalin is being developed with interoperability in mind, so apps are built the same way in both Java and Kotlin.
             </p>
         </div>
