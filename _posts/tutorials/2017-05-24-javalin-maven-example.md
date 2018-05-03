@@ -14,11 +14,15 @@ language: java
 <a href="#eclipse">- Instructions for Eclipse</a><br>
 
 ## About Maven
-Maven is a build automation tool used primarily for Java projects. It addresses two aspects of building software: First, it describes how software is built, and second, it describes its dependencies.
+Maven is a build automation tool used primarily for Java projects.
+It addresses two aspects of building software: First,
+it describes how software is built, and second, it describes its dependencies.
 
 Maven projects are configured using a
 <a href="https://en.wikipedia.org/wiki/Apache_Maven#Project_Object_Model">
-    Project Object Model</a>, which is stored in a pom.<a href="https://en.wikipedia.org/wiki/XML" target="_blank">xml</a>-file. <br>Here's a minimal example:
+Project Object Model</a>, which is stored in a pom.<a href="https://en.wikipedia.org/wiki/XML" target="_blank">xml</a>-file.
+
+Here's a minimal example:
 
 ~~~markup
 <project>
@@ -64,11 +68,30 @@ Maven projects are configured using a
 </dependencies>
 ~~~
 
-Finally, paste the Javalin "Hello World" snippet into a new file, `Main.java`:
+Finally, paste the Javalin "Hello World" snippet into a new file, `HelloWorld.java`:
 
 {% include macros/gettingStarted.md %}
 
-Now everything is ready for you to run your main Class. Enjoy!
+Depending on your setup, you might need to explicitly set the language level to Java 8.
+This can be done in the in the `pom.xml`. Add the following snippet:
+
+~~~markup
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>2.3.2</version>
+            <configuration>
+                <source>1.8</source>
+                <target>1.8</target>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+~~~
+
+Now everything should be ready for you to run your application. Enjoy!
 
 <small markdown="1">
 *If IntelliJ says `Method references are not supported at this language level`, press `alt + enter`*\\
@@ -93,8 +116,30 @@ and choose `Set language level to 8 - Lambdas, type annotations, etc`.*
 </dependencies>
 ~~~
 
-Finally, paste the Javalin "Hello World" snippet into a new file, `Main.java`:
+Finally, paste the Javalin "Hello World" snippet into a new file, `HelloWorld.java`:
 
 {% include macros/gettingStarted.md %}
 
-Now everything is ready for you to run your main Class. Enjoy!
+Depending on your setup, you might need to explicitly set the language level to Java 8.
+This can be done in the in the `pom.xml`. Add the following snippet:
+
+~~~markup
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>2.3.2</version>
+            <configuration>
+                <source>1.8</source>
+                <target>1.8</target>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+~~~
+
+Depending on your version of eclipse, you might have to
+- `Right click on your project` select `Maven` then `Update Project`
+
+Now everything should be ready for you to run your application. Enjoy!
