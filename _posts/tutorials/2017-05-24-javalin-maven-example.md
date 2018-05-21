@@ -34,11 +34,6 @@ Here's a minimal example:
     <artifactId>my-javalin-project</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
-
     <!-- library dependencies -->
     <dependencies>
         <dependency>
