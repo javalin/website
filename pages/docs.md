@@ -14,6 +14,7 @@ permalink: /documentation
 * [Handler groups](#handler-groups)
 * [Context (ctx)](#context)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Cookie Store](#cookie-store)
+* [ &nbsp;&nbsp;&nbsp;&nbsp;Extensions](#context-extensions)
 * [Access manager](#access-manager)
 * [Exception Mapping](#exception-mapping)
 * [Error Mapping](#error-mapping)
@@ -329,6 +330,29 @@ will be able to retrieve the information that was passed in the `post` to `serve
 
 Please note that cookies have a max-size of 4kb.
 
+### Context extensions
+Context extensions give Java developers a way of extending the `Context` object.
+
+One of the most popular features of Kotlin is [extension functions](https://kotlinlang.org/docs/reference/extensions.html).
+When working with an object you don't own in Java, you often end up making `MyUtil.action(object, ...)`.
+If you, for example, want to serialize an object and set it as the result on the `Context`, you might do:
+
+```java
+app.get("/", ctx -> MyMapperUtil.serialize(ctx, myMapper, myObject)); // three args, what happens where?
+```
+
+With context extensions you can add custom extensions on the context:
+
+```java
+app.get("/", ctx -> ctx.use(MyMapper.class).serialize(object)); // use MyMapper to serialize object
+```
+
+Context extensions have to be added before you can use them, this would typically be done in the first `before` filter of your app:
+
+```java
+app.before(ctx -> ctx.register(MyMapper.class, new MyMapper(ctx, otherDependency));
+```
+
 ## Access manager
 Javalin has a functional interface `AccessManager`, which let's you 
 set per-endpoint authentication and/or authorization. It's common to use before-handlers for this,
@@ -570,6 +594,7 @@ Javalin.create() // create has to be called first
     .dontIgnoreTrailingSlashes() // treat '/test' and '/test/' as different URLs
     .defaultContentType(string) // set a default content-type for responses
     .defaultCharacterEncoding(string) // set a default character-encoding for responses
+    .disableStartupBanner() // remove the javalin startup banner from logs
     .embeddedServer( ... ) // see section below
     .enableCorsForOrigin("origin") // enables cors for the specified origin(s)
     .enableDynamicGzip() // gzip response (if client accepts gzip and response is more than 1500 bytes)
@@ -586,6 +611,7 @@ Javalin.create().apply { // create has to be called first
     dontIgnoreTrailingSlashes() // treat '/test' and '/test/' as different URLs
     defaultContentType(string) // set a default content-type for responses
     defaultCharacterEncoding(string) // set a default character-encoding for responses
+    disableStartupBanner() // remove the javalin startup banner from logs
     embeddedServer( ... ) // see section below
     enableCorsForOrigin("origin") // enables cors for the specified origin(s)
     enableRouteOverview("/path") // render a HTML page showing all mapped routes
@@ -818,6 +844,7 @@ ctx.renderThymeleaf("/templateFile", mapOf("key", "value"))
 ctx.renderVelocity("/templateFile", mapOf("key", "value"))
 ctx.renderFreemarker("/templateFile", mapOf("key", "value"))
 ctx.renderMustache("/templateFile", mapOf("key", "value"))
+ctx.renderJtwig("/templateFile", mapOf("key", "value"))
 ctx.renderMarkdown("/markdownFile")
 // Javalin looks for templates/markdown files in src/resources
 ```
@@ -827,6 +854,7 @@ JavalinThymeleafPlugin.configure(templateEngine)
 JavalinVelocityPlugin.configure(velocityEngine)
 JavalinFreemarkerPlugin.configure(configuration)
 JavalinMustachePlugin.configure(mustacheFactory)
+JavalinJtwigPlugin.configure(configuration)
 JavalinCommonmarkPlugin.configure(htmlRenderer, markdownParser)
 ```
 Note that these are global settings, and can't be configured per instance of Javalin.
