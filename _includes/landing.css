@@ -80,6 +80,10 @@ nav ul li a:hover {
     color: #54e3ff;
 }
 
+.bluepart .multitab-code pre code .token.comment {
+    color: #a0bedc;
+}
+
 .bluepart h1 {
     text-align: center;
     color: white;
