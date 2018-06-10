@@ -838,16 +838,27 @@ Note that this is a global setting, and can't be configured per instance of Java
 
 ### Views and Templates
 
-Javalin currently supports four template engines, as well as markdown:
-```kotlin
-ctx.renderThymeleaf("/templateFile", mapOf("key", "value"))
-ctx.renderVelocity("/templateFile", mapOf("key", "value"))
-ctx.renderFreemarker("/templateFile", mapOf("key", "value"))
-ctx.renderMustache("/templateFile", mapOf("key", "value"))
-ctx.renderJtwig("/templateFile", mapOf("key", "value"))
+Javalin currently supports five template engines, as well as markdown:
+{% capture java %}
+ctx.renderThymeleaf("/templateFile", model("firstName", "John", "lastName", "Doe"))
+ctx.renderVelocity("/templateFile", model("firstName", "John", "lastName", "Doe"))
+ctx.renderFreemarker("/templateFile", model("firstName", "John", "lastName", "Doe"))
+ctx.renderMustache("/templateFile", model("firstName", "John", "lastName", "Doe"))
+ctx.renderJtwig("/templateFile", model("firstName", "John", "lastName", "Doe"))
 ctx.renderMarkdown("/markdownFile")
 // Javalin looks for templates/markdown files in src/resources
-```
+{% endcapture %}
+{% capture kotlin %}
+ctx.renderThymeleaf("/templateFile", mapOf("firstName" to "John", "lastName" to "Doe"))
+ctx.renderVelocity("/templateFile", mapOf("firstName" to "John", "lastName" to "Doe"))
+ctx.renderFreemarker("/templateFile", mapOf("firstName" to "John", "lastName" to "Doe"))
+ctx.renderMustache("/templateFile", mapOf("firstName" to "John", "lastName" to "Doe"))
+ctx.renderJtwig("/templateFile", mapOf("firstName" to "John", "lastName" to "Doe"))
+ctx.renderMarkdown("/markdownFile")
+// Javalin looks for templates/markdown files in src/resources
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
 Configure:
 ```kotlin
 JavalinThymeleafPlugin.configure(templateEngine)
