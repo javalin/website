@@ -218,7 +218,7 @@ ctx.anyFormParamNull("k1", "k2");   // returns true if any form-param is null
 ctx.anyQueryParamNull("k1", "k2");  // returns true if any query-param is null
 ctx.body();                         // get the request body as string
 ctx.bodyAsBytes();                  // get the request body as byte-array
-ctx.bodyAsClass(clazz);             // convert json body to object (requires jackson)
+ctx.bodyAsClass(clazz);             // convert json body to object
 ctx.formParam("key");               // get form param
 ctx.formParams("key");              // get form param with multiple values
 ctx.formParamMap();                 // get all form param key/values as map
@@ -272,7 +272,7 @@ ctx.resultFuture();                 // get response result (future)
 ctx.charset("charset");             // set response character encoding
 ctx.header("key", "value");         // set response header
 ctx.html("body html");              // set result and html content type
-ctx.json(object);                   // set result with object-as-json (requires jackson)
+ctx.json(object);                   // set result with object-as-json
 ctx.redirect("/location");          // redirect to location
 ctx.redirect("/location", 302);     // redirect to location with code
 ctx.status();                       // get response status
@@ -828,13 +828,23 @@ You can only set future results in endpoint handlers (get/post/put/etc).\\
 After-handlers, exception-handlers and error-handlers run like you'd expect them to after
 the future has been resolved or rejected.
 
-### Configuring Jackson
+### Configuring the JSON mapper
 
-Jackson can be configured by calling
-```kotlin
+The JSON mapper can be configured like this:
+```java
+Gson gson = new GsonBuilder().create();
+JavalinJsonPlugin.setJsonToObjectMapper(gson::fromJson);
+JavalinJsonPlugin.setObjectToJsonMapper(gson::toJson);
+```
+
+#### Configuring Jackson
+
+The JSON mapper uses Jackson by default, which can be configured by calling:
+```java
 JavalinJacksonPlugin.configure(objectMapper)
 ```
-Note that this is a global setting, and can't be configured per instance of Javalin.
+
+Note that these are global settings, and can't be configured per instance of Javalin.
 
 ### Views and Templates
 

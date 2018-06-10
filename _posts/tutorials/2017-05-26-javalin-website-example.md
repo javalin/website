@@ -162,7 +162,7 @@ The setup is a bit more elaborate if you clone the application
 but the basics are very simple, and only uses native Java.
 
 ## Rendering views
-Javalin has native support on the `Response` object for rendering templates.
+Javalin has native support on the `Context` object for rendering templates.
 Let's look at the login-page again:
 
 ~~~java
