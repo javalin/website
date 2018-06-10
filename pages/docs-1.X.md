@@ -2,11 +2,10 @@
 layout: default
 title: Documentation
 rightmenu: true
-permalink: /documentation
+permalink: /archive/documentation/javalin-1
 ---
 
 <div id="spy-nav" class="right-menu" markdown="1">
-* [Getting Started](#getting-started)
 * [Handlers](#handlers)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Before](#before-handlers)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Endpoint](#endpoint-handlers)
@@ -26,14 +25,14 @@ permalink: /documentation
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Custom server](#custom-server)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;SSL/HTTP2](#sslhttp2)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Static Files](#static-files)
+* [ &nbsp;&nbsp;&nbsp;&nbsp;Jetty WebSockets](#jetty-websockets)
 * [FAQ](#faq)
 </div>
 
-<h1 class="no-margin-top">Documentation</h1>
+<h1 class="no-margin-top">Documentation - Javalin 1.X</h1>
 
-The documentation on this site is always for the latest version of Javalin. 
-We don't have the capacity to maintain separate docs for each version, 
-but Javalin follows [semantic versioning](http://semver.org/).
+This page contains documentation for an old version of Javalin. 
+Go to [javalin.io/documentation](/documentation) to view documentation for the newest version.
 
 <div class="notification star-us">
     <div>
@@ -44,14 +43,6 @@ but Javalin follows [semantic versioning](http://semver.org/).
             frameborder="0" scrolling="0" width="150px" height="30px">
     </iframe>
 </div>
-
-## Getting started
-
-Add the dependency:
-{% include macros/mavenDep.md %}
-
-Start coding:
-{% include macros/gettingStarted.md %}
 
 ## Handlers
 Javalin has a three main handler types: before-handlers, endpoint-handlers, and after-handlers. 
@@ -713,6 +704,26 @@ and Javalin will set `max-age=31622400`, which means that the browser will wait
 one year before checking if the file is still valid.
 This should only be used for versioned library files, like `vue-2.4.2.min.js`, to avoid
 the browser ending up with an outdated version if you change the file content.
+
+
+### Jetty WebSockets
+
+Javalin supports native Jetty WebSockets, but these must be declared before starting the server.
+There are two different ways of using these WebSockets:
+
+### Annotated class
+You can pass an annotated class to the `ws()` function:
+```java
+app.ws("/websocket", WebSocketClass.class);
+```
+
+Annotation API can be found on [Jetty's docs page](http://www.eclipse.org/jetty/documentation/9.4.x/jetty-websocket-api-annotations.html)
+
+### WebSocket object
+You can pass any object that fulfills Jetty's requirements (annotated/implementing `WebSocketListener`, etc):
+```java
+app.ws("/websocket", new WebSocketObject());
+```
 
 ## FAQ
 Frequently asked questions

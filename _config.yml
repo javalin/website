@@ -1,4 +1,4 @@
-javalinversion: 1.7.0
+javalinversion: 2.0.0
 repourl: https://github.com/javalin/javalin.github.io
 description: Javalin - A lightweight Java and Kotlin web framework. Create REST APIs in Java or Kotlin easily.
 baseurl: "" # the subpath of your site, e.g. /blog
