@@ -46,5 +46,10 @@ document.addEventListener("click", function (e) {
     var targetTab = e.target.getAttribute("data-tab");
     if (targetTab > 0) {
         e.target.parentElement.parentElement.setAttribute("data-tab", targetTab);
+        document.querySelectorAll(".multitab-code").forEach(multitab => {
+            if (multitab.children.length === 3) { // three children -> menu, java-code, kotlin-code
+                multitab.setAttribute("data-tab", targetTab);
+            }
+        });
     }
 });
