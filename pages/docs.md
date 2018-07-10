@@ -33,7 +33,8 @@ permalink: /documentation
 
 The documentation on this site is always for the latest version of Javalin. 
 We don't have the capacity to maintain separate docs for each version, 
-but Javalin follows [semantic versioning](http://semver.org/).
+but Javalin follows [semantic versioning](http://semver.org/), 
+which means that there are no breaking changes unless it changes from 2.X to 3.X.
 
 <div class="notification star-us">
     <div>
@@ -114,15 +115,15 @@ app.post("/") { ctx ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-Handler paths can include path-parameters. These are available via `Context.param()`
+Handler paths can include path-parameters. These are available via `Context.pathParam()`
 {% capture java %}
 get("/hello/:name", ctx -> {
-    ctx.result("Hello: " + ctx.param("name"));
+    ctx.result("Hello: " + ctx.pathParam("name"));
 });
 {% endcapture %}
 {% capture kotlin %}
 get("/hello/:name") { ctx ->
-    ctx.result("Hello: " + ctx.param("name"))
+    ctx.result("Hello: " + ctx.pathParam("name"))
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -147,29 +148,23 @@ After-handlers run after every request (even if an exception occurred)
 
 {% capture java %}
 app.after("/some-path/*", ctx -> {
-    // runs after all request to /some-path/* (excluding static files)
+    // runs after all request to /some-path/*
 });
 
 app.after(ctx -> {
-    // run after every request (excluding static files)
+    // run after every request
 });
 {% endcapture %}
 {% capture kotlin %}
 app.after("/some-path/*") { ctx ->
-    // runs after all request to /some-path/* (excluding static files)
+    // runs after all request to /some-path/*
 }
 
 app.after { ctx ->
-    // run after every request (excluding static files)
+    // run after every request
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
-
-### Reverse path lookup
-You can look up the path for a specific `Handler` by calling `app.pathFinder(handler)`
-or `app.pathFinder(handler, handlerType)`. If the `Handler` is registered on multiple
-paths, the first matching path will be returned.
 
 ## Handler groups
 You can group your endpoints by using the `routes()` and `path()` methods. `routes()` creates 
@@ -212,17 +207,18 @@ and setters. The getters operate mostly on the request-object, while the setters
 the response object.
 ```java
 // request methods:
-ctx.request();                      // get underlying HttpServletRequest
+ctx.req;                            // get underlying HttpServletRequest
 ctx.anyFormParamNull("k1", "k2");   // returns true if any form-param is null
 ctx.anyQueryParamNull("k1", "k2");  // returns true if any query-param is null
 ctx.body();                         // get the request body as string
 ctx.bodyAsBytes();                  // get the request body as byte-array
-ctx.bodyAsClass(clazz);             // convert json body to object
+ctx.bodyAsClass(clazz);             // convert json body to object (java/kotlin)
+ctx.body<T>();                      // convert json body to object (kotlin)
 ctx.formParam("key");               // get form param
 ctx.formParams("key");              // get form param with multiple values
 ctx.formParamMap();                 // get all form param key/values as map
-ctx.param("key");                   // get a path-parameter, ex "/:id" -> param("id")
-ctx.paramMap();                     // get all param key/values as map
+ctx.pathParam("key");               // get a path-parameter, ex "/:id" -> param("id")
+ctx.pathParamMap();                 // get all param key/values as map
 ctx.splat(0);                       // get splat by nr, ex "/*" -> splat(0)
 ctx.splats();                       // get array of splat-values
 ctx.attribute("key", "value");      // set a request attribute
@@ -241,7 +237,6 @@ ctx.isMultipart();                  // check if request is multipart
 ctx.mapFormParams("k1", "k2");      // map form params to their values, returns null if any form param is missing
 ctx.mapQueryParams("k1", "k2");     // map query params to their values, returns null if any query param is missing
 ctx.matchedPath();                  // get matched path, ex "/path/:param"
-ctx.next();                         // pass the request to the next handler
 ctx.path();                         // get request path
 ctx.port();                         // get request port
 ctx.protocol();                     // get request protocol
@@ -256,31 +251,29 @@ ctx.sessionAttribute("foo");        // get session-attribute "foo"
 ctx.sessionAttributeMap();          // get all session attributes as map
 ctx.uploadedFile("key");            // get file from multipart form
 ctx.uploadedFiles("key");           // get files from multipart form
-ctx.uri();                          // get request uri
 ctx.url();                          // get request url
 ctx.userAgent();                    // get request user agent
 
 // response methods:
-ctx.response();                     // get underlying HttpServletResponse
+ctx.res;                            // get underlying HttpServletResponse
 ctx.result("result");               // set result (string)
 ctx.result(inputStream);            // set result (stream)
 ctx.result(future);                 // set result (future)
 ctx.resultString();                 // get response result (string)
 ctx.resultStream();                 // get response result (stream)
 ctx.resultFuture();                 // get response result (future)
-ctx.charset("charset");             // set response character encoding
 ctx.header("key", "value");         // set response header
 ctx.html("body html");              // set result and html content type
-ctx.json(object);                   // set result with object-as-json
+ctx.json(object);                   // serialize object and set as result
 ctx.redirect("/location");          // redirect to location
 ctx.redirect("/location", 302);     // redirect to location with code
 ctx.status();                       // get response status
 ctx.status(404);                    // set response status
 ctx.cookie("key", "value");         // set cookie with key and value
 ctx.cookie("key", "value", 0);      // set cookie with key, value, and maxage
-ctx.cookie(cookieBuilder);          // set cookie using cookiebuilder
+ctx.cookie(cookie);                 // set cookie using a Cookie object
 ctx.removeCookie("key");            // remove cookie by key
-ctx.removeCookie("/path", "key");   // remove cookie by path and key
+ctx.removeCookie("key", "/path");   // remove cookie by key and path
 ```
 
 ### Cookie Store
@@ -518,18 +511,18 @@ app.ws("/websocket/:path") { ws ->
 ### WsSession
 The `WsSession` object wraps Jetty's `Session` and adds the following methods:
 ```java
-session.send("message") // send a message to session remote (the ws client)
-session.queryString() // get query-string from upgrade-request
-session.queryParam("key") // get query-param from upgrade-request
-session.queryParams("key") // get query-params from upgrade-request
-session.queryParamMap() // get query-param-map from upgrade-request
-session.mapQueryParams("k1", "k2") // map query-params to values (only useful in kotlin)
+session.send("message")               // send a message to session remote (the ws client)
+session.queryString()                 // get query-string from upgrade-request
+session.queryParam("key")             // get query-param from upgrade-request
+session.queryParams("key")            // get query-params from upgrade-request
+session.queryParamMap()               // get query-param-map from upgrade-request
+session.mapQueryParams("k1", "k2")    // map query-params to values (only useful in kotlin)
 session.anyQueryParamNull("k1", "k2") // check if any query-param from upgrade-request is null
-session.param("key") // get a path-parameter, ex "/:id" -> param("id")
-session.paramMap() // get all param key/values as map
-session.header("key") // get a header
-session.headerMap() // get all header key/values as map
-session.host() // get request host
+session.pathParam("key")              // get a path-parameter, ex "/:id" -> param("id")
+session.pathParamMap()                // get all param key/values as map
+session.header("key")                 // get a header
+session.headerMap()                   // get all header key/values as map
+session.host()                        // get request host
 ```
 
 ## Lifecycle events
@@ -565,24 +558,15 @@ and a reference to the `this` (the javalin object which triggered the event).
 ## Server setup
 
 Javalin runs on an embedded [Jetty](http://eclipse.org/jetty/).
-The architecture for adding other embedded servers is in place, and pull requests are welcome.
-
 
 ### Starting and stopping
-To start and stop the server, use the appropriately named `start()` and `stop` methods. 
+To start and stop the server, use the aptly named `start()` and `stop` methods. 
 
 ```java
 Javalin app = Javalin.create()
     .start() // start server (sync/blocking)
     .stop() // stop server (sync/blocking)
 ```
-
-#### Quick-start
-If you don't need any custom configuration, you can use the `Javalin.start(port)` method.
-```java
-Javalin app = Javalin.start(7000);
-```
-This creates a new server which listens on the specified port (here, `7000`), and starts it.
 
 ### Configuration
 The following snippet shows all the configuration currently available in Javalin:
@@ -592,16 +576,17 @@ Javalin.create() // create has to be called first
     .contextPath("/context-path") // set a context path (default is "/")
     .dontIgnoreTrailingSlashes() // treat '/test' and '/test/' as different URLs
     .defaultContentType(string) // set a default content-type for responses
-    .defaultCharacterEncoding(string) // set a default character-encoding for responses
     .disableStartupBanner() // remove the javalin startup banner from logs
-    .embeddedServer( ... ) // see section below
     .enableCorsForOrigin("origin") // enables cors for the specified origin(s)
-    .enableDynamicGzip() // gzip response (if client accepts gzip and response is more than 1500 bytes)
+    .enableAutogeneratedEtags() // auto-generates etags for get-requests
+    .enableDebugLogging() // enable extensive debug logging
     .enableRouteOverview("/path") // render a HTML page showing all mapped routes
-    .enableStandardRequestLogging() // does requestLogLevel(LogLevel.STANDARD)
     .enableStaticFiles("/public") // enable static files (opt. second param Location.CLASSPATH/Location.EXTERNAL)
+    .disableDynamicGzip() // don't gzip any dynamic responses (static files are still gzipped)
     .maxBodySizeForRequestCache(long) // set max body size for request cache
     .port(port) // set the port
+    .requestLogger( ... ) // configure Javalin to use the supplied RequestLogger 
+    .server( ... ) // see section below
     .start(); // start has to be called last
 {% endcapture %}
 {% capture kotlin %}
@@ -609,16 +594,17 @@ Javalin.create().apply { // create has to be called first
     contextPath("/context-path") // set a context path (default is "/")
     dontIgnoreTrailingSlashes() // treat '/test' and '/test/' as different URLs
     defaultContentType(string) // set a default content-type for responses
-    defaultCharacterEncoding(string) // set a default character-encoding for responses
     disableStartupBanner() // remove the javalin startup banner from logs
-    embeddedServer( ... ) // see section below
+    enableAutogeneratedEtags() // auto-generates etags for get-requests
     enableCorsForOrigin("origin") // enables cors for the specified origin(s)
+    enableDebugLogging() // enable extensive debug logging
     enableRouteOverview("/path") // render a HTML page showing all mapped routes
-    enableDynamicGzip() // gzip response (if client accepts gzip and response is more than 1500 bytes)
-    enableStandardRequestLogging() // does requestLogLevel(LogLevel.STANDARD)
     enableStaticFiles("/public") // enable static files (opt. second param Location.CLASSPATH/Location.EXTERNAL)
+    disableDynamicGzip() // don't gzip any dynamic responses (static files are still gzipped)
     maxBodySizeForRequestCache(long) // set max body size for request cache
     port(port) // set the port
+    requestLogger( ... ) // configure Javalin to use the supplied RequestLogger 
+    server( ... ) // see section below
 }.start() // start has to be called last
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -626,20 +612,20 @@ Javalin.create().apply { // create has to be called first
 Any argument to `contextPath()` will be normalized to the form `/path` (slash, path, no-slash)
 
 ### Custom server
-If you need to customize the embedded server, you can call the `app.embeddedServer()` method:
+If you need to customize the embedded server, you can call the `app.server()` method:
 {% capture java %}
-app.embeddedServer(new EmbeddedJettyFactory(() -> {
+app.server(() -> {
     Server server = new Server();
     // do whatever you want here
     return server;
-}));
+});
 {% endcapture %}
 {% capture kotlin %}
-app.embeddedServer(EmbeddedJettyFactory({
+app.server {
     val server = Server()
     // do whatever you want here
     server
-}))
+}
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
@@ -651,22 +637,22 @@ and Javalin will attach it's own handlers to the end of this chain.
 StatisticsHandler statisticsHandler = new StatisticsHandler();
 
 Javalin.create()
-    .embeddedServer(new EmbeddedJettyFactory(() -> {
+    .server(() -> {
         Server server = new Server();
         server.setHandler(statisticsHandler);
         return server;
-    }))
+    })
     .start();
 {% endcapture %}
 {% capture kotlin %}
 val statisticsHandler = StatisticsHandler()
 
 Javalin.create().apply {
-    embeddedServer(EmbeddedJettyFactory({
+    server {
         Server(queuedThreadPool).apply {
             handler = statisticsHandler
         }
-    }))
+    }
 }.start();
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -721,7 +707,6 @@ Frequently asked questions
 There is a Javadoc available at [javadoc.io](http://javadoc.io/doc/io.javalin/javalin).  
 Please contribute to the Javadoc if you can.
 
-
 ### Deploying
 To deploy Javalin, simply create a [jar with dependencies](https://maven.apache.org/plugins/maven-assembly-plugin/usage.html), 
 then launch the jar with `java -jar filename.jar`. That's it.  
@@ -729,7 +714,6 @@ Javalin has an embedded server, so you don't need an application server.
 There is also a tutorial on [deploying Javalin to Heroku](/tutorials/heroku).
 
 ### Uploads
-
 Uploaded files are easily accessible via `ctx.uploadedFiles()`:
 {% capture java %}
 app.post("/upload", ctx -> {
@@ -747,7 +731,7 @@ app.post("/upload") { ctx ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-The corresponding HTML would be something like:
+The corresponding HTML could look something like:
 ```markup
 <form method="post" action="/upload" enctype="multipart/form-data">
     <input type="file" name="files" multiple>
@@ -784,7 +768,7 @@ This will remove the warning from SLF4J, and enable
 helpful debug messages while running Javalin.
 
 ### Asynchronous requests
-Javalin 1.6.0 introduced future results. While the default threadpool (200 threads) is enough for most use cases,
+While the default threadpool (200 threads) is enough for most use cases,
 sometimes slow operations should be run asynchronously. Luckily it's very easy in Javalin, just
 pass a `CompletableFuture` to `ctx.result()`:
 
@@ -792,7 +776,7 @@ pass a `CompletableFuture` to `ctx.result()`:
 import io.javalin.Javalin
 
 fun main(args: Array<String>) {
-    val app = Javalin.start(7000)
+    val app = Javalin.create().start(7000)
     app.get("/") { ctx -> ctx.result(getFuture()) }
 }
 
@@ -812,50 +796,50 @@ the future has been resolved or rejected.
 The JSON mapper can be configured like this:
 ```java
 Gson gson = new GsonBuilder().create();
-JavalinJsonPlugin.setJsonToObjectMapper(gson::fromJson);
-JavalinJsonPlugin.setObjectToJsonMapper(gson::toJson);
+JavalinJson.setFromJsonMapper(gson::fromJson);
+JavalinJson.setToJsonMapper(gson::toJson);
 ```
 
 #### Configuring Jackson
 
 The JSON mapper uses Jackson by default, which can be configured by calling:
 ```java
-JavalinJacksonPlugin.configure(objectMapper)
+JavalinJackson.configure(objectMapper)
 ```
 
 Note that these are global settings, and can't be configured per instance of Javalin.
 
 ### Views and Templates
-
-Javalin currently supports five template engines, as well as markdown:
+Javalin looks for templates/markdown files in `src/resources`,
+and uses the correct rendering engine based on the extension of your template.
+Javalin currently supports six template engines (see below), as well as markdown.
+You can also register your own rendering engine.
 {% capture java %}
-ctx.renderThymeleaf("/templateFile", model("firstName", "John", "lastName", "Doe"))
-ctx.renderVelocity("/templateFile", model("firstName", "John", "lastName", "Doe"))
-ctx.renderFreemarker("/templateFile", model("firstName", "John", "lastName", "Doe"))
-ctx.renderMustache("/templateFile", model("firstName", "John", "lastName", "Doe"))
-ctx.renderJtwig("/templateFile", model("firstName", "John", "lastName", "Doe"))
-ctx.renderMarkdown("/markdownFile")
-// Javalin looks for templates/markdown files in src/resources
+ctx.render("/templateFile.ext", model("firstName", "John", "lastName", "Doe"))
 {% endcapture %}
 {% capture kotlin %}
-ctx.renderThymeleaf("/templateFile", mapOf("firstName" to "John", "lastName" to "Doe"))
-ctx.renderVelocity("/templateFile", mapOf("firstName" to "John", "lastName" to "Doe"))
-ctx.renderFreemarker("/templateFile", mapOf("firstName" to "John", "lastName" to "Doe"))
-ctx.renderMustache("/templateFile", mapOf("firstName" to "John", "lastName" to "Doe"))
-ctx.renderJtwig("/templateFile", mapOf("firstName" to "John", "lastName" to "Doe"))
-ctx.renderMarkdown("/markdownFile")
-// Javalin looks for templates/markdown files in src/resources
+ctx.render("/templateFile.ext", mapOf("firstName" to "John", "lastName" to "Doe"))
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
+Register:
+```java
+JavalinRenderer.register(new JavalinPebble(), ".peb", ".pebble");
+
+JavalinRenderer.register((filePath, model) -> {
+    return MyRenderer.render(filePath, model);
+}, ".ext");
+```
+
 Configure:
 ```kotlin
-JavalinThymeleafPlugin.configure(templateEngine)
-JavalinVelocityPlugin.configure(velocityEngine)
-JavalinFreemarkerPlugin.configure(configuration)
-JavalinMustachePlugin.configure(mustacheFactory)
-JavalinJtwigPlugin.configure(configuration)
-JavalinCommonmarkPlugin.configure(htmlRenderer, markdownParser)
+JavalinThymeleaf.configure(templateEngine)
+JavalinVelocity.configure(velocityEngine)
+JavalinFreemarker.configure(configuration)
+JavalinMustache.configure(mustacheFactory)
+JavalinJtwig.configure(configuration)
+JavalinPebble.configure(configuration)
+JavalinCommonmark.configure(htmlRenderer, markdownParser)
 ```
 Note that these are global settings, and can't be configured per instance of Javalin.
 

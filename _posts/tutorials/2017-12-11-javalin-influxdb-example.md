@@ -44,7 +44,7 @@ val influxHost = System.getenv().getOrDefault("influx.host", "influxdb")!!
 val influxDB: InfluxDB by lazy { InfluxDBFactory.connect("http://$influxHost:8086", "root", "root") }
 
 fun main(args: Array<String>) {
-    val app = Javalin.start(7000)
+    val app = Javalin.create().start(7000)
     val statisticService = StatisticsService(influxDB)
     val controller = Controller(statisticService)
 

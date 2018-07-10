@@ -63,7 +63,7 @@ First and foremost, to be able to test anything we need to be able to start and 
 ```kotlin
 // Main.kt
 fun main(args: Array<String>) {
-    val app = Javalin.start(7000)
+    val app = Javalin.create().start(7000)
     app.get("/") { ctx -> ctx.result("Hello World") }
 }
 ```

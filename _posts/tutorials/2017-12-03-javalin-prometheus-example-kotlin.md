@@ -56,11 +56,11 @@ fun main(args: Array<String>) {
 
     val app = Javalin.create().apply {
         port(7070)
-        embeddedServer(EmbeddedJettyFactory {
+        server {
             Server(queuedThreadPool).apply {
                 handler = statisticsHandler
             }
-        })
+        }
     }.start()
 }
 

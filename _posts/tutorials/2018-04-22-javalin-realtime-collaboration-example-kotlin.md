@@ -48,7 +48,7 @@ We can get the entire server done in about 30 lines:
 
 ```kotlin
 import io.javalin.Javalin
-import io.javalin.embeddedserver.jetty.websocket.WsSession
+import io.javalin.websocket.WsSession
 import java.util.concurrent.ConcurrentHashMap
 
 data class Collaboration(var doc: String = "", val sessions: MutableSet<WsSession> = ConcurrentHashMap.newKeySet<WsSession>())

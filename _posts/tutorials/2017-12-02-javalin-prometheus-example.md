@@ -56,11 +56,11 @@ public static void main(String[] args) throws Exception {
 
     Javalin app = Javalin.create()
         .port(7070)
-        .embeddedServer(new EmbeddedJettyFactory(() -> {
+        .server(() -> {
             Server server = new Server(queuedThreadPool);
             server.setHandler(statisticsHandler);
             return server;
-        }))
+        })
         .start();
 }
 

@@ -48,7 +48,7 @@ We can get the entire server done in about 40 lines:
 
 ```java
 import io.javalin.Javalin;
-import io.javalin.embeddedserver.jetty.websocket.WsSession;
+import io.javalin.websocket.WsSession;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -96,7 +96,7 @@ public class Main {
 
 We also need to create a data object for holding our document and the people working on it:
 ```java
-import io.javalin.embeddedserver.jetty.websocket.WsSession;
+import io.javalin.websocket.WsSession;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
