@@ -35,7 +35,7 @@ First, we need to create a Maven project with some dependencies: [(→ Tutorial)
     <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-simple</artifactId>
-        <version>1.7.13</version>
+        <version>{{site.slf4jversion}}</version>
     </dependency>
     <dependency>
         <groupId>org.json</groupId>
@@ -67,7 +67,6 @@ public class Chat {
 
     public static void main(String[] args) {
         Javalin.create()
-            .port(7070)
             .enableStaticFiles("/public")
             .ws("/chat", ws -> {
                 ws.onConnect(session -> {
@@ -84,14 +83,14 @@ public class Chat {
                     broadcastMessage(userUsernameMap.get(session), message);
                 });
             })
-            .start();
+            .start(7070);
     }
 
     // Sends a message from one user to all users, along with a list of current usernames
     private static void broadcastMessage(String sender, String message) {
         userUsernameMap.keySet().stream().filter(Session::isOpen).forEach(session -> {
             try {
-                session.getRemote().sendString(
+                session.send(
                     new JSONObject()
                         .put("userMessage", createHtmlMessageFromSender(sender, message))
                         .put("userlist", userUsernameMap.values()).toString()

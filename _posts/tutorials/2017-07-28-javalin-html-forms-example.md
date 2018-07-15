@@ -24,7 +24,7 @@ First, we need to create a project with these dependencies: [(→ Tutorial)](/tu
     <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-simple</artifactId>
-        <version>1.7.13</version>
+        <version>{{site.slf4jversion}}</version>
     </dependency>
 </dependencies>
 ~~~
@@ -49,9 +49,8 @@ public class Main {
     public static void main(String[] args) {
 
         Javalin app = Javalin.create()
-            .port(7777)
             .enableStaticFiles("/public")
-            .start();
+            .start(7777);
 
         app.post("/make-reservation", ctx -> {
             reservations.put(ctx.formParam("day"), ctx.formParam("time"));

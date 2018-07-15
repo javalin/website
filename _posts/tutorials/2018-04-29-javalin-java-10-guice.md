@@ -32,12 +32,12 @@ We will be using Javalin for our web-server, slf4j for logging, jackson to rende
     <dependency>
         <groupId>io.javalin</groupId>
         <artifactId>javalin</artifactId>
-        <version>1.6.0</version>
+        <version>{{site.javalinversion}}</version>
     </dependency>
     <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-simple</artifactId>
-        <version>1.7.13</version>
+        <version>{{site.slf4jversion}}</version>
     </dependency>
     <dependency>
         <groupId>com.google.inject</groupId>

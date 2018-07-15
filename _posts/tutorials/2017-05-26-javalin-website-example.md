@@ -49,9 +49,8 @@ public class Application {
         userDao = new UserDao();
 
         Javalin app = Javalin.create()
-            .port(7000)
             .enableStaticFiles("/public")
-            .start();
+            .start(7000);
 
         app.routes(() -> {
             before(Filters.stripTrailingSlashes);
@@ -104,28 +103,28 @@ public static Handler serveLoginPage = ctx -> {
     Map<String, Object> model = ViewUtil.baseModel(req);
     model.put("loggedOut", removeSessionAttrLoggedOut(req));
     model.put("loginRedirect", removeSessionAttrLoginRedirect(req));
-    ctx.renderVelocity(Path.Template.LOGIN, model);
+    ctx.render(Path.Template.LOGIN, model);
 };
 
 public static Handler handleLoginPost = ctx -> {
     Map<String, Object> model = ViewUtil.baseModel(req);
     if (!UserController.authenticate(getQueryUsername(req), getQueryPassword(req))) {
         model.put("authenticationFailed", true);
-        ctx.renderVelocity(Path.Template.LOGIN, model);
+        ctx.render(Path.Template.LOGIN, model);
     } else {
-        ctx.request().getSession().setAttribute("currentUser", getQueryUsername(req));
+        ctx.sessionAttribute("currentUser", getQueryUsername(req));
         model.put("authenticationSucceeded", true);
         model.put("currentUser", getQueryUsername(req));
         if (getQueryLoginRedirect(req) != null) {
             ctx.redirect(getQueryLoginRedirect(req));
         }
-        ctx.renderVelocity(Path.Template.LOGIN, model);
+        ctx.render(Path.Template.LOGIN, model);
     }
 };
 
 public static Handler handleLogoutPost = ctx -> {
-    ctx.request().getSession().removeAttribute("currentUser");
-    ctx.request().getSession().setAttribute("loggedOut", "true");
+    ctx.sessionAttribute("currentUser", null);
+    ctx.sessionAttribute("loggedOut", "true");
     ctx.redirect(Path.Web.LOGIN);
 };
 
@@ -135,8 +134,8 @@ public static Handler ensureLoginBeforeViewingBooks = ctx -> {
     if (!ctx.path().startsWith("/books")) {
         return;
     }
-    if (ctx.request().getSession().getAttribute("currentUser") == null) {
-        ctx.request().getSession().setAttribute("loginRedirect", ctx.path());
+    if (ctx.sessionAttribute"currentUser") == null) {
+        ctx.sessionAttribute("loginRedirect", ctx.path());
         ctx.redirect(Path.Web.LOGIN);
     }
 };
@@ -170,7 +169,7 @@ public static Handler serveLoginPage = ctx -> {
     Map<String, Object> model = ViewUtil.baseModel(req);
     model.put("loggedOut", removeSessionAttrLoggedOut(req));
     model.put("loginRedirect", removeSessionAttrLoginRedirect(req));
-    ctx.renderVelocity(Path.Template.LOGIN, model);
+    ctx.render(Path.Template.LOGIN, model);
 };
 ~~~
 The template needs access to the request to check the locale and the current users,

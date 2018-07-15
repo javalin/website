@@ -17,7 +17,7 @@ First, we need to create a project with these dependencies: [(→ Tutorial)](/tu
 ~~~java
 dependencies {
     compile "io.javalin:javalin:{{site.javalinversion}}"
-    compile "org.slf4j:slf4j-simple:1.7.13"
+    compile "org.slf4j:slf4j-simple:{{site.slf4jversion}}"
     compile "commons-fileupload:commons-fileupload:1.3.3"
 }
 ~~~
@@ -39,9 +39,8 @@ val reservations = mutableMapOf<String?, String?>(
 fun main(args: Array<String>) {
 
     val app = Javalin.create().apply {
-            port(7777)
-            enableStaticFiles("/public")
-        }.start()
+        enableStaticFiles("/public")
+    }.start(7777)
 
     app.post("/make-reservation") { ctx ->
         reservations[ctx.formParam("day")] = ctx.formParam("time")

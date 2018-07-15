@@ -787,7 +787,7 @@ dependency to your project:
 <dependency>
     <groupId>org.slf4j</groupId>
     <artifactId>slf4j-simple</artifactId>
-    <version>1.7.25</version>
+    <version>{{site.slf4jversion}}</version>
 </dependency>
 ```
 

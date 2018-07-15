@@ -432,17 +432,13 @@ app.exception(Exception::class.java) { e, ctx ->
 ### HaltException
 Javalin has a `HaltException` which is handled before other exceptions. It can be used to short-circuit the request-lifecycle. 
 If you throw a `HaltException` in a `before`-handler, no `endpoint`-handler will fire.
-When throwing a `HaltException` you can include a status code, a message, or both:
+When throwing a `HaltException` you must include a status code, but a message is optional:
 {% capture java %}
-throw new HaltException();                     // (status: 200, message: "Execution halted")
 throw new HaltException(401);                  // (status: 401, message: "Execution halted")
-throw new HaltException("My message");         // (status: 200, message: "My message")
 throw new HaltException(401, "Unauthorized");  // (status: 401, message: "Unauthorized")
 {% endcapture %}
 {% capture kotlin %}
-throw HaltException()                          // (status: 200, message: "Execution halted")
 throw HaltException(401)                       // (status: 401, message: "Execution halted")
-throw HaltException("My message")              // (status: 200, message: "My message")
 throw HaltException(401, "Unauthorized")       // (status: 401, message: "Unauthorized")
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -760,7 +756,7 @@ dependency to your project:
 <dependency>
     <groupId>org.slf4j</groupId>
     <artifactId>slf4j-simple</artifactId>
-    <version>1.7.25</version>
+    <version>{{site.slf4jversion}}</version>
 </dependency>
 ```
 
