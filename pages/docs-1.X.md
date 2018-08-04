@@ -2,7 +2,7 @@
 layout: default
 title: Documentation
 rightmenu: true
-permalink: /archive/documentation/javalin-1
+permalink: /archive/docs/v1.7.0.html
 ---
 
 <div id="spy-nav" class="right-menu" markdown="1">
@@ -31,7 +31,7 @@ permalink: /archive/documentation/javalin-1
 
 <h1 class="no-margin-top">Documentation - Javalin 1.X</h1>
 
-This page contains documentation for an old version of Javalin. 
+This page contains documentation for an older version of Javalin. 
 Go to [javalin.io/documentation](/documentation) to view documentation for the newest version.
 
 <div class="notification star-us">

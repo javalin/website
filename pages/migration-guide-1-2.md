@@ -16,6 +16,8 @@ Javalin 2 has some changes to the package structure:
 * `io.javalin.translator.json.JavalinJacksonPlugin` `->` `io.javalin.json.JavalinJackson`
 * `io.javalin.translator.template.JavalinXyzPlugin` `->` `io.javalin.rendering.JavalinXyz`
 * `io.javalin.security.Role.roles` `->` `io.javalin.security.SecurityUtil.roles`
+* `io.javalin.ApiBuilder` `->` `io.javalin.apibuilder.ApiBuilder`
+* `io.javalin.ApiBuilder.EndpointGrooup` `->` `io.javalin.apibuilder.EndpointGrooup`
 
 ## Server customization/defaults
 ```java
@@ -27,6 +29,8 @@ app.server(() -> new Server()) // v2
 * Request-caching is now limited to 4kb by default
 * Server now has a `LowResourceMonitor` attached by default
 * `defaultCharset()` method has been removed
+* URLs are now case-insensitive by default, meaning Javalin will treat `/path` and `/Path` as the same URL.
+  This can be disabled with `app.enableCaseSensitiveUrls()`.
 
 ## WebSockets
 It was possible to defined WebSockets using Jetty annotations in v1 of Javalin.
@@ -41,7 +45,7 @@ which is why they have been removed.
 * The `CookieBuilder` class has been removed, use `Cookie` directly.
 * `ctx.uri()` has been removed, it was a duplicate of `ctx.path()`
 * Things that used to return `Array<T>` now return `List<T>`
-* Nullable collections are now empty collections instead
+* Things that used to return nullable collections now return empty collections instead
 * `ctx.param()` is now `ctx.pathParam()`
 * `ctx.xyzOrDefault("key")` methods have been change into `ctx.xyz("key", "default")`
 * `ctx.next()` has been removed
@@ -49,13 +53,20 @@ which is why they have been removed.
 * `ctx.request()` is now `ctx.req`
 * `ctx.response()` is now `ctx.res`
 * All `ctx.renderXyz` methods are now just `ctx.render()` (correct engine is chosen based on extension)
-* `ctx.charset()` has been removed
+* `ctx.charset(charset)` has been removed
 
 ## Events
 * Event handlers no longer take `Event` as an argument (they now take nothing)
 * `io.javalin.event.EventType` is now `io.javalin.JavalinEvent` 
 
 ## Misc
-* The CookieBuilder class has been removed, use the normal Java Cookie class directly.
 * Reverse routing has been removed (will come back, but better)
-* `HaltException` now requires a status, and the default body is an empty string.
+* `HaltException` has been removed and replaced with `HttpResponseException`. Some common responses are included: 
+  * RedirectResponse
+  * BadRequestResponse
+  * UnauthorizedResponse
+  * ForbiddenResponse
+  * NotFoundResponse
+  * MethodNotAllowedResponse
+  * InternalServerErrorResponse
+  * ServiceUnavailableResponse

@@ -31,10 +31,12 @@ permalink: /documentation
 
 <h1 class="no-margin-top">Documentation</h1>
 
-The documentation on this site is always for the latest version of Javalin. 
-We don't have the capacity to maintain separate docs for each version, 
+The documentation on this site is always for the latest version of Javalin (`{{site.javalinversion}}`). 
+We don't have the capacity to maintain separate docs for every single version, 
 but Javalin follows [semantic versioning](http://semver.org/), 
 which means that there are no breaking changes unless it changes from 2.X to 3.X.
+
+Docs for 1.7 (last 1.X version) can be found [here](/archive/docs/v1.7.0.html).
 
 <div class="notification star-us">
     <div>
@@ -63,7 +65,7 @@ The before-, endpoint- and after-handlers require three parts:
 * A path, ex: `/`, `/hello-world`
 * A handler implementation `ctx -> { ... }`
 
-The `Handler` interface has a void return type, so you have to use  `ctx.result()` to return data to the user.
+The `Handler` interface has a void return type. You use `ctx.result()` to set the response which will be returned to the user.
 
 ### Before handlers
 Before-handlers are matched before every request (including static files, if you enable those).
@@ -199,6 +201,32 @@ app.routes {
 
 Note that `path()` prefixes your paths with `/` (if you don't add it yourself).\\
 This means that `path("api", ...)` and `path("/api", ...)` are equivalent.
+
+### CrudHandler
+The `CrudHandler` is an interface that can be used within a `routes()` call:
+
+{% capture java %}
+app.routes(() -> {
+    crud("users/:user-id", new UserController());
+});
+{% endcapture %}
+{% capture kotlin %}
+app.routes {
+    crud("users/:user-id", UserController())
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+It implements the five most common crud operations:
+```kotlin
+interface CrudHandler {
+    getAll(ctx)
+    getOne(ctx, resourceId)
+    create(ctx)
+    update(ctx, resourceId)
+    delete(ctx, resourceId)
+}
+```
 
 ## Context
 The `Context` object provides you with everything you need to handle a http-request.
@@ -349,7 +377,7 @@ app.before(ctx -> ctx.register(MyMapper.class, new MyMapper(ctx, otherDependency
 Javalin has a functional interface `AccessManager`, which let's you 
 set per-endpoint authentication and/or authorization. It's common to use before-handlers for this,
 but per-endpoint security handlers give you much more explicit and readable code. You can implement your 
-access-manager however you want, but here is an example implementation:
+access-manager however you want. Here is an example implementation:
 
 {% capture java %}
 // Set the access-manager that Javalin should use
@@ -507,7 +535,8 @@ app.ws("/websocket/:path") { ws ->
 ### WsSession
 The `WsSession` object wraps Jetty's `Session` and adds the following methods:
 ```java
-session.send("message")               // send a message to session remote (the ws client)
+session.send("message")               // send a string message to session remote (the ws client)
+session.send(bytes)                   // send a binary message to session remote (the ws client)
 session.queryString()                 // get query-string from upgrade-request
 session.queryParam("key")             // get query-param from upgrade-request
 session.queryParams("key")            // get query-params from upgrade-request
@@ -526,30 +555,27 @@ Javalin has five lifecycle events: `SERVER_STARTING`, `SERVER_STARTED`, `SERVER_
 The snippet below shows all of them in action:
 {% capture java %}
 Javalin app = Javalin.create()
-    .event(EventType.SERVER_STARTING, e -> { ... })
-    .event(EventType.SERVER_STARTED, e -> { ... })
-    .event(EventType.SERVER_START_FAILED, e -> { ... })
-    .event(EventType.SERVER_STOPPING, e -> { ... })
-    .event(EventType.SERVER_STOPPED, e -> { ... });
+    .event(EventType.SERVER_STARTING, () -> { ... })
+    .event(EventType.SERVER_STARTED, () -> { ... })
+    .event(EventType.SERVER_START_FAILED, () -> { ... })
+    .event(EventType.SERVER_STOPPING, () -> { ... })
+    .event(EventType.SERVER_STOPPED, () -> { ... });
 
 app.start(); // SERVER_STARTING -> (SERVER_STARTED || SERVER_START_FAILED)
 app.stop(); // SERVER_STOPPING -> SERVER_STOPPED
 {% endcapture %}
 {% capture kotlin %}
 val app = Javalin.create()
-    .event(EventType.SERVER_STARTING, { e -> ... })
-    .event(EventType.SERVER_STARTED, { e -> ... })
-    .event(EventType.SERVER_START_FAILED, { e -> ... })
-    .event(EventType.SERVER_STOPPING, { e -> ... })
-    .event(EventType.SERVER_STOPPED, { e -> ... });
+    .event(EventType.SERVER_STARTING) { ... })
+    .event(EventType.SERVER_STARTED) { ... })
+    .event(EventType.SERVER_START_FAILED) { ... })
+    .event(EventType.SERVER_STOPPING) { ... })
+    .event(EventType.SERVER_STOPPED) { ... });
 
 app.start() // SERVER_STARTING -> (SERVER_STARTED || SERVER_START_FAILED)
 app.stop() // SERVER_STOPPING -> SERVER_STOPPED
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
-The lambda takes an `Event` object, which contains the type of event that happened,
-and a reference to the `this` (the javalin object which triggered the event).
 
 ## Server setup
 
@@ -573,10 +599,12 @@ Javalin.create() // create has to be called first
     .dontIgnoreTrailingSlashes() // treat '/test' and '/test/' as different URLs
     .defaultContentType(string) // set a default content-type for responses
     .disableStartupBanner() // remove the javalin startup banner from logs
+    .enableCaseSensitiveUrls() // allow urls like '/camelCasedUrl' and match on case
     .enableCorsForOrigin("origin") // enables cors for the specified origin(s)
     .enableAutogeneratedEtags() // auto-generates etags for get-requests
     .enableDebugLogging() // enable extensive debug logging
     .enableRouteOverview("/path") // render a HTML page showing all mapped routes
+    .enableSinglePageMode("path", "filePath") // catch 404s and return file-content as response body
     .enableStaticFiles("/public") // enable static files (opt. second param Location.CLASSPATH/Location.EXTERNAL)
     .disableDynamicGzip() // don't gzip any dynamic responses (static files are still gzipped)
     .maxBodySizeForRequestCache(long) // set max body size for request cache
@@ -592,9 +620,11 @@ Javalin.create().apply { // create has to be called first
     defaultContentType(string) // set a default content-type for responses
     disableStartupBanner() // remove the javalin startup banner from logs
     enableAutogeneratedEtags() // auto-generates etags for get-requests
+    enableCaseSensitiveUrls() // allow urls like '/camelCasedUrl' and match on case
     enableCorsForOrigin("origin") // enables cors for the specified origin(s)
     enableDebugLogging() // enable extensive debug logging
     enableRouteOverview("/path") // render a HTML page showing all mapped routes
+    enableSinglePageMode("path", "filePath") // catch 404s and return file-content as response body
     enableStaticFiles("/public") // enable static files (opt. second param Location.CLASSPATH/Location.EXTERNAL)
     disableDynamicGzip() // don't gzip any dynamic responses (static files are still gzipped)
     maxBodySizeForRequestCache(long) // set max body size for request cache
@@ -668,22 +698,24 @@ You can enabled static file serving by doing `app.enableStaticFiles("/classpath-
 Static resource handling is done **after** endpoint matching, 
 meaning your self-defined endpoints have higher priority. The process looks like this:
 ```bash
-run before-handlers
-run endpoint-handlers
+before-handlers
+endpoint-handlers
 if no-endpoint-handler-found
-    run static-file-handler
+    static-file-handler
     if static-file-found
-        static-file-handler finishes response and
-        sends to user (response is commited)
+        static-file-handler send response
     else 
-        response is 404, javalin finishes the response
-        with after-handlers and error-mapping
+        response is 404
+after-handlers
 ```
 If you do `app.enableStaticFiles("/classpath-folder")`.
 Your `index.html` file at `/classpath-folder/index.html` will be available 
 at `http://{host}:{port}/index.html` and `http://{host}:{port}/`.
 
 You can call `enableStaticFiles` multiple times to set up multiple handlers.
+
+WebJars are automatically made available if they are included in the project, and available at
+`http://{host}:{port}/webjars/name/version/file.ext`.
 
 #### Caching
 Javalin serves static files with the `Cache-Control` header set to `max-age=0`. This means
@@ -694,7 +726,8 @@ If you want to skip this check, you can put files in a dir called `immutable`,
 and Javalin will set `max-age=31622400`, which means that the browser will wait
 one year before checking if the file is still valid.
 This should only be used for versioned library files, like `vue-2.4.2.min.js`, to avoid
-the browser ending up with an outdated version if you change the file content.
+the browser ending up with an outdated version if you change the file content. 
+WebJars also use `max-age=31622400`, as the version number is always part of the path.
 
 ## FAQ
 Frequently asked questions

@@ -37,6 +37,7 @@ making it’s easy to fully understand the control-flow of your program.
 * No global static state
 * No reflection
 * No configuration files
+* Servlet based
 
 Javalin doesn't care how you build your app, so any knowledge obtained while working
 with a Javalin project should transfer easily to other (non Javalin) projects.

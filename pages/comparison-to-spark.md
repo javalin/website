@@ -40,7 +40,6 @@ Some other differences:
 * Spark has a redirect DSL `redirect.get("/fromPath", "/toPath");`. Javalin doesn't.
 * Javalin has async support for long running tasks via `CompletableFuture`. Spark doesn't.
 * Javalin supports context extensions (`ctx.extension(MyExt.class).myMethod()`). Spark doesn't.
-* Spark has a [pac4j library](https://github.com/pac4j/spark-pac4j). Javalin doesn't.
 * Javalin has an `AccessManager` interfaces with role-support. Spark doesn't.
 * Spark is written in Java. Javalin is written in Kotlin.
 * Javalin has [lifecycle events](/documentation#lifecycle-events). Spark doesn't.
