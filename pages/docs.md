@@ -31,10 +31,10 @@ permalink: /documentation
 
 <h1 class="no-margin-top">Documentation</h1>
 
-The documentation on this site is always for the latest version of Javalin (`{{site.javalinversion}}`). 
+The documentation on this site is always for the latest version of Javalin (currently `{{site.javalinversion}}`). 
 We don't have the capacity to maintain separate docs for every single version, 
 but Javalin follows [semantic versioning](http://semver.org/), 
-which means that there are no breaking changes unless it changes from 2.X to 3.X.
+meaning there are no breaking changes unless it changes from 2.X to 3.X.
 
 Docs for 1.7 (last 1.X version) can be found [here](/archive/docs/v1.7.0.html).
 
