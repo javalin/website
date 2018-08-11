@@ -16,6 +16,7 @@ permalink: /documentation
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Cookie Store](#cookie-store)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Extensions](#context-extensions)
 * [Access manager](#access-manager)
+* [Default responses](#default-responses)
 * [Exception Mapping](#exception-mapping)
 * [Error Mapping](#error-mapping)
 * [WebSockets](#websockets)
@@ -431,6 +432,54 @@ app.routes {
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
+## Default responses
+
+Javalin comes with a built in class called `HttpResponseException`, which can be used for default responses.\\
+If the client accepts JSON, a JSON object is returned. Otherwise a plain text response is returned.
+
+```java
+app.post("/") { throw ForbiddenResponse("Off limits!") }
+```
+If client accepts JSON:
+```json
+{
+    "title": "Off limits!",
+    "status": 403,
+    "type": "https://javalin.io/documentation#forbiddenresponse",
+    "details": []
+}
+```
+Otherwise:
+```text
+Forbidden
+```
+
+You can include a `Map<String, String>` of details if you wish.
+
+### RedirectResponse
+Returns a [302 Found](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/302) response with the default title `Redirected`. 
+
+### BadRequestResponse
+Returns a [400 Bad Request](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400) response with the default title `Bad request`. 
+
+### UnauthorizedResponse
+Returns a [401 Unauthorized](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401) response with the default title `Unauthorized`. 
+
+### ForbiddenResponse
+Returns a [403 Forbidden](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403) response with the default title `Forbidden`. 
+
+### NotFoundResponse
+Returns a [404 Not Found](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404) response with the default title `Not found`. 
+
+### MethodNotAllowedResponse
+Returns a [405 Method Not Allowed](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/405) response with the default title `Method not allowed`. 
+
+### InternalServerErrorResponse
+Returns a [500 Internal Server Error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500) response with the default title `Internal server error`. 
+
+### ServiceUnavailableResponse
+Returns a [503 Service Unavailable](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503) response with the default title `Service unavailable`. 
+
 ## Exception Mapping
 All handlers (before, endpoint, after) can throw `Exception`
 (and any subclass of `Exception`) 
@@ -456,21 +505,6 @@ app.exception(Exception::class.java) { e, ctx ->
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
-### HaltException
-Javalin has a `HaltException` which is handled before other exceptions. It can be used to short-circuit the request-lifecycle. 
-If you throw a `HaltException` in a `before`-handler, no `endpoint`-handler will fire.
-When throwing a `HaltException` you must include a status code, but a message is optional:
-{% capture java %}
-throw new HaltException(401);                  // (status: 401, message: "Execution halted")
-throw new HaltException(401, "Unauthorized");  // (status: 401, message: "Unauthorized")
-{% endcapture %}
-{% capture kotlin %}
-throw HaltException(401)                       // (status: 401, message: "Execution halted")
-throw HaltException(401, "Unauthorized")       // (status: 401, message: "Unauthorized")
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
 
 ## Error Mapping
 Error mapping is similar to exception mapping, but it operates on HTTP status codes instead of Exceptions:
