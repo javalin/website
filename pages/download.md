@@ -5,6 +5,8 @@ rightmenu: false
 permalink: /download
 ---
 
+{% include javalin2banner.html %}
+
 <h1 class="no-margin-top">A lightweight REST API library</h1>
 
 Javalin is a true micro Java REST API library and has no external dependencies 
