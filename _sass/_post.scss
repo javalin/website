@@ -42,6 +42,7 @@ ul.post-list {
       background: #fff;
       border: 1px solid #ddd;
       min-height: 100px;
+      border-radius: 5px;
       &:hover {
         box-shadow: inset 2px 0 0 0 $javalin-brand-primary;
       }

@@ -103,13 +103,18 @@ nav ul li a:hover {
 
 .landing-btn {
     margin: 32px 8px 0;
+    padding: 10px 15px;
     text-align: center;
     display: inline-block;
-    border: 1px solid white;
+    background: rgba(255, 255, 255, 0.15);
+    border-bottom: 2px solid rgba(0,0,0,0.4);
     color: white;
-    padding: 10px 15px;
     cursor: pointer;
     border-radius: 50px;
+}
+
+.landing-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
 }
 
 .boxes {
@@ -129,6 +134,7 @@ nav ul li a:hover {
     background: #fff;
     font-size: 16px;
     margin-bottom: 32px;
+    border-radius: 5px;
 }
 
 .boxes .box h3 {
