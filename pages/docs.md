@@ -783,14 +783,14 @@ Uploaded files are easily accessible via `ctx.uploadedFiles()`:
 {% capture java %}
 app.post("/upload", ctx -> {
     ctx.uploadedFiles("files").forEach(file -> {
-        FileUtils.copyInputStreamToFile(file.getContent(), new File("upload/" + file.getName()));
+        FileUtil.streamToFile(file.getContent(), "upload/" + file.getName())
     });
 });
 {% endcapture %}
 {% capture kotlin %}
 app.post("/upload") { ctx ->
     ctx.uploadedFiles("files").forEach { (contentType, content, name, extension) ->
-        content.copyTo(File("upload/" + name))
+        FileUtil.streamToFile(content, "upload/$name")
     }
 }
 {% endcapture %}
