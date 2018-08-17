@@ -642,6 +642,7 @@ Javalin.create() // create has to be called first
     .enableRouteOverview("/path") // render a HTML page showing all mapped routes
     .enableSinglePageMode("path", "filePath") // catch 404s and return file-content as response body
     .enableStaticFiles("/public") // enable static files (opt. second param Location.CLASSPATH/Location.EXTERNAL)
+    .enableWebJars() // enables webjars at /webjars/name/version/file.ext
     .disableDynamicGzip() // don't gzip any dynamic responses (static files are still gzipped)
     .maxBodySizeForRequestCache(long) // set max body size for request cache
     .port(port) // set the port
@@ -662,6 +663,7 @@ Javalin.create().apply { // create has to be called first
     enableRouteOverview("/path") // render a HTML page showing all mapped routes
     enableSinglePageMode("path", "filePath") // catch 404s and return file-content as response body
     enableStaticFiles("/public") // enable static files (opt. second param Location.CLASSPATH/Location.EXTERNAL)
+    enableWebJars() // enables webjars at /webjars/name/version/file.ext
     disableDynamicGzip() // don't gzip any dynamic responses (static files are still gzipped)
     maxBodySizeForRequestCache(long) // set max body size for request cache
     port(port) // set the port
@@ -750,8 +752,7 @@ at `http://{host}:{port}/index.html` and `http://{host}:{port}/`.
 
 You can call `enableStaticFiles` multiple times to set up multiple handlers.
 
-WebJars are automatically made available if they are included in the project, and available at
-`http://{host}:{port}/webjars/name/version/file.ext`.
+WebJars can be enabled by calling `enableWebJars()`, they will be available at `/webjars/name/version/file.ext`.
 
 #### Caching
 Javalin serves static files with the `Cache-Control` header set to `max-age=0`. This means
