@@ -130,6 +130,20 @@ The values of the form are added to the URL as query-parameters.
 * `GET` requests have no request-body, and form information is sent as query-parameters in the URL. In order to extract information from this body you have to use `ctx.queryParam(key)` in Javalin.
 
 ## File upload example
+Let's expand our example a bit to include file uploads.
+
+### Endpoint
+```kotlin
+app.post("/upload") { ctx ->
+    ctx.uploadedFiles("files").forEach { (contentType, content, name, extension) ->
+        FileUtil.streamToFile(content, "upload/$name")
+    }
+}
+```
+`ctx.uploadedFiles("files")` gives us a list of files matching the name `files`.
+We then save these files to an `upload` folder.
+
+### HTML form
 
 ```markup
 <h1>Upload example</h1>

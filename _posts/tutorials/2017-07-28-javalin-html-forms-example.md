@@ -137,28 +137,12 @@ The values of the form are added to the URL as query-parameters.
 
 ## File upload example
 Let's expand our example a bit to include file uploads.
-We need to add a new dependency, a new endpoint, and a new form.
-
-### Dependency
-We need to add a dependency for handling file-uploads:
-```markup
-<dependency>
-    <groupId>commons-fileupload</groupId>
-    <artifactId>commons-fileupload</artifactId>
-    <version>1.3.3</version>
-</dependency>
-```
 
 ### Endpoint
 ```java
 app.post("/upload-example", ctx -> {
     ctx.uploadedFiles("files").forEach(file -> {
-        try {
-            FileUtils.copyInputStreamToFile(file.getContent(), new File("upload/" + file.getName()));
-            ctx.html("Upload successful");
-        } catch (IOException e) {
-            ctx.html("Upload failed");
-        }
+        FileUtil.streamToFile(file.getContent(), "upload/" + file.getName())
     });
 });
 ```
