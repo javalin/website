@@ -26,15 +26,15 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compile 'io.javalin:javalin:{{site.javalinversion}}'
-    compile "org.slf4j:slf4j-api:1.7.25"
-    compile "org.slf4j:slf4j-simple:1.7.25"
+    compile "org.slf4j:slf4j-api:{{site.slf4jversion}}"
+    compile "org.slf4j:slf4j-simple:{{site.slf4jversion}}"
     compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.+"
     testCompile 'junit:junit:4.12'
     testCompile 'khttp:khttp:0.1.0'
 }
 ```
 
-The library we're going to be using for testing is `khttp`, an extremely lightweight http implementatiton in kotlin. If you've ever used pythons `requests` module, you'll notice a lot of similarities. 
+The library we're going to be using for testing is `khttp`, an extremely lightweight http implementation in Kotlin. If you've ever used pythons `requests` module, you'll notice a lot of similarities. 
 
 ## Getting Started
 
@@ -59,11 +59,13 @@ src
 ```
 
 
-First and foremost, to be able to test anything we need to be able to start and stop the server from our tests. The way the docs outline how to do this in a functional manner makes it difficult to do this. 
+First and foremost, to be able to test anything we need to be able to start and stop the server from our tests. 
+The way the docs outline how to do this in a functional manner makes it difficult to do this.
+
 ```kotlin
 // Main.kt
 fun main(args: Array<String>) {
-    val app = Javalin.start(7000)
+    val app = Javalin.create().start(7000)
     app.get("/") { ctx -> ctx.result("Hello World") }
 }
 ```
@@ -72,9 +74,7 @@ A simple workaround for this is wrapping all of that in a dummy class.
 ```kotlin
 // Main.kt
 fun main(args: Array<String>) {
-
     JavalinApp(8000).init()
-
 }
 
 
@@ -143,7 +143,7 @@ To serialize your data to JSON, just pass the object to the `context.json(...)` 
 class FoodItemController(private val data: Map<Int, FoodItem>) {
 
     fun getFoodItem(ctx: Context) {
-        ctx.param("id")?.toInt().let {
+        ctx.pathParam("id")?.toInt().let {
             data[it]?.let { item ->
                 ctx.json(item)
                 return
@@ -192,7 +192,7 @@ inline fun <reified T : Any> String.deserialize(): T =
 ```
 
 
-We can leverage our deserialization method in our tests and also take advantage of kotlin data classes free `equals` method here. 
+We can leverage our deserialization method in our tests and also take advantage of Kotlin data classes free `equals` method here. 
 
 ```kotlin
 // TestIntegration.kt

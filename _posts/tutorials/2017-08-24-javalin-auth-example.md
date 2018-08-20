@@ -19,7 +19,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
     compile "io.javalin:javalin:{{site.javalinversion}}"
     compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.8.4"
-    compile "org.slf4j:slf4j-simple:1.7.22"
+    compile "org.slf4j:slf4j-simple:{{site.slf4jversion}}"
 }
 ~~~
 
@@ -47,19 +47,19 @@ object UserController {
     }
 
     fun createUser(ctx: Context) {
-        users[randomId()] = ctx.bodyAsClass(User::class.java)
+        users[randomId()] = ctx.body<User>()
     }
 
     fun getUser(ctx: Context) {
-        ctx.json(users[ctx.param(":user-id")!!]!!)
+        ctx.json(users[ctx.pathParam(":user-id")]!!)
     }
 
     fun updateUser(ctx: Context) {
-        users[ctx.param(":user-id")!!] = ctx.bodyAsClass(User::class.java)
+        users[ctx.pathParam(":user-id")!!] = ctx.body<User>()
     }
 
     fun deleteUser(ctx: Context) {
-        users.remove(ctx.param(":user-id")!!)
+        users.remove(ctx.pathParam(":user-id"))
     }
 
     private fun randomId() = UUID.randomUUID().toString()

@@ -27,7 +27,7 @@ We'll also add unirest for simulating traffic:
     <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-simple</artifactId>
-        <version>1.7.13</version>
+        <version>{{site.slf4jversion}}</version>
     </dependency>
     <dependency>
         <groupId>io.prometheus</groupId>
@@ -55,13 +55,12 @@ public static void main(String[] args) throws Exception {
     initializePrometheus(statisticsHandler, queuedThreadPool);
 
     Javalin app = Javalin.create()
-        .port(7070)
-        .embeddedServer(new EmbeddedJettyFactory(() -> {
+        .server(() -> {
             Server server = new Server(queuedThreadPool);
             server.setHandler(statisticsHandler);
             return server;
-        }))
-        .start();
+        })
+        .start(7070);
 }
 
 private static void initializePrometheus(StatisticsHandler statisticsHandler, QueuedThreadPool queuedThreadPool) throws IOException {

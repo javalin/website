@@ -37,13 +37,16 @@ footer {
   border-top: 1px solid #ddd;
   padding: 0 20px;
   overflow: hidden;
+  a {
+    font-weight: 700;
+  }
 }
 
 .width-limit {
   width: 100%;
   padding-left: 20px;
   padding-right: 20px;
-  max-width: 840px;
+  max-width: 900px;
   margin: 0 auto;
 }
 
@@ -91,7 +94,7 @@ nav {
   left: 50%;
   list-style: none;
   padding: 0;
-  margin-left: 430px;
+  margin-left: 450px;
   top: 120px;
   z-index: 999999;
   width: 200px;

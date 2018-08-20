@@ -32,7 +32,7 @@ We will be using Javalin for our web-server and WebSockets, and slf4j for loggin
     <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-simple</artifactId>
-        <version>1.7.25</version>
+        <version>{{site.slf4jversion}}</version>
     </dependency>
 </dependencies>
 ```
@@ -48,7 +48,7 @@ We can get the entire server done in about 30 lines:
 
 ```kotlin
 import io.javalin.Javalin
-import io.javalin.embeddedserver.jetty.websocket.WsSession
+import io.javalin.websocket.WsSession
 import java.util.concurrent.ConcurrentHashMap
 
 data class Collaboration(var doc: String = "", val sessions: MutableSet<WsSession> = ConcurrentHashMap.newKeySet<WsSession>())
@@ -58,7 +58,6 @@ fun main(args: Array<String>) {
     val collaborations = ConcurrentHashMap<String, Collaboration>()
 
     Javalin.create().apply {
-        port(7070)
         enableStaticFiles("/public")
         ws("/docs/:doc-id") { ws ->
             ws.onConnect { session ->
@@ -78,11 +77,11 @@ fun main(args: Array<String>) {
                 collaborations[session.docId]!!.sessions.remove(session)
             }
         }
-    }.start()
+    }.start(7070)
 
 }
 
-val WsSession.docId: String get() = this.param("doc-id")!! // is always present, or route won't match
+val WsSession.docId: String get() = this.param("doc-id")
 ```
 
 ## Building a JavaScript Client

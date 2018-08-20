@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <link href="https://fonts.googleapis.com/css?family=Encode+Sans:500,700" rel="stylesheet">
@@ -32,8 +32,8 @@
     {% include forkMe.html %}
     <header>
         <nav class="width-limit">
-            <a id="logo" href="/">
-                {% if page.splash %}<img src="/img/logo_inv.svg">{% else %}<img src="/img/logo.svg">{% endif %}
+            <a id="logo" href="/" aria-label="Javalin">
+                {% if page.splash %}<img src="/img/logo_inv.svg" alt="Javalin">{% else %}<img src="/img/logo.svg" alt="Javalin">{% endif %}
             </a>
             <ul>
                 <li><a href="/download">Download</a></li>
@@ -44,27 +44,6 @@
         </nav>
     </header>
     <main class="width-limit{% if page.rightmenu %} has-right-menu{% endif %}">
-        {% if page.splash != true %}
-            <script>
-                const hasBeenDismissed = localStorage.getItem("survey-dismissed") === "true";
-                const pageLoadCount = parseInt(localStorage.getItem("page-load-count") || 0);
-                localStorage.setItem("page-load-count", (pageLoadCount + 1).toString());
-                if (!hasBeenDismissed && pageLoadCount > 2 && pageLoadCount < 20) {
-                    document.write(`
-                        <div id="usage-survey">
-                            <div class="pulsating-circle"></div>
-                            We've made a short <a href="https://docs.google.com/forms/d/e/1FAIpQLScVaZ9t7AdKBejGwS5m8otH7xdERSg2vqF7OrtvvYx8y_sr1g/viewform?usp=sf_link">survey</a>
-                            to find out more about Javalin users. If you have the time, please fill it out.
-                            <span class="close">✖</span>
-                        </div>
-                    `);
-                    document.querySelector("#usage-survey .close").addEventListener("click", function () {
-                        document.querySelector("#usage-survey").style.display = "none";
-                        localStorage.setItem("survey-dismissed", "true");
-                    });
-                }
-            </script>
-        {% endif %}
         {{ content }}
     </main>
     <footer>

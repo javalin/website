@@ -34,7 +34,7 @@ First, we need to create a Maven project with some dependencies: [(→ Tutorial)
     <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-simple</artifactId> <!-- For logging -->
-        <version>1.7.25</version>
+        <version>{{site.slf4jversion}}</version>
     </dependency>
 </dependencies>
 ~~~

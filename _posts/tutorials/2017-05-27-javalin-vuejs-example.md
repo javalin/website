@@ -27,7 +27,7 @@ follow the beginning of our [Kotlin CRUD REST API tutorial](/tutorials/simple-ko
 <dependency>
     <groupId>org.slf4j</groupId>
     <artifactId>slf4j-simple</artifactId>
-    <version>1.7.13</version>
+    <version>{{site.slf4jversion}}</version>
 </dependency>
 <dependency>
     <groupId>com.fasterxml.jackson.module</groupId>

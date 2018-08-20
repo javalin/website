@@ -73,19 +73,18 @@ import io.javalin.ApiBuilder.*
 import io.javalin.Javalin;
 
 Javalin app = Javalin.create()
-    .enableStandardRequestLogging()
-    .enableDynamicGzip()
-    .port(port)
-    .start();
+    .enableCorsForAllOrigins()
+    .enableStaticFiles("/public")
+    .start(port);
 
 app.routes(() -> {
     path("users", () -> {
-        get(UserController::getAllUserIds);
-        post(UserController::createUser);
+        get(UserController::getAll);
+        post(UserController::create);
         path(":user-id", () -> {
-            get(UserController::getUser);
-            patch(UserController::updateUser);
-            delete(UserController::deleteUser);
+            get(UserController::getOne);
+            patch(UserController::update);
+            delete(UserController::delete);
         });
     });
 });
@@ -95,19 +94,18 @@ import io.javalin.ApiBuilder.*
 import io.javalin.Javalin;
 
 val app = Javalin.create().apply {
-    enableStandardRequestLogging()
-    enableDynamicGzip()
-    port(port)
-}.start()
+    enableCorsForAllOrigins()
+    enableStaticFiles("/public")
+}.start(port)
 
 app.routes {
     path("users") {
-        get(UserController::getAllUserIds)
-        post(UserController::createUser)
+        get(UserController::getAll)
+        post(UserController::create)
         path(":user-id") {
-            get(UserController::getUser)
-            patch(UserController::updateUser)
-            delete(UserController::deleteUser)
+            get(UserController::getOne)
+            patch(UserController::update)
+            delete(UserController::delete)
         }
     }
 }

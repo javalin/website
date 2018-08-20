@@ -3,7 +3,7 @@ import io.javalin.Javalin;
 
 public class HelloWorld {
     public static void main(String[] args) {
-        Javalin app = Javalin.start(7000);
+        Javalin app = Javalin.create().start(7000);
         app.get("/", ctx -> ctx.result("Hello World"));
     }
 }
@@ -13,8 +13,10 @@ public class HelloWorld {
 import io.javalin.Javalin
 
 fun main(args: Array<String>) {
-    val app = Javalin.start(7000)
+    val app = Javalin.create().start(7000)
     app.get("/") { ctx -> ctx.result("Hello World") }
 }
+// You can wrap the main function
+// in a Kotlin object
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}

@@ -18,7 +18,7 @@ First, we need to create a Gradle project with some dependencies: [(→ Tutorial
 dependencies {
     compile "io.javalin:javalin:{{site.javalinversion}}"
     compile "org.apache.commons:commons-email:1.4"
-    compile "org.slf4j:slf4j-simple:1.7.25"
+    compile "org.slf4j:slf4j-simple:{{site.slf4jversion}}"
 }
 ~~~
 
@@ -31,7 +31,7 @@ import org.apache.commons.mail.*
 
 fun main(args: Array<String>) {
 
-    val app = Javalin.start(7000)
+    val app = Javalin.create().start(7000)
 
     app.get("/") { ctx ->
         ctx.html("""

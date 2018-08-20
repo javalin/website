@@ -1,0 +1,67 @@
+<script>
+    const hasBeenDismissed = localStorage.getItem("j2-banner-dismissed") === "true";
+    const pageLoadCount = parseInt(localStorage.getItem("page-load-count") || 0);
+    localStorage.setItem("page-load-count", (pageLoadCount + 1).toString());
+    if (!hasBeenDismissed) {
+        document.write(`
+               <div id="j2-banner">
+                    Javalin 2.0 has been released!
+                    <span id="j2-links">
+                        <a href="/news/javalin-2.0.0-stable.html">News</a>
+                        <a href="/migration-guide-javalin-1-to-2">Migration&nbsp;guide</a>
+                        <a class="social-btn" href="https://twitter.com/intent/tweet?text=Javalin 2.0 stable released&url={{ site.url }}/news/javalin-2.0.0-stable.html&via=javalin_io&related=javalin_io" rel="nofollow">Tweet&nbsp;it!</a>
+                    </span>
+                </div>
+        `);
+        if (pageLoadCount > 5) {
+            document.querySelector("#j2-banner").insertAdjacentHTML("beforeend", `<span class="close">✖</span>`);
+            document.querySelector("#j2-banner .close").addEventListener("click", () => {
+                document.querySelector("#j2-banner").style.display = "none";
+                localStorage.setItem("j2-banner-dismissed", "true");
+            });
+        }
+    }
+</script>
+<style>
+    #j2-banner {
+        position: relative;
+        margin: 12px 0 20px;
+        width: 100%;
+        background: #008cbb;
+        min-height: 70px;
+        line-height: 70px;
+        color: white;
+        text-shadow: 1px 1px rgba(0, 0, 0, 0.5);
+        text-align: center;
+        font-family: 'Encode Sans', sans-serif;
+        font-size: 18px;
+        border-radius: 5px;
+        padding: 0 20px;
+        border-bottom: 5px solid #035e7f;
+    }
+    #j2-banner a {
+        color: white;
+        border: 2px dotted white;
+        padding: 0 6px 3px 6px;
+        border-radius: 5px;
+        margin-left: 10px;
+    }
+    #j2-links {
+        white-space: nowrap;
+    }
+    #j2-banner .close {
+        position: absolute;
+        right: -10px;
+        top: -10px;
+        height: 30px;
+        width: 30px;
+        text-align: center;
+        line-height: 30px;
+        font-size: 20px;
+        background: #ff6666;
+        border-radius: 24px;
+        font-family: arial;
+        border-bottom: 2px solid #b13838;
+        cursor: pointer;
+    }
+</style>

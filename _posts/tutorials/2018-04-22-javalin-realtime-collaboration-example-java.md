@@ -32,7 +32,7 @@ We will be using Javalin for our web-server and WebSockets, and slf4j for loggin
     <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-simple</artifactId>
-        <version>1.7.25</version>
+        <version>{{site.slf4jversion}}</version>
     </dependency>
 </dependencies>
 ```
@@ -48,7 +48,7 @@ We can get the entire server done in about 40 lines:
 
 ```java
 import io.javalin.Javalin;
-import io.javalin.embeddedserver.jetty.websocket.WsSession;
+import io.javalin.websocket.WsSession;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -59,7 +59,6 @@ public class Main {
     public static void main(String[] args) {
 
         Javalin.create()
-            .port(7070)
             .enableStaticFiles("/public")
             .ws("/docs/:doc-id", ws -> {
                 ws.onConnect(session -> {
@@ -79,7 +78,7 @@ public class Main {
                     getCollab(session).sessions.remove(session);
                 });
             })
-            .start();
+            .start(7070);
 
     }
 
@@ -96,7 +95,7 @@ public class Main {
 
 We also need to create a data object for holding our document and the people working on it:
 ```java
-import io.javalin.embeddedserver.jetty.websocket.WsSession;
+import io.javalin.websocket.WsSession;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 

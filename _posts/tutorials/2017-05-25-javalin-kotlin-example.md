@@ -58,7 +58,7 @@ And paste the "Hello world" example:
 import io.javalin.Javalin
 
 fun main(args: Array<String>) {
-    val app = Javalin.create().port(7000).start()
+    val app = Javalin.create().start(7000)
     app.get("/") { ctx -> ctx.result("Hello World") }
 }
 ~~~
@@ -83,7 +83,7 @@ Kotlin has a really neat feature called
 To create a data class you just have to write:
 
 ~~~kotlin
-data class User(val name: String, val email: String, val id: Int);
+data class User(val name: String, val email: String, val id: Int)
 ~~~
 
 ... and you're done! If you declare all parameters as `val` you get an immutable class similar to the
@@ -197,10 +197,9 @@ fun main(args: Array<String>) {
     val userDao = UserDao()
 
     val app = Javalin.create().apply {
-        port(7000)
         exception(Exception::class.java) { e, ctx -> e.printStackTrace() }
         error(404) { ctx -> ctx.json("not found") }
-    }.start()
+    }.start(7000)
 
     app.routes {
 
@@ -209,11 +208,11 @@ fun main(args: Array<String>) {
         }
 
         get("/users/:id") { ctx ->
-            ctx.json(userDao.findById(ctx.param("id")!!.toInt())!!)
+            ctx.json(userDao.findById(ctx.pathParam("id").toInt())!!)
         }
 
         get("/users/email/:email") { ctx ->
-            ctx.json(userDao.findByEmail(ctx.param("email")!!)!!)
+            ctx.json(userDao.findByEmail(ctx.pathParam("email"))!!)
         }
 
         post("/users/create") { ctx ->
@@ -225,14 +224,14 @@ fun main(args: Array<String>) {
         patch("/users/update/:id") { ctx ->
             val user = ctx.bodyAsClass(User::class.java)
             userDao.update(
-                    id = ctx.param("id")!!.toInt(),
+                    id = ctx.pathParam("id").toInt(),
                     user = user
             )
             ctx.status(204)
         }
 
         delete("/users/delete/:id") { ctx ->
-            userDao.delete(ctx.param("id")!!.toInt())
+            userDao.delete(ctx.pathParam("id").toInt())
             ctx.status(204)
         }
 

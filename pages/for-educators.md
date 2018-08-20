@@ -20,7 +20,7 @@ import io.javalin.Javalin;
 
 public class HelloWorld {
     public static void main(String[] args) {
-        Javalin app = Javalin.start(7000); // create and launch server
+        Javalin app = Javalin.create().start(7000); // create and launch server
         app.get("/", ctx -> ctx.result("Hello World")); // add root endpoint
     }
 }
@@ -37,6 +37,7 @@ making it’s easy to fully understand the control-flow of your program.
 * No global static state
 * No reflection
 * No configuration files
+* Servlet based
 
 Javalin doesn't care how you build your app, so any knowledge obtained while working
 with a Javalin project should transfer easily to other (non Javalin) projects.

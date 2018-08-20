@@ -35,7 +35,7 @@ First, we need to create a Maven project with some dependencies: [(→ Tutorial)
     <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-simple</artifactId>
-        <version>1.7.13</version>
+        <version>{{site.slf4jversion}}</version>
     </dependency>
     <dependency>
         <groupId>org.json</groupId>
@@ -45,7 +45,7 @@ First, we need to create a Maven project with some dependencies: [(→ Tutorial)
     <dependency>
         <groupId>com.j2html</groupId>
         <artifactId>j2html</artifactId>
-        <version>1.2.0</version>
+        <version>1.3.0</version>
     </dependency>
 </dependencies>
 ~~~
@@ -65,7 +65,6 @@ private var nextUserNumber = 1 // Assign to username for next connecting user
 
 fun main(args: Array<String>) {
     Javalin.create().apply {
-        port(7070)
         enableStaticFiles("/public")
         ws("/chat") { ws ->
             ws.onConnect { session ->
@@ -82,13 +81,13 @@ fun main(args: Array<String>) {
                 broadcastMessage(userUsernameMap[session]!!, message)
             }
         }
-    }.start()
+    }.start(7070)
 }
 
 // Sends a message from one user to all users, along with a list of current usernames
 fun broadcastMessage(sender: String, message: String) {
     userUsernameMap.keys.filter { it.isOpen }.forEach { session ->
-        session.remote.sendString(
+        session.send(
                 JSONObject()
                         .put("userMessage", createHtmlMessageFromSender(sender, message))
                         .put("userlist", userUsernameMap.values).toString()

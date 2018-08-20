@@ -17,7 +17,7 @@ First, we need to create a project with these dependencies: [(→ Tutorial)](/tu
 ~~~java
 dependencies {
     compile "io.javalin:javalin:{{site.javalinversion}}"
-    compile "org.slf4j:slf4j-simple:1.7.13"
+    compile "org.slf4j:slf4j-simple:{{site.slf4jversion}}"
     compile "commons-fileupload:commons-fileupload:1.3.3"
 }
 ~~~
@@ -39,9 +39,8 @@ val reservations = mutableMapOf<String?, String?>(
 fun main(args: Array<String>) {
 
     val app = Javalin.create().apply {
-            port(7777)
-            enableStaticFiles("/public")
-        }.start()
+        enableStaticFiles("/public")
+    }.start(7777)
 
     app.post("/make-reservation") { ctx ->
         reservations[ctx.formParam("day")] = ctx.formParam("time")
@@ -131,6 +130,20 @@ The values of the form are added to the URL as query-parameters.
 * `GET` requests have no request-body, and form information is sent as query-parameters in the URL. In order to extract information from this body you have to use `ctx.queryParam(key)` in Javalin.
 
 ## File upload example
+Let's expand our example a bit to include file uploads.
+
+### Endpoint
+```kotlin
+app.post("/upload") { ctx ->
+    ctx.uploadedFiles("files").forEach { (contentType, content, name, extension) ->
+        FileUtil.streamToFile(content, "upload/$name")
+    }
+}
+```
+`ctx.uploadedFiles("files")` gives us a list of files matching the name `files`.
+We then save these files to an `upload` folder.
+
+### HTML form
 
 ```markup
 <h1>Upload example</h1>
