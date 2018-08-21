@@ -591,22 +591,22 @@ Javalin has five lifecycle events: `SERVER_STARTING`, `SERVER_STARTED`, `SERVER_
 The snippet below shows all of them in action:
 {% capture java %}
 Javalin app = Javalin.create()
-    .event(EventType.SERVER_STARTING, () -> { ... })
-    .event(EventType.SERVER_STARTED, () -> { ... })
-    .event(EventType.SERVER_START_FAILED, () -> { ... })
-    .event(EventType.SERVER_STOPPING, () -> { ... })
-    .event(EventType.SERVER_STOPPED, () -> { ... });
+    .event(JavalinEvent.SERVER_STARTING, () -> { ... })
+    .event(JavalinEvent.SERVER_STARTED, () -> { ... })
+    .event(JavalinEvent.SERVER_START_FAILED, () -> { ... })
+    .event(JavalinEvent.SERVER_STOPPING, () -> { ... })
+    .event(JavalinEvent.SERVER_STOPPED, () -> { ... });
 
 app.start(); // SERVER_STARTING -> (SERVER_STARTED || SERVER_START_FAILED)
 app.stop(); // SERVER_STOPPING -> SERVER_STOPPED
 {% endcapture %}
 {% capture kotlin %}
 val app = Javalin.create()
-    .event(EventType.SERVER_STARTING) { ... })
-    .event(EventType.SERVER_STARTED) { ... })
-    .event(EventType.SERVER_START_FAILED) { ... })
-    .event(EventType.SERVER_STOPPING) { ... })
-    .event(EventType.SERVER_STOPPED) { ... });
+    .event(JavalinEvent.SERVER_STARTING) { ... })
+    .event(JavalinEvent.SERVER_STARTED) { ... })
+    .event(JavalinEvent.SERVER_START_FAILED) { ... })
+    .event(JavalinEvent.SERVER_STOPPING) { ... })
+    .event(JavalinEvent.SERVER_STOPPED) { ... });
 
 app.start() // SERVER_STARTING -> (SERVER_STARTED || SERVER_START_FAILED)
 app.stop() // SERVER_STOPPING -> SERVER_STOPPED
