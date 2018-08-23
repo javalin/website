@@ -37,7 +37,7 @@ permalink: /
             <h3>Active</h3>
             <p>
                 A new version of Javalin has been released twice a month (on average) since the first version.
-                Don't worry though, every version is backwards compatible.
+                Don't worry though, every non-major version is backwards compatible.
                 PRs and issues are reviewed swiftly, normally every week.
             </p>
         </div>
