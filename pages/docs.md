@@ -476,11 +476,23 @@ Returns a [404 Not Found](https://developer.mozilla.org/en-US/docs/Web/HTTP/Stat
 ### MethodNotAllowedResponse
 Returns a [405 Method Not Allowed](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/405) response with the default title `Method not allowed`. 
 
+### ConflictResponse
+Returns a [409 Conflict](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/409) response with the default title `Conflict`. 
+
+### GoneResponse
+Returns a [410 Gone](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/410) response with the default title `Gone`. 
+
 ### InternalServerErrorResponse
 Returns a [500 Internal Server Error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500) response with the default title `Internal server error`. 
 
+### BadGatewayResponse
+Returns a [502 Bad Gateway](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/502) response with the default title `Bad gateway`. 
+
 ### ServiceUnavailableResponse
 Returns a [503 Service Unavailable](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503) response with the default title `Service unavailable`. 
+
+### GatewayTimeoutResponse
+Returns a [504 Gateway Timeout](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/504) response with the default title `Gateway timeout`. 
 
 ## Exception Mapping
 All handlers (before, endpoint, after) can throw `Exception`
@@ -648,7 +660,8 @@ Javalin.create() // create has to be called first
     .port(port) // set the port
     .requestLogger( ... ) // configure Javalin to use the supplied RequestLogger 
     .server( ... ) // see section below
-    .start(); // start has to be called last
+    .sessionHandler( ... ) // see section below
+    .start(); // start the server (has to be called last)
 {% endcapture %}
 {% capture kotlin %}
 Javalin.create().apply { // create has to be called first
@@ -669,7 +682,8 @@ Javalin.create().apply { // create has to be called first
     port(port) // set the port
     requestLogger( ... ) // configure Javalin to use the supplied RequestLogger 
     server( ... ) // see section below
-}.start() // start has to be called last
+    sessionHandler( ... ) // see section below
+}.start() // start the server (has to be called last)
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
@@ -692,6 +706,27 @@ app.server {
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+#### Custom SessionHandler
+
+You can configure the `SessionHandler` by calling `app.sessionHandler(...)`. 
+
+If you want to persist sessions to the file system, you could use a `FileSessionDataStore`:
+
+```kotlin
+private fun fileSessionHandler() = SessionHandler().apply {
+    httpOnly = true
+    sessionCache = DefaultSessionCache(this).apply {
+        sessionDataStore = FileSessionDataStore().apply {
+            val baseDir = File(System.getProperty("java.io.tmpdir"))
+            storeDir = File(baseDir, "javalin-session-store").apply { mkdir() }
+        }
+    }
+}
+```
+
+Read more about how to configure sessions in 
+[Jetty's documentation](https://www.eclipse.org/jetty/documentation/9.4.x/session-management.html).
 
 #### Custom jetty handlers
 You can configure your embedded jetty-server with a handler-chain
