@@ -126,6 +126,22 @@ main {
   }
 }
 
+#starUsShort {
+  font-size: 15px;
+  letter-spacing: -0.5px;
+  font-weight: bold;
+  display: none;
+}
+
+@media (max-width: 700px) {
+  #starUsLong {
+    display: none;
+  }
+  #starUsShort {
+    display: block;
+  }
+}
+
 @media (max-width: 480px) {
   #starFrame {
     float: right;

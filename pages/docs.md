@@ -43,7 +43,8 @@ Docs for 1.7 (last 1.X version) can be found [here](/archive/docs/v1.7.0.html).
 
 <div class="notification star-us">
     <div>
-        If you like Javalin, please consider starring us on GitHub:
+        <span id="starUsLong">If you like Javalin, please consider starring us on GitHub:</span>
+        <span id="starUsShort">Like Javalin? Star us on GitHub:</span>
     </div>
     <iframe id="starFrame" class="githubStar"
             src="https://ghbtns.com/github-btn.html?user=tipsy&amp;repo=javalin&amp;type=star&amp;count=true&size=large"
