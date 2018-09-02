@@ -6,7 +6,7 @@ date: 2018-09-02
 permalink: /tutorials/jetty-session-handling
 summarytitle: Jetty session handling
 summary: The tutorial includes persisting sessions locally and in a database, as well as caching and clustering
-language: java
+language: kotlin
 ---
 
 ## What you will learn
