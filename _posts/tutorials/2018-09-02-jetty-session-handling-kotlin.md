@@ -59,7 +59,6 @@ need to use a datastore specific for your database. Here is an example using JDB
 
 ```kotlin
 fun sqlSessionHandler(driver: String, url: String) = SessionHandler().apply {
-    httpOnly = true
     sessionCache = DefaultSessionCache(this).apply { // create the session handler
         sessionDataStore = JDBCSessionDataStoreFactory().apply { // attach a cache to the handler
             setDatabaseAdaptor(DatabaseAdaptor().apply { // attach a store to the cache
@@ -150,9 +149,8 @@ Since Javalin relies on Jetty for session handling can, you simply pass your `Se
 
 ```kotlin
 val app = Javalin.create().apply {
-    port(7000)
     sessionHandler { fileSessionHandler() }
-}.start()
+}.start(7000)
 ```
 
 As we saw earlier, the `SessionHandler` has a `SessionCache` which again has a `SessionDataStore`,

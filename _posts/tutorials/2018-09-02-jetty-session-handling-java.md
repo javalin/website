@@ -36,14 +36,22 @@ This can be done using a `FileSessionDataStore`.
 This approach is well suited for a dev environment, since it's easy to set up and has no dependencies.
 You need to create a `SessionHandler` with a `SessionCache`, and attach a `FileSessionDataStore`:
 
-```kotlin
-fun fileSessionHandler() = SessionHandler().apply { // create the session handler
-    sessionCache = DefaultSessionCache(this).apply { // attach a cache to the handler
-        sessionDataStore = FileSessionDataStore().apply { // attach a store to the cache
-            val baseDir = File(System.getProperty("java.io.tmpdir"))
-            this.storeDir = File(baseDir, "javalin-session-store").apply { mkdir() }
-        }
-    }
+```java
+public SessionHandler fileSessionHandler() {
+    SessionHandler sessionHandler = new SessionHandler();
+    SessionCache sessionCache = new DefaultSessionCache(sessionHandler);
+    sessionCache.setSessionDataStore(fileSessionDataStore());
+    sessionHandler.setSessionCache(sessionCache);
+    return sessionHandler;
+}
+
+private FileSessionDataStore fileSessionDataStore() {
+    FileSessionDataStore fileSessionDataStore = new FileSessionDataStore();
+    File baseDir = new File(System.getProperty("java.io.tmpdir"));
+    File storeDir = new File(baseDir, "javalin-session-store");
+    storeDir.mkdir();
+    fileSessionDataStore.setStoreDir(storeDir);
+    return fileSessionDataStore;
 }
 ```
 
@@ -57,27 +65,36 @@ Programmatically, persisting to a database is not very different from persisting
 You need to create a `SessionHandler` with a `SessionCache`, but instead of using a `FileSessionDataStore` you
 need to use a datastore specific for your database. Here is an example using JDBC: 
 
-```kotlin
-fun sqlSessionHandler(driver: String, url: String) = SessionHandler().apply {
-    httpOnly = true
-    sessionCache = DefaultSessionCache(this).apply { // create the session handler
-        sessionDataStore = JDBCSessionDataStoreFactory().apply { // attach a cache to the handler
-            setDatabaseAdaptor(DatabaseAdaptor().apply { // attach a store to the cache
-                setDriverInfo(driver, url)
-            })
-        }.getSessionDataStore(sessionHandler)
-    }
+```java
+public SessionHandler sqlSessionHandler(String driver, String url) {
+    SessionHandler sessionHandler = new SessionHandler();
+    SessionCache sessionCache = new DefaultSessionCache(sessionHandler);
+    sessionCache.setSessionDataStore(
+        dataStoreFactory(driver, url).getSessionDataStore(sessionHandler)
+    );
+    sessionHandler.setSessionCache(sessionCache);
+    return sessionHandler;
+}
+
+private JDBCSessionDataStoreFactory dataStoreFactory(String driver, String url) {
+    DatabaseAdaptor databaseAdaptor = new DatabaseAdaptor();
+    databaseAdaptor.setDriverInfo(driver, url);
+    JDBCSessionDataStoreFactory jdbcSessionDataStoreFactory = new JDBCSessionDataStoreFactory();
+    jdbcSessionDataStoreFactory.setDatabaseAdaptor(databaseAdaptor);
+    return jdbcSessionDataStoreFactory;
 }
 ```
 
-If you want to use MongoDB you simply change the `sessionDataStore` part of the above code:
+If you want to use MongoDB you simply create a a different `DataStoreFactory` helper:
 
-```kotlin
-sessionDataStore = MongoSessionDataStoreFactory().apply {
-    connectionString = "..."
-    dbName = "..."
-    collectionName = "..."
-}.getSessionDataStore(sessionHandler)
+```java
+private MongoSessionDataStoreFactory mongoDataStoreFactory(String driver, String url) {
+    MongoSessionDataStoreFactory mongoSessionDataStoreFactory = new MongoSessionDataStoreFactory();
+    mongoSessionDataStoreFactory.setConnectionString("...");
+    mongoSessionDataStoreFactory.setDbName("...");
+    mongoSessionDataStoreFactory.setCollectionName("...");
+    return mongoSessionDataStoreFactory;
+}
 ```
 
 Jetty supports JDBC, MongoDB, Inifinspan, Hazelcast, and Google Cloud DataStore.
@@ -148,11 +165,10 @@ as [mlab](https://mlab.com/) it seems to be around 40ms.
 Since you are currently on [javalin.io](/), it should be mentioned how to use this knowledge in your Javalin app.
 Since Javalin relies on Jetty for session handling can, you simply pass your `SessionHandler`:
 
-```kotlin
-val app = Javalin.create().apply {
-    port(7000)
-    sessionHandler { fileSessionHandler() }
-}.start()
+```java
+Javalin.create()
+    .sessionHandler(() -> fileSessionHandler())
+    .start(7000)
 ```
 
 As we saw earlier, the `SessionHandler` has a `SessionCache` which again has a `SessionDataStore`,
