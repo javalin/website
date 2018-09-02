@@ -86,7 +86,7 @@ JDBCSessionDataStoreFactory jdbcDataStoreFactory(String driver, String url) {
 }
 ```
 
-If you want to use MongoDB you simply create a a different `DataStoreFactory` helper:
+If you want to use MongoDB you simply create a different `DataStoreFactory` helper:
 
 ```java
 MongoSessionDataStoreFactory mongoDataStoreFactory(String url, String dbName, String collectionName) {
