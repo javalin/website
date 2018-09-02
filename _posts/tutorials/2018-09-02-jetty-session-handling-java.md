@@ -37,7 +37,7 @@ This approach is well suited for a dev environment, since it's easy to set up an
 You need to create a `SessionHandler` with a `SessionCache`, and attach a `FileSessionDataStore`:
 
 ```java
-public SessionHandler fileSessionHandler() {
+SessionHandler fileSessionHandler() {
     SessionHandler sessionHandler = new SessionHandler();
     SessionCache sessionCache = new DefaultSessionCache(sessionHandler);
     sessionCache.setSessionDataStore(fileSessionDataStore());
@@ -45,7 +45,7 @@ public SessionHandler fileSessionHandler() {
     return sessionHandler;
 }
 
-private FileSessionDataStore fileSessionDataStore() {
+FileSessionDataStore fileSessionDataStore() {
     FileSessionDataStore fileSessionDataStore = new FileSessionDataStore();
     File baseDir = new File(System.getProperty("java.io.tmpdir"));
     File storeDir = new File(baseDir, "javalin-session-store");
@@ -66,7 +66,7 @@ You need to create a `SessionHandler` with a `SessionCache`, but instead of usin
 need to use a datastore specific for your database. Here is an example using JDBC: 
 
 ```java
-public SessionHandler sqlSessionHandler(String driver, String url) {
+SessionHandler sqlSessionHandler(String driver, String url) {
     SessionHandler sessionHandler = new SessionHandler();
     SessionCache sessionCache = new DefaultSessionCache(sessionHandler);
     sessionCache.setSessionDataStore(
@@ -76,7 +76,7 @@ public SessionHandler sqlSessionHandler(String driver, String url) {
     return sessionHandler;
 }
 
-private JDBCSessionDataStoreFactory dataStoreFactory(String driver, String url) {
+JDBCSessionDataStoreFactory dataStoreFactory(String driver, String url) {
     DatabaseAdaptor databaseAdaptor = new DatabaseAdaptor();
     databaseAdaptor.setDriverInfo(driver, url);
     JDBCSessionDataStoreFactory jdbcSessionDataStoreFactory = new JDBCSessionDataStoreFactory();
@@ -88,7 +88,7 @@ private JDBCSessionDataStoreFactory dataStoreFactory(String driver, String url) 
 If you want to use MongoDB you simply create a a different `DataStoreFactory` helper:
 
 ```java
-private MongoSessionDataStoreFactory mongoDataStoreFactory(String driver, String url) {
+MongoSessionDataStoreFactory mongoDataStoreFactory(String driver, String url) {
     MongoSessionDataStoreFactory mongoSessionDataStoreFactory = new MongoSessionDataStoreFactory();
     mongoSessionDataStoreFactory.setConnectionString("...");
     mongoSessionDataStoreFactory.setDbName("...");
