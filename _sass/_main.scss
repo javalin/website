@@ -191,3 +191,35 @@ pre { // scrollbar in code examples
   color: #555;
   font-style: italic;
 }
+
+.added-parent {
+  display: flex;
+  align-items: center;
+}
+
+.added-parent .added-in {
+  margin-left: 12px;
+}
+
+.added-in {
+  border-left: 3px solid #00c621;
+  background: #e8e8e8;
+  height: 20px;
+  width: auto;
+  display: inline-block;
+  padding: 2px 0 2px 8px;
+  margin: auto;
+  position: relative;
+  color: #333;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+  &:after{
+    content: "";
+    border: 10px solid #e8e8e8;
+    border-right-color: transparent;
+    position: absolute;
+    top: 0;
+    right: -20px;
+  }
+}

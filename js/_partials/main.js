@@ -54,3 +54,19 @@ document.addEventListener("click", function (e) {
         });
     }
 });
+
+// "Added in" labels
+let addedTags = {
+    "custom-sessionhandler": "2.1.0",
+    "conflictresponse": "2.1.0",
+    "goneresponse": "2.1.0",
+    "badgatewayresponse": "2.1.0",
+    "serviceunavailableresponse": "2.1.0",
+};
+Object.keys(addedTags).forEach(key => {
+   document.getElementById(key).classList.add("added-parent");
+   document.getElementById(key).insertAdjacentHTML("beforeend",
+       `<span class="added-in">Added in v${addedTags[key]}</span>`
+   )
+});
+

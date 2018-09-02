@@ -37,7 +37,8 @@ permalink: /documentation
 The documentation on this site is always for the latest version of Javalin (currently `{{site.javalinversion}}`). 
 We don't have the capacity to maintain separate docs for every single version, 
 but Javalin follows [semantic versioning](http://semver.org/), 
-meaning there are no breaking changes unless it changes from 2.X to 3.X.
+meaning there are no breaking changes unless it changes from 2.X to 3.X. Functionality added
+after 2.0.0 is marked with labels containing the version number: <span class="added-in">Added in v2.x.x</span>
 
 Docs for 1.7 (last 1.X version) can be found [here](/archive/docs/v1.7.0.html).
 
@@ -444,7 +445,7 @@ If the client accepts JSON, a JSON object is returned. Otherwise a plain text re
 app.post("/") { throw ForbiddenResponse("Off limits!") }
 ```
 If client accepts JSON:
-```json
+```java
 {
     "title": "Off limits!",
     "status": 403,
