@@ -30,7 +30,7 @@ When the Jetty server restarts all of the sessions are cleared. Restarts can hap
 making changes on localhost, or if you're deploying a new version of your app to your cloud provider.
 
 ### Persisting to the file system
-The simplest way to persist a `Session`  is to store the `Session`s as files on the file system.
+The simplest way to persist a `Session` is to store the `Session`s as files on the file system.
 This can be done using a `FileSessionDataStore`.
 
 This approach is well suited for a dev environment, since it's easy to set up and has no dependencies.
@@ -48,7 +48,7 @@ fun fileSessionHandler() = SessionHandler().apply { // create the session handle
 ```
 
 This approach can also work on a remote server, but some cloud providers wipe all files when
-you redeploy your service, so be careful. File IO is also pretty slow. 
+you redeploy your service, so be careful. File IO can also be slow, depending on your hardware. 
 If you want your sessions to be a bit more persistent, and faster, you can use a database.
 
 ### Persisting to a database
@@ -134,8 +134,8 @@ it's fetched from the `SessionDataStore`. This means that all instances share th
 won't be any inconsistencies. Jetty recommends this approach for clustering without sticky-sessions, but
 it's the safer choice even if sticky-sessions are enabled.
 
-There is a performance penalty to not caching, but if you're running a dedicated database (for example Postgres)
-with small sessions, it should just be ~10ms per request. Using a hosted MongoDB such 
+There is a performance penalty to not caching, but if you're running a dedicated database on the same network
+with small sessions, it should just be ~10ms per request. Using an external hosted MongoDB such 
 as [mlab](https://mlab.com/) it seems to be around 40ms.
 
 ## Summary
