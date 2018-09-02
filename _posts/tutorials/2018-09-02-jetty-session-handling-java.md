@@ -4,6 +4,7 @@ title: "Jetty session handling - Persisting, caching and clustering"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2018-09-02
 permalink: /tutorials/jetty-session-handling-java
+github: https://github.com/tipsy/javalin-jetty-sessions-example
 summarytitle: Jetty session handling
 summary: The tutorial includes persisting sessions locally and in a database, as well as caching and clustering
 language: java
@@ -70,13 +71,13 @@ SessionHandler sqlSessionHandler(String driver, String url) {
     SessionHandler sessionHandler = new SessionHandler();
     SessionCache sessionCache = new DefaultSessionCache(sessionHandler);
     sessionCache.setSessionDataStore(
-        dataStoreFactory(driver, url).getSessionDataStore(sessionHandler)
+        jdbcDataStoreFactory(driver, url).getSessionDataStore(sessionHandler)
     );
     sessionHandler.setSessionCache(sessionCache);
     return sessionHandler;
 }
 
-JDBCSessionDataStoreFactory dataStoreFactory(String driver, String url) {
+JDBCSessionDataStoreFactory jdbcDataStoreFactory(String driver, String url) {
     DatabaseAdaptor databaseAdaptor = new DatabaseAdaptor();
     databaseAdaptor.setDriverInfo(driver, url);
     JDBCSessionDataStoreFactory jdbcSessionDataStoreFactory = new JDBCSessionDataStoreFactory();
@@ -88,11 +89,11 @@ JDBCSessionDataStoreFactory dataStoreFactory(String driver, String url) {
 If you want to use MongoDB you simply create a a different `DataStoreFactory` helper:
 
 ```java
-MongoSessionDataStoreFactory mongoDataStoreFactory(String driver, String url) {
+MongoSessionDataStoreFactory mongoDataStoreFactory(String url, String dbName, String collectionName) {
     MongoSessionDataStoreFactory mongoSessionDataStoreFactory = new MongoSessionDataStoreFactory();
-    mongoSessionDataStoreFactory.setConnectionString("...");
-    mongoSessionDataStoreFactory.setDbName("...");
-    mongoSessionDataStoreFactory.setCollectionName("...");
+    mongoSessionDataStoreFactory.setConnectionString(url);
+    mongoSessionDataStoreFactory.setDbName(dbName);
+    mongoSessionDataStoreFactory.setCollectionName(collectionName);
     return mongoSessionDataStoreFactory;
 }
 ```
