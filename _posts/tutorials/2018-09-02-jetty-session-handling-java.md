@@ -3,10 +3,10 @@ layout: tutorial
 title: "Jetty session handling - Persisting, caching and clustering"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2018-09-02
-permalink: /tutorials/jetty-session-handling-kotlin
+permalink: /tutorials/jetty-session-handling-java
 summarytitle: Jetty session handling
 summary: The tutorial includes persisting sessions locally and in a database, as well as caching and clustering
-language: kotlin
+language: java
 ---
 
 ## What you will learn
