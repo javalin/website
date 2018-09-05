@@ -141,3 +141,22 @@ app.routes {
         </div>
     </div>
 </div>
+
+<div class="landing bluepart">
+    <h1>Who's using Javalin?</h1>
+    <div class="used-by">
+        <img src="/img/used-by/jhu.png" alt="JHU">
+        <img src="/img/used-by/ntnu.png" alt="NTNU">
+        <img src="/img/used-by/wit.png" alt="WIT">
+        <img src="/img/used-by/measuresforjustice.png" alt="Measures for Justice">
+        <img src="/img/used-by/briar.png" alt="Briar">
+        <img src="/img/used-by/twosigma.png" alt="Two Sigma">
+        <img src="/img/used-by/nav.png" alt="nav">
+        <img src="/img/used-by/virgilsecurity.png" alt="Virgil Security">
+        <img src="/img/used-by/wgtwo.png" alt="Working Group Two">
+        <img src="/img/used-by/talanlabs.png" alt="Talan Labs">
+        <img src="/img/used-by/datawire.png" alt="Datawire">
+        <img src="/img/used-by/swatt.png" alt="Swatt">
+    </div>
+</div>
+

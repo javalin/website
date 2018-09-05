@@ -107,7 +107,7 @@ nav ul li a:hover {
     text-align: center;
     display: inline-block;
     background: rgba(255, 255, 255, 0.15);
-    border-bottom: 2px solid rgba(0,0,0,0.4);
+    border-bottom: 2px solid rgba(0, 0, 0, 0.4);
     color: white;
     cursor: pointer;
     border-radius: 50px;
@@ -147,7 +147,33 @@ nav ul li a:hover {
     .boxes .box {
         flex-basis: 100%;
     }
+
     .bluepart {
         padding: 40px 20px;
     }
+}
+
+.used-by {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 1000px;
+    margin: 40px auto 0;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.used-by img {
+    display: inline-block;
+    width: 200px;
+    height: auto;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 5px;
+    background: #fff;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+    object-fit: contain;
+}
+
+body {
+    margin-bottom: 40px;
 }
