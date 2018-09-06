@@ -158,5 +158,9 @@ app.routes {
         <img src="/img/used-by/datawire.png" alt="Datawire">
         <img src="/img/used-by/swatt.png" alt="Swatt">
     </div>
+    
+    <p>
+        Are you using Javalin? <a href="https://github.com/javalin/javalin.github.io/issues/18">Let us know</a>!
+    </p>
 </div>
 

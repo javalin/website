@@ -97,6 +97,11 @@ nav ul li a:hover {
     color: white;
 }
 
+.bluepart > p > a {
+    color: white;
+    text-decoration: underline;
+}
+
 .center {
     text-align: center;
 }
