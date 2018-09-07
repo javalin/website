@@ -165,7 +165,7 @@ app.routes {
 
 <div class="landing whitepart">
     <h1>What is Javalin used for?</h1>
-    <p style="max-width:500px;margin:0 auto 100px;text-align:center">
+    <p class="survey-promo">
         Check out our current <a href="/blog/javalin-user-survey-2018">survey results</a> (Summer 2018)
         to learn more about how people use Javalin.
     </p>
