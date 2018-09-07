@@ -178,7 +178,3 @@ nav ul li a:hover {
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
     object-fit: contain;
 }
-
-body {
-    margin-bottom: 40px;
-}

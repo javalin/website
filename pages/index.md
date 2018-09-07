@@ -158,9 +158,18 @@ app.routes {
         <img src="/img/used-by/datawire.png" alt="Datawire">
         <img src="/img/used-by/swatt.png" alt="Swatt">
     </div>
-    
     <p>
         Are you using Javalin? <a href="https://github.com/javalin/javalin.github.io/issues/18">Let us know</a>!
     </p>
 </div>
+
+<div class="landing whitepart">
+    <h1>What is Javalin used for?</h1>
+    <p style="max-width:500px;margin:0 auto 100px;text-align:center">
+        Check out our current <a href="/blog/javalin-user-survey-2018">survey results</a> (Summer 2018)
+        to learn more about how people use Javalin.
+    </p>
+</div>
+
+
 
