@@ -2,11 +2,9 @@
 layout: tutorial
 title: "Using JWT with a Javalin application"
 author: <a href="https://github.com/kmehrunes" target="_blank">Khaled Y.M.</a>
-date: 2017-09-22
-permalink: /tutorials/websocket-example
-github: https://github.com/tipsy/javalin-websocket-example
-summarytitle: WebSockets chat application
-summary: Learn how to create a simple chat-app with WebSockets in Java
+date: 2018-09-11
+summarytitle: JWT in a Javalin Application
+summary: Learn how to use JWT with Javalin
 language: java
 ---
 
