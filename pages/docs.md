@@ -15,6 +15,7 @@ permalink: /documentation
 * [Context (ctx)](#context)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Cookie Store](#cookie-store)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Extensions](#context-extensions)
+* [Validation](#validation)
 * [Access manager](#access-manager)
 * [Default responses](#default-responses)
 * [Exception Mapping](#exception-mapping)
@@ -286,6 +287,11 @@ ctx.uploadedFile("key");            // get file from multipart form
 ctx.uploadedFiles("key");           // get files from multipart form
 ctx.url();                          // get request url
 ctx.userAgent();                    // get request user agent
+ctx.validatedFormParam()            // create a Validator for the form param - since 2.2.0
+ctx.validatedPathParam()            // create a Validator for the path param - since 2.2.0)
+ctx.validatedQueryParam()           // create a Validator for the query param  -since 2.2.0
+ctx.validatedBodyAsClass()          // create a Validator for the body (java) - since 2.2.0
+ctx.validatedBody<T>                // create a Validator for the body (kotlin) - since 2.2.0
 
 // response methods:
 ctx.res;                            // get underlying HttpServletResponse
@@ -298,6 +304,7 @@ ctx.resultFuture();                 // get response result (future)
 ctx.header("key", "value");         // set response header
 ctx.html("body html");              // set result and html content type
 ctx.json(object);                   // serialize object and set as result
+ctx.json(future);                   // serialize object when future resolves - since 2.2.0
 ctx.redirect("/location");          // redirect to location
 ctx.redirect("/location", 302);     // redirect to location with code
 ctx.status();                       // get response status
@@ -376,6 +383,91 @@ Context extensions have to be added before you can use them, this would typicall
 
 ```java
 app.before(ctx -> ctx.register(MyMapper.class, new MyMapper(ctx, otherDependency));
+```
+
+## Validation
+You can access Javalin's `Validator` class through the `ctx.validateX` methods, or by
+calling `JavalinValidation.validate()`. There are two validators, `Validator` and `TypedValidator<T>`.
+
+The API is fairly small:
+
+{% capture java %}
+// methods available on Validator:
+notNullOrEmpty(); // check that value is not null of empty (all validators do this by default, but can be called for readability)
+matches("regex"); // check that value matches regex
+asBoolean(); // validate and return TypedValidator<Boolean>
+asDouble(); // validate and return TypedValidator<Double>
+asFloat(); // validate and return TypedValidator<Float>
+asInt(); // validate and return TypedValidator<Integer>
+asLong(); // validate and return TypedValidator<Long>
+asClass(MyClass.class); // validate and return TypedValidator<MyClass>
+
+// methods available on both Validator and TypedValidator<T>:
+check(v -> ...); // check value against supplied lambda
+getOrThrow(); // validate and get value
+{% endcapture %}
+{% capture kotlin %}
+// only available on Validator:
+notNullOrEmpty() // check that value is not null of empty (all validators do this by default, but can be called for readability)
+matches("regex") // check that value matches regex
+asBoolean() // validate and return TypedValidator<Boolean>
+asDouble() // validate and return TypedValidator<Double>
+asFloat() // validate and return TypedValidator<Float>
+asInt() // validate and return TypedValidator<Int>
+asLong() // validate and return TypedValidator<Long>
+asClass<MyClass>() // validate and return TypedValidator<MyClass>
+
+// available on both Validator and TypedValidator<T>:
+check({ ... }) // check value against supplied lambda
+getOrThrow() // validate and get value
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+### Custom converters
+If you need to convert non-included class (`asClass()`), you have to register
+a custom converter:
+
+{% capture java %}
+JavalinValidation.register(Instant::class.java, v -> Instant.ofEpochMilli(v.toLong());
+{% endcapture %}
+{% capture kotlin %}
+JavalinValidation.register(Instant::class.java) { Instant.ofEpochMilli(it.toLong()) }
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+### Validation examples
+{% capture java %}
+// validate two dependent query parameters:
+Instant fromDate = ctx.validatedQueryParam("from").asClass(Instant.class).getOrThrow();
+Instant toDate = ctx.validatedQueryParam("to").asClass(Instant.class)
+        .check(it -> it.isAfter(fromDate), "'to' has to be after 'from'")
+        .getOrThrow();
+
+// validate a json body:
+MyObject myObject = ctx.validatedBodyAsClass(MyObject.class)
+        .check(obj -> obj.myObjectProperty == someValue)
+        .getOrThrow();
+{% endcapture %}
+{% capture kotlin %}
+// validate two dependent query parameters:
+val fromDate = ctx.validatedQueryParam("from").asClass<Instant>().getOrThrow()
+val toDate = ctx.validatedQueryParam("to").asClass<Instant>()
+        .check({ it.isAfter(fromDate) }, "'to' has to be after 'from'")
+        .getOrThrow()
+
+// validate a json body:
+val myObject = ctx.validatedBody<MyObject>()
+        .check({ it.myObjectProperty == someValue })
+        .getOrThrow()
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+If any of the validators find errors, a `BadRequestResponse` is thrown:
+
+```java
+"Query parameter 'from' with value 'TEST' is not a valid Instant"
+"Query parameter 'to' with value '1262347000000' invalid - 'to' has to be after 'from'"
+"Request body as MyObject invalid - Check failed" // can set custom error message in check()
 ```
 
 ## Access manager

@@ -63,6 +63,7 @@ if (document.location.pathname === "/documentation") {
         "goneresponse": "2.1.0",
         "badgatewayresponse": "2.1.0",
         "serviceunavailableresponse": "2.1.0",
+        "validation": "2.2.0",
     };
     Object.keys(addedTags).forEach(key => {
         document.getElementById(key).classList.add("added-parent");
