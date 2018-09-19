@@ -142,7 +142,7 @@ Let's expand our example a bit to include file uploads.
 ```java
 app.post("/upload-example", ctx -> {
     ctx.uploadedFiles("files").forEach(file -> {
-        FileUtil.streamToFile(file.getContent(), "upload/" + file.getName())
+        FileUtil.streamToFile(file.getContent(), "upload/" + file.getName());
     });
 });
 ```
