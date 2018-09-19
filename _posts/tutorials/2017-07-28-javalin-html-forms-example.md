@@ -71,7 +71,7 @@ and looks for static files in your `/src/resources/public` folder.
 We have two endpoints mapped, one `post`, which will make a reservation,
 and one `get`, which will check your reservation.
 
-## Settings up the HTML forms
+## Setting up the HTML forms
 
 Now we have to make two HTML forms for interacting with these endpoints.
 We can put these forms in a file `/resources/public/index.html`, which will be
