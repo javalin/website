@@ -752,7 +752,7 @@ Javalin.create() // create has to be called first
     .disableDynamicGzip() // don't gzip any dynamic responses (static files are still gzipped)
     .maxBodySizeForRequestCache(long) // set max body size for request cache
     .port(port) // set the port
-    .requestLogger( ... ) // configure Javalin to use the supplied RequestLogger 
+    .requestLogger( ... ) // see section below
     .server( ... ) // see section below
     .sessionHandler( ... ) // see section below
     .start(); // start the server (has to be called last)
@@ -774,7 +774,7 @@ Javalin.create().apply { // create has to be called first
     disableDynamicGzip() // don't gzip any dynamic responses (static files are still gzipped)
     maxBodySizeForRequestCache(long) // set max body size for request cache
     port(port) // set the port
-    requestLogger( ... ) // configure Javalin to use the supplied RequestLogger 
+    requestLogger( ... ) // see section below
     server( ... ) // see section below
     sessionHandler( ... ) // see section below
 }.start() // start the server (has to be called last)
@@ -782,6 +782,22 @@ Javalin.create().apply { // create has to be called first
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 Any argument to `contextPath()` will be normalized to the form `/path` (slash, path, no-slash)
+
+### RequestLogger
+You can add a custom RequestLogger by calling `app.requestLogger()`:
+{% capture java %}
+app.requestLogger((ctx, timeMs) -> {
+    System.out.println(ctx.method() + " "  + ctx.path() + " took " + timeMs + " ms");
+    // prints "GET /hello took 4.5 ms"
+})
+{% endcapture %}
+{% capture kotlin %}
+app.requestLogger { ctx, timeMs ->
+    println("${ctx.method()} ${ctx.path()} took $timeMs ms")
+    // prints "GET /hello took 4.5 ms"
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ### Custom server
 If you need to customize the embedded server, you can call the `app.server()` method:
