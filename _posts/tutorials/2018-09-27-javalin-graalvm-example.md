@@ -3,6 +3,7 @@ layout: tutorial
 title: "Running Javalin on GraalVM (22MB total size)"
 author: <a href="https://github.com/birdayz" target="_blank">Johannes Brüderl</a>
 github: https://github.com/tipsy/graal-javalin
+notice: This tutorial originally appeared on <a href="https://nerden.de/posts/microservice_graalvm/">https://nerden.de</a> and was republished with the authors permission.
 date: 2018-09-27
 summarytitle: Running on GraalVM (22MB total size)
 summary: Building a 22 Megabytes Microservice with Docker, Java, Javalin and GraalVM

@@ -21,6 +21,11 @@ istutorial: true
             </em>
             {% endif %}
         </p>
+        {% if page.notice %}
+            <p class="post-notice">
+                {{ page.notice }}
+            </p>
+        {% endif %}
     </div>
     <div class="post-content" itemprop="articleBody">
         {{ content }}
