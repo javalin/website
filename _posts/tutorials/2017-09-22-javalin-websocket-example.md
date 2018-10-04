@@ -62,7 +62,7 @@ We need:
 ```java
 public class Chat {
 
-    private static Map<Session, String> userUsernameMap = new ConcurrentHashMap<>();
+    private static Map<WsSession, String> userUsernameMap = new ConcurrentHashMap<>();
     private static int nextUserNumber = 1; // Assign to username for next connecting user
 
     public static void main(String[] args) {
@@ -89,15 +89,10 @@ public class Chat {
     // Sends a message from one user to all users, along with a list of current usernames
     private static void broadcastMessage(String sender, String message) {
         userUsernameMap.keySet().stream().filter(Session::isOpen).forEach(session -> {
-            try {
-                session.send(
-                    new JSONObject()
-                        .put("userMessage", createHtmlMessageFromSender(sender, message))
-                        .put("userlist", userUsernameMap.values()).toString()
-                );
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            session.send(
+                new JSONObject()
+                    .put("userMessage", createHtmlMessageFromSender(sender, message))
+                    .put("userlist", userUsernameMap.values()).toString()
         });
     }
 

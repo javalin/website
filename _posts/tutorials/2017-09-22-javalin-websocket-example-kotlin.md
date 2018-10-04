@@ -60,7 +60,7 @@ We need:
  * a method for creating the message in HTML (or JSON if you prefer)
 
 ```kotlin
-private val userUsernameMap = ConcurrentHashMap<Session, String>()
+private val userUsernameMap = ConcurrentHashMap<WsSession, String>()
 private var nextUserNumber = 1 // Assign to username for next connecting user
 
 fun main(args: Array<String>) {
