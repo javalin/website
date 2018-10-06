@@ -240,6 +240,8 @@ It contains the underlying servlet-request and servlet-response, and a bunch of 
 and setters. The getters operate mostly on the request-object, while the setters operate exclusively on
 the response object.
 ```java
+ctx.appAttribute(class)             // retrieve an attribute from the app serving the request - since 2.3.0
+
 // request methods:
 ctx.req;                            // get underlying HttpServletRequest
 ctx.anyFormParamNull("k1", "k2");   // returns true if any form-param is null
@@ -288,7 +290,7 @@ ctx.uploadedFiles("key");           // get files from multipart form
 ctx.url();                          // get request url
 ctx.userAgent();                    // get request user agent
 ctx.validatedFormParam()            // create a Validator for the form param - since 2.2.0
-ctx.validatedPathParam()            // create a Validator for the path param - since 2.2.0)
+ctx.validatedPathParam()            // create a Validator for the path param - since 2.2.0
 ctx.validatedQueryParam()           // create a Validator for the query param  -since 2.2.0
 ctx.validatedBodyAsClass()          // create a Validator for the body (java) - since 2.2.0
 ctx.validatedBody<T>                // create a Validator for the body (kotlin) - since 2.2.0
@@ -737,6 +739,8 @@ The following snippet shows all the configuration currently available in Javalin
 
 {% capture java %}
 Javalin.create() // create has to be called first
+    .attribute(class, object) // register an app attribute - since 2.3.0
+    .attribute(class) // retrieve an app attribute - since 2.3.0
     .contextPath("/context-path") // set a context path (default is "/")
     .dontIgnoreTrailingSlashes() // treat '/test' and '/test/' as different URLs
     .defaultContentType(string) // set a default content-type for responses
@@ -759,6 +763,8 @@ Javalin.create() // create has to be called first
 {% endcapture %}
 {% capture kotlin %}
 Javalin.create().apply { // create has to be called first
+    attribute(class, object) // register an app attribute - since 2.3.0
+    attribute(class) // retrieve an app attribute - since 2.3.0
     contextPath("/context-path") // set a context path (default is "/")
     dontIgnoreTrailingSlashes() // treat '/test' and '/test/' as different URLs
     defaultContentType(string) // set a default content-type for responses
