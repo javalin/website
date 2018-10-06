@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% include gtm-head.html %}
     <meta charset="utf-8">
     <link href="https://fonts.googleapis.com/css?family=Encode+Sans:500,700" rel="stylesheet">
     <meta property="og:title" content="{% if page.title %}{{ page.title }} - {% endif %}Javalin - A lightweight Java and Kotlin web framework. Create REST APIs in Java or Kotlin easily.">
@@ -28,7 +29,7 @@
     <style>{% include inlineCss.css %}</style>
 </head>
 <body>
-    {% include gtm.html %}
+    {% include gtm-body.html %}
     {% include forkMe.html %}
     <header>
         <nav class="width-limit">
