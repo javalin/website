@@ -224,6 +224,12 @@ pre { // scrollbar in code examples
   }
 }
 
+@media (max-width: 480px) {
+  .added-in {
+    display: none;
+  }
+}
+
 .post-content p {
   line-height: 1.6;
 }
