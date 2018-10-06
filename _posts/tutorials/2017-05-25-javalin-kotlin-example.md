@@ -207,31 +207,31 @@ fun main(args: Array<String>) {
             ctx.json(userDao.users)
         }
 
-        get("/users/:id") { ctx ->
-            ctx.json(userDao.findById(ctx.pathParam("id").toInt())!!)
+        get("/users/:user-id") { ctx ->
+            ctx.json(userDao.findById(ctx.pathParam("user-id").toInt())!!)
         }
 
         get("/users/email/:email") { ctx ->
             ctx.json(userDao.findByEmail(ctx.pathParam("email"))!!)
         }
 
-        post("/users/create") { ctx ->
-            val user = ctx.bodyAsClass(User::class.java)
+        post("/users") { ctx ->
+            val user = ctx.body<User>()
             userDao.save(name = user.name, email = user.email)
             ctx.status(201)
         }
 
-        patch("/users/update/:id") { ctx ->
-            val user = ctx.bodyAsClass(User::class.java)
+        patch("/users/:user-id") { ctx ->
+            val user = ctx.body<User>()
             userDao.update(
-                    id = ctx.pathParam("id").toInt(),
+                    id = ctx.pathParam("user-id").toInt(),
                     user = user
             )
             ctx.status(204)
         }
 
-        delete("/users/delete/:id") { ctx ->
-            userDao.delete(ctx.pathParam("id").toInt())
+        delete("/users/:user-id") { ctx ->
+            userDao.delete(ctx.pathParam("user-id").toInt())
             ctx.status(204)
         }
 
