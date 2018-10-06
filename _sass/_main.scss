@@ -50,6 +50,9 @@ h4 {
   letter-spacing: -0.5px;
   margin-top: 1.75em;
   margin-bottom: 0.25em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   + p {
     margin-top: 0.25em;
   }
