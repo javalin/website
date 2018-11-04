@@ -265,6 +265,7 @@ ctx.contentLength();                // get request content length
 ctx.contentType();                  // get request content type
 ctx.cookie("key");                  // get cookie by name
 ctx.cookieMap();                    // get all cookie key/values as map
+ctx.endpointHandlerPath();          // get path of the endpoint handler that matched the request - since 2.4.0
 ctx.header("key");                  // get a header
 ctx.headerMap();                    // get all header key/values as map
 ctx.host();                         // get request host
@@ -694,6 +695,28 @@ session.headerMap()                   // get all header key/values as map
 session.host()                        // get request host
 ```
 
+### WebSocket logging
+You can add a WebSocket logger by calling `app.wsLogger()`. The method takes a `WsHandler`,
+(the same interface as a normal `app.ws()` call), and can be used to log events of all types.
+The following example just shows `onMessage`, but `onConnect`, `onError` and `onClose` are all available:
+
+{% capture java %}
+app.wsLogger( ws -> {
+    ws.onMessage((session, message) -> {
+        System.out.println("Received: " + message);
+    });
+});
+{% endcapture %}
+{% capture kotlin %}
+app.wsLogger { ws ->
+    ws.onMessage { session, message ->
+        println("Received: " + message)
+    }
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+The logger runs after the WebSocket handler for the endpoint
+
 ## Lifecycle events
 Javalin has five lifecycle events: `SERVER_STARTING`, `SERVER_STARTED`, `SERVER_START_FAILED`, `SERVER_STOPPING` and `SERVER_STOPPED`.
 The snippet below shows all of them in action:
@@ -956,6 +979,40 @@ The corresponding HTML could look something like:
 </form>
 ```
 
+### Using Javalin without Jetty
+If you want to use Javalin with an application server or a servlet container, such as Tomcat, WebLocic, etc,
+you can use `EmbeddedJavalin.createServlet()`:
+
+{% capture java %}
+@WebServlet(urlPatterns = ["/rest/*"], name = "MyServlet")
+class MyServlet extends HttpServlet() {
+    JavalinServlet javalin = EmbeddedJavalin()
+        .get("/rest") { ctx -> ctx.result("Hello!") }
+        .createServlet()
+    @Override
+    void service(HttpServletRequest req, HttpServletResponse resp) {
+        javalin.service(req, resp)
+    }
+}
+{% endcapture %}
+{% capture kotlin %}
+@WebServlet(urlPatterns = ["/rest/*"], name = "MyServlet")
+class MyServlet : HttpServlet() {
+    val javalin = EmbeddedJavalin()
+        .get("/rest") { ctx -> ctx.result("Hello!") }
+        .createServlet()
+
+    override fun service(req: HttpServletRequest, resp: HttpServletResponse) {
+        javalin.service(req, resp)
+    }
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+The `createServlet()` method is the same method that Javalin uses internally when attaching itself to Jetty.
+Jetty server methods like `app.contextPath()`, `app.start()`, etc, will throw exceptions if called on `EmbeddedJavalin`.
+You have to manually exclude Jetty from your build files if you want to use this approach.
+
 <h3 id="logging">Adding a logger</h3>
 
 If you're reading this, you've probably seen the following message while running Javalin:
@@ -1059,7 +1116,6 @@ JavalinPebble.configure(configuration)
 JavalinCommonmark.configure(htmlRenderer, markdownParser)
 ```
 Note that these are global settings, and can't be configured per instance of Javalin.
-
 
 ### TimeoutExceptions and ClosedChannelExceptions
 So, you're seeing `TimeoutExceptions` and `ClosedChannelExceptions` in your DEBUG logs?

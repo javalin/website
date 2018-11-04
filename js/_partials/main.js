@@ -64,6 +64,8 @@ if (document.location.pathname === "/documentation") {
         "badgatewayresponse": "2.1.0",
         "serviceunavailableresponse": "2.1.0",
         "validation": "2.2.0",
+        "using-javalin-without-jetty": "2.4.0",
+        "websocket-logging": "2.4.0",
     };
     Object.keys(addedTags).forEach(key => {
         document.getElementById(key).classList.add("added-parent");
