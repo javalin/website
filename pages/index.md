@@ -146,9 +146,11 @@ app.routes {
     <h1>Who's using Javalin?</h1>
     <div class="used-by">
         <img src="/img/used-by/jhu.png" alt="JHU">
+        <img src="/img/used-by/microsoft.png" alt="Microsoft">
+        <img src="/img/used-by/redhat.png" alt="Redhat">
         <img src="/img/used-by/ntnu.png" alt="NTNU">
-        <img src="/img/used-by/wit.png" alt="WIT">
         <img src="/img/used-by/measuresforjustice.png" alt="Measures for Justice">
+        <img src="/img/used-by/wit.png" alt="WIT">
         <img src="/img/used-by/briar.png" alt="Briar">
         <img src="/img/used-by/twosigma.png" alt="Two Sigma">
         <img src="/img/used-by/nav.png" alt="nav">
