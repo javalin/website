@@ -2,7 +2,7 @@
 layout: tutorial
 title: "Embed Javalin Into Servlet Container"
 author: <a href="https://github.com/mvysny" target="_blank">Martin Vyšný</a>
-gitlab: https://gitlab.com/mvysny/javalin-tomcat-embed-test
+github: https://github.com/tipsy/javalin-tomcat-embed-example
 date: 2018-11-15
 summarytitle: Embed Javalin Into Servlet Container
 summary: Running Javalin Embedded In Tomcat Without Jetty
@@ -15,12 +15,12 @@ this WAR file into any Servlet 3.0 container.
 
 ## Getting Started
 
-The easiest way to get started is to clone the [javalin-tomcat-embed-test](https://gitlab.com/mvysny/javalin-tomcat-embed-test)
+The easiest way to get started is to clone the [javalin-tomcat-embed-example](https://github.com/tipsy/javalin-tomcat-embed-example)
 example application:
 
 ```bash
-git clone https://gitlab.com/mvysny/javalin-tomcat-embed-test
-cd javalin-tomcat-embed-test
+git clone https://github.com/tipsy/javalin-tomcat-embed-example
+cd javalin-tomcat-embed-example
 ./gradlew clean appRun
 ```
 
