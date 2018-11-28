@@ -189,7 +189,7 @@ and trailing closures to create very clean api declarations:
 ~~~kotlin
 import app.user.User
 import app.user.UserDao
-import io.javalin.ApiBuilder.*
+import io.javalin.apibuilder.ApiBuilder.*
 import io.javalin.Javalin
 
 fun main(args: Array<String>) {
