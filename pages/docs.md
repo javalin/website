@@ -35,9 +35,9 @@ permalink: /documentation
 
 <h1 class="no-margin-top">Documentation</h1>
 
-The documentation on this site is always for the latest version of Javalin (currently `{{site.javalinversion}}`). 
-We don't have the capacity to maintain separate docs for every single version, 
-but Javalin follows [semantic versioning](http://semver.org/), 
+The documentation on this site is always for the latest version of Javalin (currently `{{site.javalinversion}}`).
+We don't have the capacity to maintain separate docs for every single version,
+but Javalin follows [semantic versioning](http://semver.org/),
 meaning there are no breaking changes unless it changes from 2.X to 3.X. Functionality added
 after 2.0.0 is marked with labels containing the version number: <span class="added-in">Added in v2.x.x</span>
 
@@ -63,8 +63,8 @@ Start coding:
 {% include macros/gettingStarted.md %}
 
 ## Handlers
-Javalin has a three main handler types: before-handlers, endpoint-handlers, and after-handlers. 
-(There are also exception-handlers and error-handlers, but we'll get to them later). 
+Javalin has a three main handler types: before-handlers, endpoint-handlers, and after-handlers.
+(There are also exception-handlers and error-handlers, but we'll get to them later).
 The before-, endpoint- and after-handlers require three parts:
 
 * A verb, ex: `before`, `get`, `post`, `put`, `delete`, `after`
@@ -175,7 +175,7 @@ app.after { ctx ->
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ## Handler groups
-You can group your endpoints by using the `routes()` and `path()` methods. `routes()` creates 
+You can group your endpoints by using the `routes()` and `path()` methods. `routes()` creates
 a temporary static instance of Javalin so you can skip the `app.` prefix before your handlers:
 {% capture java %}
 app.routes(() -> {
@@ -474,9 +474,9 @@ If any of the validators find errors, a `BadRequestResponse` is thrown:
 ```
 
 ## Access manager
-Javalin has a functional interface `AccessManager`, which let's you 
+Javalin has a functional interface `AccessManager`, which let's you
 set per-endpoint authentication and/or authorization. It's common to use before-handlers for this,
-but per-endpoint security handlers give you much more explicit and readable code. You can implement your 
+but per-endpoint security handlers give you much more explicit and readable code. You can implement your
 access-manager however you want. Here is an example implementation:
 
 {% capture java %}
@@ -556,44 +556,44 @@ Forbidden
 You can include a `Map<String, String>` of details if you wish.
 
 ### RedirectResponse
-Returns a [302 Found](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/302) response with the default title `Redirected`. 
+Returns a [302 Found](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/302) response with the default title `Redirected`.
 
 ### BadRequestResponse
-Returns a [400 Bad Request](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400) response with the default title `Bad request`. 
+Returns a [400 Bad Request](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400) response with the default title `Bad request`.
 
 ### UnauthorizedResponse
-Returns a [401 Unauthorized](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401) response with the default title `Unauthorized`. 
+Returns a [401 Unauthorized](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401) response with the default title `Unauthorized`.
 
 ### ForbiddenResponse
-Returns a [403 Forbidden](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403) response with the default title `Forbidden`. 
+Returns a [403 Forbidden](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403) response with the default title `Forbidden`.
 
 ### NotFoundResponse
-Returns a [404 Not Found](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404) response with the default title `Not found`. 
+Returns a [404 Not Found](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404) response with the default title `Not found`.
 
 ### MethodNotAllowedResponse
-Returns a [405 Method Not Allowed](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/405) response with the default title `Method not allowed`. 
+Returns a [405 Method Not Allowed](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/405) response with the default title `Method not allowed`.
 
 ### ConflictResponse
-Returns a [409 Conflict](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/409) response with the default title `Conflict`. 
+Returns a [409 Conflict](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/409) response with the default title `Conflict`.
 
 ### GoneResponse
-Returns a [410 Gone](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/410) response with the default title `Gone`. 
+Returns a [410 Gone](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/410) response with the default title `Gone`.
 
 ### InternalServerErrorResponse
-Returns a [500 Internal Server Error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500) response with the default title `Internal server error`. 
+Returns a [500 Internal Server Error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500) response with the default title `Internal server error`.
 
 ### BadGatewayResponse
-Returns a [502 Bad Gateway](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/502) response with the default title `Bad gateway`. 
+Returns a [502 Bad Gateway](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/502) response with the default title `Bad gateway`.
 
 ### ServiceUnavailableResponse
-Returns a [503 Service Unavailable](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503) response with the default title `Service unavailable`. 
+Returns a [503 Service Unavailable](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503) response with the default title `Service unavailable`.
 
 ### GatewayTimeoutResponse
-Returns a [504 Gateway Timeout](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/504) response with the default title `Gateway timeout`. 
+Returns a [504 Gateway Timeout](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/504) response with the default title `Gateway timeout`.
 
 ## Exception Mapping
 All handlers (before, endpoint, after) can throw `Exception`
-(and any subclass of `Exception`) 
+(and any subclass of `Exception`)
 The `app.exception()` method gives you a way of handling these exceptions:
 {% capture java %}
 app.exception(NullPointerException.class, (e, ctx) -> {
@@ -649,7 +649,7 @@ app.exception(FileNotFoundException::class.java) { e, ctx ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-## WebSockets 
+## WebSockets
 
 Javalin has a very intuitive way of handling WebSockets, similar to most node frameworks:
 
@@ -749,7 +749,7 @@ app.stop() // SERVER_STOPPING -> SERVER_STOPPED
 Javalin runs on an embedded [Jetty](http://eclipse.org/jetty/).
 
 ### Starting and stopping
-To start and stop the server, use the aptly named `start()` and `stop` methods. 
+To start and stop the server, use the aptly named `start()` and `stop` methods.
 
 ```java
 Javalin app = Javalin.create()
@@ -848,7 +848,7 @@ app.server {
 
 #### Custom SessionHandler
 
-You can configure the `SessionHandler` by calling `app.sessionHandler(...)`. 
+You can configure the `SessionHandler` by calling `app.sessionHandler(...)`.
 
 If you want to persist sessions to the file system, you could use a `FileSessionDataStore`:
 
@@ -864,7 +864,7 @@ private fun fileSessionHandler() = SessionHandler().apply {
 }
 ```
 
-Read more about how to configure sessions in 
+Read more about how to configure sessions in
 [Jetty's documentation](https://www.eclipse.org/jetty/documentation/9.4.x/session-management.html).
 
 #### Custom jetty handlers
@@ -898,7 +898,7 @@ Javalin.create().apply {
 ### SSL/HTTP2
 
 To configure SSL or HTTP2 you need to use a custom server (see previous section).\\
-An example of a custom server with SSL can be found in the examples, 
+An example of a custom server with SSL can be found in the examples,
 [HelloWorldSecure](https://github.com/tipsy/javalin/blob/master/src/test/java/io/javalin/examples/HelloWorldSecure.java#L24-L32).
 
 A custom HTTP2 server is a bit more work to set up, but we have a repo with a
@@ -907,7 +907,7 @@ fully functioning example server in both Kotlin and Java: [javalin-http2-example
 ### Static Files
 You can enabled static file serving by doing `app.enableStaticFiles("/classpath-folder")`, and/or
 `app.enableStaticFiles("/folder", Location.EXTERNAL)`.
-Static resource handling is done **after** endpoint matching, 
+Static resource handling is done **after** endpoint matching,
 meaning your self-defined endpoints have higher priority. The process looks like this:
 ```bash
 before-handlers
@@ -916,12 +916,12 @@ if no-endpoint-handler-found
     static-file-handler
     if static-file-found
         static-file-handler send response
-    else 
+    else
         response is 404
 after-handlers
 ```
 If you do `app.enableStaticFiles("/classpath-folder")`.
-Your `index.html` file at `/classpath-folder/index.html` will be available 
+Your `index.html` file at `/classpath-folder/index.html` will be available
 at `http://{host}:{port}/index.html` and `http://{host}:{port}/`.
 
 You can call `enableStaticFiles` multiple times to set up multiple handlers.
@@ -937,20 +937,20 @@ If you want to skip this check, you can put files in a dir called `immutable`,
 and Javalin will set `max-age=31622400`, which means that the browser will wait
 one year before checking if the file is still valid.
 This should only be used for versioned library files, like `vue-2.4.2.min.js`, to avoid
-the browser ending up with an outdated version if you change the file content. 
+the browser ending up with an outdated version if you change the file content.
 WebJars also use `max-age=31622400`, as the version number is always part of the path.
 
 ## FAQ
 Frequently asked questions
 
 ### Javadoc
-There is a Javadoc available at [javadoc.io](http://javadoc.io/doc/io.javalin/javalin).  
+There is a Javadoc available at [javadoc.io](http://javadoc.io/doc/io.javalin/javalin).
 Please contribute to the Javadoc if you can.
 
 ### Deploying
-To deploy Javalin, simply create a [jar with dependencies](https://maven.apache.org/plugins/maven-assembly-plugin/usage.html), 
-then launch the jar with `java -jar filename.jar`. That's it.  
-Javalin has an embedded server, so you don't need an application server.  
+To deploy Javalin, simply create a [jar with dependencies](https://maven.apache.org/plugins/maven-assembly-plugin/usage.html),
+then launch the jar with `java -jar filename.jar`. That's it.
+Javalin has an embedded server, so you don't need an application server.
 There is also a tutorial on [deploying Javalin to Heroku](/tutorials/heroku).
 
 ### Uploads
@@ -1125,5 +1125,5 @@ Note that these are global settings, and can't be configured per instance of Jav
 ### TimeoutExceptions and ClosedChannelExceptions
 So, you're seeing `TimeoutExceptions` and `ClosedChannelExceptions` in your DEBUG logs?
 There is nothing to worry about, typically a browser will keep the HTTP connection open until the
-server terminates it. When this happens is decided by the server's `idleTimeout` setting, 
+server terminates it. When this happens is decided by the server's `idleTimeout` setting,
 which is 30 seconds by default in Jetty/Javalin. This is not a bug.
