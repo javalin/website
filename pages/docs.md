@@ -1065,6 +1065,11 @@ You can only set future results in endpoint handlers (get/post/put/etc).\\
 After-handlers, exception-handlers and error-handlers run like you'd expect them to after
 the future has been resolved or rejected.
 
+#### Async timeout settings
+Jetty has a default timeout of 30 seconds for async requests (this is not related to the `idleTimeout` of a connector).
+If you wait for processes that run for longer than this, you could configure the async request manually by calling `ctx.req.startAsync()`.
+For more information, see [issue 448](https://github.com/tipsy/javalin/issues/448).
+
 ### Configuring the JSON mapper
 
 The JSON mapper can be configured like this:
