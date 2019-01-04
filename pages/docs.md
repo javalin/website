@@ -779,6 +779,7 @@ Javalin.create() // create has to be called first
     .disableDynamicGzip() // don't gzip any dynamic responses (static files are still gzipped)
     .maxBodySizeForRequestCache(long) // set max body size for request cache
     .port(port) // set the port
+    .register(extension) // register extension - since 2.5.0
     .requestLogger( ... ) // see section below
     .server( ... ) // see section below
     .sessionHandler( ... ) // see section below
@@ -803,6 +804,7 @@ Javalin.create().apply { // create has to be called first
     disableDynamicGzip() // don't gzip any dynamic responses (static files are still gzipped)
     maxBodySizeForRequestCache(long) // set max body size for request cache
     port(port) // set the port
+    register(extension) // register extension - since 2.5.0
     requestLogger( ... ) // see section below
     server( ... ) // see section below
     sessionHandler( ... ) // see section below
