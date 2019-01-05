@@ -208,6 +208,8 @@ app.routes {
 Note that `path()` prefixes your paths with `/` (if you don't add it yourself).\\
 This means that `path("api", ...)` and `path("/api", ...)` are equivalent.
 
+You can import all the HTTP methods with `import static io.javalin.apibuilder.ApiBuilder.*;`.
+
 ### CrudHandler
 The `CrudHandler` is an interface that can be used within a `routes()` call:
 
