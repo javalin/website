@@ -100,23 +100,23 @@ functionality in the same classes (based on feature). Let's have a look at the `
 
 ~~~java
 public static Handler serveLoginPage = ctx -> {
-    Map<String, Object> model = ViewUtil.baseModel(req);
-    model.put("loggedOut", removeSessionAttrLoggedOut(req));
-    model.put("loginRedirect", removeSessionAttrLoginRedirect(req));
+    Map<String, Object> model = ViewUtil.baseModel(ctx);
+    model.put("loggedOut", removeSessionAttrLoggedOut(ctx));
+    model.put("loginRedirect", removeSessionAttrLoginRedirect(ctx));
     ctx.render(Path.Template.LOGIN, model);
 };
 
 public static Handler handleLoginPost = ctx -> {
-    Map<String, Object> model = ViewUtil.baseModel(req);
-    if (!UserController.authenticate(getQueryUsername(req), getQueryPassword(req))) {
+    Map<String, Object> model = ViewUtil.baseModel(ctx);
+    if (!UserController.authenticate(getQueryUsername(ctx), getQueryPassword(ctx))) {
         model.put("authenticationFailed", true);
         ctx.render(Path.Template.LOGIN, model);
     } else {
-        ctx.sessionAttribute("currentUser", getQueryUsername(req));
+        ctx.sessionAttribute("currentUser", getQueryUsername(ctx));
         model.put("authenticationSucceeded", true);
-        model.put("currentUser", getQueryUsername(req));
+        model.put("currentUser", getQueryUsername(ctx));
         if (getQueryLoginRedirect(req) != null) {
-            ctx.redirect(getQueryLoginRedirect(req));
+            ctx.redirect(getQueryLoginRedirect(ctx));
         }
         ctx.render(Path.Template.LOGIN, model);
     }
