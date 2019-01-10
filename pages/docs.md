@@ -1108,7 +1108,7 @@ ctx.render("/templateFile.ext", mapOf("firstName" to "John", "lastName" to "Doe"
 
 Register:
 ```java
-JavalinRenderer.register(new JavalinPebble(), ".peb", ".pebble");
+JavalinRenderer.register(JavalinPebble.INSTANCE, ".peb", ".pebble");
 
 JavalinRenderer.register((filePath, model) -> {
     return MyRenderer.render(filePath, model);
