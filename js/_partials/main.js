@@ -26,9 +26,9 @@ if (window.location.hash && performance.navigation.type !== 1) {
 }
 
 setTimeout(function () {
-    gumshoe.init({ // https://github.com/cferdinandi/gumshoe (scrollspy) 
-        selector: '#spy-nav > ul > li > a', // Default link selector 
-        selectorHeader: fixedHeaderSelector, // Fixed header selector 
+    gumshoe.init({ // https://github.com/cferdinandi/gumshoe (scrollspy)
+        selector: '#spy-nav > ul > li > a', // Default link selector
+        selectorHeader: fixedHeaderSelector, // Fixed header selector
         container: window, // The element to spy on scrolling in (must be a valid DOM Node)
         offset: offset, // Distance in pixels to offset calculations
         activeClass: 'active', // Class to apply to active navigation link and its parent list item
@@ -42,7 +42,7 @@ setTimeout(function () {
     });
 }, 500);
 
-// multi-tab code 
+// multi-tab code
 document.addEventListener("click", function (e) {
     var targetTab = e.target.getAttribute("data-tab");
     if (targetTab > 0) {
@@ -66,6 +66,7 @@ if (document.location.pathname === "/documentation") {
         "validation": "2.2.0",
         "using-javalin-without-jetty": "2.4.0",
         "websocket-logging": "2.4.0",
+        "server-sent-events": "2.6.0",
     };
     Object.keys(addedTags).forEach(key => {
         document.getElementById(key).classList.add("added-parent");

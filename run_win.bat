@@ -1,1 +1,2 @@
-bundle exec jekyll serve --port 4000 --verbose 
+bundle exec jekyll serve --port 4000 
+REM --verbose 

@@ -21,6 +21,7 @@ permalink: /documentation
 * [Exception Mapping](#exception-mapping)
 * [Error Mapping](#error-mapping)
 * [WebSockets](#websockets)
+* [Server-sent Events](#server-sent-events)
 * [Lifecycle events](#lifecycle-events)
 * [Server setup](#server-setup)
 * [ &nbsp;&nbsp;&nbsp;&nbsp;Start/stop](#starting-and-stopping)
@@ -719,6 +720,32 @@ app.wsLogger { ws ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 The logger runs after the WebSocket handler for the endpoint
+
+## Server-sent Events
+Server-sent events (often also called event source) are very simple in Javalin.
+You call `app.sse()`, which gives you access to the connected `SseClient`:
+
+{% capture java %}
+app.sse("/sse", client ->
+    client.sendEvent("connected", "Hello, SSE");
+    client.onClose(() -> System.out.println("Client disconnected"));
+});
+{% endcapture %}
+{% capture kotlin %}
+app.sse("/sse") { client ->
+    client.sendEvent("connected", "Hello, SSE")
+    client.onClose { println("Client disconnected") }
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+The `SseClient` has access to three things:
+
+```java
+client.sendEvent() // method(s) for sending events to client
+client.onClose(runnable) // callback which runs when a client closes its connection
+client.ctx // the Context for when the client connected (to fetch query-params, etc)
+```
 
 ## Lifecycle events
 Javalin has five lifecycle events: `SERVER_STARTING`, `SERVER_STARTED`, `SERVER_START_FAILED`, `SERVER_STOPPING` and `SERVER_STOPPED`.
