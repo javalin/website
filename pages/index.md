@@ -28,8 +28,8 @@ permalink: /
         <div class="box">
             <h3>Lightweight</h3>
             <p>
-                Javalin is just a few thousand lines of code on top of Jetty, which
-                means its performance is almost equivalent to pure Jetty. It also means it's
+                Javalin is just a few thousand lines of code on top of Jetty, and
+                its performance is equivalent to raw Jetty code. Due to its size, it's
                 very easy to reason about the source code.
             </p>
         </div>
