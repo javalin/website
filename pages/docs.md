@@ -32,8 +32,6 @@ permalink: /documentation
 * [FAQ](#faq)
 </div>
 
-{% include javalin2banner.html %}
-
 <h1 class="no-margin-top">Documentation</h1>
 
 The documentation on this site is always for the latest version of Javalin (currently `{{site.javalinversion}}`).
