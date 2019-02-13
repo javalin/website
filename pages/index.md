@@ -149,6 +149,7 @@ app.routes {
         <img src="/img/used-by/microsoft.png" alt="Microsoft">
         <img src="/img/used-by/redhat.png" alt="Redhat">
         <img src="/img/used-by/ntnu.png" alt="NTNU">
+        <img src="/img/used-by/pleo.png" alt="Pleo">
         <img src="/img/used-by/measuresforjustice.png" alt="Measures for Justice">
         <img src="/img/used-by/wit.png" alt="WIT">
         <img src="/img/used-by/briar.png" alt="Briar">
