@@ -1118,6 +1118,13 @@ JavalinJackson.configure(objectMapper)
 
 Note that these are global settings, and can't be configured per instance of Javalin.
 
+
+### Adding other Servlets and Filters to Javalin
+Javalin is designed to work with other `Servlet` and `Filter` instances running on the Jetty Server.
+Filters are pretty straighforward to add, since they don't finish the request. If you need to add a serlvet
+there's an example in the repo:
+[/src/test/java/io/javalin/examples/HelloWorldServlet.java#L19-L27](https://github.com/tipsy/javalin/blob/master/src/test/java/io/javalin/examples/HelloWorldServlet.java#L19-L27)
+
 ### Views and Templates
 Javalin looks for templates/markdown files in `src/resources`,
 and uses the correct rendering engine based on the extension of your template.
