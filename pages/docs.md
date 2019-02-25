@@ -124,12 +124,12 @@ app.post("/") { ctx ->
 
 Handler paths can include path-parameters. These are available via `Context.pathParam()`
 {% capture java %}
-get("/hello/:name", ctx -> {
+app.get("/hello/:name", ctx -> {
     ctx.result("Hello: " + ctx.pathParam("name"));
 });
 {% endcapture %}
 {% capture kotlin %}
-get("/hello/:name") { ctx ->
+app.get("/hello/:name") { ctx ->
     ctx.result("Hello: " + ctx.pathParam("name"))
 }
 {% endcapture %}
@@ -138,12 +138,12 @@ get("/hello/:name") { ctx ->
 Handler-paths can also include wildcard parameters (splats). These are available via `Context.splat()`
 
 {% capture java %}
-get("/hello/*/and/*", ctx -> {
+app.get("/hello/*/and/*", ctx -> {
     ctx.result("Hello: " + ctx.splat(0) + " and " + ctx.splat(1));
 });
 {% endcapture %}
 {% capture kotlin %}
-get("/hello/*/and/*") { ctx ->
+app.get("/hello/*/and/*") { ctx ->
     ctx.result("Hello: " + ctx.splat(0) + " and " + ctx.splat(1))
 }
 {% endcapture %}
