@@ -101,12 +101,12 @@ Endpoint-handlers are matched in the order they are defined.
 {% capture java %}
 app.get("/", ctx -> {
     // some code
-    ctx.json(object)
+    ctx.json(object);
 });
 
 app.post("/", ctx -> {
     // some code
-    ctx.status(201)
+    ctx.status(201);
 });
 {% endcapture %}
 {% capture kotlin %}
