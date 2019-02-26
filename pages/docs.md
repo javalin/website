@@ -62,7 +62,7 @@ Start coding:
 {% include macros/gettingStarted.md %}
 
 ## Handlers
-Javalin has a three main handler types: before-handlers, endpoint-handlers, and after-handlers.
+Javalin has three main handler types: before-handlers, endpoint-handlers, and after-handlers.
 (There are also exception-handlers and error-handlers, but we'll get to them later).
 The before-, endpoint- and after-handlers require three parts:
 
@@ -880,7 +880,7 @@ app.server {
 
 You can configure the `SessionHandler` by calling `app.sessionHandler(...)`.
 
-If you want to persist sessions to the file system, you could use a `FileSessionDataStore`:
+If you want to persist sessions to the file system, you can use a `FileSessionDataStore`:
 
 ```kotlin
 private fun fileSessionHandler() = SessionHandler().apply {
@@ -1001,7 +1001,7 @@ app.post("/upload") { ctx ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-The corresponding HTML could look something like:
+The corresponding HTML might look something like this:
 ```markup
 <form method="post" action="/upload" enctype="multipart/form-data">
     <input type="file" name="files" multiple>
@@ -1097,7 +1097,7 @@ the future has been resolved or rejected.
 
 #### Async timeout settings
 Jetty has a default timeout of 30 seconds for async requests (this is not related to the `idleTimeout` of a connector).
-If you wait for processes that run for longer than this, you could configure the async request manually by calling `ctx.req.startAsync()`.
+If you wait for processes that run for longer than this, you can configure the async request manually by calling `ctx.req.startAsync()`.
 For more information, see [issue 448](https://github.com/tipsy/javalin/issues/448).
 
 ### Configuring the JSON mapper
@@ -1160,7 +1160,7 @@ JavalinCommonmark.configure(htmlRenderer, markdownParser)
 Note that these are global settings, and can't be configured per instance of Javalin.
 
 ### TimeoutExceptions and ClosedChannelExceptions
-So, you're seeing `TimeoutExceptions` and `ClosedChannelExceptions` in your DEBUG logs?
-There is nothing to worry about, typically a browser will keep the HTTP connection open until the
+If you encounter `TimeoutExceptions` and `ClosedChannelExceptions` in your DEBUG logs, 
+this is nothing to worry about. Typically, a browser will keep the HTTP connection open until the
 server terminates it. When this happens is decided by the server's `idleTimeout` setting,
 which is 30 seconds by default in Jetty/Javalin. This is not a bug.
