@@ -719,6 +719,20 @@ app.wsLogger { ws ->
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 The logger runs after the WebSocket handler for the endpoint
 
+### Configuring WebSockets
+
+{% capture java %}
+app.wsFactoryConfig(wsFactory -> {
+    wsFactory.policy.maxTextMessageSize = 1234;
+});
+{% endcapture %}
+{% capture kotlin %}
+app.wsFactoryConfig { wsFactory ->
+    wsFactory.policy.maxTextMessageSize = 1234
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
 ## Server-sent Events
 Server-sent events (often also called event source) are very simple in Javalin.
 You call `app.sse()`, which gives you access to the connected `SseClient`:
@@ -1160,7 +1174,7 @@ JavalinCommonmark.configure(htmlRenderer, markdownParser)
 Note that these are global settings, and can't be configured per instance of Javalin.
 
 ### TimeoutExceptions and ClosedChannelExceptions
-If you encounter `TimeoutExceptions` and `ClosedChannelExceptions` in your DEBUG logs, 
+If you encounter `TimeoutExceptions` and `ClosedChannelExceptions` in your DEBUG logs,
 this is nothing to worry about. Typically, a browser will keep the HTTP connection open until the
 server terminates it. When this happens is decided by the server's `idleTimeout` setting,
 which is 30 seconds by default in Jetty/Javalin. This is not a bug.
