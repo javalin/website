@@ -15,15 +15,20 @@ Javalin now offers a lot of features that are not available in Spark:
 * Fully configurable Jetty (HTTP2)
 * Async request handling
 * Lambda WebSockets with routing (path params)
+* Server-sent events
 * Session handling
-* Input validation
+* Input validation and casting
 * Default responses
-* Role management
+* Access management
 * Error mapping (status code)
 * Lifecycle events
 * Extensions
 * Handler groups
 * Simplified uploads
+* Multi-location static files
+* Single-page mode
+* Stand-alone mode (you can add Javalin to any Servlet container programmatically)
+* Plugins for JSON and templates
 
 ## Syntax differences
 
