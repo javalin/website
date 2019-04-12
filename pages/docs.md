@@ -5,6 +5,8 @@ rightmenu: true
 permalink: /documentation
 ---
 
+{% include newJavalinBanner.html %}
+
 <div id="spy-nav" class="right-menu" markdown="1">
 * [Getting Started](#getting-started)
 * [Handlers](#handlers)

@@ -1,29 +1,32 @@
 <script>
-    const hasBeenDismissed = localStorage.getItem("j2-banner-dismissed") === "true";
-    const pageLoadCount = parseInt(localStorage.getItem("page-load-count") || 0);
-    localStorage.setItem("page-load-count", (pageLoadCount + 1).toString());
+    const notificationId = "javalin-3-in-progress";
+    const hasBeenDismissed = localStorage.getItem(notificationId + "-dismissed") === "true";
+    const pageLoadCount = parseInt(localStorage.getItem(notificationId + "-count") || 0);
+    localStorage.setItem(notificationId + "-count", (pageLoadCount + 1).toString());
     if (!hasBeenDismissed) {
         document.write(`
-               <div id="j2-banner">
-                    Javalin 2.0 has been released!
-                    <span id="j2-links">
-                        <a href="/news/javalin-2.0.0-stable.html">News</a>
-                        <a href="/migration-guide-javalin-1-to-2">Migration&nbsp;guide</a>
-                        <a class="social-btn" href="https://twitter.com/intent/tweet?text=Javalin 2.0 stable released&url={{ site.url }}/news/javalin-2.0.0-stable.html&via=javalin_io&related=javalin_io" rel="nofollow">Tweet&nbsp;it!</a>
-                    </span>
-                </div>
+            <div id="notification-banner">
+                Javalin 3.0 is coming.
+                Please post feature requests/suggestions on <a href="https://github.com/tipsy/javalin/issues/514">GitHub</a> (!)
+            </div>
         `);
         if (pageLoadCount > 5) {
-            document.querySelector("#j2-banner").insertAdjacentHTML("beforeend", `<span class="close">✖</span>`);
-            document.querySelector("#j2-banner .close").addEventListener("click", () => {
-                document.querySelector("#j2-banner").style.display = "none";
-                localStorage.setItem("j2-banner-dismissed", "true");
+            document.querySelector("#notification-banner").insertAdjacentHTML("beforeend", `<span class="close">✖</span>`);
+            document.querySelector("#notification-banner .close").addEventListener("click", () => {
+                document.querySelector("#notification-banner").style.display = "none";
+                localStorage.setItem(notificationId + "-dismissed", "true");
             });
         }
     }
+    // Javalin 3.0 has been released!
+    // <span id="notification-link">
+    //     <a href="/news/javalin-2.0.0-stable.html">News</a>
+    //     <a href="/migration-guide-javalin-1-to-2">Migration&nbsp;guide</a>
+    // <a class="social-btn" href="https://twitter.com/intent/tweet?text=Javalin 2.0 stable released&url={{ site.url }}/news/javalin-2.0.0-stable.html&via=javalin_io&related=javalin_io" rel="nofollow">Tweet&nbsp;it!</a>
+    // </span>
 </script>
 <style>
-    #j2-banner {
+    #notification-banner {
         position: relative;
         margin: 12px 0 20px;
         width: 100%;
@@ -39,17 +42,25 @@
         padding: 0 20px;
         border-bottom: 5px solid #035e7f;
     }
-    #j2-banner a {
+
+    #notification-banner a {
         color: white;
+        text-decoration: underline;
+    }
+
+    #notification-banner #notification-links a {
+        text-decoration: none;
         border: 2px dotted white;
         padding: 0 6px 3px 6px;
         border-radius: 5px;
         margin-left: 10px;
     }
-    #j2-links {
+
+    #notification-link {
         white-space: nowrap;
     }
-    #j2-banner .close {
+
+    #notification-banner .close {
         position: absolute;
         right: -10px;
         top: -10px;
@@ -65,17 +76,20 @@
         cursor: pointer;
         text-shadow: 0 0 0 white;
     }
+
     @media (max-width: 480px) {
-        #j2-banner {
+        #notification-banner {
             font-size: 14px;
             min-height: 48px;
             line-height: 48px;
             padding: 0 10px;
         }
-        #j2-banner a {
+
+        #notification-banner a {
             border: 1px dotted white;
         }
-        #j2-banner a:first-of-type {
+
+        #notification-banner a:first-of-type {
             margin-left: 0;
         }
     }

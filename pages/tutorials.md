@@ -4,6 +4,8 @@ title: Tutorials
 permalink: /tutorials/
 ---
 
+{% include newJavalinBanner.html %}
+
 <h1 class="no-margin-top">Tutorials</h1>
 
 {% assign tutorials = (site.posts | where: "layout" , "tutorial") | sort: 'date' | reverse %}

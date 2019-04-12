@@ -5,6 +5,8 @@ rightmenu: false
 permalink: /news/
 ---
 
+{% include newJavalinBanner.html %}
+
 <h1 class="no-margin-top">News</h1>
 Javalin is released frequently (once or twice a month). Follow us on [Twitter](https://twitter.com/javalin_io)
 or [Facebook](https://www.facebook.com/javalin.io) to get notified about new releases.
