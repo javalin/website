@@ -17,16 +17,16 @@ as well as different ways of persisting, caching and clustering sessions using J
 ## What is a session?
 When a user visits a website (or opens a webapp), the server usually creates a `Session` object for the user.
 Users are usually linked to their `Session` by cookie with a `sessionId` value.
-This `Session` object can be used to store information about the current, well, session, like if the 
-user is logged in. 
+This `Session` object can be used to store information about the current, well, session, like if the
+user is logged in.
 
 The architecture of session management changed significantly in Jetty 9.4, and this tutorial
-is intended to get you up to speed. You can view the 
+is intended to get you up to speed. You can view the
 [documentation](https://www.eclipse.org/jetty/documentation/9.4.x/session-management.html)
 on Jetty's website if you need all the details.
 
 ## Persisting sessions
-By default Jetty will store all its session information in a `HashMap`, which is stored in memory (RAM). 
+By default Jetty will store all its session information in a `HashMap`, which is stored in memory (RAM).
 When the Jetty server restarts all of the sessions are cleared. Restarts can happen for example if you're
 making changes on localhost, or if you're deploying a new version of your app to your cloud provider.
 
@@ -45,18 +45,20 @@ fun fileSessionHandler() = SessionHandler().apply { // create the session handle
             this.storeDir = File(baseDir, "javalin-session-store").apply { mkdir() }
         }
     }
+    httpOnly = true
+    // make additional changes to your SessionHandler here
 }
 ```
 
 This approach can also work on a remote server, but some cloud providers wipe all files when
-you redeploy your service, so be careful. File IO can also be slow, depending on your hardware. 
+you redeploy your service, so be careful. File IO can also be slow, depending on your hardware.
 If you want your sessions to be a bit more persistent, and faster, you can use a database.
 
 ### Persisting to a database
 
 Programmatically, persisting to a database is not very different from persisting to the file system.
 You need to create a `SessionHandler` with a `SessionCache`, but instead of using a `FileSessionDataStore` you
-need to use a datastore specific for your database. Here is an example using JDBC: 
+need to use a datastore specific for your database. Here is an example using JDBC:
 
 ```kotlin
 fun sqlSessionHandler(driver: String, url: String) = SessionHandler().apply {
@@ -67,6 +69,8 @@ fun sqlSessionHandler(driver: String, url: String) = SessionHandler().apply {
             })
         }.getSessionDataStore(sessionHandler)
     }
+    httpOnly = true
+    // make additional changes to your SessionHandler here
 }
 ```
 
@@ -81,7 +85,7 @@ sessionDataStore = MongoSessionDataStoreFactory().apply {
 ```
 
 Jetty supports JDBC, MongoDB, Inifinspan, Hazelcast, and Google Cloud DataStore.
-JDBC is included with in the core jetty-server dependency, while MongoDB and others require 
+JDBC is included with in the core jetty-server dependency, while MongoDB and others require
 additional dependencies.
 
 If you're using a SQL database, Jetty will create a `jettysessions` table. If you're using MongoDB it will create
@@ -124,7 +128,7 @@ two implementations of the `SessionCache` included in Jetty, `DefaultSessionCach
 We used the `DefaultSessionCache` in our previous examples, and it caches sessions in memory.
 This is great if you have one instance of your app running, but it can lead to trouble if you
 have two instances behind a load-balancer. Jetty recommends you always use sticky-sessions
-with the `DefaultSessionCache`, but even with sticky sessions you can run into inconsistencies. 
+with the `DefaultSessionCache`, but even with sticky sessions you can run into inconsistencies.
 If an instance goes down or gets overloaded, traffic will be routed to the other instance which won't
 have the same session in its cache. This is where the `NullSessionCache` is useful.
 
@@ -135,7 +139,7 @@ won't be any inconsistencies. Jetty recommends this approach for clustering with
 it's the safer choice even if sticky-sessions are enabled.
 
 There is a performance penalty to not caching, but if you're running a dedicated database on the same network
-with small sessions, it should just be ~10ms per request. Using an external hosted MongoDB such 
+with small sessions, it should just be ~10ms per request. Using an external hosted MongoDB such
 as [mlab](https://mlab.com/) it seems to be around 40ms.
 
 ## Summary
@@ -144,7 +148,7 @@ as [mlab](https://mlab.com/) it seems to be around 40ms.
 * The `DefaultSessionCache` works well if you only run one instance of your app
 * The `NullSessionCache` is suitable for multiple instances running behind a loadbalancer
 
-### Addendum
+## Usage in Javalin
 Since you are currently on [javalin.io](/), it should be mentioned how to use this knowledge in your Javalin app.
 Since Javalin relies on Jetty for session handling can, you simply pass your `SessionHandler`:
 
@@ -155,4 +159,57 @@ val app = Javalin.create().apply {
 ```
 
 As we saw earlier, the `SessionHandler` has a `SessionCache` which again has a `SessionDataStore`,
-so no further configuration is required.
+so no further configuration is required. All session configuration happens through Jetty classes.
+
+### Working with sessions
+Sessions are a great way to keep a trusted state for your connected clients.
+If you use a session database, values stored in the session store can be retrieved by each of your running instances.
+
+#### Writing values
+```kotlin
+app.get("/write") { ctx ->
+    // values written to the session will be available on all your instances if you use a session db
+    ctx.sessionAttribute("my-key", "My value")
+}
+```
+
+#### Reading values
+```kotlin
+app.get("/read") { ctx ->
+    // values on the session will be available on all your instances if you use a session db
+    val myValue = ctx.sessionAttribute<String>("my-key")
+}
+```
+
+#### Invalidating sessions
+```kotlin
+app.get("/invalidate") { ctx ->
+    // if you want to invalidate a session, jetty will clean everything up for you
+    ctx.req.session.invalidate()
+}
+```
+
+#### Changing session ids
+```kotlin
+app.get("/change-id") { ctx ->
+    // it could be wise to change the session id on login, to protect against session fixation attacks
+    ctx.req.changeSessionId()
+}
+```
+
+#### Access management
+Sessions work well with the Javalin [AccessManager](https://javalin.io/documentation#access-manager).
+You can check the session store to see if the user is logged in:
+```kotlin
+app.accessManager { handler, ctx, roles ->
+    val currentUser = ctx.sessionAttribute<String?>("current-user") // retrieve user stored during login
+    when {
+        currentUser == null -> redirectToLogin(ctx)
+        currentUser != null && userHasValidRole(ctx, roles) -> handler.handle(ctx)
+        else -> throw UnauthorizedResponse()
+    }
+}
+```
+
+The source code for these examples is available in the
+[tutorial repo](https://github.com/tipsy/javalin-jetty-sessions-example/blob/master/src/main/kotlin/app/Main.kt).
