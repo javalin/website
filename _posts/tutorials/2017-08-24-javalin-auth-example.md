@@ -120,7 +120,7 @@ Now, all that remains is to implement the access-manager (`Auth::accessManager`)
 ## Implementing auth
 
 The `AccessManager` interface in Javalin is pretty simple.
-It takes a `Handler` a `Context` and a list of `Role`s.
+It takes a `Handler` a `Context` and a set of `Role`s.
 The idea is that you implement code to run the handler
 based on what's in the context, and what roles are set for the endpoint.
 
@@ -131,7 +131,7 @@ The rules for our access manager are also simple:
 
 This translates nicely into Kotlin:
 ```kotlin
-fun accessManager(handler: Handler, ctx: Context, permittedRoles: List<Role>) {
+fun accessManager(handler: Handler, ctx: Context, permittedRoles: Set<Role>) {
     when {
         permittedRoles.contains(ApiRole.ANYONE) -> handler.handle(ctx)
         ctx.userRoles.any { it in permittedRoles } -> handler.handle(ctx)
@@ -142,13 +142,13 @@ fun accessManager(handler: Handler, ctx: Context, permittedRoles: List<Role>) {
 
 ### Extracting user-roles from the context
 There is no `ctx.userRoles` concept in Javalin, so we need to implement it.
-First we need a user-table. We'll create a `map(Pair<String, String>, List<Role>)` where keys are
+First we need a user-table. We'll create a `map(Pair<String, String>, Set<Role>)` where keys are
 username+password in cleartext (please don't do this for a real service), and values are user-roles:
 
 ```kotlin
 private val userRoleMap = hashMapOf(
-        Pair("alice", "weak-password") to listOf(ApiRole.USER_READ),
-        Pair("bob", "better-password") to listOf(ApiRole.USER_READ, ApiRole.USER_WRITE)
+        Pair("alice", "weak-password") to setOf(ApiRole.USER_READ),
+        Pair("bob", "better-password") to setOf(ApiRole.USER_READ, ApiRole.USER_WRITE)
 )
 ```
 
@@ -157,10 +157,10 @@ We do this by getting the username+password from the [Basic-auth-header](https:/
 and using them as keys for the `userRoleMap`:
 
 ```kotlin
-private val Context.userRoles: List<ApiRole>
+private val Context.userRoles: Set<ApiRole>
     get() = this.basicAuthCredentials()?.let { (username, password) ->
-        userRoleMap[Pair(username, password)] ?: listOf()
-    } ?: listOf()
+        userRoleMap[Pair(username, password)] ?: setOf()
+    } ?: setOf()
 ```
 
 <small><em>
