@@ -81,7 +81,7 @@ fun main(args: Array<String>) {
 
 }
 
-val WsSession.docId: String get() = this.param("doc-id")
+val WsSession.docId: String get() = this.pathParam("doc-id")
 ```
 
 ## Building a JavaScript Client
