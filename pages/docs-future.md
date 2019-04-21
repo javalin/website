@@ -35,7 +35,7 @@ permalink: /future/documentation
 
 <h1 class="no-margin-top">Documentation</h1>
 
-This page contains the documentation for the future version of Javalin, currently version `3.0.0.ALPHA0`:
+This page contains the documentation for the future version of Javalin, currently version `3.0.0.ALPHA0`.
 
 <div class="notification star-us">
     <div>
