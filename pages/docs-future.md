@@ -387,7 +387,7 @@ app.ws("/websocket/:path", ws -> {
     ws.onConnect(ctx -> System.out.println("Connected"));
     ws.onMessage(ctx -> {
         System.out.println("Received: " + ctx.message());
-        session.getRemote().sendString("Echo: " + ctx.message());
+        ctx.send("Echo: " + ctx.message());
     });
     ws.onBinaryMessage(ctx -> System.out.println("Message"))
     ws.onClose(ctx -> System.out.println("Closed"));
@@ -399,7 +399,7 @@ app.ws("/websocket/:path") { ws ->
     ws.onConnect { ctx -> println("Connected") }
     ws.onMessage { ctx ->
         println("Received: " + .message())
-        session.remote.sendString("Echo: " + ctx.message())
+        ctx.send("Echo: " + ctx.message())
     }
     ws.onBinaryMessage { ctx -> println("Message") }
     ws.onClose { ctx -> println("Closed") }
