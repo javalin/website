@@ -1054,6 +1054,19 @@ Javalin app = Javalin.create()
     .stop() // stop server (sync/blocking)
 ```
 
+If you want to do a clean shutdown when the program is exiting, you could use:
+
+```java
+Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+	app.stop();
+}));
+
+app.events(event -> {
+    event.serverStopping(() -> { /* Your code here */ });
+    event.serverStopped(() -> { /* Your code here */ });
+});
+```
+
 #### Custom server
 If you need to customize the embedded server, you can call the `server()` method:
 {% capture java %}

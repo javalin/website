@@ -800,6 +800,22 @@ Javalin app = Javalin.create()
     .stop() // stop server (sync/blocking)
 ```
 
+If you want to do a clean shutdown when the program is exiting, you could use:
+
+```java
+Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+	app.stop();
+}));
+
+app.event(JavalinEvent.SERVER_STOPPING) {
+    // Your code here
+}
+
+app.event(JavalinEvent.SERVER_STOPPED) {
+    // Your code here
+}
+```
+
 ### Configuration
 The following snippet shows all the configuration currently available in Javalin:
 
