@@ -1,13 +1,14 @@
 <script>
-    const notificationId = "javalin-3-in-progress";
+    const notificationId = "javalin-3-alpha";
     const hasBeenDismissed = localStorage.getItem(notificationId + "-dismissed") === "true";
     const pageLoadCount = parseInt(localStorage.getItem(notificationId + "-count") || 0);
     localStorage.setItem(notificationId + "-count", (pageLoadCount + 1).toString());
     if (!hasBeenDismissed) {
         document.write(`
             <div id="notification-banner">
-                Javalin 3.0 is coming.
-                Please post feature requests/suggestions on <a href="https://github.com/tipsy/javalin/issues/514">GitHub</a> (!)
+                Javalin 3.0 alpha is available: <a href="/future/documentation">javalin.io/future/documentation</a>
+                <br>
+                Please try it out!
             </div>
         `);
         if (pageLoadCount > 5) {
@@ -27,19 +28,18 @@
 </script>
 <style>
     #notification-banner {
+        line-height: 1.5;
         position: relative;
         margin: 12px 0 20px;
         width: 100%;
         background: #008cbb;
-        min-height: 70px;
-        line-height: 70px;
         color: white;
         text-shadow: 1px 1px rgba(0, 0, 0, 0.5);
         text-align: center;
         font-family: 'Encode Sans', sans-serif;
         font-size: 18px;
         border-radius: 5px;
-        padding: 0 20px;
+        padding: 10px 20px;
         border-bottom: 5px solid #035e7f;
     }
 
@@ -48,26 +48,14 @@
         text-decoration: underline;
     }
 
-    #notification-banner #notification-links a {
-        text-decoration: none;
-        border: 2px dotted white;
-        padding: 0 6px 3px 6px;
-        border-radius: 5px;
-        margin-left: 10px;
-    }
-
-    #notification-link {
-        white-space: nowrap;
-    }
-
     #notification-banner .close {
         position: absolute;
         right: -10px;
         top: -10px;
         height: 30px;
+        line-height: 30px;
         width: 30px;
         text-align: center;
-        line-height: 30px;
         font-size: 18px;
         background: #ff6666;
         border-radius: 24px;
@@ -80,17 +68,6 @@
     @media (max-width: 480px) {
         #notification-banner {
             font-size: 14px;
-            min-height: 48px;
-            line-height: 48px;
-            padding: 0 10px;
-        }
-
-        #notification-banner a {
-            border: 1px dotted white;
-        }
-
-        #notification-banner a:first-of-type {
-            margin-left: 0;
         }
     }
 </style>
