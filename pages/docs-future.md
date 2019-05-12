@@ -1054,6 +1054,9 @@ Javalin app = Javalin.create()
     .stop() // stop server (sync/blocking)
 ```
 
+The `app.start()` method spawns a user thread, starts the server, and then returns.
+Your program will not exit until this thread is terminated by calling `app.stop()`.
+
 If you want to do a clean shutdown when the program is exiting, you could use:
 
 ```java
