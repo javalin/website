@@ -57,7 +57,7 @@ Add the dependency:
 <dependency>
   <groupId>io.javalin</groupId>
   <artifactId>javalin</artifactId>
-  <version>3.0.0.ALPHA0</version>
+  <version>3.0.0.RC0</version>
 </dependency>
 ```
 
