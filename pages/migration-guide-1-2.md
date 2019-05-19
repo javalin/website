@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Migration guide
+title: Migration guide, v1 to v2
 rightmenu: false
 permalink: /migration-guide-javalin-1-to-2
 ---
@@ -37,7 +37,7 @@ It was possible to defined WebSockets using Jetty annotations in v1 of Javalin.
 These Jetty WebSockets have limited functionality compared to the Javalin lambda WebSockets,
 which is why they have been removed.
 
-## AccessManager 
+## AccessManager
 * Use `Set` instead of `List`
 * The AccessManager now runs for every single request, but the default-implementation does nothing. This might break some implementations that relied on un-managed routes.
 
@@ -57,11 +57,11 @@ which is why they have been removed.
 
 ## Events
 * Event handlers no longer take `Event` as an argument (they now take nothing)
-* `io.javalin.event.EventType` is now `io.javalin.JavalinEvent` 
+* `io.javalin.event.EventType` is now `io.javalin.JavalinEvent`
 
 ## Misc
 * Reverse routing has been removed (will come back, but better)
-* `HaltException` has been removed and replaced with `HttpResponseException`. Some common responses are included: 
+* `HaltException` has been removed and replaced with `HttpResponseException`. Some common responses are included:
   * RedirectResponse
   * BadRequestResponse
   * UnauthorizedResponse

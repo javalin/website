@@ -29,13 +29,14 @@ permalink: /future/documentation
 * * [Single page mode](#single-page-mode)
 * * [Logging](#logging)
 * * [Server setup](#server-setup)
+* [Plugins](#plugins)
 * [Lifecycle events](#lifecycle-events)
 * [FAQ](#faq)
 </div>
 
 <h1 class="no-margin-top">Documentation</h1>
 
-This page contains the documentation for the future version of Javalin, currently version `3.0.0.ALPHA0`.
+This page contains the documentation for the future version of Javalin, currently version `3.0.0.RC0`.
 
 <div class="notification star-us">
     <div>
@@ -386,8 +387,8 @@ A WebSocket endpoint is declared with `app.ws(path, handler)`. WebSocket handler
 app.ws("/websocket/:path", ws -> {
     ws.onConnect(ctx -> System.out.println("Connected"));
     ws.onMessage(ctx -> {
-        System.out.println("Received: " + ctx.message());
-        ctx.send("Echo: " + ctx.message());
+        User user = ctx.message(User.class); // convert from json
+        ctx.send(user); // convert to json and send back
     });
     ws.onBinaryMessage(ctx -> System.out.println("Message"))
     ws.onClose(ctx -> System.out.println("Closed"));
@@ -398,8 +399,8 @@ app.ws("/websocket/:path", ws -> {
 app.ws("/websocket/:path") { ws ->
     ws.onConnect { ctx -> println("Connected") }
     ws.onMessage { ctx ->
-        println("Received: " + .message())
-        ctx.send("Echo: " + ctx.message())
+        val user = ctx.message<User>(); // convert from json
+        ctx.send(user); // convert to json and send back
     }
     ws.onBinaryMessage { ctx -> println("Message") }
     ws.onClose { ctx -> println("Closed") }
@@ -601,7 +602,7 @@ Instant toDate = ctx.queryParam("to", Instant.class)
 // validate a json body:
 MyObject myObject = ctx.bodyValidator(MyObject.class)
         .check(obj -> obj.myObjectProperty == someValue)
-        .getOrThrow();
+        .get();
 {% endcapture %}
 {% capture kotlin %}
 // validate two dependent query parameters:
@@ -1016,6 +1017,24 @@ dependency to your project:
 ```
 
 #### Request logging
+You can add a HTTP request logger by calling `config.requestLogger()`.
+The method takes a `Context` and the time in milliseconds it took to finish the request:
+
+{% capture java %}
+Javalin.create(config -> {
+    config.requestLogger((ctx, ms) -> {
+        // log things here
+    });
+});
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { config ->
+    config.requestLogger { ctx, ms ->
+        // log things here
+    }
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 #### WebSocket logging
 You can add a WebSocket logger by calling `config.wsLogger()`. The method takes a `WsHandler`,
@@ -1147,6 +1166,9 @@ An example of a custom server with SSL can be found in the examples,
 A custom HTTP2 server is a bit more work to set up, but we have a repo with a
 fully functioning example server in both Kotlin and Java: [javalin-http2-example](https://github.com/tipsy/javalin-http2-example)
 
+## Plugins
+Information about plugin system coming soon.
+
 ## Lifecycle events
 Javalin has events for server start/stop, as well as for when handlers are added.
 The snippet below shows all of them in action:
@@ -1265,7 +1287,6 @@ JavalinJackson.configure(objectMapper)
 ```
 
 Note that these are global settings, and can't be configured per instance of Javalin.
-
 
 ### Adding other Servlets and Filters to Javalin
 Javalin is designed to work with other `Servlet` and `Filter` instances running on the Jetty Server.
