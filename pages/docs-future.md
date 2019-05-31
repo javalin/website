@@ -1167,7 +1167,31 @@ A custom HTTP2 server is a bit more work to set up, but we have a repo with a
 fully functioning example server in both Kotlin and Java: [javalin-http2-example](https://github.com/tipsy/javalin-http2-example)
 
 ## Plugins
-Information about plugin system coming soon.
+Javalin 3 introduced a new plugin system with two interfaces, `Plugin` and `PluginLifecycleInit`:
+
+```java
+interface Plugin {
+    void apply(@NotNull Javalin app);
+}
+interface PluginLifecycleInit {
+    void init(@NotNull Javalin app);
+}
+```
+
+When implementing `PluginLifecycleInit#init`, you are not allowed to add `Handler` instances to the app.\\
+The two interface methods are called like this during setup:
+
+```java
+config.getPluginsExtending(PluginLifecycleInit.class).forEach(plugin -> {
+    plugin.init(app);
+    // will throw exception if `init` adds Handler
+});
+
+config.inner.plugins.values().forEach(plugin -> plugin.apply(app));
+```
+
+This is mainly so each plugin has a chance to add `handlerAdded` listeners before other plugins
+add *their* handlers, so that each plugin has a complete overview of all handlers.
 
 ## Lifecycle events
 Javalin has events for server start/stop, as well as for when handlers are added.
