@@ -1182,12 +1182,12 @@ When implementing `PluginLifecycleInit#init`, you are not allowed to add `Handle
 The two interface methods are called like this during setup:
 
 ```java
-config.getPluginsExtending(PluginLifecycleInit.class).forEach(plugin -> {
+initPlugins.forEach(plugin -> {
     plugin.init(app);
     // will throw exception if `init` adds Handler
 });
 
-config.inner.plugins.values().forEach(plugin -> plugin.apply(app));
+plugins.forEach(plugin -> plugin.apply(app));
 ```
 
 This is mainly so each plugin has a chance to add `handlerAdded` listeners before other plugins
