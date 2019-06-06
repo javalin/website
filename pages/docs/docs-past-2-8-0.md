@@ -2,13 +2,12 @@
 layout: default
 title: Documentation
 rightmenu: true
-permalink: /documentation
+permalink: /archive/docs/v2.8.0.html
 ---
 
 {% include newJavalinBanner.html %}
 
 <div id="spy-nav" class="right-menu" markdown="1">
-* [Getting Started](#getting-started)
 * [Handlers](#handlers)
 * * [Before](#before-handlers)
 * * [Endpoint](#endpoint-handlers)
@@ -34,34 +33,10 @@ permalink: /documentation
 * [FAQ](#faq)
 </div>
 
-<h1 class="no-margin-top">Documentation</h1>
+<h1 class="no-margin-top">Documentation - Javalin 2.X</h1>
 
-The documentation on this site is always for the latest version of Javalin (currently `{{site.javalinversion}}`).
-We don't have the capacity to maintain separate docs for every single version,
-but Javalin follows [semantic versioning](http://semver.org/),
-meaning there are no breaking changes unless it changes from 2.X to 3.X. Functionality added
-after 2.0.0 is marked with labels containing the version number: <span class="added-in">Added in v2.x.x</span>
-
-Docs for 1.7 (last 1.X version) can be found [here](/archive/docs/v1.7.0.html).
-
-<div class="notification star-us">
-    <div>
-        <span id="starUsLong">If you like Javalin, please consider starring us on GitHub:</span>
-        <span id="starUsShort">Like Javalin? Star us on GitHub:</span>
-    </div>
-    <iframe id="starFrame" class="githubStar"
-            src="https://ghbtns.com/github-btn.html?user=tipsy&amp;repo=javalin&amp;type=star&amp;count=true&size=large"
-            frameborder="0" scrolling="0" width="150px" height="30px">
-    </iframe>
-</div>
-
-## Getting started
-
-Add the dependency:
-{% include macros/mavenDep.md %}
-
-Start coding:
-{% include macros/gettingStarted.md %}
+This page contains documentation for an older version of Javalin.
+Go to [javalin.io/documentation](/documentation) to view documentation for the newest version.
 
 ## Handlers
 Javalin has three main handler types: before-handlers, endpoint-handlers, and after-handlers.

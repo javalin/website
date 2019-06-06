@@ -2,8 +2,10 @@
 layout: default
 title: Documentation
 rightmenu: true
-permalink: /future/documentation
+permalink: /documentation
 ---
+
+{% include newJavalinBanner.html %}
 
 <div id="spy-nav" class="right-menu" markdown="1">
 * [Getting Started](#getting-started)
@@ -36,7 +38,11 @@ permalink: /future/documentation
 
 <h1 class="no-margin-top">Documentation</h1>
 
-This page contains the documentation for the future version of Javalin, currently version `3.0.0.RC3`.
+The documentation on this page is always for the latest version of Javalin, currently `{{site.javalinversion}}`.\\
+Javalin follows [semantic versioning](http://semver.org/), meaning there are no breaking changes unless the major (leftmost) digit changes, for example 3.X.X to 4.X.X.
+Functionality added after 3.0.0 is marked with labels containing the version number: <span class="added-in">Added in v3.x.x</span>
+
+Docs for 2.8.0 (last 2.X version) can be found [here](/archive/docs/v2.8.0.html).
 
 <div class="notification star-us">
     <div>
@@ -52,14 +58,7 @@ This page contains the documentation for the future version of Javalin, currentl
 ## Getting started
 
 Add the dependency:
-
-```xml
-<dependency>
-  <groupId>io.javalin</groupId>
-  <artifactId>javalin</artifactId>
-  <version>3.0.0.RC3</version>
-</dependency>
-```
+{% include macros/mavenDep.md %}
 
 Start coding:
 {% include macros/gettingStarted.md %}
@@ -1351,6 +1350,52 @@ JavalinPebble.configure(configuration)
 JavalinCommonmark.configure(htmlRenderer, markdownParser)
 ```
 Note that these are global settings, and can't be configured per instance of Javalin.
+
+### Vue support
+If you don't want to deal with NPM and frontend builds, Javalin has support for simplified Vuejs development.
+This requires you to make a layout template, `src/main/resources/vue/layout.html`:
+
+```markup
+<head>
+    <script src="/webjars/vue/2.6.10/dist/vue.min.js"></script>
+    @componentRegistration
+</head>
+<body>
+<main id="main-vue" v-cloak>
+    @routeComponent
+</main>
+<script>
+    new Vue({el: "#main-vue"});
+</script>
+</body>
+```
+
+When you put `.vue` files in `src/main/resources/vue`, Javalin will scan
+the folder and register the components in your `<head>` tag.
+
+Javalin will also put path-parameters and query-parameters in the Vue instance,
+which you can access:
+
+```markup
+<template id="thread-view">
+    {% raw %}<div>{{ $javalin.pathParams["user"] }}</div>{% endraw %}
+</template>
+<script>
+    Vue.component("thread-view", {
+        template: "#thread-view"
+    });
+</script>
+```
+
+To map a path to a Vue component you use the `VueComponent` class:
+
+```java
+get("/messages", VueComponent("<inbox-view></inbox-view>"))
+get("/messages/:user", VueComponent("<thread-view></thread-view>"))
+```
+
+This will give you a lot of the benefits of a modern frontend architecture,
+with very few of the downsides.
 
 ### TimeoutExceptions and ClosedChannelExceptions
 If you encounter `TimeoutExceptions` and `ClosedChannelExceptions` in your DEBUG logs,
