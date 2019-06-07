@@ -80,7 +80,7 @@ Javalin app = Javalin.create(config -> {
     path("users", () -> {
         get(UserController::getAll);
         post(UserController::create);
-        path(":user-id"(() -> {
+        path(":user-id", () -> {
             get(UserController::getOne);
             patch(UserController::update);
             delete(UserController::delete);

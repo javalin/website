@@ -31,8 +31,8 @@ permalink: /documentation
 * * [Single page mode](#single-page-mode)
 * * [Logging](#logging)
 * * [Server setup](#server-setup)
-* [Plugins](#plugins)
 * [Lifecycle events](#lifecycle-events)
+* [Plugins](#plugins)
 * [FAQ](#faq)
 </div>
 
@@ -855,20 +855,6 @@ client.onClose(runnable) // callback which runs when a client closes its connect
 client.ctx // the Context for when the client connected (to fetch query-params, etc)
 ```
 
-### Configuring WebSockets
-
-{% capture java %}
-app.wsFactoryConfig(wsFactory -> {
-    wsFactory.policy.maxTextMessageSize = 1234;
-});
-{% endcapture %}
-{% capture kotlin %}
-app.wsFactoryConfig { wsFactory ->
-    wsFactory.policy.maxTextMessageSize = 1234
-}
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
 ## Configuration
 
 You can pass a config object when creating a new instance of Javalin.
@@ -970,13 +956,16 @@ if no-endpoint-handler-found
         response is 404
 after-handlers
 ```
-If you do `app.enableStaticFiles("/classpath-folder")`.
+If you do `config.addStaticFiles("/classpath-folder")`.
 Your `index.html` file at `/classpath-folder/index.html` will be available
 at `http://{host}:{port}/index.html` and `http://{host}:{port}/`.
 
-You can call `enableStaticFiles` multiple times to set up multiple handlers.
+You can call `addStaticFiles` multiple times to set up multiple handlers.
 
 WebJars can be enabled by calling `enableWebJars()`, they will be available at `/webjars/name/version/file.ext`.
+
+WebJars can be found on [https://www.webjars.org/](https://www.webjars.org/).
+Everything available through NPM is also available through WebJars.
 
 #### Caching
 Javalin serves static files with the `Cache-Control` header set to `max-age=0`. This means
@@ -1165,33 +1154,6 @@ An example of a custom server with SSL can be found in the examples,
 A custom HTTP2 server is a bit more work to set up, but we have a repo with a
 fully functioning example server in both Kotlin and Java: [javalin-http2-example](https://github.com/tipsy/javalin-http2-example)
 
-## Plugins
-Javalin 3 introduced a new plugin system with two interfaces, `Plugin` and `PluginLifecycleInit`:
-
-```java
-interface Plugin {
-    void apply(@NotNull Javalin app);
-}
-interface PluginLifecycleInit {
-    void init(@NotNull Javalin app);
-}
-```
-
-When implementing `PluginLifecycleInit#init`, you are not allowed to add `Handler` instances to the app.\\
-The two interface methods are called like this during setup:
-
-```java
-initPlugins.forEach(plugin -> {
-    plugin.init(app);
-    // will throw exception if `init` adds Handler
-});
-
-plugins.forEach(plugin -> plugin.apply(app));
-```
-
-This is mainly so each plugin has a chance to add `handlerAdded` listeners before other plugins
-add *their* handlers, so that each plugin has a complete overview of all handlers.
-
 ## Lifecycle events
 Javalin has events for server start/stop, as well as for when handlers are added.
 The snippet below shows all of them in action:
@@ -1225,8 +1187,105 @@ app.stop() // serverStopping -> serverStopped
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
+## Plugins
+Javalin 3 introduced a new plugin system with two interfaces, `Plugin` and `PluginLifecycleInit`:
+
+```java
+interface Plugin {
+    void apply(@NotNull Javalin app);
+}
+interface PluginLifecycleInit {
+    void init(@NotNull Javalin app);
+}
+```
+
+When implementing `PluginLifecycleInit#init`, you are not allowed to add `Handler` instances to the app.\\
+The two interface methods are called like this during setup:
+
+```java
+initPlugins.forEach(plugin -> {
+    plugin.init(app);
+    // will throw exception if `init` adds Handler
+});
+
+plugins.forEach(plugin -> plugin.apply(app));
+```
+
+This is mainly so each plugin has a chance to add `handlerAdded` listeners before other plugins
+add *their* handlers, so that each plugin has a complete overview of all handlers.
+
+### OpenAPI Plugin
+
+Javalin has an OpenAPI (Swagger) plugin. Full documentation for the plugin can be found [here](/plugins/openapi),
+below are a few examples:
+
+#### OpenAPI DSL
+When using the OpenAPI DSL you define an `OpenApiDocumentation` object to pair with your `Handler`:
+
+```kotlin
+val addUserDocs = document()
+        .body<User>()
+        .result<Unit>("400")
+        .result<Unit>("204")
+
+fun addUserHandler(ctx: Context) {
+    val user = ctx.body<User>()
+    UserRepository.addUser(user)
+    ctx.status(204)
+}
+```
+
+You then combine these when you add your routes:
+
+```kotlin
+post("/users", documented(addUserDocs, ::addUserHandler))
+```
+
+#### OpenAPI annotations
+
+If you prefer to keep your documentation separate from your code, you can use annotations instead:
+
+```kotlin
+@OpenApi(
+    requestBody = OpenApiRequestBody(User::class),
+    responses = [
+        OpenApiResponse("400", Unit::class),
+        OpenApiResponse("204", Unit::class)
+    ]
+)
+fun addUserHandler(ctx: Context) {
+    val user = ctx.body<User>()
+    UserRepository.addUser(user)
+    ctx.status(204)
+}
+```
+
+If you use the annotation API you don't need to connect the documentation and the handler manually,
+you just reference your handler as normal:
+
+```kotlin
+post("/users", ::addUserHandler)
+```
+
+Javalin will then extract the information from the annotation and build the documentation automatically.
+
+To enable hosted docs you have to specify some paths in your Javalin config:
+
+```kotlin
+val app = Javalin.create {
+    it.enableOpenApi(
+            OpenApiOptions(Info().version("1.0").description("My Application"))
+                    .path("/swagger-json")
+                    .swagger(SwaggerOptions("/swagger").title("My Swagger Documentation"))
+                    .reDoc(ReDocOptions("/redoc").title("My ReDoc Documentation"))
+    )
+}
+```
+
+Full documentation for the OpenAPI plugin can be found at [/plugins/openapi](/plugins/openapi),
+
 ## FAQ
-Frequently asked questions
+Frequently asked questions.
 
 ### Javadoc
 There is a Javadoc available at [javadoc.io](http://javadoc.io/doc/io.javalin/javalin).
