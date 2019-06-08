@@ -940,7 +940,7 @@ Javalin.create { config ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-## Static Files
+### Static Files
 You can enabled static file serving by doing `config.addStaticFiles("/classpath-folder")`, and/or
 `config.addStaticFiles("/folder", Location.EXTERNAL)`.
 Static resource handling is done **after** endpoint matching,
@@ -979,7 +979,7 @@ This should only be used for versioned library files, like `vue-2.4.2.min.js`, t
 the browser ending up with an outdated version if you change the file content.
 WebJars also use `max-age=31622400`, as the version number is always part of the path.
 
-## Single page mode
+### Single page mode
 Single page mode is similar to static file handling. It runs after endpoint matching and after static file handling.
 It's basically a very fancy 404 mapper, which converts any 404's into a specified page.
 You can define multiple single page handlers for your application by specifying different root paths.
@@ -1145,7 +1145,7 @@ Javalin.create { config ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-### SSL/HTTP2
+#### SSL/HTTP2
 
 To configure SSL or HTTP2 you need to use a custom server (see previous section).\\
 An example of a custom server with SSL can be found in the examples,
