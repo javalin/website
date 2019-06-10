@@ -54,8 +54,8 @@ fun main(args: Array<String>) {
     val queuedThreadPool = QueuedThreadPool(200, 8, 60_000)
     initializePrometheus(statisticsHandler, queuedThreadPool)
 
-    val app = Javalin.create().apply {
-        server {
+    val app = Javalin.create {
+        it.server {
             Server(queuedThreadPool).apply {
                 handler = statisticsHandler
             }

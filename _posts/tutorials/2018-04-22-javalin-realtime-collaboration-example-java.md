@@ -48,7 +48,7 @@ We can get the entire server done in about 40 lines:
 
 ```java
 import io.javalin.Javalin;
-import io.javalin.websocket.WsSession;
+import io.javalin.websocket.WsContext;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -58,54 +58,54 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Javalin.create()
-            .enableStaticFiles("/public")
-            .ws("/docs/:doc-id", ws -> {
-                ws.onConnect(session -> {
-                    if (getCollab(session) == null) {
-                        createCollab(session);
-                    }
-                    getCollab(session).sessions.add(session);
-                    session.send(getCollab(session).doc);
+        Javalin.create(config -> {
+            config.addStaticFiles("/public");
+        }).ws("/docs/:doc-id", ws -> {
+            ws.onConnect(ctx -> {
+                if (getCollab(ctx) == null) {
+                    createCollab(ctx);
+                }
+                getCollab(ctx).clients.add(ctx);
+                ctx.send(getCollab(ctx).doc);
+            });
+            ws.onMessage(ctx -> {
+                getCollab(ctx).doc = ctx.message();
+                getCollab(ctx).clients.stream().filter(c -> c.session.isOpen()).forEach(s -> {
+                    s.send(getCollab(ctx).doc);
                 });
-                ws.onMessage((session, message) -> {
-                    getCollab(session).doc = message;
-                    getCollab(session).sessions.stream().filter(WsSession::isOpen).forEach(s -> {
-                        s.send(getCollab(session).doc);
-                    });
-                });
-                ws.onClose((session, status, message) -> {
-                    getCollab(session).sessions.remove(session);
-                });
-            })
-            .start(7070);
+            });
+            ws.onClose(ctx -> {
+                getCollab(ctx).clients.remove(ctx);
+            });
+        }).start(7070);
 
     }
 
-    private static Collab getCollab(WsSession session) {
-        return collabs.get(session.param("doc-id"));
+    private static Collab getCollab(WsContext ctx) {
+        return collabs.get(ctx.pathParam("doc-id"));
     }
 
-    private static void createCollab(WsSession session) {
-        collabs.put(session.param("doc-id"), new Collab());
+    private static void createCollab(WsContext ctx) {
+        collabs.put(ctx.pathParam("doc-id"), new Collab());
     }
 
 }
 ```
 
 We also need to create a data object for holding our document and the people working on it:
+
 ```java
-import io.javalin.websocket.WsSession;
+import io.javalin.websocket.WsContext;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Collab {
     public String doc;
-    public Set<WsSession> sessions;
+    public Set<WsContext> clients;
 
     public Collab() {
         this.doc = "";
-        this.sessions = ConcurrentHashMap.newKeySet();
+        this.clients = ConcurrentHashMap.newKeySet();
     }
 }
 ```

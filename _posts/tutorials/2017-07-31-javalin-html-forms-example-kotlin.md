@@ -38,8 +38,8 @@ val reservations = mutableMapOf<String?, String?>(
 
 fun main(args: Array<String>) {
 
-    val app = Javalin.create().apply {
-        enableStaticFiles("/public")
+    val app = Javalin.create {
+        it.addStaticFiles("/public")
     }.start(7777)
 
     app.post("/make-reservation") { ctx ->
@@ -49,13 +49,6 @@ fun main(args: Array<String>) {
 
     app.get("/check-reservation") { ctx ->
         ctx.html(reservations[ctx.queryParam("day")]!!)
-    }
-
-    app.post("/upload-example") { ctx ->
-        ctx.uploadedFiles("files").forEach { (_, content, name) ->
-            FileUtils.copyInputStreamToFile(content, File("upload/" + name))
-        }
-        ctx.html("Upload complete")
     }
 
 }
@@ -134,13 +127,15 @@ Let's expand our example a bit to include file uploads.
 
 ### Endpoint
 ```kotlin
-app.post("/upload") { ctx ->
-    ctx.uploadedFiles("files").forEach { (contentType, content, name, extension) ->
-        FileUtil.streamToFile(content, "upload/$name")
+app.post("/upload-example") { ctx ->
+    ctx.uploadedFiles("files").forEach {
+        FileUtils.copyInputStreamToFile(it.content, File("upload/" + ${it.filename}))
     }
+    ctx.html("Upload complete")
 }
 ```
-`ctx.uploadedFiles("files")` gives us a list of files matching the name `files`.
+
+The `ctx.uploadedFiles("files")` method gives us a list of files matching the name `files`.
 We then save these files to an `upload` folder.
 
 ### HTML form

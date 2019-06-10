@@ -54,13 +54,14 @@ public static void main(String[] args) throws Exception {
     QueuedThreadPool queuedThreadPool = new QueuedThreadPool(200, 8, 60_000);
     initializePrometheus(statisticsHandler, queuedThreadPool);
 
-    Javalin app = Javalin.create()
-        .server(() -> {
+    Javalin app = Javalin.create(config -> {
+        config.server(() -> {
             Server server = new Server(queuedThreadPool);
             server.setHandler(statisticsHandler);
             return server;
         })
-        .start(7070);
+    }).start(7070);
+
 }
 
 private static void initializePrometheus(StatisticsHandler statisticsHandler, QueuedThreadPool queuedThreadPool) throws IOException {

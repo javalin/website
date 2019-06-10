@@ -60,25 +60,26 @@ We need:
  * a method for creating the message in HTML (or JSON if you prefer)
 
 ```kotlin
-private val userUsernameMap = ConcurrentHashMap<WsSession, String>()
+private val userUsernameMap = ConcurrentHashMap<WsContext, String>()
 private var nextUserNumber = 1 // Assign to username for next connecting user
 
 fun main(args: Array<String>) {
-    Javalin.create().apply {
-        enableStaticFiles("/public")
+    Javalin.create {
+        it.addStaticFiles("/public")
+    }.apply {
         ws("/chat") { ws ->
-            ws.onConnect { session ->
+            ws.onConnect { ctx ->
                 val username = "User" + nextUserNumber++
-                userUsernameMap.put(session, username)
-                broadcastMessage("Server", username + " joined the chat")
+                userUsernameMap.put(ctx, username)
+                broadcastMessage("Server", "$username joined the chat")
             }
-            ws.onClose { session, status, message ->
-                val username = userUsernameMap[session]
-                userUsernameMap.remove(session)
-                broadcastMessage("Server", username + " left the chat")
+            ws.onClose { ctx ->
+                val username = userUsernameMap[ctx]
+                userUsernameMap.remove(ctx)
+                broadcastMessage("Server", "$username left the chat")
             }
-            ws.onMessage { session, message ->
-                broadcastMessage(userUsernameMap[session]!!, message)
+            ws.onMessage { ctx ->
+                broadcastMessage(userUsernameMap[ctx]!!, ctx.message())
             }
         }
     }.start(7070)
@@ -86,7 +87,7 @@ fun main(args: Array<String>) {
 
 // Sends a message from one user to all users, along with a list of current usernames
 fun broadcastMessage(sender: String, message: String) {
-    userUsernameMap.keys.filter { it.isOpen }.forEach { session ->
+    userUsernameMap.keys.filter { it.session.isOpen }.forEach { session ->
         session.send(
                 JSONObject()
                         .put("userMessage", createHtmlMessageFromSender(sender, message))
@@ -98,7 +99,7 @@ fun broadcastMessage(sender: String, message: String) {
 // Builds a HTML element with a sender-name, a message, and a timestamp,
 private fun createHtmlMessageFromSender(sender: String, message: String): String {
     return article(
-            b(sender + " says:"),
+            b("$sender says:"),
             span(attrs(".timestamp"), SimpleDateFormat("HH:mm:ss").format(Date())),
             p(message)
     ).render()

@@ -153,8 +153,8 @@ Since you are currently on [javalin.io](/), it should be mentioned how to use th
 Since Javalin relies on Jetty for session handling can, you simply pass your `SessionHandler`:
 
 ```kotlin
-val app = Javalin.create().apply {
-    sessionHandler { fileSessionHandler() }
+val app = Javalin.create {
+    it.sessionHandler { fileSessionHandler() }
 }.start(7000)
 ```
 

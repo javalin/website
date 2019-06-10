@@ -51,9 +51,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Javalin app = Javalin.create()
-            .port(7000)
-            .start();
+        Javalin app = Javalin.create().start(7000)
 
         app.get("/", ctx -> ctx.html(
             form().withAction("/contact-us").withMethod("post").with(

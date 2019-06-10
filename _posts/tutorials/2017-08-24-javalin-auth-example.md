@@ -18,7 +18,7 @@ First, create a new Gradle project with the following dependencies: [(→ Tutori
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
     compile "io.javalin:javalin:{{site.javalinversion}}"
-    compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.8.4"
+    compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.9"
     compile "org.slf4j:slf4j-simple:{{site.slf4jversion}}"
 }
 ~~~
@@ -28,7 +28,7 @@ We need something worth protecting.
 Let's pretend we have a very important API for manipulating a user database.
 We make a controller-object with some dummy data and CRUD operations:
 ```kotlin
-import io.javalin.Context
+import io.javalin.http.Context
 import java.util.*
 
 object UserController {
@@ -85,14 +85,14 @@ enum class ApiRole : Role { ANYONE, USER_READ, USER_WRITE }
 Now that we have roles, we can implement our endpoints:
 
 ```kotlin
-import io.javalin.ApiBuilder.*
+import io.javalin.apibuilder.ApiBuilder.*
 import io.javalin.Javalin
-import io.javalin.security.Role.roles
+import io.javalin.core.security.Role.roles
 
 fun main(vararg args: String) {
 
-    val app = Javalin.create().apply {
-        accessManager(Auth::accessManager)
+    val app = Javalin.create {
+        it.accessManager(Auth::accessManager)
     }.start()
 
     app.routes {

@@ -48,9 +48,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Javalin app = Javalin.create()
-            .enableStaticFiles("/public")
-            .start(7777);
+        Javalin app = Javalin.create(config -> {
+            config.addStaticFiles("/public");
+        }).start(7777);
 
         app.post("/make-reservation", ctx -> {
             reservations.put(ctx.formParam("day"), ctx.formParam("time"));
@@ -142,7 +142,7 @@ Let's expand our example a bit to include file uploads.
 ```java
 app.post("/upload-example", ctx -> {
     ctx.uploadedFiles("files").forEach(file -> {
-        FileUtil.streamToFile(file.getContent(), "upload/" + file.getName());
+        FileUtil.streamToFile(file.getContent(), "upload/" + file.getFilename());
     });
 });
 ```

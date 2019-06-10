@@ -13,7 +13,7 @@ language: java
 ## What You Will Learn
 In this tutorial we will learn how to create modular application on top of the Javalin.
 
-We will use [Google Guice](https://github.com/google/guice/wiki/Motivation) to enable modularity 
+We will use [Google Guice](https://github.com/google/guice/wiki/Motivation) to enable modularity
 and [Java 10](http://www.oracle.com/technetwork/java/javase/downloads/jdk10-downloads-4416644.html) to do Java 10 things:
 
 ~~~java
@@ -32,7 +32,7 @@ We will be using Javalin for our web-server, slf4j for logging, jackson to rende
     <dependency>
         <groupId>io.javalin</groupId>
         <artifactId>javalin</artifactId>
-        <version>{{site.javalinversion}}</version>
+        <version>2.8.0</version>
     </dependency>
     <dependency>
         <groupId>org.slf4j</groupId>
@@ -106,8 +106,8 @@ class UserController {
 }
 ~~~
 
-Now that we have controller, we should bind endpoints to `UserController`. The `Routing` class 
-helps us to resolve the `UserController` from Google Guice. It guarantees that there is a method 
+Now that we have controller, we should bind endpoints to `UserController`. The `Routing` class
+helps us to resolve the `UserController` from Google Guice. It guarantees that there is a method
 `bindRoutes()`, which we will use later on.
 
 ~~~java
@@ -143,7 +143,7 @@ class UserRouting extends Routing<UserController> {
 
 Install and bind all dependencies for `io.kidbank.user` package.
 
-Take a look at `Multibinder`, it is a Google Guice extension. This is how we 
+Take a look at `Multibinder`, it is a Google Guice extension. This is how we
 enable multiple routings in application. To add more routings, just add `Multibinder.newSetBinder(...)`.
 
 Later on we will inject all routes, to bind them in `Javalin` web-server.
@@ -170,10 +170,10 @@ public class UserModule extends AbstractModule {
 
 Bind `Javalin` with routes and start the web-server. This isn't a black magic, just injection, keep that in mind.
 
-Take a closer look at `private Set<Routing> routes`. This is where Google Guice injects all `Routes` which were 
-bound by `Multibinder`. 
+Take a closer look at `private Set<Routing> routes`. This is where Google Guice injects all `Routes` which were
+bound by `Multibinder`.
 
-Remeber, we were talking about `Routing` class and the guarantees it provides. Based on that, we can call the method `bindRoutes()` 
+Remeber, we were talking about `Routing` class and the guarantees it provides. Based on that, we can call the method `bindRoutes()`
 on each record in `Set<Routing>`. And poof, we fill `Javalin` with routes.
 
 ~~~java
@@ -211,7 +211,7 @@ class WebEntrypoint implements AppEntrypoint {
         routes.forEach(r -> r.bindRoutes());
     }
 }
-~~~ 
+~~~
 
 Create `WebModule` for our `Kid bank` project. Inside the module we define that our project "Runs As" web-server.
 
@@ -247,7 +247,7 @@ class WebModule extends AbstractModule {
 }
 ~~~
 
-We need some kind of resolver that will decide which "Run as" has to be executed. For that we create class `Startup` and inject 
+We need some kind of resolver that will decide which "Run as" has to be executed. For that we create class `Startup` and inject
 all possible entrypoints.
 
 ~~~java
@@ -286,9 +286,9 @@ public class AppModule extends AbstractModule {
 }
 ~~~
 
-Now we are ready to start our web-server. 
+Now we are ready to start our web-server.
 
-Create injector from `AppModule` which will trigger all the bindings and installations down the path. 
+Create injector from `AppModule` which will trigger all the bindings and installations down the path.
 Resolve `Startup` and boot the REST with Javalin.
 
 ~~~java
@@ -303,7 +303,7 @@ public class App {
 Open in browser `http://localhost:7000/api/kidbank/users` and wait for response `["BOB","KATE","JOHN"]`
 
 ## Conclusion
-* We created modular application, with capabilities to run it self not only as a web-server. 
+* We created modular application, with capabilities to run it self not only as a web-server.
 * It takes time, to get use to Guice modules, but once you get, the idea the sky is your limit!
 
 Most important part. Have fun!

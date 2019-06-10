@@ -48,40 +48,41 @@ We can get the entire server done in about 30 lines:
 
 ```kotlin
 import io.javalin.Javalin
-import io.javalin.websocket.WsSession
+import io.javalin.websocket.WsContext
 import java.util.concurrent.ConcurrentHashMap
 
-data class Collaboration(var doc: String = "", val sessions: MutableSet<WsSession> = ConcurrentHashMap.newKeySet<WsSession>())
+data class Collaboration(var doc: String = "", val clients: MutableSet<WsContext> = ConcurrentHashMap.newKeySet())
 
-fun main(args: Array<String>) {
+fun main() {
 
     val collaborations = ConcurrentHashMap<String, Collaboration>()
 
-    Javalin.create().apply {
-        enableStaticFiles("/public")
+    Javalin.create {
+        it.addStaticFiles("/public")
+    }.apply {
         ws("/docs/:doc-id") { ws ->
-            ws.onConnect { session ->
-                if (collaborations[session.docId] == null) {
-                    collaborations[session.docId] = Collaboration()
+            ws.onConnect { ctx ->
+                if (collaborations[ctx.docId] == null) {
+                    collaborations[ctx.docId] = Collaboration()
                 }
-                collaborations[session.docId]!!.sessions.add(session)
-                session.send(collaborations[session.docId]!!.doc)
+                collaborations[ctx.docId]!!.clients.add(ctx)
+                ctx.send(collaborations[ctx.docId]!!.doc)
             }
-            ws.onMessage { session, message ->
-                collaborations[session.docId]!!.doc = message
-                collaborations[session.docId]!!.sessions.filter { it.isOpen }.forEach {
-                    it.send(collaborations[session.docId]!!.doc)
+            ws.onMessage { ctx ->
+                collaborations[ctx.docId]!!.doc = ctx.message()
+                collaborations[ctx.docId]!!.clients.filter { it.session.isOpen }.forEach {
+                    it.send(collaborations[ctx.docId]!!.doc)
                 }
             }
-            ws.onClose { session, _, _ ->
-                collaborations[session.docId]!!.sessions.remove(session)
+            ws.onClose { ctx ->
+                collaborations[ctx.docId]!!.clients.remove(ctx)
             }
         }
     }.start(7070)
 
 }
 
-val WsSession.docId: String get() = this.pathParam("doc-id")
+val WsContext.docId: String get() = this.pathParam("doc-id")
 ```
 
 ## Building a JavaScript Client

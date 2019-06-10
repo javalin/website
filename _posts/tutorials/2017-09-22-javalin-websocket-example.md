@@ -45,7 +45,7 @@ First, we need to create a Maven project with some dependencies: [(→ Tutorial)
     <dependency>
         <groupId>com.j2html</groupId>
         <artifactId>j2html</artifactId>
-        <version>1.2.0</version>
+        <version>1.4.0</version>
     </dependency>
 </dependencies>
 ~~~
@@ -62,37 +62,39 @@ We need:
 ```java
 public class Chat {
 
-    private static Map<WsSession, String> userUsernameMap = new ConcurrentHashMap<>();
+    private static Map<WsContext, String> userUsernameMap = new ConcurrentHashMap<>();
     private static int nextUserNumber = 1; // Assign to username for next connecting user
 
     public static void main(String[] args) {
-        Javalin.create()
-            .enableStaticFiles("/public")
-            .ws("/chat", ws -> {
-                ws.onConnect(session -> {
-                    String username = "User" + nextUserNumber++;
-                    userUsernameMap.put(session, username);
-                    broadcastMessage("Server", (username + " joined the chat"));
-                });
-                ws.onClose((session, status, message) -> {
-                    String username = userUsernameMap.get(session);
-                    userUsernameMap.remove(session);
-                    broadcastMessage("Server", (username + " left the chat"));
-                });
-                ws.onMessage((session, message) -> {
-                    broadcastMessage(userUsernameMap.get(session), message);
-                });
-            })
-            .start(7070);
+        Javalin app = Javalin.create(config -> {
+            config.addStaticFiles("/public");
+        }).start(HerokuUtil.getHerokuAssignedPort());
+
+        app.ws("/chat", ws -> {
+            ws.onConnect(ctx -> {
+                String username = "User" + nextUserNumber++;
+                userUsernameMap.put(ctx, username);
+                broadcastMessage("Server", (username + " joined the chat"));
+            });
+            ws.onClose(ctx -> {
+                String username = userUsernameMap.get(ctx);
+                userUsernameMap.remove(ctx);
+                broadcastMessage("Server", (username + " left the chat"));
+            });
+            ws.onMessage(ctx -> {
+                broadcastMessage(userUsernameMap.get(ctx), ctx.message());
+            });
+        });
     }
 
     // Sends a message from one user to all users, along with a list of current usernames
     private static void broadcastMessage(String sender, String message) {
-        userUsernameMap.keySet().stream().filter(Session::isOpen).forEach(session -> {
+        userUsernameMap.keySet().stream().filter(ctx -> ctx.session.isOpen()).forEach(session -> {
             session.send(
                 new JSONObject()
                     .put("userMessage", createHtmlMessageFromSender(sender, message))
                     .put("userlist", userUsernameMap.values()).toString()
+            );
         });
     }
 

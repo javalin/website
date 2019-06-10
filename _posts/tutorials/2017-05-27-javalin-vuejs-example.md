@@ -32,7 +32,7 @@ follow the beginning of our [Kotlin CRUD REST API tutorial](/tutorials/simple-ko
 <dependency>
     <groupId>com.fasterxml.jackson.module</groupId>
     <artifactId>jackson-module-kotlin</artifactId>
-    <version>2.8.4</version>
+    <version>2.9.9</version>
 </dependency>
 ~~~
 
@@ -43,17 +43,16 @@ fun main(args: Array<String>) {
 
     var todos = arrayOf(Todo(123123123, "My very first todo", false))
 
-    val app = Javalin.create().apply {
-        port(7000)
-        enableStaticFiles("/public")
-    }.start()
+    val app = Javalin.create {
+        it.addStaticFiles("/public")
+    }.start(7000)
 
     app.routes {
         get("/todos") { ctx ->
             ctx.json(todos)
         }
         put("/todos") { ctx ->
-            todos = ctx.bodyAsClass(Array<Todo>::class.java)
+            todos = ctx.body<Array<Todo>>()
             ctx.status(204)
         }
     }

@@ -171,9 +171,9 @@ Since you are currently on [javalin.io](/), it should be mentioned how to use th
 Since Javalin relies on Jetty for session handling can, you simply pass your `SessionHandler`:
 
 ```java
-Javalin.create()
-    .sessionHandler(() -> fileSessionHandler())
-    .start(7000)
+Javalin.create(config -> {
+    config.sessionHandler(() -> fileSessionHandler());
+}).start(7000);
 ```
 
 As we saw earlier, the `SessionHandler` has a `SessionCache` which again has a `SessionDataStore`,
