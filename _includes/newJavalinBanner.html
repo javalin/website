@@ -1,14 +1,12 @@
 <script>
-    const notificationId = "javalin-3-alpha";
+    const notificationId = "javalin-3-released";
     const hasBeenDismissed = localStorage.getItem(notificationId + "-dismissed") === "true";
     const pageLoadCount = parseInt(localStorage.getItem(notificationId + "-count") || 0);
     localStorage.setItem(notificationId + "-count", (pageLoadCount + 1).toString());
     if (!hasBeenDismissed) {
         document.write(`
             <div id="notification-banner">
-                Javalin 3.0 alpha is available: <a href="/future/documentation">javalin.io/future/documentation</a>
-                <br>
-                Please try it out!
+                Javalin 3.0 is out! <a href="/news/javalin-3.0.0-stable">See what's new</a> !
             </div>
         `);
         if (pageLoadCount > 5) {
@@ -19,12 +17,6 @@
             });
         }
     }
-    // Javalin 3.0 has been released!
-    // <span id="notification-link">
-    //     <a href="/news/javalin-2.0.0-stable.html">News</a>
-    //     <a href="/migration-guide-javalin-1-to-2">Migration&nbsp;guide</a>
-    // <a class="social-btn" href="https://twitter.com/intent/tweet?text=Javalin 2.0 stable released&url={{ site.url }}/news/javalin-2.0.0-stable.html&via=javalin_io&related=javalin_io" rel="nofollow">Tweet&nbsp;it!</a>
-    // </span>
 </script>
 <style>
     #notification-banner {

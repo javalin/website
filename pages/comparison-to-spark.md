@@ -13,6 +13,7 @@ The project became popular very fast, and reached feature parity with Spark with
 Javalin now offers a lot of features that are not available in Spark:
 
 * Fully configurable Jetty (HTTP2)
+* OpenAPI (Swagger) support
 * Async request handling
 * Lambda WebSockets with routing (path params)
 * Server-sent events

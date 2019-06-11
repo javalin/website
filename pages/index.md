@@ -69,15 +69,14 @@ permalink: /
 <div class="landing bluepart">
 <h1>Declare your server and API<br> all in one file</h1>
 {% capture java %}
-import io.javalin.ApiBuilder.*
+import io.javalin.ApiBuilder.*;
 import io.javalin.Javalin;
 
-Javalin app = Javalin.create()
-    .enableCorsForAllOrigins()
-    .enableStaticFiles("/public")
-    .start(port);
-
-app.routes(() -> {
+Javalin app = Javalin.create(config -> {
+    config.defaultContentType = "application/json";
+    config.addStaticFiles("/public");
+    config.enableCorsForAllOrigins();
+}).routes(() -> {
     path("users", () -> {
         get(UserController::getAll);
         post(UserController::create);
@@ -86,19 +85,19 @@ app.routes(() -> {
             patch(UserController::update);
             delete(UserController::delete);
         });
+        ws("events", userController::webSocketEvents);
     });
-});
+}).start(port);
 {% endcapture %}
 {% capture kotlin %}
-import io.javalin.ApiBuilder.*
+import io.javalin.ApiBuilder.*;
 import io.javalin.Javalin;
 
-val app = Javalin.create().apply {
-    enableCorsForAllOrigins()
-    enableStaticFiles("/public")
-}.start(port)
-
-app.routes {
+val app = Javalin.create { config ->
+    config.defaultContentType = "application/json"
+    config.addStaticFiles("/public")
+    config.enableCorsForAllOrigins()
+}.routes {
     path("users") {
         get(UserController::getAll)
         post(UserController::create)
@@ -107,8 +106,9 @@ app.routes {
             patch(UserController::update)
             delete(UserController::delete)
         }
+        ws("events", userController::webSocketEvents)
     }
-}
+}.start(port)
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 

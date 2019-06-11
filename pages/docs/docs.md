@@ -2,8 +2,10 @@
 layout: default
 title: Documentation
 rightmenu: true
-permalink: /future/documentation
+permalink: /documentation
 ---
+
+{% include newJavalinBanner.html %}
 
 <div id="spy-nav" class="right-menu" markdown="1">
 * [Getting Started](#getting-started)
@@ -29,14 +31,18 @@ permalink: /future/documentation
 * * [Single page mode](#single-page-mode)
 * * [Logging](#logging)
 * * [Server setup](#server-setup)
-* [Plugins](#plugins)
 * [Lifecycle events](#lifecycle-events)
+* [Plugins](#plugins)
 * [FAQ](#faq)
 </div>
 
 <h1 class="no-margin-top">Documentation</h1>
 
-This page contains the documentation for the future version of Javalin, currently version `3.0.0.RC3`.
+The documentation on this page is always for the latest version of Javalin, currently `{{site.javalinversion}}`.\\
+Javalin follows [semantic versioning](http://semver.org/), meaning there are no breaking changes unless the major (leftmost) digit changes, for example 3.X.X to 4.X.X.
+Functionality added after 3.0.0 is marked with labels containing the version number: <span class="added-in">Added in v3.x.x</span>
+
+Docs for 2.8.0 (last 2.X version) can be found [here](/archive/docs/v2.8.0.html).
 
 <div class="notification star-us">
     <div>
@@ -52,14 +58,7 @@ This page contains the documentation for the future version of Javalin, currentl
 ## Getting started
 
 Add the dependency:
-
-```xml
-<dependency>
-  <groupId>io.javalin</groupId>
-  <artifactId>javalin</artifactId>
-  <version>3.0.0.RC3</version>
-</dependency>
-```
+{% include macros/mavenDep.md %}
 
 Start coding:
 {% include macros/gettingStarted.md %}
@@ -856,20 +855,6 @@ client.onClose(runnable) // callback which runs when a client closes its connect
 client.ctx // the Context for when the client connected (to fetch query-params, etc)
 ```
 
-### Configuring WebSockets
-
-{% capture java %}
-app.wsFactoryConfig(wsFactory -> {
-    wsFactory.policy.maxTextMessageSize = 1234;
-});
-{% endcapture %}
-{% capture kotlin %}
-app.wsFactoryConfig { wsFactory ->
-    wsFactory.policy.maxTextMessageSize = 1234
-}
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
 ## Configuration
 
 You can pass a config object when creating a new instance of Javalin.
@@ -955,7 +940,7 @@ Javalin.create { config ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-## Static Files
+### Static Files
 You can enabled static file serving by doing `config.addStaticFiles("/classpath-folder")`, and/or
 `config.addStaticFiles("/folder", Location.EXTERNAL)`.
 Static resource handling is done **after** endpoint matching,
@@ -971,13 +956,16 @@ if no-endpoint-handler-found
         response is 404
 after-handlers
 ```
-If you do `app.enableStaticFiles("/classpath-folder")`.
+If you do `config.addStaticFiles("/classpath-folder")`.
 Your `index.html` file at `/classpath-folder/index.html` will be available
 at `http://{host}:{port}/index.html` and `http://{host}:{port}/`.
 
-You can call `enableStaticFiles` multiple times to set up multiple handlers.
+You can call `addStaticFiles` multiple times to set up multiple handlers.
 
 WebJars can be enabled by calling `enableWebJars()`, they will be available at `/webjars/name/version/file.ext`.
+
+WebJars can be found on [https://www.webjars.org/](https://www.webjars.org/).
+Everything available through NPM is also available through WebJars.
 
 #### Caching
 Javalin serves static files with the `Cache-Control` header set to `max-age=0`. This means
@@ -991,7 +979,7 @@ This should only be used for versioned library files, like `vue-2.4.2.min.js`, t
 the browser ending up with an outdated version if you change the file content.
 WebJars also use `max-age=31622400`, as the version number is always part of the path.
 
-## Single page mode
+### Single page mode
 Single page mode is similar to static file handling. It runs after endpoint matching and after static file handling.
 It's basically a very fancy 404 mapper, which converts any 404's into a specified page.
 You can define multiple single page handlers for your application by specifying different root paths.
@@ -1157,7 +1145,7 @@ Javalin.create { config ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-### SSL/HTTP2
+#### SSL/HTTP2
 
 To configure SSL or HTTP2 you need to use a custom server (see previous section).\\
 An example of a custom server with SSL can be found in the examples,
@@ -1165,33 +1153,6 @@ An example of a custom server with SSL can be found in the examples,
 
 A custom HTTP2 server is a bit more work to set up, but we have a repo with a
 fully functioning example server in both Kotlin and Java: [javalin-http2-example](https://github.com/tipsy/javalin-http2-example)
-
-## Plugins
-Javalin 3 introduced a new plugin system with two interfaces, `Plugin` and `PluginLifecycleInit`:
-
-```java
-interface Plugin {
-    void apply(@NotNull Javalin app);
-}
-interface PluginLifecycleInit {
-    void init(@NotNull Javalin app);
-}
-```
-
-When implementing `PluginLifecycleInit#init`, you are not allowed to add `Handler` instances to the app.\\
-The two interface methods are called like this during setup:
-
-```java
-initPlugins.forEach(plugin -> {
-    plugin.init(app);
-    // will throw exception if `init` adds Handler
-});
-
-plugins.forEach(plugin -> plugin.apply(app));
-```
-
-This is mainly so each plugin has a chance to add `handlerAdded` listeners before other plugins
-add *their* handlers, so that each plugin has a complete overview of all handlers.
 
 ## Lifecycle events
 Javalin has events for server start/stop, as well as for when handlers are added.
@@ -1226,8 +1187,105 @@ app.stop() // serverStopping -> serverStopped
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
+## Plugins
+Javalin 3 introduced a new plugin system with two interfaces, `Plugin` and `PluginLifecycleInit`:
+
+```java
+interface Plugin {
+    void apply(@NotNull Javalin app);
+}
+interface PluginLifecycleInit {
+    void init(@NotNull Javalin app);
+}
+```
+
+When implementing `PluginLifecycleInit#init`, you are not allowed to add `Handler` instances to the app.\\
+The two interface methods are called like this during setup:
+
+```java
+initPlugins.forEach(plugin -> {
+    plugin.init(app);
+    // will throw exception if `init` adds Handler
+});
+
+plugins.forEach(plugin -> plugin.apply(app));
+```
+
+This is mainly so each plugin has a chance to add `handlerAdded` listeners before other plugins
+add *their* handlers, so that each plugin has a complete overview of all handlers.
+
+### OpenAPI Plugin
+
+Javalin has an OpenAPI (Swagger) plugin. Full documentation for the plugin can be found [here](/plugins/openapi),
+below are a few examples:
+
+#### OpenAPI DSL
+When using the OpenAPI DSL you define an `OpenApiDocumentation` object to pair with your `Handler`:
+
+```kotlin
+val addUserDocs = document()
+        .body<User>()
+        .result<Unit>("400")
+        .result<Unit>("204")
+
+fun addUserHandler(ctx: Context) {
+    val user = ctx.body<User>()
+    UserRepository.addUser(user)
+    ctx.status(204)
+}
+```
+
+You then combine these when you add your routes:
+
+```kotlin
+post("/users", documented(addUserDocs, ::addUserHandler))
+```
+
+#### OpenAPI annotations
+
+If you prefer to keep your documentation separate from your code, you can use annotations instead:
+
+```kotlin
+@OpenApi(
+    requestBody = OpenApiRequestBody(User::class),
+    responses = [
+        OpenApiResponse("400", Unit::class),
+        OpenApiResponse("201", Unit::class)
+    ]
+)
+fun createUser(ctx: Context) {
+    val user = ctx.body<User>()
+    UserRepository.createUser(user)
+    ctx.status(201)
+}
+```
+
+If you use the annotation API you don't need to connect the documentation and the handler manually,
+you just reference your handler as normal:
+
+```kotlin
+post("/users", ::addUserHandler)
+```
+
+Javalin will then extract the information from the annotation and build the documentation automatically.
+
+To enable hosted docs you have to specify some paths in your Javalin config:
+
+```kotlin
+val app = Javalin.create {
+    it.enableOpenApi(
+            OpenApiOptions(Info().version("1.0").description("My Application"))
+                    .path("/swagger-json")
+                    .swagger(SwaggerOptions("/swagger").title("My Swagger Documentation"))
+                    .reDoc(ReDocOptions("/redoc").title("My ReDoc Documentation"))
+    )
+}
+```
+
+Full documentation for the OpenAPI plugin can be found at [/plugins/openapi](/plugins/openapi),
+
 ## FAQ
-Frequently asked questions
+Frequently asked questions.
 
 ### Javadoc
 There is a Javadoc available at [javadoc.io](http://javadoc.io/doc/io.javalin/javalin).
@@ -1351,6 +1409,52 @@ JavalinPebble.configure(configuration)
 JavalinCommonmark.configure(htmlRenderer, markdownParser)
 ```
 Note that these are global settings, and can't be configured per instance of Javalin.
+
+### Vue support
+If you don't want to deal with NPM and frontend builds, Javalin has support for simplified Vuejs development.
+This requires you to make a layout template, `src/main/resources/vue/layout.html`:
+
+```markup
+<head>
+    <script src="/webjars/vue/2.6.10/dist/vue.min.js"></script>
+    @componentRegistration
+</head>
+<body>
+<main id="main-vue" v-cloak>
+    @routeComponent
+</main>
+<script>
+    new Vue({el: "#main-vue"});
+</script>
+</body>
+```
+
+When you put `.vue` files in `src/main/resources/vue`, Javalin will scan
+the folder and register the components in your `<head>` tag.
+
+Javalin will also put path-parameters and query-parameters in the Vue instance,
+which you can access:
+
+```markup
+<template id="thread-view">
+    {% raw %}<div>{{ $javalin.pathParams["user"] }}</div>{% endraw %}
+</template>
+<script>
+    Vue.component("thread-view", {
+        template: "#thread-view"
+    });
+</script>
+```
+
+To map a path to a Vue component you use the `VueComponent` class:
+
+```java
+get("/messages", VueComponent("<inbox-view></inbox-view>"))
+get("/messages/:user", VueComponent("<thread-view></thread-view>"))
+```
+
+This will give you a lot of the benefits of a modern frontend architecture,
+with very few of the downsides.
 
 ### TimeoutExceptions and ClosedChannelExceptions
 If you encounter `TimeoutExceptions` and `ClosedChannelExceptions` in your DEBUG logs,
