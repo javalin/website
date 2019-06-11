@@ -1214,6 +1214,16 @@ plugins.forEach(plugin -> plugin.apply(app));
 This is mainly so each plugin has a chance to add `handlerAdded` listeners before other plugins
 add *their* handlers, so that each plugin has a complete overview of all handlers.
 
+### Micrometer Plugin
+
+You can enable the Micrometer plugin by registering it on the `config`:
+
+```java
+Javalin.create(config ->
+    config.registerPlugin(new MicrometerPlugin());
+)
+```
+
 ### OpenAPI Plugin
 
 Javalin has an OpenAPI (Swagger) plugin. Full documentation for the plugin can be found [here](/plugins/openapi),
