@@ -7,29 +7,23 @@ permalink: /plugins/openapi
 
 <div id="spy-nav" class="right-menu" markdown="1">
 * [Getting Started](#getting-started)
-* [Swagger UI and ReDoc](#swagger-ui-and-redoc)
 * [OpenApiOptions](#openapioptions)
-* [Documenting Handler](#documenting-handler)
+* [Handler](#documenting-handler)
   * [DSL](#dsl)
   * [Annotations](#annotations)
-* [Documenting CrudHandler](#documenting-crudhandler)
+* [CrudHandler](#documenting-crudhandler)
   * [DSL](#dsl-1)
   * [Annotations](#annotations-1)
+* [Rendering](#rendering-docs)
+  * [Swagger UI](#swagger-ui)
+  * [ReDoc](#redoc)
 </div>
 
 <h1 class="no-margin-top">OpenAPI Plugin</h1>
 
-This plugin allows to generate the [OpenApi specification](https://swagger.io/docs/specification/about/) 
+This plugin allows to generate the [OpenApi specification](https://swagger.io/docs/specification/about/)
 from the application source code. This can be used to [share documentation](https://swagger.io/tools/swagger-ui/)
- or [generate client code](https://swagger.io/tools/swagger-codegen/).
-
-{% capture java %}
-    // Java version goes here
-{% endcapture %}
-{% capture kotlin %}
-    // Kotlin version goes here
-{% endcapture %}
-{% include macros/docsSnippetKotlinFirst.html java=java kotlin=kotlin %}
+or [generate client code](https://swagger.io/tools/swagger-codegen/).
 
 ## Getting Started
 
@@ -52,86 +46,54 @@ Register the plugin:
 
 ```java
 Javalin.create(config -> {
+    config.registerPlugin(new OpenApiPlugin(getOpenApiOptions()));
+}).start();
+
+private OpenApiOptions getOpenApiOptions() {
     Info applicationInfo = new Info()
         .version("1.0")
         .description("My Application");
-
-    OpenApiOptions openApiOptions = new OpenApiOptions(applicationInfo)
-        .path("/swagger-docs");
-
-    config.registerPlugin(new OpenApiPlugin(openApiOptions));
-}).start();
+    return new OpenApiOptions(applicationInfo).path("/swagger-docs");
+}
 ```
 
-The OpenApi specification is now available under the "/swagger-docs" endpoint.
-
-## Swagger UI and ReDoc
-To activate an [Swagger UI](https://swagger.io/tools/swagger-ui/) 
-and/or [ReDoc](https://redoc.ly/) endpoint, you first need to install
-the corresponding dependency:
-
-Swagger UI:
-
-```xml
-<dependency>
-    <groupId>org.webjars</groupId>
-    <artifactId>swagger-ui</artifactId>
-    <version>3.22.2</version>
-</dependency>
-```
-
-ReDoc:
-
-```xml
-<dependency>
-    <groupId>org.webjars.npm</groupId>
-    <artifactId>redoc</artifactId>
-    <version>2.0.0-rc.2</version>
-</dependency>
-```
-
-Then you need to activate the related option:
-
-```java
-new OpenApiOptions(applicationInfo)
-        .path("/swagger-docs")
-        // Activate this option for Swagger UI
-        .swagger(new SwaggerOptions("/swagger").title("My Swagger Documentation"))
-        // Activate this option for ReDoc
-        .reDoc(new ReDocOptions("/redoc").title("My ReDoc Documentation"))
-```
+The OpenApi specification is now available under the `/swagger-docs` endpoint.
 
 ## OpenApiOptions
-Here is an overview of all the available open api options:
+This section contains an overview of all the available open api options.
+
+You can either pass the info object:
 
 ```java
-// You can either pass the info object
 new OpenApiOptions(new Info().version("1.0").description("My Application"));
-// Or you can pass a lambda which creates the initial documentation
-new OpenApiOptions(() -> new OpenAPI()
-            .info(new Info().version("1.0").description("My Application"))
-            .addServersItem(new Server().url("http://my-server.com").description("My Server")))
+```
 
-            .path("/swagger-docs") // Activate the open api endpoint
-            .roles(roles(new MyRole())) // Require specific roles for the open api endpoint
-            .defaultDocumentation(doc -> { doc.json("500", MyError.class); }) // Lambda that will be applied to every documentation
-            .swagger(new SwaggerOptions("/swagger").title("My Swagger Documentation")) // Activate the swagger ui
-            .reDoc(new ReDocOptions("/redoc").title("My ReDoc Documentation")) // Active the ReDoc UI
-            .activateAnnotationScanningFor("com.my.package") // Activate annotation scanning (Required for annotation api with static java methods)
-            .toJsonMapper(JacksonToJsonMapper.INSTANCE) // Custom json mapper
-            .modelConverterFactory(JacksonModelConverterFactory.INSTANCE); // Custom OpenApi model converter
+Or you can pass a lambda which creates the initial documentation:
+
+```java
+new OpenApiOptions(() -> new OpenAPI()
+    .info(new Info().version("1.0").description("My Application"))
+    .addServersItem(new Server().url("http://my-server.com").description("My Server")))
+    .path("/swagger-docs") // Activate the open api endpoint
+    .roles(roles(new MyRole())) // Require specific roles for the open api endpoint
+    .defaultDocumentation(doc -> { doc.json("500", MyError.class); }) // Lambda that will be applied to every documentation
+    .activateAnnotationScanningFor("com.my.package") // Activate annotation scanning (Required for annotation api with static java methods)
+    .toJsonMapper(JacksonToJsonMapper.INSTANCE) // Custom json mapper
+    .modelConverterFactory(JacksonModelConverterFactory.INSTANCE); // Custom OpenApi model converter
+    .swagger(new SwaggerOptions("/swagger").title("My Swagger Documentation")) // Activate the swagger ui
+    .reDoc(new ReDocOptions("/redoc").title("My ReDoc Documentation")) // Active the ReDoc UI
 ```
 
 ## Documenting Handler
 
-Because of the dynamic definition of endpoints in Javalin, it is necessary to 
+Because of the dynamic definition of endpoints in Javalin, it is necessary to
 attach some metadata to the endpoints. There are two ways to define the documentation,
-either via DSL or by annotations. Both approaches can be mixed in the same application. 
+either via DSL or by annotations. Both approaches can be mixed in the same application.
 If both method methods are used on the same handler, the DSL documentation will be preferred.
 
 ### DSL
 
-You can use the `document` method to create the documentation and attach it to 
+You can use the `document` method to create the documentation and attach it to
 with the `documented` method to a `Handler`.
 
 ```java
@@ -240,11 +202,11 @@ Here is an overview of the annotation api:
         @OpenApiFileUpload(name = "my-file"),
         @OpenApiFileUpload(name = "my-files", isArray = true)
     },
-    
+
     // Body
     requestBody = @OpenApiRequestBody(content = @OpenApiContent(from = User.class)),
     requestBody = @OpenApiRequestBody(content = @OpenApiContent(from = Byte[].class, type = "image/png")),
-    
+
     // Responses
     responses = {
         @OpenApiResponse(status = "200", content = @OpenApiContent(from = User.class)),
@@ -252,7 +214,7 @@ Here is an overview of the annotation api:
         @OpenApiResponse(status = "200", content = @OpenApiContent(type = "text/html")),
         @OpenApiResponse(status = "204") // No content
     },
-    
+
     // Other
     ignore = true // Hide this endpoint in the documentation
 )
@@ -281,7 +243,7 @@ new OpenApiOptions(applicationInfo)
         // ...
 ```
 
-3. Include the the `path` and `method` parameter on the `OpenApi` annotation. These parameter are only 
+3. Include the the `path` and `method` parameter on the `OpenApi` annotation. These parameter are only
 used for annotation scanning.
 
 
@@ -306,7 +268,8 @@ class UserController {
 ```
 
 ## Documenting CrudHandler
-It is also possible to add documentation to `CrudHandler`.
+The `CrudHandler` ([docs](/documentation#crudhandler)) is an interface with the five main CRUD operations.
+This makes it a bit different from the `Handler` interface (which only has one method), but it can still be documented.
 
 ### DSL
 
@@ -384,3 +347,61 @@ class UserCrudHandler implements CrudHandler {
     }
 }
 ```
+
+## Rendering docs
+
+The OpenAPI plugin supports both [Swagger UI](https://swagger.io/tools/swagger-ui/)
+and/or [ReDoc](https://redoc.ly/) for rendering docs.
+
+To enable this functionality you need to add the dependencies, then configure your `openApiOptions`.
+
+### Swagger UI
+
+Start by adding the WebJar for Swagger UI. This contains all the HTML/CSS/JavaScript you need:
+
+```xml
+<dependency>
+    <groupId>org.webjars</groupId>
+    <artifactId>swagger-ui</artifactId>
+    <version>3.22.2</version>
+</dependency>
+```
+
+You then have to enable Swagger UI on your `OpenApiOptions` object:
+
+```java
+new OpenApiOptions(applicationInfo)
+    .path("/swagger-docs")
+    .swagger(new SwaggerOptions("/swagger").title("My Swagger Documentation"))
+```
+
+You can have both Swagger UI and ReDoc enabled at the same time.
+
+### ReDoc
+
+Start by adding the WebJar for ReDoc. This contains all the HTML/CSS/JavaScript you need:
+
+```xml
+<dependency>
+    <groupId>org.webjars.npm</groupId>
+    <artifactId>redoc</artifactId>
+    <version>2.0.0-rc.2</version>
+</dependency>
+```
+
+You then have to enable ReDoc on your `OpenApiOptions` object:
+
+```java
+new OpenApiOptions(applicationInfo)
+    .path("/swagger-docs")
+    .reDoc(new ReDocOptions("/redoc").title("My ReDoc Documentation"))
+```
+
+You can have both ReDoc and Swagger UI enabled at the same time.
+
+#### Acknowledgement
+
+This plugin and its documentation was written almost
+entirely by Tobias Walle ([GitHub](https://github.com/TobiasWalle) and [LinkedIn](https://www.linkedin.com/in/tobias-walle/)).
+
+Thank you, Tobias!
