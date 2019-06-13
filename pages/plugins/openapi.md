@@ -68,12 +68,16 @@ You can either pass the info object:
 new OpenApiOptions(new Info().version("1.0").description("My Application"));
 ```
 
-Or you can pass a lambda which creates the initial documentation:
+Or you can pass a lambda, which creates the initial documentation.
+
+Here is an overview of the options:
 
 ```java
-new OpenApiOptions(() -> new OpenAPI()
+Supplier<OpenAPI> createInitialConfig = () -> new OpenAPI()
     .info(new Info().version("1.0").description("My Application"))
-    .addServersItem(new Server().url("http://my-server.com").description("My Server")))
+    .addServersItem(new Server().url("http://my-server.com").description("My Server"));
+
+new OpenApiOptions(createInitialConfig)
     .path("/swagger-docs") // Activate the open api endpoint
     .roles(roles(new MyRole())) // Require specific roles for the open api endpoint
     .defaultDocumentation(doc -> { doc.json("500", MyError.class); }) // Lambda that will be applied to every documentation
@@ -227,45 +231,44 @@ required for static Java methods. Static Kotlin methods or Java instance methods
 
 1. Install the ClassGraph dependency:
 
-```xml
-<dependency>
-    <groupId>io.github.classgraph</groupId>
-    <artifactId>classgraph</artifactId>
-    <version>4.8.34</version>
-</dependency>
-```
+    ```xml
+    <dependency>
+        <groupId>io.github.classgraph</groupId>
+        <artifactId>classgraph</artifactId>
+        <version>4.8.34</version>
+    </dependency>
+    ```
 
 2. Activate annotation scanning for your package path:
 
-```java
-new OpenApiOptions(applicationInfo)
-        .activateAnnotationScanningFor("my.package.path")
-        // ...
-```
+    ```java
+    new OpenApiOptions(applicationInfo)
+            .activateAnnotationScanningFor("my.package.path")
+            // ...
+    ```
 
 3. Include the the `path` and `method` parameter on the `OpenApi` annotation. These parameter are only
 used for annotation scanning.
 
-
-```java
-public class MyApplication {
-  public static void main(String[] args) {
-      // ...
-      app.post("/users", UserController::createUser);
-  }
-}
-
-class UserController {
-    @OpenApi(
-        path = "/users",
-        method = HttpMethod.POST,
-        // ...
-    )
-    public static void createUser(Context ctx) {
-        // ...
+    ```java
+    public class MyApplication {
+      public static void main(String[] args) {
+          // ...
+          app.post("/users", UserController::createUser);
+      }
     }
-}
-```
+
+    class UserController {
+        @OpenApi(
+            path = "/users",
+            method = HttpMethod.POST,
+            // ...
+        )
+        public static void createUser(Context ctx) {
+            // ...
+        }
+    }
+    ```
 
 ## Documenting CrudHandler
 The `CrudHandler` ([docs](/documentation#crudhandler)) is an interface with the five main CRUD operations.
