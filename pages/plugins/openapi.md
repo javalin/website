@@ -73,7 +73,7 @@ Or you can pass a lambda, which creates the initial documentation.
 Here is an overview of the options:
 
 ```java
-Supplier<OpenAPI> createInitialConfig = () -> new OpenAPI()
+Function0<OpenAPI> createInitialConfig = () -> new OpenAPI()
     .info(new Info().version("1.0").description("My Application"))
     .addServersItem(new Server().url("http://my-server.com").description("My Server"));
 
