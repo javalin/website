@@ -73,11 +73,11 @@ Or you can pass a lambda, which creates the initial documentation.
 Here is an overview of the options:
 
 ```java
-Function0<OpenAPI> createInitialConfig = () -> new OpenAPI()
+InitialConfigurationCreator initialConfigurationCreator = () -> new OpenAPI()
     .info(new Info().version("1.0").description("My Application"))
     .addServersItem(new Server().url("http://my-server.com").description("My Server"));
 
-new OpenApiOptions(createInitialConfig)
+new OpenApiOptions(initialConfigurationCreator)
     .path("/swagger-docs") // Activate the open api endpoint
     .roles(roles(new MyRole())) // Require specific roles for the open api endpoint
     .defaultDocumentation(doc -> { doc.json("500", MyError.class); }) // Lambda that will be applied to every documentation
