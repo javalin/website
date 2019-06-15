@@ -67,7 +67,7 @@ permalink: /
 </div>
 
 <div class="landing bluepart">
-<h1>Declare your server and API<br> all in one file</h1>
+<h1>Declare server and API<br> in the same place</h1>
 {% capture java %}
 import io.javalin.ApiBuilder.*;
 import io.javalin.Javalin;
@@ -121,7 +121,7 @@ val app = Javalin.create { config ->
 </div>
 
 <div class="landing whitepart">
-    <h1>Built on a solid foundation</h1>
+    <h1>A solid foundation</h1>
     <div class="boxes">
         <div class="box">
             <h3>Jetty</h3>

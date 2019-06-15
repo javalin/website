@@ -185,3 +185,26 @@ nav ul li a:hover {
     text-align: center;
     padding: 0 20px;
 }
+
+@media (max-width: 480px) {
+
+    .bluepart h1,
+    .whitepart h1 {
+        font-size: 7.5vw;
+    }
+
+    .landing-btn {
+        font-size: 14px;
+        margin-left: 4px;
+        margin-right: 4px;
+    }
+
+    .box p {
+        font-size: 4vw;
+    }
+
+    .used-by img {
+        width: calc(50% - 15px);
+        margin: 7px;
+    }
+}
