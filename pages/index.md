@@ -156,12 +156,13 @@ val app = Javalin.create { config ->
         <img src="/img/used-by/twosigma.png" alt="Two Sigma">
         <img src="/img/used-by/nav.png" alt="nav">
         <img src="/img/used-by/virgilsecurity.png" alt="Virgil Security">
-        <!-- <img src="/img/used-by/wgtwo.png" alt="Working Group Two"> -->
+        <img src="/img/used-by/wgtwo.png" alt="Working Group Two">
         <img src="/img/used-by/talanlabs.png" alt="Talan Labs">
         <img src="/img/used-by/datawire.png" alt="Datawire">
         <img src="/img/used-by/swatt.png" alt="Swatt">
         <img src="/img/used-by/telenor.png" alt="Telenor">
         <img src="/img/used-by/revolut.png" alt="Revolut">
+        <img src="/img/used-by/expressscripts.png" alt="Express Scripts">
     </div>
     <p>
         Are you using Javalin? <a href="https://github.com/javalin/javalin.github.io/issues/18">Let us know</a>!
