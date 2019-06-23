@@ -558,7 +558,6 @@ interface CrudHandler {
 }
 ```
 
-
 ## Validation
 You can access Javalin's `Validator` class through the parameter and body methods, or by
 calling `JavalinValidation.validate()`:
@@ -578,6 +577,9 @@ val instant = ctx.queryParam<Instant>("my-qp").get()
 val myObject = ctx.bodyValidator<MyObject>();
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+### Validator Nullability
+If you want a nullable value, you can use `getOrNull()` instead of just `get()`.
 
 ### Custom converters
 If you need to convert non-included class, you have to register a custom converter:
@@ -1421,7 +1423,7 @@ JavalinCommonmark.configure(htmlRenderer, markdownParser)
 Note that these are global settings, and can't be configured per instance of Javalin.
 
 ### Vue support
-If you don't want to deal with NPM and frontend builds, Javalin has support for simplified Vuejs development.
+If you don't want to deal with NPM and frontend builds, Javalin has support for simplified Vue.js development.
 This requires you to make a layout template, `src/main/resources/vue/layout.html`:
 
 ```markup

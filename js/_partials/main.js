@@ -55,18 +55,10 @@ document.addEventListener("click", function (e) {
     }
 });
 
-if (document.location.pathname === "/documentation") {
+if (document.location.pathname.includes("/documentation")) {
     // "Added in" labels
     let addedTags = {
-        "custom-sessionhandler": "2.1.0",
-        "conflictresponse": "2.1.0",
-        "goneresponse": "2.1.0",
-        "badgatewayresponse": "2.1.0",
-        "serviceunavailableresponse": "2.1.0",
-        "validation": "2.2.0",
-        "using-javalin-without-jetty": "2.4.0",
-        "websocket-logging": "2.4.0",
-        "server-sent-events": "2.6.0",
+        "validator-nullability": "3.1.0",
     };
     Object.keys(addedTags).forEach(key => {
         document.getElementById(key).classList.add("added-parent");
