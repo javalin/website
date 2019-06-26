@@ -878,8 +878,6 @@ Javalin.create(config -> {
     config.enableCorsForAllOrigins()                // enable cors for all origins
     config.enableCorsForOrigin(origins)             // enable cors for specific origins
     config.enableDevLogging()                       // enable extensive development logging for http and websocket
-    config.enableRouteOverview(path)                // create a http handler which serves a list of all routes
-    config.enableRouteOverview(path, roles)         // create a http handler which serves a list of all routes (with auth)
     config.enableWebjars()                          // enable webjars (static files)
     config.enforceSsl = true/false                  // redirect http traffic to https (default is false)
     config.logIfServerNotStarted = true/false       // log a warning if user doesn't start javalin instance (default is true)
@@ -917,8 +915,6 @@ Javalin.create { config ->
     config.enableCorsForAllOrigins()                // enable cors for all origins
     config.enableCorsForOrigin(origins)             // enable cors for specific origins
     config.enableDevLogging()                       // enable extensive development logging for http and websocket
-    config.enableRouteOverview(path)                // create a http handler which serves a list of all routes
-    config.enableRouteOverview(path, roles)         // create a http handler which serves a list of all routes (with auth)
     config.enableWebjars()                          // enable webjars (static files)
     config.enforceSsl = true/false                  // redirect http traffic to https (default is false)
     config.logIfServerNotStarted = true/false       // log a warning if user doesn't start javalin instance (default is true)
@@ -1215,6 +1211,17 @@ plugins.forEach(plugin -> plugin.apply(app));
 
 This is mainly so each plugin has a chance to add `handlerAdded` listeners before other plugins
 add *their* handlers, so that each plugin has a complete overview of all handlers.
+
+### Route overview plugin
+
+You can enable a HTML page showing all the routes of your application by registering it on the config:
+
+```java
+Javalin.create(config ->
+    config.registerPlugin(new RouteOverviewPlugin(path));        // show all routes on specified path
+    config.registerPlugin(new RouteOverviewPlugin(path, roles)); // show all routes on specified path (with auth)
+)
+```
 
 ### Micrometer Plugin
 
