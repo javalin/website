@@ -246,7 +246,7 @@ ctx.result(future)                      // set a future result that will be sent
 ctx.resultFuture()                      // get the future result that will be sent to the client
 ctx.contentType(contentType)            // set the response content type
 ctx.header(name, value)                 // set a response header
-ctx.redirect(location, httpStatusCode)  // send a redirect response to location
+ctx.redirect(location)  // send a redirect response to location
 ctx.redirect(location, httpStatusCode)  // send a redirect response to location with status code
 ctx.status(statusCode)                  // set response status
 ctx.status()                            // get response status
