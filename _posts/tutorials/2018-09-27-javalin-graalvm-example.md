@@ -45,7 +45,7 @@ While I recommend performing builds in Docker, it’s very helpful to install Gr
 
 Install GraalVM JDK:
 
-`sdk install java 1.0.0-rc6-graal && sdk use java 1.0.0-rc6-graal`
+`sdk install java 1.0.0-rc-16-grl && sdk use java 1.0.0-rc-16-grl`
 
 Let’s start with a very simple Hello World:
 
