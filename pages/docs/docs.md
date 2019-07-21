@@ -872,6 +872,7 @@ Javalin.create(config -> {
     config.addStaticFiles(directory, location)      // ex ("src/folder", Location.EXTERNAL)
     config.asyncRequestTimeout = timeoutInMs        // timeout for async requests (default is 0, no timeout)
     config.autogenerateEtags = true/false           // auto generate etags (default is false)
+    config.compressionStrategy(Brotli(4), Gzip(6))  // set the compression strategy and levels - since 3.2.0
     config.contextPath = contextPath                // context path for the http servlet (default is "/")
     config.defaultContentType = contentType         // content type to use if no content type is set (default is "text/plain")
     config.dynamicGzip = true/false                 // dynamically gzip http responses (default is true)
@@ -909,6 +910,7 @@ Javalin.create { config ->
     config.addStaticFiles(directory, location)      // ex ("src/folder", Location.EXTERNAL)
     config.asyncRequestTimeout = timeoutInMs        // timeout for async requests (default is 0, no timeout)
     config.autogenerateEtags = true/false           // auto generate etags (default is false)
+    config.compressionStrategy(Brotli(4), Gzip(6))  // set the compression strategy and levels - since 3.2.0
     config.contextPath = contextPath                // context path for the http servlet (default is "/")
     config.defaultContentType = contentType         // content type to use if no content type is set (default is "text/plain")
     config.dynamicGzip = true/false                 // dynamically gzip http responses (default is true)
@@ -1474,6 +1476,24 @@ get("/messages/:user", VueComponent("<thread-view></thread-view>"))
 
 This will give you a lot of the benefits of a modern frontend architecture,
 with very few of the downsides.
+
+#### Shared state
+If you want to share state from your server with Vue, you can provide `JavalinVue` with a state function:
+
+```java
+JavalinVue.stateFunction = { ctx -> mapOf("user" to getUser(ctx)) }
+```
+
+This can then be accessed from the `state` variable:
+
+```markup
+<template id="user-template">
+    {% raw %}<div>{{ $javalin.state.user }}</div>{% endraw %}
+</template>
+```
+
+The function runs for every request, so the state is always up to
+date when the user navigates or refreshes the page.
 
 ### TimeoutExceptions and ClosedChannelExceptions
 If you encounter `TimeoutExceptions` and `ClosedChannelExceptions` in your DEBUG logs,
