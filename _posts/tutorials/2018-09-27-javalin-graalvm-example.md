@@ -34,7 +34,7 @@ if (someVariable) {
 ```
 
 
-Since the value of someVariable is not known at compile time, the compiler can not know whether to include “SomeClazz”. Not to mention that it’s just a string, and the compiler has to search for this class on the classpath at compile time. If the compiler decides to include this class, it will just do that and throw an error if the class is not found. That’s nice. However, this is only best-effort. There is no guarantee that all required classes are included at compile time - which means that classes may be missing, and runtime errors are thrown when they are being instantiated. There’s many more limitations, for a full reference head over to GraalVM’s [documentation](https://github.com/oracle/graal/blob/master/substratevm/LIMITATIONS.md). As a proof of concept, I was looking for a rest library without excess usage of reflect. Obviously it’s not spring boot - I chose [javalin.io](https://javalin.io). It’s just a rest library on top of Jetty, that’s it.
+Since the value of someVariable is not known at compile time, the compiler can not know whether to include “SomeClazz”. Not to mention that it’s just a string, and the compiler has to search for this class on the classpath at compile time. If the compiler decides to include this class, it will just do that and throw an error if the class is not found. That’s nice. However, this is only best-effort. There is no guarantee that all required classes are included at compile time - which means that classes may be missing, and runtime errors are thrown when they are being instantiated. There are many more limitations, for a full reference head over to GraalVM’s [documentation](https://github.com/oracle/graal/blob/master/substratevm/LIMITATIONS.md). As a proof of concept, I was looking for a rest library without excess usage of reflect. Obviously it’s not spring boot - I chose [javalin.io](https://javalin.io). It’s just a rest library on top of Jetty, that’s it.
 
 Getting started
 ===============
@@ -178,7 +178,7 @@ java.lang.IllegalArgumentException: Class org.eclipse.jetty.servlet.ServletMappi
 
 Reflection didn’t work. This is not a big surprise, but shows the fundamental weakness of GraalVM: it can’t guarantee that your application works, even if it compiles.
 
-To fix this issue, we have to tell GraalVM that the class ServletMapping has to be included in the binary. Since it’s reflection and no ‘normal’ part of the code, it didn’t detect it. There’s two possibilities to do this: code-based and JSON configuration-based. I tested both, I think I prefer the json approach but in the end it does not really matter. Add a file with the following contents to your project:
+To fix this issue, we have to tell GraalVM that the class ServletMapping has to be included in the binary. Since it’s reflection and no ‘normal’ part of the code, it didn’t detect it. There are two possibilities to do this: code-based and JSON configuration-based. I tested both, I think I prefer the json approach but in the end it does not really matter. Add a file with the following contents to your project:
 
 ```js
 [
@@ -293,7 +293,7 @@ The application starts instantly. While Javalin is starting very quickly even on
 Memory Footprint
 ----------------
 
-Measuring memory usage of a process is not very straight-forward. There’s several metrics - according so some post on [https://stackoverflow.com/questions/131303/how-to-measure-actual-memory-usage-of-an-application-or-process](Stackoverflow) RSS is a good metric: So let’s use check this out:
+Measuring memory usage of a process is not very straight-forward. There are several metrics - according so some post on [https://stackoverflow.com/questions/131303/how-to-measure-actual-memory-usage-of-an-application-or-process](Stackoverflow) RSS is a good metric: So let’s use check this out:
 
 ```text
 cat /proc/7812/status
@@ -340,4 +340,4 @@ COPY --from=0 /tmp/build/graal-javalin /
 ENTRYPOINT ["/graal-javalin"]
 ```
 
-This Dockerfile uses Docker multi-stage builds. There’s two containers, one just used for the build, and the final output container which only contains the application.
+This Dockerfile uses Docker multi-stage builds. There are two containers: one just used for the build, and the final output container which only contains the application.
