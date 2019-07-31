@@ -27,7 +27,7 @@ I've been doing web development for roughly ten years. For server side rendering
 I started with pure HTML (framesets!), then PHP, JSP, JSTL, Twirl (Scala) and finally, Velocity templates (Java).
 On the frontend I've used jQuery/Zepto, then Knockout, Angular, Meteor, and finally, Vue.
 For styling I've used Less, SASS (SCSS), and finally CSS variables.
-For building I've used Bower, NPM and Yarn, Grunt and Gulp, and I've configure a total of one Webpack project.
+For building I've used Bower, NPM and Yarn, Grunt and Gulp, and I've configured a total of one Webpack project.
 
 Frontend has come a long way in the last ten years, and declarative/reactive view libraries
 are much nicer to work with than the DOM manipulation mess of the past.
@@ -37,14 +37,14 @@ I won't go into a rant about this, as I won't move any people in either camp, bu
 tutorial will show an alternative approach for creating clean and modern frontends in pure Vue,
 without most of the complexity that would normally follow along with it.
 There will be no Node, NPM, or Webpack, no state management, reducers, or sagas. No rehydration, no tree shaking,
-no code splitting, or even transitive dependencies. No boilerplate or plumbing of any kind.
+no code splitting, or endless transitive dependencies. No boilerplate or plumbing code of any kind.
 
 Just business logic.
 
 ## Setup
 Our backend will be Kotlin, and we'll be using Maven to build.
 We need to bring in Javalin (web library), Jackson (JSON serializer), and slf4j-simple (logger).\\
-We'll also add Vue (view library) and Axios (http client) for our frontend:
+We'll also add Vue (view library) for our frontend:
 
 ```markup
 <dependency>
@@ -67,14 +67,9 @@ We'll also add Vue (view library) and Axios (http client) for our frontend:
     <artifactId>vue</artifactId>
     <version>2.6.10</version>
 </dependency>
-<dependency>
-    <groupId>org.webjars.npm</groupId>
-    <artifactId>axios</artifactId>
-    <version>0.19.0</version>
-</dependency>
 ```
 
-The frontend dependencies are contained in [Webjars](https://www.webjars.org/).
+You can add all frontend dependencies as [Webjars](https://www.webjars.org/).
 Webjars can be built directly from NPM, so if something is available on NPM, it's also available as a Webjar.
 To view the rest of the POM, please go to [GitHub](URL).
 
@@ -98,7 +93,6 @@ Let's create `/src/main/resources/vue/layout.html`:
 <html>
     <head>
         <meta charset="utf8">
-        <script src="/webjars/axios/0.19.0/dist/axios.min.js"></script>
         <script src="/webjars/vue/2.6.10/dist/vue.min.js"></script>
         @componentRegistration
     </head>
@@ -123,7 +117,7 @@ this is the `@routeComponent`.
 
 Now that we have a layout file, let's create `/resources/vue/views/hello-world.vue`:
 
-```html
+{% raw %}```html
 <template id="hello-world">
     <h1 class="hello-world">Hello, World!</h1>
 </template>
@@ -135,10 +129,11 @@ Now that we have a layout file, let's create `/resources/vue/views/hello-world.v
         color: goldenrod;
     }
 </style>
-```
+```{% endraw %}
 
 We're telling Vue that we want to register a `hello-world` component, and to use the template with the id `hello-world`.
-We're also giving the `Hello, World!` message a nice goldenrod color. Notice how we can put HTML, JavaScript and CSS all in the same file.
+We're also giving the `Hello, World!` message a nice goldenrod color. Notice how we have all HTML, JavaScript and CSS
+for our component encapsulated in the same file.
 
 To display our component to the user, we need to tell Javalin when to show it. Let's expand our web server with a new route:
 
@@ -154,7 +149,6 @@ fun main() {
 
     app.get("/", VueComponent("<hello-world></hello-world>"))
 }
-
 ```
 
 The `@routeComponent` that we added in `layout.html` earlier will be replaced by the String inside of `VueComponent`.
@@ -167,7 +161,7 @@ Restart the server, go to `http://localhost:7000/`, and you'll see "Hello, World
 Now that we know how to create components, let's look at a very common scenario:
 creating an admin interface. Our admin interface should be able to display an overview
 of users, and also additional details for one specific user.
-This will required two views, but we should probably also include a 404 page.
+This will required two views, and we should probably also include a 404 page.
 
 Let's change the server by adding the following lines:
 
@@ -216,7 +210,8 @@ object UserController {
 ```
 
 This completes our backend, let's move on to the frontend. We want three views (user-overview, user-profile, and not-found), so
-let's create three separate files in `/src/main/resources/vue/views`. We'll start with the user-overview:
+we should create three separate files in `/src/main/resources/vue/views`.\\
+Let's create `/src/main/resources/vue/views/user-overview.vue` first:
 
 {% raw %}```html
 <template id="user-overview">
@@ -235,9 +230,10 @@ let's create three separate files in `/src/main/resources/vue/views`. We'll star
             users: [],
         }),
         created() {
-            axios.get("/api/users")
-                .then(res => this.users = res.data)
-                .catch(() => alert("Error while fetching users"))
+            fetch("/api/users")
+                .then(res => res.json())
+                .then(res => this.users = res)
+                .catch(() => alert("Error while fetching users"));
         }
     });
 </script>
@@ -262,7 +258,7 @@ then sets the component state. Vue loops through the users and creates a list of
 click to view additional information for one user. We've also included a few CSS rules to pretty things up.
 
 Open `http://localhost:7000/users/` to view the list of users. If you click on one, a blank page will show.\\
-Let's fix this by creating the user-profile component:
+Let's fix this by creating `/src/main/resources/vue/views/user-profile.vue`:
 
 {% raw %}```html
 <template id="user-profile">
@@ -289,9 +285,10 @@ Let's fix this by creating the user-profile component:
         }),
         created() {
             const userId = this.$javalin.pathParams["user-id"];
-            axios.get(`/api/users/${userId}`)
-                .then(res => this.user = res.data)
-                .catch(() => alert("Error while fetching user"))
+            fetch(`/api/users/${userId}`)
+                .then(res => res.json())
+                .then(res => this.user = res)
+                .catch(() => alert("Error while fetching user"));
         }
     });
 </script>
@@ -301,7 +298,7 @@ This is pretty similar to our user-overview, but since this is a dynamic route,
 we have to ask our router what the current user-id is.
 JavalinVue includes path parameters and query parameters on `$javalin` by default,
 and also has an optional state parameter we will look at later.\\
-For now, let's finish up our views with a 404 page:
+For now, let's finish up our views with `/src/main/resources/vue/views/not-found.vue`:
 
 {% raw %}```html
 <template id="not-found">
@@ -312,8 +309,8 @@ For now, let's finish up our views with a 404 page:
 </script>
 ```{% endraw %}
 
-Great, we have all our views ready! ..but they're don't look very consistent.
-While not strictly related to JavalinVue, let's add an application frame:
+Great, we have all our views ready! ...but they don't look very consistent.\\
+While not strictly related to JavalinVue, let's add `/src/main/resources/vue/components/app-frame.vue`:
 
 {% raw %}```html
 <template id="app-frame">
@@ -359,8 +356,9 @@ Access management in Javalin is handled by the aptly named `AccessManager`. This
 a handler function, and a set of roles. It's up to the developer to determine if a request is valid. We will be securing our application using
 basic-auth for simplicity, but you can use any technique and identity provider you want with the `AccessManager` interface.
 
-First of all we need to define roles. Some parts of the app should be accessible to everyone (the user-overview and the 404 page), while
-other parts should only be available if you log in. Two roles should be enough: `ANYONE` and `LOGGED_IN`. We add those roles to the endpoints
+First we need to define roles. Some parts of the app should be accessible to everyone (the user-overview and the 404 page), while
+other parts should only be available if you log in (the user-profile).\\
+Two roles should be enough: `ANYONE` and `LOGGED_IN`. We add those roles to the endpoints
 (both for the views and the APIs, and create an `AccessManager`:
 
 ```kotlin
@@ -406,16 +404,16 @@ This is just an example, our authentication isn't exactly secure. As long as the
 ## Server Side State
 Now that we can log users in, it would be nice if the client knew the current user.
 Our server knows, so we need to transfers this knowledge somehow.
-This can be solved by setting the JavalinVue state:
+This can be solved by setting a JavalinVue state function:
 
 ```kotlin
 JavalinVue.stateFunction = { ctx -> mapOf("currentUser" to ctx.basicAuthCredentials()?.username) }
 ```
 
-This line of code sets a state-function that will run for every `VueComponent`, so all components will now
+This line of code sets a function that will run for every `VueComponent`, so all components will now
 have access to the current user (if there is one). Since basic-auth works per directory, the frame will only
-show the user for `http://localhost:7000/users/` (the user-overview) and its subpaths (the individual profiles).
-Let's add it to the app-frame:
+show the current user for `http://localhost:7000/users/` (the user-overview) and its subpaths (the individual profiles).
+Let's add it to `app-frame.vue`:
 
 {% raw %}```html
 <template id="app-frame">
@@ -431,18 +429,17 @@ Let's add it to the app-frame:
 
 ## Conclusion
 We've created a fully working (but pretty limited) admin interfaces with only a few files.
-* `Main.kt` has the server config (routes, error handlers, access management)
-* `UserController.kt` has the list of fake users, and methods to get them (getAll, getOne)
-* `layout.html` has the frontend dependencies and initializes Vue
+* `Main.kt` contains the server config (routes, error handlers, access management)
+* `UserController.kt` contains the list of fake users, and methods to get them (getAll, getOne)
+* `layout.html` loads the frontend dependencies and initializes Vue
 * `app-frame.vue` has a header and some global styling which is included in each other component
-* `user-overview.vue` has a list of users
-* `user-profile.vue` has additional details for one user (requires login)
-* `not-found.vue` has a 404 error page
-* `pom.xml` has all our dependencies
+* `user-overview.vue` displays a list of users
+* `user-profile.vue` displays additional details for one user (requires login)
+* `not-found.vue` displays a 404 error page
+* `pom.xml` contains all our dependencies
 
 Since our frontend dependencies are prepacked WebJars, we don't need NPM, and we don't need to
-check in any frontend libraries manually. The project structure is very clean, and everything is where
-it's supposed to be:
+check in any frontend libraries manually. The project structure is very clean:
 
 <div class="compressed-code" markdown="1">
 ```text
@@ -466,19 +463,28 @@ javalinvue-example
 <style>.compressed-code .highlighter-rouge pre code { line-height: 1.2; }</style>
 </div>
 
-That's about it. The Epilogue section contains a bit more discussion about this technique,
-but similarly to the Background section you can skip it if you're not interested.
+That's about it, thanks for reading! The Epilogue section contains a bit more discussion about this technique,
+but similarly to the Background section you can skip it if you're not that interested.
 
 ### Epilogue
 The architecture described in this tutorial has a lot of the benefits of a modern frontend.
-We have full client side rendering, no DOM manipulation, and we're able to use Vue fully. We even have single-file components.
-We don't have any client side routing, we actually have one one app per page (per server side route),
+We have full client side rendering, no DOM manipulation, and we're able to use Vue fully (we even have single-file components).
+We don't have any client side routing though. We actually have one app per page (per server side route),
 which makes state management a lot easier. Each view is responsible for its own state, and that's it.
-Shared state (signed-in-user, current-theme, etc) can be set on the session (server side), and is included in all views.
+The app is built from scratch every time the user navigates.
+Shared state (signed-in-user, current-theme, etc) can be set on server side, and is included in all views.
 
 We're missing out on a few nice things. We can't hot reload the content of a component or inject new styles, we actually
-have to refresh the page to see changes. Changes are picked up instantly though, so a refresh typically takes 5ms.
+have to refresh the page to see changes. Changes are picked up instantly though, so a refresh typically takes ~10ms.
+
+I'm running a couple of apps with this setup in production. The biggest one is a
+partner-portal with 30 components and 25 views (pages), and the total weight of all the
+components is only 20kb (100kb before GZIP). It's been running for a year, and I've been
+waiting for issues and flaws to present themselves, but I haven't seen any yet.
+
+Performance is pretty good. The app loads fast and never flickers. Below you see the
+Chrome audit results for the 30 component + 25 view app that I mentioned earlier:
+
+<img src="/img/posts/javalinvue/performance.png" alt="App performance">
 
 ### Pros and Cons
-
-### When to use this approach
