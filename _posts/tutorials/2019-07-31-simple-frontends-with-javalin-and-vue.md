@@ -1,11 +1,9 @@
 ---
-# layout: tutorial
-layout: default
+layout: tutorial
 title: Clean Vue frontends without the hassle
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
-date: 2019-07-29
-# permalink: /tutorials/simple-frontends-with-javalin-and-vue
-permalink: /drafts/simple-frontends-with-javalin-and-vue
+date: 2019-07-31
+permalink: /tutorials/simple-frontends-with-javalin-and-vue
 github: https://github.com/tipsy/javalinvue-example
 summarytitle: Simple frontends with Javalin and Vue
 summary: The tutorial shows how to use the JavalinVue plugin for simplified frontend development
@@ -69,12 +67,14 @@ We'll also add Vue (view library) for our frontend:
 </dependency>
 ```
 
-You can add all frontend dependencies as [Webjars](https://www.webjars.org/).
-Webjars can be built directly from NPM, so if something is available on NPM, it's also available as a Webjar.
-To view the rest of the POM, please go to [GitHub](URL).
+<div class="comment" markdown="1">
+You can add all frontend dependencies as [Webjars](https://www.webjars.org/), which can be built directly from NPM.
+If something is available on NPM, it's also available as a Webjar.
+To view the full POM, please go to [GitHub](https://github.com/tipsy/javalinvue-example/blob/master/pom.xml).
+</div>
 
 Now that we have all our dependencies in order, we need to configure our web server.\\
-Let's create `/src/main/kotlin/javalinvue/Main.kt:`:
+Let's create `/src/main/kotlin/javalinvue/Main.kt`:
 
 ```kotlin
 import io.javalin.Javalin
@@ -132,7 +132,7 @@ Now that we have a layout file, let's create `/resources/vue/views/hello-world.v
 ```{% endraw %}
 
 We're telling Vue that we want to register a `hello-world` component, and to use the template with the id `hello-world`.
-We're also giving the `Hello, World!` message a nice goldenrod color. Notice how we have all HTML, JavaScript and CSS
+We're also giving the `Hello, World!` message a color. Notice how we have all HTML, JavaScript and CSS
 for our component encapsulated in the same file.
 
 To display our component to the user, we need to tell Javalin when to show it. Let's expand our web server with a new route:
@@ -161,7 +161,7 @@ Restart the server, go to `http://localhost:7000/`, and you'll see "Hello, World
 Now that we know how to create components, let's look at a very common scenario:
 creating an admin interface. Our admin interface should be able to display an overview
 of users, and also additional details for one specific user.
-This will required two views, and we should probably also include a 404 page.
+This will require two views, and we should probably also include a 404 page.
 
 Let's change the server by adding the following lines:
 
@@ -296,9 +296,10 @@ Let's fix this by creating `/src/main/resources/vue/views/user-profile.vue`:
 
 This is pretty similar to our user-overview, but since this is a dynamic route,
 we have to ask our router what the current user-id is.
-JavalinVue includes path parameters and query parameters on `$javalin` by default,
-and also has an optional state parameter we will look at later.\\
-For now, let's finish up our views with `/src/main/resources/vue/views/not-found.vue`:
+JavalinVue includes path parameters and query parameters on `$javalin` by default
+(it also has an optional state parameter we will look at later).
+
+Let's finish up our views with `/src/main/resources/vue/views/not-found.vue`:
 
 {% raw %}```html
 <template id="not-found">
@@ -336,7 +337,9 @@ While not strictly related to JavalinVue, let's add `/src/main/resources/vue/com
 </style>
 ```{% endraw %}
 
-The `<slot></slot>` element will be replaced by the content of the current page. Here is how the 404 page can use the new app-frame:
+You can use this app-frame by adding `<app-frame>...</app-frame>` as the first child of your component.
+The `<slot></slot>` element will be replaced by the content of the current page.\\
+Here is an example showing the 404 page using the app-frame:
 
 {% raw %}```html
 <template id="not-found">
@@ -349,12 +352,17 @@ The `<slot></slot>` element will be replaced by the content of the current page.
 </script>
 ```{% endraw %}
 
-Now that both the frontend and backend are done, it's time to make things more complicated by adding access management to the mix.
+We could have put this frame in `layout.html`, but creating a dedicated component for it
+gives us the option to have different styles, and keeps the main layout clean.
+
+Now that both the frontend and backend are done, it's time to make things
+more complicated by adding access management to the mix.
 
 ## Access Management
-Access management in Javalin is handled by the aptly named `AccessManager`. This is a functional interface which takes a HTTP context,
-a handler function, and a set of roles. It's up to the developer to determine if a request is valid. We will be securing our application using
-basic-auth for simplicity, but you can use any technique and identity provider you want with the `AccessManager` interface.
+Access management in Javalin is handled by the aptly named `AccessManager`. This is a functional interface which takes
+a handler function, a HTTP context, and a set of roles. It's up to the developer to determine if a request is valid.
+We will be securing our application using basic-auth for simplicity, but you can use any technique and
+identity provider you want with the `AccessManager` interface.
 
 First we need to define roles. Some parts of the app should be accessible to everyone (the user-overview and the 404 page), while
 other parts should only be available if you log in (the user-profile).\\
@@ -403,7 +411,7 @@ This is just an example, our authentication isn't exactly secure. As long as the
 
 ## Server Side State
 Now that we can log users in, it would be nice if the client knew the current user.
-Our server knows, so we need to transfers this knowledge somehow.
+Our server knows, so we need to transfer this knowledge somehow.
 This can be solved by setting a JavalinVue state function:
 
 ```kotlin
@@ -428,21 +436,21 @@ Let's add it to `app-frame.vue`:
 ```{% endraw %}
 
 ## Conclusion
-We've created a fully working (but pretty limited) admin interfaces with only a few files.
+We've created a fully working (but pretty limited) admin interface with only a few files.
 * `Main.kt` contains the server config (routes, error handlers, access management)
 * `UserController.kt` contains the list of fake users, and methods to get them (getAll, getOne)
 * `layout.html` loads the frontend dependencies and initializes Vue
-* `app-frame.vue` has a header and some global styling which is included in each other component
+* `app-frame.vue` has a header and some global styling which is included in all components
 * `user-overview.vue` displays a list of users
 * `user-profile.vue` displays additional details for one user (requires login)
 * `not-found.vue` displays a 404 error page
 * `pom.xml` contains all our dependencies
 
 Since our frontend dependencies are prepacked WebJars, we don't need NPM, and we don't need to
-check in any frontend libraries manually. The project structure is very clean:
+manage any frontend libraries manually. The project structure is very clean:
 
 <div class="compressed-code" markdown="1">
-```text
+```kotlin
 javalinvue-example
 ├───src
 │   └─── main
@@ -463,19 +471,19 @@ javalinvue-example
 <style>.compressed-code .highlighter-rouge pre code { line-height: 1.2; }</style>
 </div>
 
-That's about it, thanks for reading! The Epilogue section contains a bit more discussion about this technique,
-but similarly to the Background section you can skip it if you're not that interested.
+That's about it. The Afterword contains a bit more discussion about this technique,
+but similarly to the Background section you can skip it if you're not that interested. **Thanks for reading**!
 
-### Epilogue
+### Afterword
 The architecture described in this tutorial has a lot of the benefits of a modern frontend.
 We have full client side rendering, no DOM manipulation, and we're able to use Vue fully (we even have single-file components).
-We don't have any client side routing though. We actually have one app per page (per server side route),
+We don't have any client side routing though. We have one Vue instance per page (per server side route),
 which makes state management a lot easier. Each view is responsible for its own state, and that's it.
-The app is built from scratch every time the user navigates.
+The app is built from scratch every time the user navigates on the website.
 Shared state (signed-in-user, current-theme, etc) can be set on server side, and is included in all views.
 
-We're missing out on a few nice things. We can't hot reload the content of a component or inject new styles, we actually
-have to refresh the page to see changes. Changes are picked up instantly though, so a refresh typically takes ~10ms.
+We're missing out on a few nice things. We can't hot reload the content of a component or inject new styles, we
+have to manually refresh the page to see changes. Changes are picked up instantly though, so a refresh typically takes ~10ms.
 
 I'm running a couple of apps with this setup in production. The biggest one is a
 partner-portal with 30 components and 25 views (pages), and the total weight of all the
@@ -485,6 +493,28 @@ waiting for issues and flaws to present themselves, but I haven't seen any yet.
 Performance is pretty good. The app loads fast and never flickers. Below you see the
 Chrome audit results for the 30 component + 25 view app that I mentioned earlier:
 
-<img src="/img/posts/javalinvue/performance.png" alt="App performance">
+<img src="/img/posts/javalinvue/performance.png" alt="App performance" class="bordered-image">
 
 ### Pros and Cons
+
+Pros
+* Minimal prerequisites - a backend developer can be productive within minutes by just reading the Vue docs.
+  No knowledge of the current JavaScript ecosystem is required.
+* No boilerplate
+* Single file components
+* No complex build pipelines or transitive dependencies
+* No state management required
+* Good performance
+* Can easily copy-paste from docs (Vue docs use CDN in their examples, while most projects use Webpack)
+* Server side routing
+
+Cons
+* Can't run unit tests for components
+* No transpiling (can't use the latest JS features without code breaking in old browsers)
+* No hot-reload or style injection
+* You miss out on a lot of the JS ecosystem (could also be considered a pro)
+* Need a Kotlin/Java server for your frontend
+* Tight coupling between server and client
+
+I've created [an issue on GitHub](https://github.com/tipsy/javalinvue-example/issues/1)
+where you can post your pros/cons, or general comments on the tutorial.
