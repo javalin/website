@@ -10,6 +10,12 @@ summary: Create a basic website in Javalin with controllers, authentication, loc
 language: java
 ---
 
+<div class="notification" style="border:2px solid #dd2222;font-size:18px;">
+This tutorial is pretty old, please check out
+<a href="/tutorials/simple-frontends-with-javalin-and-vue">/tutorials/simple-frontends-with-javalin-and-vue</a>
+for a more modern approach.
+</div>
+
 ## What You Will Learn
 
 You will learn how to create a basic Javalin application with filters,

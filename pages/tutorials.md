@@ -20,17 +20,6 @@ Most of the tutorials can be followed in either language.
 
 <div class="posts-overview">
     <ul class="post-list half">
-        <h2>Java tutorials</h2>
-        {% for tutorial in jTuts %}
-        <li class="post-summary">
-            <a href="{{ tutorial.url }}">
-                <h2>{{ tutorial.summarytitle }}</h2>
-                <p>{{ tutorial.summary }}</p>
-            </a>
-        </li>
-        {% endfor %}
-    </ul>
-    <ul class="post-list half">
         <h2>Kotlin tutorials</h2>
         {% for tutorial in kTuts %}
             <li class="post-summary">
@@ -41,6 +30,17 @@ Most of the tutorials can be followed in either language.
             </li>
         {% endfor %}
     </ul>
+     <ul class="post-list half">
+            <h2>Java tutorials</h2>
+            {% for tutorial in jTuts %}
+            <li class="post-summary">
+                <a href="{{ tutorial.url }}">
+                    <h2>{{ tutorial.summarytitle }}</h2>
+                    <p>{{ tutorial.summary }}</p>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
 </div>
 <div class="posts-footer" markdown="1">
 The tutorials here are written by Javalin users and posted with their permission.
