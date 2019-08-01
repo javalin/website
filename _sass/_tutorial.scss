@@ -14,3 +14,11 @@
     }
   }
 }
+
+@media (max-width: 600px) {
+  .tutorial #timeToRead {
+    white-space: nowrap;
+    margin-top: 4px;
+    display: inline-block;
+  }
+}
