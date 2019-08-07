@@ -140,7 +140,7 @@ app.get("/hello/:name") { ctx ->
 Handler-paths can also include wildcard parameters, which are like unnamed path-parameters:
 
 {% capture java %}
-app.get("/hello/*, ctx -> {
+app.get("/hello/*", ctx -> {
     // capture all request to sub-paths of /hello/
 });
 {% endcapture %}
