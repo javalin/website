@@ -32,9 +32,19 @@ Add the dependencies:
 ```xml
 <dependency>
     <groupId>io.swagger.core.v3</groupId>
-    <artifactId>swagger-models</artifactId>
+    <artifactId>swagger-core</artifactId>
     <version>2.0.8</version>
 </dependency>
+
+<dependency>
+    <groupId>com.fasterxml.jackson.module</groupId>
+    <artifactId>jackson-module-kotlin</artifactId>
+    <version>2.9.9</version>
+</dependency>
+```
+
+If you want to use dsl to document your api, the following dependency is also needed:
+```xml
 <dependency>
     <groupId>cc.vileda</groupId>
     <artifactId>kotlin-openapi3-dsl</artifactId>
