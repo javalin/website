@@ -572,7 +572,7 @@ MyObject myObject = ctx.bodyValidator(MyObject.class);
 {% capture kotlin %}
 val myQpStr = ctx.queryParam("my-qp")
 val myQpInt = ctx.queryParam<Int>("my-qp").get()
-val myQpInt = ctx.queryParam<Int>("my-qp").check{ it > 4 }.get()
+val myQpInt = ctx.queryParam<Int>("my-qp").check({ it > 4 }).get()
 val instant = ctx.queryParam<Instant>("my-qp").get()
 val myObject = ctx.bodyValidator<MyObject>();
 {% endcapture %}
