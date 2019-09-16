@@ -60,6 +60,7 @@ if (document.location.pathname.includes("/documentation")) {
     let addedTags = {
         "validator-nullability": "3.1.0",
         "shared-state": "3.2.0",
+        "vue-directory-location": "3.5.0",
     };
     Object.keys(addedTags).forEach(key => {
         document.getElementById(key).classList.add("added-parent");

@@ -1495,6 +1495,19 @@ This can then be accessed from the `state` variable:
 The function runs for every request, so the state is always up to
 date when the user navigates or refreshes the page.
 
+#### Vue directory location
+
+By default, JavalinVue will set the vue root directory on the first request it serves.
+
+* On localhost, the root dir will be set to the `src/main/resources/vue` (external location)
+* On non-localhost, the root dir will be set to `/vue` (classpath location)
+
+This can cause issues when running a jar locally or in docker. The default can be overridden by calling:
+
+```java
+JavalinVue.rootDirectory(path, location);
+```
+
 ### TimeoutExceptions and ClosedChannelExceptions
 If you encounter `TimeoutExceptions` and `ClosedChannelExceptions` in your DEBUG logs,
 this is nothing to worry about. Typically, a browser will keep the HTTP connection open until the
