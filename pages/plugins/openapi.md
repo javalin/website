@@ -376,7 +376,7 @@ Start by adding the WebJar for Swagger UI. This contains all the HTML/CSS/JavaSc
 <dependency>
     <groupId>org.webjars</groupId>
     <artifactId>swagger-ui</artifactId>
-    <version>3.22.2</version>
+    <version>3.23.8</version>
 </dependency>
 ```
 
