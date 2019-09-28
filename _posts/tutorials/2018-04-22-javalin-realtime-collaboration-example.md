@@ -3,11 +3,11 @@ layout: tutorial
 title: "Creating a Google Docs clone with WebSockets"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2018-04-22
-permalink: /tutorials/realtime-collaboration-example-kotlin
+permalink: /tutorials/realtime-collaboration-example
 github: https://github.com/tipsy/javalin-realtime-collaboration-example
 summarytitle: WebSockets Google Docs clone
-summary: Learn how to create a very basic clone of Google Docs with WebSockets in Kotlin
-language: kotlin
+summary: Learn how to create a very basic clone of Google Docs with WebSockets in Javalin
+language: ["java", "kotlin"]
 ---
 
 ## What You Will Learn
@@ -37,21 +37,64 @@ We will be using Javalin for our web-server and WebSockets, and slf4j for loggin
 </dependencies>
 ```
 
-## The Kotlin application
-The Kotlin application is pretty straightforward.
+## The Javalin application
+The Javalin application is pretty straightforward.
 We need:
-* a data class (`Collaboration`) containing the document and the collaborators
-* a map to keep track of document-ids and `Collaboration`s
+* a data class (`Collab`) containing the document and the collaborators
+* a map to keep track of document-ids and `Collab`s
  * websocket handlers for connect/message/close
 
-We can get the entire server done in about 30 lines:
+We can get the entire server done in about 30-40 lines:
 
-```kotlin
+{% capture java %}
+import io.javalin.Javalin;
+import io.javalin.websocket.WsContext;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class Main {
+
+    private static Map<String, Collab> collabs = new ConcurrentHashMap<>();
+
+    public static void main(String[] args) {
+
+        Javalin.create(config -> {
+            config.addStaticFiles("/public");
+        }).ws("/docs/:doc-id", ws -> {
+            ws.onConnect(ctx -> {
+                if (getCollab(ctx) == null) {
+                    createCollab(ctx);
+                }
+                getCollab(ctx).clients.add(ctx);
+                ctx.send(getCollab(ctx).doc);
+            });
+            ws.onMessage(ctx -> {
+                getCollab(ctx).doc = ctx.message();
+                getCollab(ctx).clients.stream().filter(c -> c.session.isOpen()).forEach(s -> {
+                    s.send(getCollab(ctx).doc);
+                });
+            });
+            ws.onClose(ctx -> {
+                getCollab(ctx).clients.remove(ctx);
+            });
+        }).start(7070);
+
+    }
+
+    private static Collab getCollab(WsContext ctx) {
+        return collabs.get(ctx.pathParam("doc-id"));
+    }
+
+    private static void createCollab(WsContext ctx) {
+        collabs.put(ctx.pathParam("doc-id"), new Collab());
+    }
+
+}
+{% endcapture %}
+{% capture kotlin %}
 import io.javalin.Javalin
 import io.javalin.websocket.WsContext
 import java.util.concurrent.ConcurrentHashMap
-
-data class Collaboration(var doc: String = "", val clients: MutableSet<WsContext> = ConcurrentHashMap.newKeySet())
 
 fun main() {
 
@@ -83,7 +126,33 @@ fun main() {
 }
 
 val WsContext.docId: String get() = this.pathParam("doc-id")
-```
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+We also need to create a data object for holding our document and the people working on it:
+
+{% capture java %}
+import io.javalin.websocket.WsContext;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class Collab {
+    public String doc;
+    public Set<WsContext> clients;
+
+    public Collab() {
+        this.doc = "";
+        this.clients = ConcurrentHashMap.newKeySet();
+    }
+}
+{% endcapture %}
+{% capture kotlin %}
+data class Collaboration(
+    var doc: String = "",
+    val clients: MutableSet<WsContext> = ConcurrentHashMap.newKeySet()
+)
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ## Building a JavaScript Client
 In order to demonstrate that our application works, we can build a JavaScript client.
@@ -137,7 +206,7 @@ And that's it! Now try opening `localhost:7070` in a couple of different
 browser windows (that you can see simultaneously) and collaborate with yourself.
 
 ## Conclusion
-We have a working realtime collaboration app written in less than 100 lines of Kotlin and JavaScript.
+We have a working realtime collaboration app written in less than 100 lines of Java and JavaScript.
 It's very basic though, some things to add could include:
 
 * Show who is currently editing the document

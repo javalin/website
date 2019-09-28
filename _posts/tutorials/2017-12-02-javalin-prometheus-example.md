@@ -7,7 +7,7 @@ permalink: /tutorials/prometheus-example
 github: https://github.com/tipsy/javalin-prometheus-example
 summarytitle: Creating monitoring dashboards
 summary: Learn how to setup monitoring using Prometheus (and Grafana)
-language: java
+language: ["java", "kotlin"]
 ---
 
 ## Dependencies
@@ -47,7 +47,7 @@ Luckily there is a handler in Jetty called `StatisticsHandler`.
 We can add this to Javalin's embedded server, and use it to expose statistics to prometheus.
 We can also do the same with the `QueuedThreadPool` that Jetty uses:
 
-```java
+{% capture java %}
 public static void main(String[] args) throws Exception {
 
     StatisticsHandler statisticsHandler = new StatisticsHandler();
@@ -69,7 +69,30 @@ private static void initializePrometheus(StatisticsHandler statisticsHandler, Qu
     QueuedThreadPoolCollector.initialize(queuedThreadPool); // collector is included in source code
     HTTPServer prometheusServer = new HTTPServer(7080);
 }
-```
+{% endcapture %}
+{% capture kotlin %}
+fun main(args: Array<String>) {
+
+    val statisticsHandler = StatisticsHandler()
+    val queuedThreadPool = QueuedThreadPool(200, 8, 60_000)
+    initializePrometheus(statisticsHandler, queuedThreadPool)
+
+    val app = Javalin.create {
+        it.server {
+            Server(queuedThreadPool).apply {
+                handler = statisticsHandler
+            }
+        }
+    }.start(7070)
+}
+
+private fun initializePrometheus(statisticsHandler: StatisticsHandler, queuedThreadPool: QueuedThreadPool) {
+    StatisticsHandlerCollector.initialize(statisticsHandler)
+    QueuedThreadPoolCollector.initialize(queuedThreadPool)
+    val prometheusServer = HTTPServer(7080)
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 In the above code we first create two objects we want to expose to Prometheus: `StatisticsHandler` and `QueuedThreadPool`.
 We then call `initializePrometheus` which registers collectors for these objects, and starts a Prometheus server.
@@ -90,7 +113,8 @@ but I included them to illustrate how you can create custom collectors.
 ## Simulating some traffic
 To make sure that everything works, it's good to have some traffic to look at.
 So, we need to declare a few endpoints and make requests to them. Let's add this to our `public static void main`:
-```java
+
+{% capture java %}
 app.routes(() -> {
     get("/1", ctx -> ctx.result("Hello World"));
     get("/2", ctx -> {
@@ -105,10 +129,29 @@ app.routes(() -> {
 while (true) {
     spawnRandomRequests();
 }
-```
+{% endcapture %}
+{% capture kotlin %}
+app.routes {
+    get("/1") { ctx -> ctx.result("Hello World") }
+    get("/2") { ctx ->
+        Thread.sleep((Math.random() * 2000).toLong())
+        ctx.result("Slow Hello World")
+    }
+    get("/3") { ctx -> ctx.redirect("/2") }
+    get("/4") { ctx -> ctx.status(400) }
+    get("/5") { ctx -> ctx.status(500) }
+}
+
+while (true) {
+    spawnRandomRequests()
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
 
 `spawnRandomRequests()` doesn't exist yet, so we need to create that too:
-```java
+
+{% capture java %}
 private static void spawnRandomRequests() throws InterruptedException {
     new Thread(() -> {
         try {
@@ -121,7 +164,19 @@ private static void spawnRandomRequests() throws InterruptedException {
     }).start();
     Thread.sleep((int) (Math.random() * 250));
 }
-```
+{% endcapture %}
+{% capture kotlin %}
+private fun spawnRandomRequests() {
+    Thread {
+        for (i in 0 until (0..50).shuffled()[0]) {
+            Unirest.get("http://localhost:7070/1").asString() // we want a lot more "200 - OK" traffic
+            Unirest.get("http://localhost:7070/" + (1..5).shuffled()[0]).asString() // hit a random (1-5) endpoint
+        }
+    }.start()
+    Thread.sleep((Math.random() * 250).toLong())
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 The above code creates a thread every ~0-250ms, and that thread performs ~0-100 request, mostly to the `/1` endpoint.
 

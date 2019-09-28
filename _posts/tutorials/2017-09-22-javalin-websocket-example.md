@@ -6,8 +6,8 @@ date: 2017-09-22
 permalink: /tutorials/websocket-example
 github: https://github.com/tipsy/javalin-websocket-example
 summarytitle: WebSockets chat application
-summary: Learn how to create a simple chat-app with WebSockets in Java
-language: java
+summary: Learn how to create a simple chat-app with WebSockets in Javalin
+language: ["java", "kotlin"]
 ---
 
 A live demo of this app can be found [here](http://javalin-websocket-example.herokuapp.com) (loads slowly first time)
@@ -50,8 +50,8 @@ First, we need to create a Maven project with some dependencies: [(→ Tutorial)
 </dependencies>
 ~~~
 
-## The Java application
-The Java application is pretty straightforward.
+## The Javalin application
+The Javalin application is pretty straightforward.
 We need:
  * a map to keep track of session/username pairs.
  * a counter for number of users (nicknames are auto-incremented)
@@ -59,7 +59,7 @@ We need:
  * a method for broadcasting a message to all users
  * a method for creating the message in HTML (or JSON if you prefer)
 
-```java
+{% capture java %}
 public class Chat {
 
     private static Map<WsContext, String> userUsernameMap = new ConcurrentHashMap<>();
@@ -108,7 +108,55 @@ public class Chat {
     }
 
 }
-```
+{% endcapture %}
+{% capture kotlin %}
+private val userUsernameMap = ConcurrentHashMap<WsContext, String>()
+private var nextUserNumber = 1 // Assign to username for next connecting user
+
+fun main(args: Array<String>) {
+    Javalin.create {
+        it.addStaticFiles("/public")
+    }.apply {
+        ws("/chat") { ws ->
+            ws.onConnect { ctx ->
+                val username = "User" + nextUserNumber++
+                userUsernameMap.put(ctx, username)
+                broadcastMessage("Server", "$username joined the chat")
+            }
+            ws.onClose { ctx ->
+                val username = userUsernameMap[ctx]
+                userUsernameMap.remove(ctx)
+                broadcastMessage("Server", "$username left the chat")
+            }
+            ws.onMessage { ctx ->
+                broadcastMessage(userUsernameMap[ctx]!!, ctx.message())
+            }
+        }
+    }.start(7070)
+}
+
+// Sends a message from one user to all users, along with a list of current usernames
+fun broadcastMessage(sender: String, message: String) {
+    userUsernameMap.keys.filter { it.session.isOpen }.forEach { session ->
+        session.send(
+                JSONObject()
+                        .put("userMessage", createHtmlMessageFromSender(sender, message))
+                        .put("userlist", userUsernameMap.values).toString()
+        )
+    }
+}
+
+// Builds a HTML element with a sender-name, a message, and a timestamp,
+private fun createHtmlMessageFromSender(sender: String, message: String): String {
+    return article(
+            b("$sender says:"),
+            span(attrs(".timestamp"), SimpleDateFormat("HH:mm:ss").format(Date())),
+            p(message)
+    ).render()
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
 
 ## Building a JavaScript Client
 In order to demonstrate that our application works, we can build a JavaScript client.
@@ -175,7 +223,7 @@ browser windows (that you can see simultaneously) and talk to yourself.
 
 ## Conclusion
 Well, that was easy! We have a working real-time chat application implemented without polling,
-written in a total of less than 100 lines of Java and JavaScript.
+written in less than 100 lines of server and client code.
 The implementation is very basic though, and we should at least split up the sending of the userlist
 and the messages (so that we don't rebuild the user list every time anyone sends a message),
 but since the focus of this tutorial was supposed to be on WebSockets,

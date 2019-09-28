@@ -1,20 +1,20 @@
 ---
 layout: tutorial
-title: "Creating a 'Contact us' form with email-sending (via gmail)"
+title: "Creating a 'Contact us' form that sends emails (via gmail)"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2017-08-06
 permalink: /tutorials/email-sending-example
 github: https://github.com/tipsy/javalin-email-example
-summarytitle: Sending emails from a Java backend
-summary: Learn how to create a 'Contact us' form with email sending (via gmail) with a Java backend
-language: java
+summarytitle: Sending emails from a Javalin backend
+summary: Create a 'Contact us' form with email sending (gmail) with a Javalin backend
+language: ["java", "kotlin"]
 ---
 
 ## Dependencies
 
 First, we need to create a Maven project with some dependencies: [(→ Tutorial)](/tutorials/maven-setup)
 
-~~~xml
+```xml
 <dependencies>
     <dependency>
         <groupId>io.javalin</groupId>
@@ -37,12 +37,12 @@ First, we need to create a Maven project with some dependencies: [(→ Tutorial)
         <version>{{site.slf4jversion}}</version>
     </dependency>
 </dependencies>
-~~~
+```
 
 ## Setting up the backend
 We need three endpoints: `GET '/'`, `POST '/contact-us'` and `GET '/contact-us/success'`:
 
-```java
+{% capture java %}
 import org.apache.commons.mail.*;
 import io.javalin.Javalin;
 import static j2html.TagCreator.*;
@@ -82,7 +82,46 @@ public class Main {
     }
 
 }
-```
+{% endcapture %}
+{% capture kotlin %}
+import io.javalin.Javalin
+import org.apache.commons.mail.*
+
+fun main(args: Array<String>) {
+
+    val app = Javalin.create().start(7000)
+
+    app.get("/") { ctx ->
+        ctx.html("""
+                <form action="/contact-us" method="post">
+                    <input name="subject" placeholder="Subject">
+                    <br>
+                    <textarea name="message" placeholder="Your message ..."></textarea>
+                    <br>
+                    <button>Submit</button>
+                </form>
+        """.trimIndent())
+    }
+
+    app.post("/contact-us") { ctx ->
+        SimpleEmail().apply {
+            setHostName("smtp.googlemail.com")
+            setSmtpPort(465)
+            setAuthenticator(DefaultAuthenticator("YOUR_EMAIL", "YOUR_PASSWORD"))
+            setSSLOnConnect(true)
+            setFrom("YOUR_EMAIL")
+            setSubject(ctx.formParam("subject"))
+            setMsg(ctx.formParam("message"))
+            addTo("RECEIVING_ADDRESS")
+        }.send() // will throw email-exception if something is wrong
+        ctx.redirect("/contact-us/success")
+    }
+
+    app.get("/contact-us/success") { ctx -> ctx.html("Your message was sent") }
+
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 In order to get the above code to work, you need to make some changes:
 

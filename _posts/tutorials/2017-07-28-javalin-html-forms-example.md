@@ -1,13 +1,13 @@
 ---
 layout: tutorial
-title: "Working with HTML forms and a Java backend"
+title: "Working with HTML forms and a Javalin backend"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2017-07-28
 permalink: /tutorials/html-forms-example
 github: https://github.com/tipsy/javalin-html-forms-example
-summarytitle: HTML forms & Java backend
-summary: Learn how to get/post HTML forms to a Java backend
-language: java
+summarytitle: HTML forms & Javalin backend
+summary: Learn how to get/post HTML forms to a Javalin backend
+language: ["java", "kotlin"]
 ---
 
 ## Dependencies
@@ -31,9 +31,9 @@ First, we need to create a project with these dependencies: [(→ Tutorial)](/tu
 
 ## Setting up the backend
 
-Create a Java file, for example `Main.java`, that has the following code:
+Create a Main class with the following code:
 
-```java{% raw %}
+{% capture java %}
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,7 +64,33 @@ public class Main {
     }
 
 }
-{% endraw %}```
+{% endcapture %}
+{% capture kotlin %}
+import io.javalin.Javalin
+
+val reservations = mutableMapOf<String?, String?>(
+        "saturday" to "No reservation",
+        "sunday" to "No reservation"
+)
+
+fun main(args: Array<String>) {
+
+    val app = Javalin.create {
+        it.addStaticFiles("/public")
+    }.start(7777)
+
+    app.post("/make-reservation") { ctx ->
+        reservations[ctx.formParam("day")] = ctx.formParam("time")
+        ctx.html("Your reservation has been saved")
+    }
+
+    app.get("/check-reservation") { ctx ->
+        ctx.html(reservations[ctx.queryParam("day")]!!)
+    }
+
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 This will create an app which listens on port `7777`,
 and looks for static files in your `/src/resources/public` folder.
@@ -139,13 +165,24 @@ The values of the form are added to the URL as query-parameters.
 Let's expand our example a bit to include file uploads.
 
 ### Endpoint
-```java
+{% capture java %}
 app.post("/upload-example", ctx -> {
     ctx.uploadedFiles("files").forEach(file -> {
         FileUtil.streamToFile(file.getContent(), "upload/" + file.getFilename());
     });
+    ctx.html("Upload complete");
 });
-```
+{% endcapture %}
+{% capture kotlin %}
+app.post("/upload-example") { ctx ->
+    ctx.uploadedFiles("files").forEach {
+        FileUtil.streamToFile(it.content, File("upload/" + ${it.filename}))
+    }
+    ctx.html("Upload complete")
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
 `ctx.uploadedFiles("files")` gives us a list of files matching the name `files`.
 We then save these files to an `upload` folder.
 

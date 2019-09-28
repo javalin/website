@@ -3,11 +3,11 @@ layout: tutorial
 title: "Jetty session handling - Persisting, caching and clustering"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2018-09-02
-permalink: /tutorials/jetty-session-handling-java
+permalink: /tutorials/jetty-session-handling
 github: https://github.com/tipsy/javalin-jetty-sessions-example
 summarytitle: Jetty session handling
 summary: The tutorial includes persisting sessions locally and in a database, as well as caching and clustering
-language: java
+language: ["java", "kotlin"]
 ---
 
 ## What you will learn
@@ -37,7 +37,7 @@ This can be done using a `FileSessionDataStore`.
 This approach is well suited for a dev environment, since it's easy to set up and has no dependencies.
 You need to create a `SessionHandler` with a `SessionCache`, and attach a `FileSessionDataStore`:
 
-```java
+{% capture java %}
 SessionHandler fileSessionHandler() {
     SessionHandler sessionHandler = new SessionHandler();
     SessionCache sessionCache = new DefaultSessionCache(sessionHandler);
@@ -56,7 +56,20 @@ FileSessionDataStore fileSessionDataStore() {
     fileSessionDataStore.setStoreDir(storeDir);
     return fileSessionDataStore;
 }
-```
+{% endcapture %}
+{% capture kotlin %}
+fun fileSessionHandler() = SessionHandler().apply { // create the session handler
+    sessionCache = DefaultSessionCache(this).apply { // attach a cache to the handler
+        sessionDataStore = FileSessionDataStore().apply { // attach a store to the cache
+            val baseDir = File(System.getProperty("java.io.tmpdir"))
+            this.storeDir = File(baseDir, "javalin-session-store").apply { mkdir() }
+        }
+    }
+    httpOnly = true
+    // make additional changes to your SessionHandler here
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 This approach can also work on a remote server, but some cloud providers wipe all files when
 you redeploy your service, so be careful. File IO can also be slow, depending on your hardware.
@@ -68,7 +81,7 @@ Programmatically, persisting to a database is not very different from persisting
 You need to create a `SessionHandler` with a `SessionCache`, but instead of using a `FileSessionDataStore` you
 need to use a datastore specific for your database. Here is an example using JDBC:
 
-```java
+{% capture java %}
 SessionHandler sqlSessionHandler(String driver, String url) {
     SessionHandler sessionHandler = new SessionHandler();
     SessionCache sessionCache = new DefaultSessionCache(sessionHandler);
@@ -88,11 +101,25 @@ JDBCSessionDataStoreFactory jdbcDataStoreFactory(String driver, String url) {
     jdbcSessionDataStoreFactory.setDatabaseAdaptor(databaseAdaptor);
     return jdbcSessionDataStoreFactory;
 }
-```
+{% endcapture %}
+{% capture kotlin %}
+fun sqlSessionHandler(driver: String, url: String) = SessionHandler().apply {
+    sessionCache = DefaultSessionCache(this).apply { // create the session handler
+        sessionDataStore = JDBCSessionDataStoreFactory().apply { // attach a cache to the handler
+            setDatabaseAdaptor(DatabaseAdaptor().apply { // attach a store to the cache
+                setDriverInfo(driver, url)
+            })
+        }.getSessionDataStore(sessionHandler)
+    }
+    httpOnly = true
+    // make additional changes to your SessionHandler here
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-If you want to use MongoDB you simply create a different `DataStoreFactory` helper:
+If you want to use MongoDB you can just switch the data store:
 
-```java
+{% capture java %}
 MongoSessionDataStoreFactory mongoDataStoreFactory(String url, String dbName, String collectionName) {
     MongoSessionDataStoreFactory mongoSessionDataStoreFactory = new MongoSessionDataStoreFactory();
     mongoSessionDataStoreFactory.setConnectionString(url);
@@ -100,7 +127,15 @@ MongoSessionDataStoreFactory mongoDataStoreFactory(String url, String dbName, St
     mongoSessionDataStoreFactory.setCollectionName(collectionName);
     return mongoSessionDataStoreFactory;
 }
-```
+{% endcapture %}
+{% capture kotlin %}
+sessionDataStore = MongoSessionDataStoreFactory().apply {
+    connectionString = "..."
+    dbName = "..."
+    collectionName = "..."
+}.getSessionDataStore(sessionHandler)
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 Jetty supports JDBC, MongoDB, Inifinspan, Hazelcast, and Google Cloud DataStore.
 JDBC is included with in the core jetty-server dependency, while MongoDB and others require
@@ -170,11 +205,17 @@ as [mlab](https://mlab.com/) it seems to be around 40ms.
 Since you are currently on [javalin.io](/), it should be mentioned how to use this knowledge in your Javalin app.
 Since Javalin relies on Jetty for session handling can, you simply pass your `SessionHandler`:
 
-```java
+{% capture java %}
 Javalin.create(config -> {
     config.sessionHandler(() -> fileSessionHandler());
 }).start(7000);
-```
+{% endcapture %}
+{% capture kotlin %}
+val app = Javalin.create {
+    it.sessionHandler { fileSessionHandler() }
+}.start(7000)
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 As we saw earlier, the `SessionHandler` has a `SessionCache` which again has a `SessionDataStore`,
 so no further configuration is required.  All session configuration happens through Jetty classes.
@@ -184,43 +225,70 @@ Sessions are a great way to keep a trusted state for your connected clients.
 If you use a session database, values stored in the session store can be retrieved by each of your running instances.
 
 #### Writing values
-```java
+{% capture java %}
 app.get("/write", ctx -> {
     // values written to the session will be available on all your instances if you use a session db
     ctx.sessionAttribute("my-key", "My value");
 });
-```
+{% endcapture %}
+{% capture kotlin %}
+app.get("/write") { ctx ->
+    // values written to the session will be available on all your instances if you use a session db
+    ctx.sessionAttribute("my-key", "My value")
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 #### Reading values
-```java
+{% capture java %}
 app.get("/read", ctx -> {
     // values on the session will be available on all your instances if you use a session db
     String myValue = ctx.sessionAttribute("my-key");
 });
-```
+{% endcapture %}
+{% capture kotlin %}
+app.get("/read") { ctx ->
+    // values on the session will be available on all your instances if you use a session db
+    val myValue = ctx.sessionAttribute<String>("my-key")
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 #### Invalidating sessions
-```java
+{% capture java %}
 app.get("/invalidate", ctx -> {
     // if you want to invalidate a session, jetty will clean everything up for you
     ctx.req.getSession().invalidate();
 });
-```
+{% endcapture %}
+{% capture kotlin %}
+app.get("/invalidate") { ctx ->
+    // if you want to invalidate a session, jetty will clean everything up for you
+    ctx.req.session.invalidate()
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 #### Changing session ids
-```java
+{% capture java %}
 app.get("/change-id", ctx -> {
     // it could be wise to change the session id on login, to protect against session fixation attacks
     ctx.req.changeSessionId();
 });
-```
+{% endcapture %}
+{% capture kotlin %}
+app.get("/change-id") { ctx ->
+    // it could be wise to change the session id on login, to protect against session fixation attacks
+    ctx.req.changeSessionId()
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 #### Access management
-```java
-
 Sessions work well with the Javalin [AccessManager](https://javalin.io/documentation#access-manager).
 You can check the session store to see if the user is logged in:
 
+{% capture java %}
 app.accessManager((handler, ctx, roles) -> {
     String currentUser = ctx.sessionAttribute("current-user"); // retrieve user stored during login
     if (currentUser == null) {
@@ -231,7 +299,18 @@ app.accessManager((handler, ctx, roles) -> {
         throw new UnauthorizedResponse();
     }
 });
-```
+{% endcapture %}
+{% capture kotlin %}
+app.accessManager { handler, ctx, roles ->
+    val currentUser = ctx.sessionAttribute<String?>("current-user") // retrieve user stored during login
+    when {
+        currentUser == null -> redirectToLogin(ctx)
+        currentUser != null && userHasValidRole(ctx, roles) -> handler.handle(ctx)
+        else -> throw UnauthorizedResponse()
+    }
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 The source code for these examples is available in the
 [tutorial repo](https://github.com/tipsy/javalin-jetty-sessions-example/blob/master/src/main/java/app/Main.java).
