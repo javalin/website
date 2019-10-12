@@ -189,10 +189,10 @@ ctx.matchedPath()                       // path that was used to match request (
 ctx.endpointHandlerPath()               // endpoint path that was used to match request (null in before, available in after)
 
 // Request methods
-ctx.body()                              // get body as string
-ctx.bodyAsBytes()                       // get body as bytes
-ctx.bodyAsClass(class)                  // get body as class
-ctx.bodyValidator(class)                // get typed validator for body
+ctx.body()                              // get body as string (consumes underlying request body if not cached)
+ctx.bodyAsBytes()                       // get body as bytes (consumes underlying request body if not cached)
+ctx.bodyAsClass(class)                  // get body as class (consumes underlying request body if not cached)
+ctx.bodyValidator(class)                // get typed validator for body (consumes underlying body request if not cached)
 ctx.uploadedFile(name)                  // get uploaded file by name
 ctx.uploadedFiles(name)                 // get uploaded file(s) by name
 ctx.formParam(key)                      // get form parameter
@@ -883,7 +883,7 @@ Javalin.create(config -> {
     config.enforceSsl = true/false                  // redirect http traffic to https (default is false)
     config.logIfServerNotStarted = true/false       // log a warning if user doesn't start javalin instance (default is true)
     config.prefer405over404 = true/false            // send a 405 if handlers exist for different verb on the same path (default is false)
-    config.requestCacheSize = sizeInBytes           // set the request cache size (default is 4kb)
+    config.requestCacheSize = sizeInBytes           // set the request cache size, used for reading request body multiple times (default is 4kb)
     config.requestLogger { ... }                    // set a request logger
     config.sessionHandler { ... }                   // set a SessionHandler
 
@@ -921,7 +921,7 @@ Javalin.create { config ->
     config.enforceSsl = true/false                  // redirect http traffic to https (default is false)
     config.logIfServerNotStarted = true/false       // log a warning if user doesn't start javalin instance (default is true)
     config.prefer405over404 = true/false            // send a 405 if handlers exist for different verb on the same path (default is false)
-    config.requestCacheSize = sizeInBytes           // set the request cache size (default is 4kb)
+    config.requestCacheSize = sizeInBytes           // set the request cache size, used for reading request body multiple times (default is 4kb)
     config.requestLogger { ... }                    // set a request logger
     config.sessionHandler { ... }                   // set a SessionHandler
 
