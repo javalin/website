@@ -15,7 +15,6 @@ and inspect state of, mock objects that can be passed in to fulfill the dependen
 
 ## Using Mockito with Javalin
 The only caveat to using Mockito with Javalin is that, at least some of, Javalin's classes are final,
-however this may be subject to change*. 
 One of the first places you'll usually notice this is when you attempt to mock a 
 Context object being passed into your http handlers.
 
@@ -91,6 +90,3 @@ name & content tells the mockito framework to enable a different mock creator fa
 create mock objects on final classes:
 https://github.com/mockito/mockito/pull/648
 The one known caveat to enabling this mock factory is that you can no longer mock native methods.
-
-*Note that this aspect of Javalin may change:
-https://github.com/tipsy/javalin/issues/335
