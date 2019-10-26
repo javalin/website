@@ -22,16 +22,19 @@ Example project: https://gitlab.com/stuAtGit/javalinmockitoexample
 
 ## Example error you'll see if you don't enable InlineMockMaker
 
-```
+```java
 java.lang.NullPointerException
 	at io.javalin.http.Context.status(Context.kt:386)
 	at com.shareplaylearn.httphandlers.TeapotRequestHandler.handleBrewCoffee(TeapotRequestHandler.java:47)
 	at TeapotRequestHandlerTest.handleBrewCoffee(TeapotRequestHandlerTest.java:21)
 ```
+
 This happens because, although you tried to mock the context object, say by doing this:
-```
+
+```java
 Context context = mock(Context.class);
 ```
+
 The Context class is final, so the mock silently fails, and creates a real Context() object, which then fails due
 to missing dependencies. _*I think*_
 
@@ -53,14 +56,15 @@ A basic step-by-step look at how to make this happen:
 I'd suggest JUnit 5 (Jupiter).
 
 - Then, add mockito 2 or greater as a dependency:
+
 ```xml
-        <!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>3.1.0</version>
-            <scope>test</scope>
-        </dependency>
+<!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
+<dependency>
+    <groupId>org.mockito</groupId>
+    <artifactId>mockito-core</artifactId>
+    <version>3.1.0</version>
+    <scope>test</scope>
+</dependency>
 ```
 
 - Then, add the file. If you're using Intellij, you can right-click on your test folder, select `New->File`,
@@ -71,22 +75,23 @@ Select `Text` as the file type if asked by Intellij.
 
 - Now, write your tests as normal. Example test:
 
-```
-    @Test
-    public void handleBrewCoffee() {
-        Context context = mock(Context.class);
-        this.teapotRequestHandler.handleBrewCoffee(context);
-        verify(context).status(418);
-        verify(context).result("I'm a teapot!");
-    }
+```java
+@Test
+public void handleBrewCoffee() {
+    Context context = mock(Context.class);
+    this.teapotRequestHandler.handleBrewCoffee(context);
+    verify(context).status(418);
+    verify(context).result("I'm a teapot!");
+}
 ```
 
 - If something didn't work, try looking at this example project as a reference:
 https://gitlab.com/stuAtGit/javalinmockitoexample
 
-<h2 id="mockmaker">What does putting this MockMaker file in my source tree do to my code???
+## What does putting this MockMaker file in my source tree do to my code?
 The presence of a file with the given
 name & content tells the mockito framework to enable a different mock creator factory that can 
 create mock objects on final classes:
-https://github.com/mockito/mockito/pull/648
+https://github.com/mockito/mockito/pull/648.
+
 The one known caveat to enabling this mock factory is that you can no longer mock native methods.
