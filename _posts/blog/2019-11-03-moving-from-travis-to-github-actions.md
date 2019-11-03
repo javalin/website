@@ -9,7 +9,7 @@ permalink: blog/moving-a-jvm-project-from-travis-to-github-actions
 
 # Moving from Travis CI to GitHub actions
 
-For the first two years we were very happy Travis CI users. We chose Travis because it had a
+For our first two years we were very happy Travis CI users. We had chosen Travis because it had a
 dead simple config file and it just worked. Then it didn't anymore.
 
 This short post will show you how to move from a basic Travis CI setup to a GitHub actions setup.
