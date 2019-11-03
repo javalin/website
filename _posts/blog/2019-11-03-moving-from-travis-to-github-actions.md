@@ -9,10 +9,10 @@ permalink: blog/moving-a-jvm-project-from-travis-to-github-actions
 
 # Moving from Travis CI to GitHub actions
 
-For the first two years, we were very happy Travis CI users. We chose Travis because it had a
-dead simple config file, and it just seemed to work (until it didn't anymore).
+For the first two years we were very happy Travis CI users. We chose Travis because it had a
+dead simple config file and it just worked. Then it didn't anymore.
 
-This short post will show you how to replace a basic Travis CI setup with a GitHub actions setup.
+This short post will show you how to move from a basic Travis CI setup to a GitHub actions setup.
 
 ## The old Travis setup
 
@@ -28,7 +28,7 @@ jdk:
 - openjdk12
 ```
 
-This worked great at first, but after a year it started becoming very flaky.
+This worked great at first, but after a year it started to become very flaky.
 When we finally moved away from Travis, this is how our config file looked:
 
 ```bash
@@ -45,9 +45,12 @@ cache:
     - $HOME/.m2
 ```
 
-We had to disable most of the JDKs. Builds would take up to 30 minutes,
-and Travis would fail to install some of the JDKs half the time.\\
-We tried to cache the `.m2` folder to speed it up slightly, but it didn't really help.\\
+Builds would take up to 30 minutes, and Travis would fail to install some of the JDKs half the time.
+As you can see, we had to disable most of the JDKs to mitigate the time spent retriggering builds.
+
+Sometimes Travis would download dependencies at 200 bytes/s. We tried to cache the `.m2` folder
+to mitigate this, but it didn't really help too much.
+
 It's not that our needs outgrew Travis, their product just stopped working.
 
 ## The new GitHub actions setup
