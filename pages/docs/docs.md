@@ -205,6 +205,7 @@ ctx.pathParam(key)                      // get path parameter
 ctx.pathParam(key, class)               // get path as class
 ctx.pathParamMap()                      // get path parameter map
 ctx.basicAuthCredentials()              // get basic auth credentials (username/pwd)
+ctx.attribute(key, value)               // set request attribute
 ctx.attribute(key)                      // get request attribute
 ctx.attributeMap()                      // get request attribute map
 ctx.contentLength()                     // get request content length
