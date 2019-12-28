@@ -1,22 +1,22 @@
 <script>
-    const notificationId = "javalin-3-released";
-    const hasBeenDismissed = localStorage.getItem(notificationId + "-dismissed") === "true";
-    const pageLoadCount = parseInt(localStorage.getItem(notificationId + "-count") || 0);
-    localStorage.setItem(notificationId + "-count", (pageLoadCount + 1).toString());
-    if (!hasBeenDismissed) {
-        document.write(`
-            <div id="notification-banner">
-                Javalin 3.0 is out! <a href="/news/javalin-3.0.0-stable">See what's new</a> !
-            </div>
-        `);
-        if (pageLoadCount > 5) {
-            document.querySelector("#notification-banner").insertAdjacentHTML("beforeend", `<span class="close">✖</span>`);
-            document.querySelector("#notification-banner .close").addEventListener("click", () => {
-                document.querySelector("#notification-banner").style.display = "none";
-                localStorage.setItem(notificationId + "-dismissed", "true");
-            });
-        }
-    }
+    // const notificationId = "javalin-3-released";
+    // const hasBeenDismissed = localStorage.getItem(notificationId + "-dismissed") === "true";
+    // const pageLoadCount = parseInt(localStorage.getItem(notificationId + "-count") || 0);
+    // localStorage.setItem(notificationId + "-count", (pageLoadCount + 1).toString());
+    // if (!hasBeenDismissed) {
+    //     document.write(`
+    //         <div id="notification-banner">
+    //             Javalin 3.0 is out! <a href="/news/javalin-3.0.0-stable">See what's new</a> !
+    //         </div>
+    //     `);
+    //     if (pageLoadCount > 5) {
+    //         document.querySelector("#notification-banner").insertAdjacentHTML("beforeend", `<span class="close">✖</span>`);
+    //         document.querySelector("#notification-banner .close").addEventListener("click", () => {
+    //             document.querySelector("#notification-banner").style.display = "none";
+    //             localStorage.setItem(notificationId + "-dismissed", "true");
+    //         });
+    //     }
+    // }
 </script>
 <style>
     #notification-banner {
