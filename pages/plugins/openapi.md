@@ -33,13 +33,13 @@ Add the dependencies:
 <dependency>
     <groupId>io.swagger.core.v3</groupId>
     <artifactId>swagger-core</artifactId>
-    <version>2.0.8</version>
+    <version>2.0.9</version>
 </dependency>
 
 <dependency>
     <groupId>com.fasterxml.jackson.module</groupId>
     <artifactId>jackson-module-kotlin</artifactId>
-    <version>2.9.9</version>
+    <version>2.10.1</version>
 </dependency>
 ```
 
@@ -48,7 +48,7 @@ If you want to use dsl to document your api, the following dependency is also ne
 <dependency>
     <groupId>cc.vileda</groupId>
     <artifactId>kotlin-openapi3-dsl</artifactId>
-    <version>0.20.1</version>
+    <version>0.20.2</version>
 </dependency>
 ```
 
@@ -96,6 +96,8 @@ new OpenApiOptions(initialConfigurationCreator)
     .modelConverterFactory(JacksonModelConverterFactory.INSTANCE); // Custom OpenApi model converter
     .swagger(new SwaggerOptions("/swagger").title("My Swagger Documentation")) // Activate the swagger ui
     .reDoc(new ReDocOptions("/redoc").title("My ReDoc Documentation")) // Active the ReDoc UI
+    .setDocumentation("/user", HttpMethod.POST, document()) // Override or set some documentation manually
+    .ignorePath("/user*", HttpMethod.GET) // Disable documentation
 ```
 
 ## Documenting Handler
@@ -148,16 +150,26 @@ OpenApiBuilder.document()
     .cookie("my-cookie")
     .uploadedFile("my-file")
     .uploadedFiles("my-files")
+    .formParam("my-form-param", Integer.class, true);
 
     // Body
     .body(User.class)
     .bodyAsBytes("image/png")
+
+    // Composed body
+    .body(anyOf(documentedContent(User.class), documentedContent(Address.class)))
 
     // Responses
     .json("200", User.class)
     .jsonArray("200", User.class) // For Arrays
     .html("200")
     .result("204") // No Content
+
+    // Composed Responses
+    .result("200", oneOf(
+         documentedContent(SomeMessage.class),
+         documentedContent(User.class, true)
+     ))    
 
     // Other
     .ignore(); // Hide this endpoint in the documentation
@@ -216,16 +228,40 @@ Here is an overview of the annotation api:
         @OpenApiFileUpload(name = "my-file"),
         @OpenApiFileUpload(name = "my-files", isArray = true)
     },
+    formParams = {
+        @OpenApiFormParam(name = "my-form-param", type = Integer.class)
+    },
 
     // Body
     requestBody = @OpenApiRequestBody(content = @OpenApiContent(from = User.class)),
     requestBody = @OpenApiRequestBody(content = @OpenApiContent(from = Byte[].class, type = "image/png")),
 
+    // Composed body
+    composedRequestBody = @OpenApiComposedRequestBody(
+        oneOf = {
+                @OpenApiContent(from = User.class),
+                @OpenApiContent(from = Address.class)
+        },
+        // or
+        anyOf = {
+                @OpenApiContent(from = User.class),
+                @OpenApiContent(from = Address.class)
+        },
+        required = true,
+        contentType = "application/json"
+    ),
+
     // Responses
     responses = {
+        // responses with same status and content type will be auto-grouped to the oneOf composed scheme
         @OpenApiResponse(status = "200", content = @OpenApiContent(from = User.class)),
         @OpenApiResponse(status = "200", content = @OpenApiContent(from = User.class, isArray = true)),
         @OpenApiResponse(status = "200", content = @OpenApiContent(type = "text/html")),
+        // also compiles to the oneOf composed scheme
+        @OpenApiResponse(status = "200", content = {
+            @OpenApiContent(from = User.class),
+            @OpenApiContent(from = Address.class)
+        }),
         @OpenApiResponse(status = "204") // No content
     },
 
@@ -376,7 +412,7 @@ Start by adding the WebJar for Swagger UI. This contains all the HTML/CSS/JavaSc
 <dependency>
     <groupId>org.webjars</groupId>
     <artifactId>swagger-ui</artifactId>
-    <version>3.23.8</version>
+    <version>3.24.3</version>
 </dependency>
 ```
 
