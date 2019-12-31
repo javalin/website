@@ -1,18 +1,5 @@
 .tutorials .post-summary {
-  margin: 0;
-  + .post-summary {
-    margin-top: 16px;
-  }
   position: relative;
-  h2 {
-    font-size: 22px;
-    font-weight: 400;
-    max-width: calc(100% - 100px);
-    margin: 0;
-  }
-  p {
-    margin: 4px 0 0;
-  }
   .tutorial-languages {
     position: absolute;
     right: 16px;

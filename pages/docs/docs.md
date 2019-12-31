@@ -5,7 +5,7 @@ rightmenu: true
 permalink: /documentation
 ---
 
-{% include newJavalinBanner.html %}
+{% include notificationBanner.html %}
 
 <div id="spy-nav" class="right-menu" markdown="1">
 * [Getting Started](#getting-started)
@@ -39,10 +39,10 @@ permalink: /documentation
 <h1 class="no-margin-top">Documentation</h1>
 
 The documentation on this page is always for the latest version of Javalin, currently `{{site.javalinversion}}`.\\
-Javalin follows [semantic versioning](http://semver.org/), meaning there are no breaking changes unless the major (leftmost) digit changes, for example 3.X.X to 4.X.X.
-Functionality added after 3.0.0 is marked with labels containing the version number: <span class="added-in">Added in v3.x.x</span>
-
-Docs for 2.8.0 (last 2.X version) can be found [here](/archive/docs/v2.8.0.html).
+Javalin follows [semantic versioning](http://semver.org/), meaning there are no breaking
+changes unless the major (leftmost) digit changes, for example `3.X.X` to `4.X.X`.
+Functionality added after `3.0.0` is marked with labels containing the version number,
+ex: <span class="added-in">Added in v3.3.0</span>
 
 <div class="notification star-us">
     <div>
@@ -68,8 +68,8 @@ Javalin has three main handler types: before-handlers, endpoint-handlers, and af
 (There are also exception-handlers and error-handlers, but we'll get to them later).
 The before-, endpoint- and after-handlers require three parts:
 
-* A verb, ex: `before`, `get`, `post`, `put`, `delete`, `after`
-* A path, ex: `/`, `/hello-world`
+* A verb, one of: `before`, `get`, `post`, `put`, `patch`, `delete`, `after` <small>(... `head`, `options`, `trace`, `connect`)</small>
+* A path, ex: `/`, `/hello-world`, `/hello/:name`
 * A handler implementation `ctx -> { ... }`
 
 The `Handler` interface has a void return type. You use `ctx.result()` to set the response which will be returned to the user.
@@ -205,6 +205,7 @@ ctx.pathParam(key)                      // get path parameter
 ctx.pathParam(key, class)               // get path as class
 ctx.pathParamMap()                      // get path parameter map
 ctx.basicAuthCredentials()              // get basic auth credentials (username/pwd)
+ctx.basicAuthCredentialsExist()         // check if proper basic auth credentials exist
 ctx.attribute(key, value)               // set request attribute
 ctx.attribute(key)                      // get request attribute
 ctx.attributeMap()                      // get request attribute map
@@ -276,16 +277,16 @@ The cookieStore works like this:
 
 ##### Example:
 {% capture java %}
-serverOneApp.post("/cookie-storer") { ctx ->
+serverOneApp.post("/cookie-storer", ctx -> {
     ctx.cookieStore("string", "Hello world!");
     ctx.cookieStore("i", 42);
     ctx.cookieStore("list", Arrays.asList("One", "Two", "Three"));
-}
-serverTwoApp.get("/cookie-reader") { ctx -> // runs on a different server than serverOneApp
+});
+serverTwoApp.get("/cookie-reader", ctx -> { // runs on a different server than serverOneApp
     String string = ctx.cookieStore("string")
     int i = ctx.cookieStore("i")
     List<String> list = ctx.cookieStore("list")
-}
+});
 {% endcapture %}
 {% capture kotlin %}
 serverOneApp.post("/cookie-storer") { ctx ->
@@ -988,6 +989,15 @@ You can define multiple single page handlers for your application by specifying 
 You can enabled single page mode by doing `config.addSinglePageRoot("/root", "/path/to/file.html")`, and/or
 `config.addSinglePageRoot("/root", "/path/to/file.html", Location.EXTERNAL)`.
 
+#### Dynamic single page handler
+You can also use a `Handler` to serve your single page root (as opposed to a static file):
+
+```java
+config.addSinglePageHandler("/root",  ctx -> {
+    ctx.html(...);
+});
+```
+
 ### Logging
 
 #### Adding a logger
@@ -1049,7 +1059,7 @@ app.create { config ->
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
-The logger runs after the WebSocket handler for the endpoint
+The logger runs after the WebSocket handler for the endpoint.
 
 ### Server setup
 
@@ -1076,6 +1086,14 @@ app.events(event -> {
     event.serverStopping(() -> { /* Your code here */ });
     event.serverStopped(() -> { /* Your code here */ });
 });
+```
+
+#### Setting the Host
+
+The `Javalin#start` method is overloaded to accept the Host (IP) as the first argument:
+
+```java
+Javalin.create().start("127.0.0.1", 1235)
 ```
 
 #### Custom server
@@ -1116,7 +1134,8 @@ private fun fileSessionHandler() = SessionHandler().apply {
 }
 ```
 
-Read more about how to configure sessions in our [session tutorial](https://javalin.io/tutorials/jetty-session-handling-kotlin)
+Read more about how to configure sessions in our
+[session tutorial](https://javalin.io/tutorials/jetty-session-handling-kotlin).
 
 #### Custom jetty handlers
 You can configure your embedded jetty-server with a handler-chain
@@ -1305,6 +1324,46 @@ val app = Javalin.create {
 ```
 
 Full documentation for the OpenAPI plugin can be found at [/plugins/openapi](/plugins/openapi),
+
+### Redirect-to-lowercase-path plugin
+
+This plugin redirects requests with uppercase/mixcase paths to lowercase paths.
+For example, `/Users/John` redirects to `/users/John` (if endpoint is `/users/:userId`).
+It does not affect the casing of path-params and query-params, only static
+URL fragments (`Users` becomes `users` above, but `John` remains `John`).\\
+When using this plugin, you can only add paths with lowercase URL fragments.
+
+```java
+Javalin.create(config ->
+    config.registerPlugin(new RedirectToLowercasePathPlugin());
+)
+```
+
+### Rate limiting
+
+There is a very simple rate-limited included in Javalin 3.7.0 and newer.
+You can call it in the beginning of your endpoint `Handler` functions:
+
+{% capture java %}
+app.get("/", ctx -> {
+    new RateLimit(ctx).requestPerTimeUnit(5, TimeUnit.MINUTES); // throws if rate limit is exceeded
+    ctx.status("Hello, rate-limited World!");
+});
+{% endcapture %}
+{% capture kotlin %}
+app.get("/") { ctx ->
+    RateLimit(ctx).requestPerTimeUnit(5, TimeUnit.MINUTES) // throws if rate limit is exceeded
+    ctx.status("Hello, rate-limited World!")
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+Every rate limiter is independent (IP and `Handler` based), so different endpoints can have different rate limits. It works as follows:
+
+* A map of maps holds one IP/counter map per method/path combination (`Handler`).
+* On each request the counter for that IP is incremented.
+* If the counter exceeds the number of requests specified, an exception is thrown.
+* All counters are cleared periodically on every timeunit that you specified.
 
 ## FAQ
 Frequently asked questions.
@@ -1503,10 +1562,11 @@ By default, JavalinVue will set the vue root directory on the first request it s
 * On localhost, the root dir will be set to the `src/main/resources/vue` (external location)
 * On non-localhost, the root dir will be set to `/vue` (classpath location)
 
-This can cause issues when running a jar locally or in docker. The default can be overridden by calling:
+This can cause issues when running a jar locally or in docker. You can override the default dir:
 
 ```java
-JavalinVue.rootDirectory(path, location);
+JavalinVue.rootDirectory(path, location); // String path, String location
+JavalinVue.rootDirectory(path); // java.nio.Path path
 ```
 
 ### TimeoutExceptions and ClosedChannelExceptions
@@ -1514,3 +1574,7 @@ If you encounter `TimeoutExceptions` and `ClosedChannelExceptions` in your DEBUG
 this is nothing to worry about. Typically, a browser will keep the HTTP connection open until the
 server terminates it. When this happens is decided by the server's `idleTimeout` setting,
 which is 30 seconds by default in Jetty/Javalin. This is not a bug.
+
+### Documentation for previous versions
+Docs for 2.8.0 (last 2.X version) can be found [here](/archive/docs/v2.8.0.html).\\
+Docs for 1.7.0 (last 1.X version) can be found [here](/archive/docs/v1.7.0.html).

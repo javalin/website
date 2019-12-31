@@ -5,14 +5,15 @@ rightmenu: false
 permalink: /download
 ---
 
-{% include newJavalinBanner.html %}
+{% include notificationBanner.html %}
 
 <h1 class="no-margin-top">A lightweight REST API library</h1>
 
-Javalin is a true micro Java REST API library and has very few dependencies:
-the embedded web-server (jetty), a logging facade (slf4j-api), and brotli compression.
-It also has plugins for JSON mapping, template rendering, and OpenAPI (Swagger), but they're
-optional dependencies that you have to add manually.
+Javalin is a true micro Java REST API library and has only two dependencies:
+the embedded web-server (Jetty) and a logging facade (SLF4J).\\
+Javalin also has plugins for JSON mapping, template rendering, and OpenAPI (Swagger), but they're
+optional dependencies that you have to add manually.\\
+You can also exclude the Jetty dependency if you want to run Javalin on a different servlet container.
 
 ## Download Javalin
 {% include macros/mavenDep.md %}

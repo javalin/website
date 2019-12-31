@@ -22,7 +22,7 @@ permalink: /
             <h3>Simple</h3>
             <p>
                 Unlike other Java and Kotlin web frameworks, Javalin has very few concepts that you need to learn.
-                You never have to extend a class and you rarely have to implement an interface.
+                You never extend classes and you rarely implement interfaces.
             </p>
         </div>
         <div class="box">
@@ -135,8 +135,8 @@ val app = Javalin.create { config ->
             <h3>SparkJava and Koa.js</h3>
             <p>
                 Javalin started as a fork of the Java and Kotlin web framework SparkJava,
-                but quickly turned into a ground-up rewrite influenced by the Javascript framework koa.js.
-                Javalin implements lessons learned from working extensively with both of these frameworks.
+                but turned into a ground-up rewrite influenced by the Javascript framework koa.js.
+                Javalin takes the best concepts from these two frameworks.
             </p>
         </div>
     </div>
@@ -163,6 +163,7 @@ val app = Javalin.create { config ->
         <img src="/img/used-by/telenor.png" alt="Telenor">
         <img src="/img/used-by/revolut.png" alt="Revolut">
         <img src="/img/used-by/expressscripts.png" alt="Express Scripts">
+        <img src="/img/used-by/dkb.png" alt="Deutsche Kreditbank">
     </div>
     <p>
         Are you using Javalin? <a href="https://github.com/javalin/javalin.github.io/issues/18">Let us know</a>!

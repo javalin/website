@@ -5,7 +5,7 @@ rightmenu: true
 permalink: /archive/docs/v2.8.0.html
 ---
 
-{% include newJavalinBanner.html %}
+{% include notificationBanner.html %}
 
 <div id="spy-nav" class="right-menu" markdown="1">
 * [Handlers](#handlers)

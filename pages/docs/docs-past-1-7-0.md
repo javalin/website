@@ -34,16 +34,6 @@ permalink: /archive/docs/v1.7.0.html
 This page contains documentation for an older version of Javalin.
 Go to [javalin.io/documentation](/documentation) to view documentation for the newest version.
 
-<div class="notification star-us">
-    <div>
-        If you like Javalin, please consider starring us on GitHub:
-    </div>
-    <iframe id="starFrame" class="githubStar"
-            src="https://ghbtns.com/github-btn.html?user=tipsy&amp;repo=javalin&amp;type=star&amp;count=true&size=large"
-            frameborder="0" scrolling="0" width="150px" height="30px">
-    </iframe>
-</div>
-
 ## Handlers
 Javalin has a three main handler types: before-handlers, endpoint-handlers, and after-handlers.
 (There are also exception-handlers and error-handlers, but we'll get to them later).

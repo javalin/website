@@ -18,7 +18,7 @@ main.width-limit {
 header {
     position: absolute;
     border: 0;
-    background: #028fbf;
+    background: #008abc;
 }
 
 nav ul li + li {
@@ -37,13 +37,18 @@ nav ul li a:hover {
     text-align: center;
 }
 
-.bluepart ::selection {
+.bluepart::selection {
     background: #027aa3;
 }
 
 .bluepart {
     background: radial-gradient(#02a2d7, #028ebc);
     padding: 80px 20px;
+    box-shadow: 0 0 35px rgba(0, 0, 0, 0.1) inset;
+}
+
+.bluepart:first-of-type {
+    box-shadow: 0 -20px 35px -10px rgba(0, 0, 0, 0.1) inset;
 }
 
 .bluepart .multitab-code {
@@ -102,6 +107,11 @@ nav ul li a:hover {
     text-decoration: underline;
 }
 
+.whitepart {
+    border-top: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+}
+
 .center {
     text-align: center;
 }
@@ -125,7 +135,7 @@ nav ul li a:hover {
 .boxes {
     padding: 20px;
     display: flex;
-    max-width: 1200px;
+    max-width: 1080px;
     margin: 0 auto 32px;
     justify-content: space-between;
     flex-wrap: wrap;
@@ -134,12 +144,12 @@ nav ul li a:hover {
 .boxes .box {
     text-align: left;
     flex-basis: calc(50% - 16px);
-    border: 1px solid #ddd;
     padding: 15px;
     background: #fff;
     font-size: 16px;
     margin-bottom: 32px;
     border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
 }
 
 .boxes .box h3 {

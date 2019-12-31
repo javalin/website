@@ -30,7 +30,7 @@ This app can be packaged and launched with `java -jar hello-world.jar`, no furth
 This lets you focus your classes on core principles rather than specifics for setting up an application server.
 
 ## Small and unopinionated
-Javalin is just 3500 LoC running on top of Jetty. There is very little magic,
+Javalin is just a couple of thousands lines of code running on top of Jetty. There is very little magic,
 making it’s easy to fully understand the control-flow of your program.
 
 * No annotations

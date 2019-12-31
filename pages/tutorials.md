@@ -4,16 +4,15 @@ title: Tutorials
 permalink: /tutorials/
 ---
 
-{% include newJavalinBanner.html %}
+{% include notificationBanner.html %}
 
 <h1 class="no-margin-top">Tutorials</h1>
 
 {% assign tutorials = (site.posts | where: "layout" , "tutorial") | sort: 'date' | reverse %}
 
 <div class="posts-header" markdown="1">
-We recommend starting with either the [Maven setup](maven-setup) or [Gradle setup](gradle-setup) tutorial,
-then going through the [Kotlin CRUD REST API](/tutorials/simple-kotlin-example) tutorial.
-Some of the tutorials have code examples in both Kotlin and Java, but it's easy to follow along even if they don't.
+Some of the tutorials have code examples in both Kotlin and Java (check the blue tags),
+but it should be easy to follow along even if they don't.
 </div>
 
 <div class="posts-overview">

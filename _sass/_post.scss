@@ -1,5 +1,4 @@
 .posts-overview {
-  overflow: hidden;
   margin: 24px 0;
 }
 
@@ -20,29 +19,37 @@ ul.post-list {
   }
   li {
     + li {
-      margin-top: 24px;
+      margin-top: 20px;
     }
     a {
+      position: relative;
       color: #444;
       display: block;
       padding: 15px;
       background: #fff;
-      border: 1px solid #ddd;
       border-radius: 5px;
+      box-shadow: $card-shadow;
       &:hover {
-        box-shadow: inset 2px 0 0 0 $javalin-brand-primary;
+        transform: scale(1.01);
       }
       h2 {
-        font-size: 24px;
+        font-size: 22px;
+        font-weight: 400;
+        max-width: calc(100% - 100px);
+        margin: 0;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        .date {
-          font-size: 65%;
-          font-weight: 300;
-          color: #666;
-          float: right;
-        }
+      }
+      p {
+        margin: 4px 0 0;
+      }
+      .date {
+        font-size: 14px;
+        color: #666;
+        position: absolute;
+        top: 16px;
+        right: 16px;
       }
       h3 {
         margin-top: 5px;
