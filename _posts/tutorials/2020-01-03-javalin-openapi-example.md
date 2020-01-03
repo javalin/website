@@ -290,7 +290,7 @@ Let's go through the different properties:
 
 * **summary** - This is what OpenAPI UIs will use as the title for your endpoint
 * **operationId** - If you generate a client from the OpenAPI spec, this will be the method name
-* **tags** - Used to group documentation
+* **tags** - Used to group endpoints
 * **responses** - Describes what is sent to the user.
   This particular endpoint can only answer with an array of `User` objects (or the defaults 500/503 we defined earlier)
 
