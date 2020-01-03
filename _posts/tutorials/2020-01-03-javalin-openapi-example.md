@@ -359,10 +359,82 @@ The [example repo](https://github.com/tipsy/javalin-openapi-example)
 contains a fully working API, so if you clone it you can play around with the `Try it out`
 button for each endpoint.
 
-
 ## Conclusion
 This was my first experience using OpenAPI, and documenting endpoints was surprisingly easy,
 thanks to the great job [Tobias Walle](https://github.com/tobiaswalle) has done on the plugin.
 
 The OpenAPI plugin also supports a [programmatic DSL](https://javalin.io/plugins/openapi#dsl) which is a bit more
 flexible and reusable, but I prefer keeping documentation more like a comment than actual code.
+
+## Addendum
+
+Since we now have a OpenAPI spec, it's easy to generate clients.
+This addendum will show you how to create and use such a client, but only for Kotlin.
+The client generation works the same in Kotlin and Java though, simply add a Maven plugin:
+
+```xml
+<plugin>
+    <groupId>org.openapitools</groupId>
+    <artifactId>openapi-generator-maven-plugin</artifactId>
+    <version>4.2.2</version>
+    <executions>
+        <execution>
+            <goals>
+                <goal>generate</goal>
+            </goals>
+            <configuration>
+                <inputSpec>${project.basedir}/src/main/resources/api.json</inputSpec>
+                <language>kotlin</language>
+                <configOptions>
+                    <sourceFolder>src/gen/java/main</sourceFolder>
+                </configOptions>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+```
+
+Depending on what options you use (language, serializer, etc), you will have to update your POM.
+
+Using the client is very straightforward in Kotlin:
+
+```kotlin
+package io.javalin.example.kotlin.client
+
+import org.openapitools.client.apis.UserApi
+import org.openapitools.client.infrastructure.ClientException
+import org.openapitools.client.infrastructure.ServerException
+import org.openapitools.client.models.NewUserRequest
+
+// This file uses a client which is auto-generated from OpenAPI spec.
+// To use it, first start Main.kt so the server is running.
+
+private val apiInstance = UserApi("http://localhost:7001")
+
+fun main() {
+
+    try {
+        apiInstance.getAllUsers().forEach { println(it) }
+    } catch (e: ServerException) {
+        println("5xx response calling UserApi#getAllUsers")
+    }
+
+    try {
+        val newUserRequest = NewUserRequest("Elaine", "Elaine@elaine.kt")
+        apiInstance.createUser(newUserRequest)
+        println("Added new user: ${newUserRequest.name}")
+        apiInstance.getAllUsers().forEach { println(it) }
+    } catch (e: ClientException) {
+        println("4xx response calling UserApi#createUser")
+    } catch (e: ServerException) {
+        println("5xx response calling UserApi#createUser")
+    }
+
+}
+```
+
+That's it. The OpenAPI generator
+([https://github.com/OpenAPITools/openapi-generator](https://github.com/OpenAPITools/openapi-generator))
+supports a ton of different languages, and will generate markdown docs for for the clients too.
+
+Have fun!
