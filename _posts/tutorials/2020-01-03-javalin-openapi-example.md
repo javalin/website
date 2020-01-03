@@ -363,5 +363,5 @@ button for each endpoint.
 This was my first experience using OpenAPI, and documenting endpoints was surprisingly easy,
 thanks to the great job [Tobias Walle](https://github.com/tobiaswalle) has done on the plugin.
 
-The OpenAPI also supports a [DSL](https://javalin.io/plugins/openapi#dsl) which is a bit more
+The OpenAPI plugin also supports a [DSL](https://javalin.io/plugins/openapi#dsl) which is a bit more
 flexible and reusable, but I prefer having documentation separate from code.
