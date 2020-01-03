@@ -1,5 +1,5 @@
 
-<div class="multitab-code" data-tab="1">
+<div class="multitab-code dependencies" data-tab="1">
 <ul>
     <li data-tab="1">Maven</li>
     <li data-tab="2">Gradle</li>
