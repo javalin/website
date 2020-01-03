@@ -183,7 +183,7 @@ You enable the OpenAPI plugin by calling `registerPlugin`, and you need to creat
 In this tutorial we will enable both ReDoc and Swagger UI to generate web UIs for our API,
 but you'll most likely only use one of these.
 
-The API definition in snippet above references something called `UserController`,
+The API definition in the snippet above references something called `UserController`,
 which doesn't exist. Let's create a skeleton:
 
 {% capture java %}
