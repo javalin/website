@@ -12,8 +12,9 @@ github: https://github.com/tipsy/javalin-openapi-example
 
 ## What you will learn
 
-This tutorial will teach you how to use the [Javalin OpenAPI plugin](/plugins/openapi).
-We will be building a simple User CRUD API with five operations.
+This tutorial will teach you how to use the [Javalin OpenAPI plugin](/plugins/openapi)
+to create an OpenAPI spec (previously known as a "Swagger" spec).
+We will build a User CRUD API with five operations.
 The example snippet will contain both Java and Kotlin code
 and full projects for both languages are available on
 [GitHub](https://github.com/tipsy/javalin-openapi-example).
