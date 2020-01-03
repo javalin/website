@@ -288,10 +288,10 @@ but everything is available on [GitHub](https://github.com/tipsy/javalin-openapi
 
 Let's go through the different properties:
 
-* **summary** - This is what OpenAPI UIs will use as the title for your endpoint
+* **summary** - Will be used as a title, both in web docs and in client docs
 * **operationId** - If you generate a client from the OpenAPI spec, this will be the method name
 * **tags** - Used to group endpoints
-* **responses** - Describes what is sent to the user.
+* **responses** - Describes the status codes and data models the endpoint can respond with.
   This particular endpoint can only answer with an array of `User` objects (or the defaults 500/503 we defined earlier)
 
 Let's see what our docs look like now if we restart the server:
