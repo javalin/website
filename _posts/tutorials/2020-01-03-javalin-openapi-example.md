@@ -376,9 +376,8 @@ flexible and reusable, but I prefer keeping documentation more like a comment th
 
 ## Addendum
 
-Since we now have a OpenAPI spec, it's easy to generate clients.
-This addendum will show you how to create and use such a client, but only for Kotlin.
-The client generation works the same in Kotlin and Java though, simply add a Maven plugin:
+Since we now have a OpenAPI spec it's easy to generate clients, and this addendum will show you how.
+Client generation works the same for Kotlin, Java, or any other languages. Simply add a Maven plugin:
 
 ```xml
 <plugin>
@@ -402,7 +401,11 @@ The client generation works the same in Kotlin and Java though, simply add a Mav
 </plugin>
 ```
 
-Depending on what options you use (language, serializer, etc), you will have to update your POM.
+You will have to download and save your spec somewhere, and depending on what options you use (language, serializer, etc)
+and how your project is set up, you will have to add dependencies to your POM.
+
+I only generated a client for Kotlin since the clients have different dependencies
+but you can just switch `kotlin` to `java` in the plugin config above to get a Java client.
 
 Using the client is very straightforward in Kotlin:
 
