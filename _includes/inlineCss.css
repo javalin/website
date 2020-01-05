@@ -3,7 +3,8 @@ p code,
 li code {
     font-size: 90%;
     letter-spacing: -0.5px;
-    border: 1px solid #ccc;
+    border: 1px solid #ccd;
+    background: #f5f5f7;
     padding: 1px 3px;
 }
 

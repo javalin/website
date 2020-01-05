@@ -1,3 +1,5 @@
+$code-bg-color: #2a2b31;
+
 .highlighter-rouge {
   margin: 10px 0;
   position: relative;
@@ -5,12 +7,13 @@
   pre {
     margin: 0;
     overflow: auto;
-    background: #30312a;
+    background: $code-bg-color;
     padding: 15px;
     code {
       float: left;
-      font-size: 15px;
-      line-height: 1.6;
+      font-size: 14px;
+      line-height: 1.5;
+      font-family: 'Oxygen Mono', monospace;
     }
     .comment {
       font-size: 100%;
@@ -65,7 +68,7 @@ pre.code-toolbar > .toolbar span {
 .multitab-code {
   margin-top: 8px;
   ul {
-    background: #30312a;
+    background: $code-bg-color;
     @include noselect;
     border-radius: 5px 5px 0 0;
     list-style: none;
@@ -97,13 +100,8 @@ pre.code-toolbar > .toolbar span {
     position: relative;
     margin: 0;
     overflow: auto;
-    background: #30312a;
+    background: $code-bg-color;
     padding: 15px;
-    code {
-      float: left;
-      font-size: 15px;
-      line-height: 1.6;
-    }
   }
 }
 
@@ -129,9 +127,9 @@ pre.code-toolbar > .toolbar span {
 /* Inline code */
 :not(pre) > code[class*="language-"] {
   font-size: 90%;
-  letter-spacing: -0.5px;
-  border: 1px solid #ccc;
-  background: #f5f5f5;
+  letter-spacing: -0.3px;
+  border: 1px solid #ccd;
+  background: #f5f5f7;
   padding: 1px 3px;
   color: #006381;
   border-radius: 3px;

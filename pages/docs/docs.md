@@ -518,14 +518,14 @@ app.routes(() -> {
 {% capture kotlin %}
 app.routes {
     path("users") {
-        get(userController::getAllUsers)
-        post(userController::createUser)
+        get(UserController::getAllUsers)
+        post(UserController::createUser)
         path(":id") {
-            get(userController::getUser)
-            patch(userController::updateUser)
-            delete(userController::deleteUser)
+            get(UserController::getUser)
+            patch(UserController::updateUser)
+            delete(UserController::deleteUser)
         }
-        ws("events", userController::webSocketEvents)
+        ws("events", UserController::webSocketEvents)
     }
 }
 {% endcapture %}

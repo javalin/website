@@ -1,4 +1,5 @@
 $javalin-brand-primary: #008ab4;
+$light-border: #dde;
 $card-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
 
 @mixin noselect() {
@@ -14,7 +15,7 @@ $card-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
 
 html {
   background: #f9f9f9;
-  background: linear-gradient(#f9f9f9, #fcfcfc);
+  background: linear-gradient(#f9f9fc, #fcfcff);
   overflow-y: scroll;
   color: #333;
   line-height: 1.4;
@@ -46,18 +47,31 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: 'Encode Sans', sans-serif;
-  font-weight: 700;
+  font-family: 'Roboto Slab', sans-serif;
+  font-weight: 500;
   letter-spacing: -0.5px;
   margin-top: 1.75em;
   margin-bottom: 0.25em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
   + p {
     margin-top: 0.25em;
   }
 }
+
+.has-right-menu {
+  h2,
+  h3,
+  h4 {
+    &::before {
+      content: "#";
+      margin-right: 8px;
+    }
+  }
+}
+
 
 p {
   font-family: Verdana, sans-serif;
@@ -73,16 +87,18 @@ li {
   > code {
     font-size: 90%;
     letter-spacing: -0.5px;
-    border: 1px solid #ccc;
+    border: 1px solid #ccd;
     background: #f5f5f5;
     padding: 1px 3px;
     color: darken($javalin-brand-primary, 10%);
     border-radius: 3px;
     font-style: normal;
   }
+
   .highlighter-rouge pre {
     margin-bottom: 20px;
     padding: 10px;
+
     code {
       font-size: 14px;
       line-height: 1.45;
@@ -112,8 +128,9 @@ main {
   margin: 15px 0;
   background: #fff;
   padding: 15px;
-  border: 1px dashed #bbb;
+  border: 1px dashed #bbc;
   border-radius: 5px;
+
   p {
     margin: 0;
   }
@@ -122,6 +139,7 @@ main {
 .star-us {
   overflow: auto;
   margin: 25px 0 10px;
+
   > * {
     height: 30px;
     line-height: 30px;
@@ -154,18 +172,20 @@ main {
 
 blockquote {
   background: #f2f2f2;
-  border-left: 10px solid #ccc;
+  border-left: 10px solid #ccd;
   margin: 0 0 20px 0;
   padding: 0.5em 10px;
   quotes: "\201C""\201D""\2018""\2019";
+
   &:before {
-    color: #ccc;
+    color: #ccd;
     content: open-quote;
     font-size: 4em;
     line-height: 0.1em;
     margin-right: 5px;
     vertical-align: -0.5em;
   }
+
   p {
     line-height: 200%;
     display: inline;
@@ -177,13 +197,16 @@ pre { // scrollbar in code examples
     width: 8px;
     height: 8px;
   }
+
   &::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.15);
     border-radius: 8px;
   }
+
   &::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.2);
   }
+
   &::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.15);
     border-radius: 8px;
@@ -206,8 +229,8 @@ pre { // scrollbar in code examples
 }
 
 .added-in {
-  border-left: 3px solid #00c621;
-  background: #e8e8e8;
+  border-left: 3px solid #27b53f;
+  background: rgba(0, 0, 0, 0.07);
   height: 20px;
   width: auto;
   display: inline-block;
@@ -218,9 +241,10 @@ pre { // scrollbar in code examples
   font-size: 12px;
   font-weight: 400;
   letter-spacing: 0;
-  &:after{
+
+  &:after {
     content: "";
-    border: 10px solid #e8e8e8;
+    border: 10px solid rgba(0, 0, 0, 0.07);
     border-right-color: transparent;
     position: absolute;
     top: 0;
@@ -249,7 +273,11 @@ pre { // scrollbar in code examples
 }
 
 img.bordered-image {
-  border: 1px solid #ddd;
+  border: 1px solid $light-border;
   border-radius: 3px;
   box-sizing: content-box;
+}
+
+.no-margin-top {
+  margin-top: 0;
 }
