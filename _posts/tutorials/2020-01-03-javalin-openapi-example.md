@@ -13,10 +13,14 @@ github: https://github.com/tipsy/javalin-openapi-example
 ## What you will learn
 
 This tutorial will teach you how to use the [Javalin OpenAPI plugin](/plugins/openapi)
-to create an OpenAPI spec (previously known as a "Swagger" spec).
-We will build a User CRUD API with five operations.
-The example snippet will contain both Java and Kotlin code
-and full projects for both languages are available on
+to create an OpenAPI spec (previously known as a "Swagger spec"). The OpenAPI spec is
+an API description format for REST APIs, which is readable for both humans and machines.
+A spec can be used to generate web based documentation and API clients for all major languages,
+saving a lot of time for API consumers.
+
+We will build a `User` CRUD API with five operations and generate an OpenAPI spec for it.
+The example snippets contain both Java and Kotlin code,
+and a project for each languages is available on
 [GitHub](https://github.com/tipsy/javalin-openapi-example).
 
 ## Dependencies
@@ -68,8 +72,10 @@ First, we need to create a Maven project with our dependencies: [(→ Tutorial)]
 </dependencies>
 ~~~
 
-Most of these are necessary for both Kotlin and Java, the few which aren't have been commented.
-You can view the full [POM](https://github.com/tipsy/javalin-openapi-example/blob/master/pom.xml) on GitHub.
+Most of these are necessary for both Kotlin and Java, the few which aren't have been commented. \\
+ReDoc and Swagger UI are two different presentation UIs for OpenAPI specs.
+Usually you would only include one of these, but both are included in the example project so
+you can try them out and see which one you like. You can view the full [POM](https://github.com/tipsy/javalin-openapi-example/blob/master/pom.xml) on GitHub.
 
 ## Building the API
 
