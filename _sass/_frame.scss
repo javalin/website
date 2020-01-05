@@ -37,6 +37,7 @@ footer {
   border-top: 1px solid $light-border;
   padding: 0 20px;
   overflow: hidden;
+
   a {
     font-weight: 700;
   }
@@ -55,21 +56,26 @@ nav {
   font-weight: 400;
   height: 80px;
   position: relative;
+
   #logo img {
     margin: 20px 0;
     height: 40px;
   }
+
   ul {
     padding: 0;
     list-style: none;
     float: right;
     height: 40px;
     margin: 18px 0;
+
     li {
       + li {
         border-left: 1px solid $light-border;
       }
+
       display: inline-block;
+
       a {
         font-size: 18px;
         display: block;
@@ -77,10 +83,12 @@ nav {
         text-decoration: none;
         padding: 0 15px;
         line-height: 32px;
+
         &:hover {
           color: #000;
         }
       }
+
       &:last-of-type a {
         padding-right: 0;
         margin-right: 0;
@@ -99,31 +107,39 @@ nav {
   top: 120px;
   z-index: 999999;
   width: 200px;
+
   ul {
     margin: 0;
     list-style: none;
     padding: 0;
+
     li {
       margin: 1px 0;
     }
+
     .active > a {
       font-weight: 700;
     }
+
     a {
       display: inline-block;
       padding: 2px 0;
     }
+
     ul {
       font-size: 14px;
       padding-left: 15px;
+
       a {
         padding: 1px 0;
       }
     }
   }
+
   ul.tutorial-menu {
     font-size: 13px;
     font-family: Tahoma, arial, sans-serif;
+
     a {
       padding: 2px 0;
       margin: 2px 0;
@@ -200,13 +216,16 @@ nav {
   footer {
     display: none;
   }
+  nav ul li + li {
+    border-left: none;
+  }
 }
 
 @media (max-width: 400px) {
   nav {
     #logo img {
       margin: 25px 0;
-      height: 30px;
+      height: 26px;
     }
   }
 }

@@ -163,31 +163,25 @@ main {
     display: block;
   }
 }
-
-@media (max-width: 480px) {
-  #starFrame {
-    float: right;
-  }
-}
-
+.post-content blockquote,
 blockquote {
-  background: #f2f2f2;
-  border-left: 10px solid #ccd;
+  background: rgba(0, 0, 0, 0.04);
+  border-left: 10px solid rgba(0, 0, 0, 0.1);
   margin: 0 0 20px 0;
   padding: 0.5em 10px;
   quotes: "\201C""\201D""\2018""\2019";
 
   &:before {
-    color: #ccd;
+    color: rgba(0, 0, 0, 0.2);
     content: open-quote;
     font-size: 4em;
-    line-height: 0.1em;
+    line-height: 0;
     margin-right: 5px;
     vertical-align: -0.5em;
   }
 
-  p {
-    line-height: 200%;
+  > p {
+    line-height: 2;
     display: inline;
   }
 }
