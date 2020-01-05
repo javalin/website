@@ -185,9 +185,11 @@ fun getConfiguredOpenApiPlugin() = OpenApiPlugin(
 {% endcapture %}
 {% include macros/docsSnippetKotlinFirst.html java=java kotlin=kotlin %}
 
-You enable the OpenAPI plugin by calling `registerPlugin`, and you need to create a config for it.
-In this tutorial we will enable both ReDoc and Swagger UI to generate web UIs for our API,
-but you'll most likely only use one of these.
+We enable the OpenAPI plugin by calling `registerPlugin(getConfiguredOpenApiPlugin())`,
+and we do all our configuration in that method. As mentioned earlier, we will enable
+both ReDoc and Swagger UI in our `OpenApiOptions` (to generate web UIs for our API),
+but you'll most likely only use one of these in production. We will also set a couple of
+default responses (500, 503) that will apply to all our endpoints.
 
 The API definition in the snippet above references something called `UserController`,
 which doesn't exist. Let's create a skeleton:
