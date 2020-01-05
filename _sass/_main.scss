@@ -52,10 +52,9 @@ h4 {
   letter-spacing: -0.5px;
   margin-top: 1.75em;
   margin-bottom: 0.25em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
+  //white-space: nowrap;
+  //overflow: hidden;
+  //text-overflow: ellipsis;
   + p {
     margin-top: 0.25em;
   }
@@ -71,7 +70,6 @@ h4 {
     }
   }
 }
-
 
 p {
   font-family: Verdana, sans-serif;
@@ -163,6 +161,7 @@ main {
     display: block;
   }
 }
+
 .post-content blockquote,
 blockquote {
   background: rgba(0, 0, 0, 0.04);

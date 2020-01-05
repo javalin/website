@@ -38,10 +38,10 @@ permalink: /documentation
 
 <h1 class="no-margin-top">Documentation</h1>
 
-The documentation on this page is always for the latest version of Javalin, currently `{{site.javalinversion}}`.\\
+The documentation on this page is always for the latest version of Javalin, currently `{{site.javalinversion}}`.
 Javalin follows [semantic versioning](http://semver.org/), meaning there are no breaking
 changes unless the major (leftmost) digit changes, for example `3.X.X` to `4.X.X`.
-Functionality added after `3.0.0` is marked with labels containing the version number,
+Functionality that has been added after `3.0.0` is marked with a label containing the version number,
 ex: <span class="added-in">Added in v3.3.0</span>
 
 <div class="notification star-us">
