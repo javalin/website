@@ -20,7 +20,7 @@ saving a lot of time for API consumers.
 
 We will build a `User` CRUD API with five operations and generate an OpenAPI spec for it.
 The example snippets contain both Java and Kotlin code,
-and a project for each languages is available on
+and a project for each language is available on
 [GitHub](https://github.com/tipsy/javalin-openapi-example).
 
 ## Dependencies
