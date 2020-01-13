@@ -143,7 +143,7 @@ val app = Javalin.create { config ->
 </div>
 
 <div class="landing bluepart">
-    <h1>Who's using Javalin?</h1>
+    <h1 id="whos-using-javalin">Who's using Javalin?</h1>
     <div class="used-by">
         <img src="/img/used-by/jhu.png" alt="JHU">
         <img src="/img/used-by/microsoft.png" alt="Microsoft">
