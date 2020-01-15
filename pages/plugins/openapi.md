@@ -11,6 +11,7 @@ permalink: /plugins/openapi
 * [Handler](#documenting-handler)
   * [DSL](#dsl)
   * [Annotations](#annotations)
+  * [Server-sent events](#server-sent-events)
 * [CrudHandler](#documenting-crudhandler)
   * [DSL](#dsl-1)
   * [Annotations](#annotations-1)
@@ -169,7 +170,7 @@ OpenApiBuilder.document()
     .result("200", oneOf(
          documentedContent(SomeMessage.class),
          documentedContent(User.class, true)
-     ))    
+     ))
 
     // Other
     .ignore(); // Hide this endpoint in the documentation
@@ -296,7 +297,7 @@ required for static Java methods. Static Kotlin methods or Java instance methods
 3. Include the the `path` and `method` parameter on the `OpenApi` annotation. These parameter are only
 used for annotation scanning.
 
-    ```java
+```java
     public class MyApplication {
       public static void main(String[] args) {
           // ...
@@ -314,7 +315,25 @@ used for annotation scanning.
             // ...
         }
     }
-    ```
+```
+
+### Server-sent events
+The `app.sse` method for adding a SSE endpoint in Javalin is just a wrapped `app.get` call.
+To document your `app.sse` method, you will have to declare a standard `app.get` `Handler` and call the SSE handler manually:
+
+```kotlin
+@OpenApi(
+    description = "Server Sent Events",
+    tags = ["My Tag"]
+)
+fun sseEvents(ctx: Context) {
+    SseHandler(Consumer { sse ->
+
+    }).handle(ctx)
+}
+
+app.get("/events", ::sseEvents)
+```
 
 ## Documenting CrudHandler
 The `CrudHandler` ([docs](/documentation#crudhandler)) is an interface with the five main CRUD operations.
