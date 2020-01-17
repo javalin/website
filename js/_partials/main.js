@@ -64,11 +64,14 @@ if (document.location.pathname.includes("/documentation")) {
 
 // multi-tab code
 document.addEventListener("click", function (e) {
+    const targetTab = e.target.getAttribute("data-tab");
+    if (targetTab == null) {
+        return;
+    }
     const grandParent = e.target.parentElement.parentElement;
     if (grandParent == null || !grandParent.classList.contains("multitab-code")) {
         return;
     }
-    const targetTab = e.target.getAttribute("data-tab");
     grandParent.setAttribute("data-tab", targetTab);
     if (!grandParent.classList.contains("dependencies")) {
         localStorage.setItem("language", e.target.textContent.toLowerCase());
