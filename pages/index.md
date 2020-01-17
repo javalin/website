@@ -69,7 +69,7 @@ permalink: /
 <div class="landing bluepart">
 <h1>Declare server and API<br> in the same place</h1>
 {% capture java %}
-import io.javalin.ApiBuilder.*;
+import io.javalin.apibuilder.ApiBuilder.*;
 import io.javalin.Javalin;
 
 Javalin app = Javalin.create(config -> {
@@ -90,7 +90,7 @@ Javalin app = Javalin.create(config -> {
 }).start(port);
 {% endcapture %}
 {% capture kotlin %}
-import io.javalin.ApiBuilder.*;
+import io.javalin.apibuilder.ApiBuilder.*;
 import io.javalin.Javalin;
 
 val app = Javalin.create { config ->
