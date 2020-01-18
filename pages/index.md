@@ -69,8 +69,8 @@ permalink: /
 <div class="landing bluepart">
 <h1>Declare server and API<br> in the same place</h1>
 {% capture java %}
-import io.javalin.apibuilder.ApiBuilder.*;
 import io.javalin.Javalin;
+import static io.javalin.apibuilder.ApiBuilder.*;
 
 Javalin app = Javalin.create(config -> {
     config.defaultContentType = "application/json";
@@ -90,8 +90,8 @@ Javalin app = Javalin.create(config -> {
 }).start(port);
 {% endcapture %}
 {% capture kotlin %}
-import io.javalin.apibuilder.ApiBuilder.*;
 import io.javalin.Javalin;
+import io.javalin.apibuilder.ApiBuilder.*;
 
 val app = Javalin.create { config ->
     config.defaultContentType = "application/json"
