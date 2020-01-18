@@ -11,8 +11,8 @@ github: https://github.com/tipsy/javalin-testing-example
 ---
 
 ## Introduction
-Since Javalin is a library there are no requirements for how tests must be written,
-so this guide will just outline a few common approaches. None of the approaches are better
+Since Javalin is a library, there are no requirements for how tests must be written.
+This guide will outline a few common approaches. None of the approaches are better
 than the others, you just have to find something that works for you.
 
 To begin, you'll need to have a Maven project configured [(→ Tutorial)](/tutorials/maven-setup).
@@ -45,7 +45,7 @@ To begin, we will need to add a Mocking library:
 Once we have the mocking library added, we'll mock the Javalin `Context`, since
 the `Context` class is responsible for input and output in Javalin `Handler`s.
 We're using a static/singleton controller in this example for simplicity, but
-how you structure that code is entire up to yourself.
+how you structure that code is entirely up to yourself.
 
 {% capture java %}
 public class UnitTest {
@@ -101,7 +101,7 @@ In the first test, we instruct the `Context` mock to return `"Roland"` when
 that `ctx.status(201)` was called. We could also have mocked the `UserController`
 to verify that the user was added.
 
-In the second test we return `null` for the `username`, and we make sure
+In the second test, we return `null` for the `username`, and we make sure
 to *expect* a `BadRequestResponse`.
 
 The code for `UserController.create(ctx)` looks like this:
@@ -135,7 +135,7 @@ You can follow any general mocking tutorial for your favorite language and libra
 
 ## Functional/integration tests
 Functional tests are "black box" tests, and only focus on the business requirements of an application.
-In the unit tests in the previous section we mocked the `Context` object and called `verify`
+In the unit tests (in the previous section), we mocked the `Context` object and called `verify`
 to ensure that `ctx.status(201)` was called inside the `UserController.create(ctx)` `Handler`.
 In functional tests, we just verify that we get the expected output for the provided input.
 The easiest way of writing this type of test in Javalin is to use
@@ -192,11 +192,11 @@ class FunctionalTest {
 {% endcapture %}
 {% include macros/docsSnippetKotlinFirst.html java=java kotlin=kotlin %}
 
-In Javalin's test suite, 90%+ of tests are written like this.
+In Javalin's test suite, almost all of the tests are written like this.
 I personally prefer this approach for tests, as each test touches the whole system, and you don't
 risk making mistakes while manually specifying expected behavior (mocking). Javalin's test
-suit starts and stops 400+ Javalin instances, and running all the tests takes about 10 seconds total
-(most of those 10 seconds is spent waiting for a WebSocket test and starting Chrome for browser tests).
+suite starts and stops more than 400 Javalin instances, and running all the tests takes about ten seconds total
+(most of those ten seconds is spent waiting for a WebSocket test and starting Chrome for browser tests).
 
 ## End-to-end/UI/scenario tests
 Like functional tests, end-to-end tests focus on input and output, but typically describe a
@@ -264,16 +264,16 @@ class EndToEndTest {
 {% endcapture %}
 {% include macros/docsSnippetKotlinFirst.html java=java kotlin=kotlin %}
 
-In this example we just do `assertThat(driver.pageSource).contains("<h1>User UI</h1>")`, since writing
+In this example, we just do `assertThat(driver.pageSource).contains("<h1>User UI</h1>")`, since writing
 proper Selenium tests is outside of the scope of this guide.
-You can use selenium to simulate any type of user behavior, have a look at the
-[selenium docs](https://selenium.dev/documentation/en/) for details.
-The [web driver manager docs](https://github.com/bonigarcia/webdrivermanager) includes an example of
+You can use Selenium to simulate any type of user behavior. Have a look at the
+[Selenium docs](https://selenium.dev/documentation/en/) for details.
+The [WebDriverManager docs](https://github.com/bonigarcia/webdrivermanager) includes an example of
 how to re-use your driver between multiple tests.
 
 
 ## Conclusion
 
 Hopefully this brief guide has given you some ideas on how to test your Javalin application.
-Since Javalin is just a library, you're more or less free to test it however you like,
+Since Javalin is just a library, you're more or less free to test however you like;
 there is no "Javalin way" of testing.
