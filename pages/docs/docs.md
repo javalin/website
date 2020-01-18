@@ -1368,6 +1368,13 @@ Every rate limiter is independent (IP and `Handler` based), so different endpoin
 ## FAQ
 Frequently asked questions.
 
+### Testing
+People often ask how to test Javalin apps. Since Javalin is just a library, you can
+instantiate and start the server programmatically. This means testing is really up to you.
+There is a tutorial at [/tutorials/testing](/tutorials/testing) which goes through
+some different types of tests (unit tests, functional/integration tests, ui/end-to-end tests).
+You can read it to get some ideas for how to test your app.
+
 ### Javadoc
 There is a Javadoc available at [javadoc.io](http://javadoc.io/doc/io.javalin/javalin).
 Please contribute to the Javadoc if you can.
