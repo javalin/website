@@ -3,7 +3,7 @@ layout: tutorial
 title: Testing Javalin Applications
 permalink: /tutorials/testing
 summarytitle: Testing Javalin Applications
-summary: Learn how to run different kind of tests in Javalin. Unit tests, functional/integration tests, UI/end-to-end tests.
+summary: Learn how to run different kinds of tests in Javalin. Unit tests, functional/integration tests, UI/end-to-end tests.
 date: 2020-01-18
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 language: ["kotlin", "java"]
