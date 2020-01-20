@@ -22,25 +22,27 @@ Unit tests are tests for the smallest and most isolated part of an application.
 In Javalin, this means testing anything that implements the `Handler` interface.
 Unit tests are very fast and cheap to run, and they usually require
 [mocking](https://en.wikipedia.org/wiki/Mock_object) of objects.
-To begin, we will need to add a Mocking library:
+To begin, we will need to add a Mocking library.
 
-{% capture java %}
+For Java the most popular choice is [Mockito](https://site.mockito.org/):
+```xml
 <dependency>
     <groupId>org.mockito</groupId>
     <artifactId>mockito-core</artifactId>
     <version>3.2.4</version>
     <scope>test</scope>
 </dependency>
-{% endcapture %}
-{% capture kotlin %}
+```
+
+For Kotlin, the most poplar choice is [MockK](https://mockk.io/):
+```xml
 <dependency>
     <groupId>io.mockk</groupId>
     <artifactId>mockk</artifactId>
     <version>1.9.3</version>
     <scope>test</scope>
 </dependency>
-{% endcapture %}
-{% include macros/docsSnippetKotlinFirst.html java=java kotlin=kotlin %}
+```
 
 Once we have the mocking library added, we'll mock the Javalin `Context`, since
 the `Context` class is responsible for input and output in Javalin `Handler`s.
@@ -139,7 +141,9 @@ In the unit tests (in the previous section), we mocked the `Context` object and 
 to ensure that `ctx.status(201)` was called inside the `UserController.create(ctx)` `Handler`.
 In functional tests, we just verify that we get the expected output for the provided input.
 The easiest way of writing this type of test in Javalin is to use
-a HTTP library and asserting on the response. We'll use Unirest and AssertJ:
+a HTTP library and asserting on the response. We'll use
+[Unirest](https://kong.github.io/unirest-java/)
+and [AssertJ](https://joel-costigliola.github.io/assertj/):
 
 ```xml
 <dependency>
@@ -203,7 +207,8 @@ Like functional tests, end-to-end tests focus on input and output, but typically
 longer scenario. For example, a user visiting a website, clicking on a link, filling in a form,
 and submitting. These types of tests are usually written with Selenium in Java/Kotlin. Selenium
 requires you to have the browser that you want to use installed, but it's also possible to
-install that browser on demand. We'll need to add two dependencies: Selenium and WebDriverManager:
+install that browser on demand. We'll need to add two dependencies:
+[Selenium](https://selenium.dev/documentation/en/) and [WebDriverManager](https://github.com/bonigarcia/webdrivermanager):
 
 ```xml
 <dependency>
