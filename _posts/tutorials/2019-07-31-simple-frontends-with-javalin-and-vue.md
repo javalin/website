@@ -93,7 +93,7 @@ Let's create `/src/main/resources/vue/layout.html`:
 <html>
     <head>
         <meta charset="utf8">
-        <script src="/webjars/vue/2.6.10/vue.min.js"></script>
+        <script src="/webjars/vue/2.6.10/dist/vue.min.js"></script>
         @componentRegistration
     </head>
     <body>
