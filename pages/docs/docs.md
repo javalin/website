@@ -833,6 +833,22 @@ app.exception(FileNotFoundException::class.java) { e, ctx ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
+You can also include the content type when declaring your error mappers:
+
+{% capture java %}
+app.error(404, "html" ctx -> {
+    ctx.html("Generic 404 message")
+});
+{% endcapture %}
+{% capture kotlin %}
+app.error(404, "html") { ctx ->
+    ctx.html("Generic 404 message")
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+This can be useful if you, for example, want one set of error handlers for HTML, and one for JSON.
+
 ## Server-sent Events
 Server-sent events (often also called event source) are very simple in Javalin.
 You call `app.sse()`, which gives you access to the connected `SseClient`:
