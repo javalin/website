@@ -34,14 +34,6 @@ permalink: /
             </p>
         </div>
         <div class="box">
-            <h3>Active</h3>
-            <p>
-                A new version of Javalin has been released twice a month (on average) since the first version.
-                Don't worry though, every non-major version is backwards compatible.
-                PRs and issues are reviewed swiftly, normally every week.
-            </p>
-        </div>
-        <div class="box">
             <h3>Interoperable</h3>
             <p>
                 Other Java and Kotlin web frameworks usually offer separate version for each language.
@@ -61,6 +53,14 @@ permalink: /
                 Visit our <a href="/for-educators">educators page</a> if you're teaching web programming
                 and looking for a web framework which will get out of your way and let you focus on the
                 core concepts of your curriculum.
+            </p>
+        </div>
+        <div class="box">
+            <h3>OpenAPI integration</h3>
+            <p>
+                Many lightweight Java and Kotlin web frameworks don't support OpenAPI, but Javalin has a full
+                integration, including Swagger UI and redoc to display the generate docs.
+                Learn more at the dedicated <a href="/plugins/openapi">OpenAPI plugin page</a>.
             </p>
         </div>
     </div>
