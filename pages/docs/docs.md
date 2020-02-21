@@ -1472,12 +1472,8 @@ If you wait for processes that run for longer than this, you can configure the a
 For more information, see [issue 448](https://github.com/tipsy/javalin/issues/448).
 
 ### Configuring the JSON mapper
-The JSON mapper can be configured like this:
-```java
-Gson gson = new GsonBuilder().create();
-JavalinJson.setFromJsonMapper(gson::fromJson);
-JavalinJson.setToJsonMapper(gson::toJson);
-```
+
+Note that these are global settings, and can't be configured per instance of Javalin.
 
 #### Configuring Jackson
 The JSON mapper uses Jackson by default, which can be configured by calling:
@@ -1485,7 +1481,28 @@ The JSON mapper uses Jackson by default, which can be configured by calling:
 JavalinJackson.configure(objectMapper)
 ```
 
-Note that these are global settings, and can't be configured per instance of Javalin.
+#### Using Gson
+Javalin can be configured to use [Gson](https://github.com/google/gson) instead of Jackson. In Java:
+
+```java
+Gson gson = new GsonBuilder().create();
+JavalinJson.setFromJsonMapper(gson::fromJson);
+JavalinJson.setToJsonMapper(gson::toJson);
+```
+
+In Kotlin:
+
+```kotlin
+val gson = GsonBuilder().create()
+
+JavalinJson.fromJsonMapper = object : FromJsonMapper {
+    override fun <T> map(json: String, targetClass: Class<T>) = gson.fromJson(json, targetClass)
+}
+
+JavalinJson.toJsonMapper = object : ToJsonMapper {
+    override fun map(obj: Any): String = gson.toJson(obj)
+}
+```
 
 ### Adding other Servlets and Filters to Javalin
 Javalin is designed to work with other `Servlet` and `Filter` instances running on the Jetty Server.
