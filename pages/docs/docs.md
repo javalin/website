@@ -1401,6 +1401,21 @@ then launch the jar with `java -jar filename.jar`. That's it.
 Javalin has an embedded server, so you don't need an application server.
 There is also a tutorial on [deploying Javalin to Heroku](/tutorials/heroku).
 
+### Other web servers
+<div class="comment"><strong>Ctrl+f</strong>: "without jetty", "tomcat", "standalone", "servlet container", "war".</div>
+
+Javalin is primarily meant to be used with the embedded Jetty server, but if you want to run Javalin
+on another web server (such as Tomcat), you can use the `Javalin.createStandalone()` factory method.
+
+This method will create a Javalin instance, which exposes the `HttpServlet` that
+Javalin uses to handle HTTP requests (via `app.servlet()`). Please note that Javalin's WebSockets
+functionality has a hard dependency on Jetty, and will not work in standalone mode.
+
+Remember to exclude Jetty when setting this up. If you need more instructions, follow the
+[tutorial](https://javalin.io/2018/11/15/javalin-embedded-example.html).
+
+
+
 ### Uploads
 Uploaded files are easily accessible via `ctx.uploadedFiles()`:
 {% capture java %}
@@ -1457,7 +1472,6 @@ If you wait for processes that run for longer than this, you can configure the a
 For more information, see [issue 448](https://github.com/tipsy/javalin/issues/448).
 
 ### Configuring the JSON mapper
-
 The JSON mapper can be configured like this:
 ```java
 Gson gson = new GsonBuilder().create();
@@ -1466,7 +1480,6 @@ JavalinJson.setToJsonMapper(gson::toJson);
 ```
 
 #### Configuring Jackson
-
 The JSON mapper uses Jackson by default, which can be configured by calling:
 ```java
 JavalinJackson.configure(objectMapper)
