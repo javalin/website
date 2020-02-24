@@ -44,11 +44,11 @@ the Jetty dependency:
 ```kotlin
 dependencies {
     compile(kotlin("stdlib-jdk8"))
-    compile("io.javalin:javalin:2.4.0") {
+    compile("io.javalin:javalin:3.7.0") {
         exclude(mapOf("group" to "org.eclipse.jetty"))
         exclude(mapOf("group" to "org.eclipse.jetty.websocket"))
     }
-    compile("org.slf4j:slf4j-simple:1.7.25")
+    compile("org.slf4j:slf4j-simple:1.7.30")
 }
 ```
 
@@ -57,9 +57,9 @@ The servlet itself is very simple:
 ```kotlin
 @WebServlet(urlPatterns = ["/rest/*"], name = "MyRestServlet", asyncSupported = false)
 class MyRestServlet : HttpServlet() {
-    val javalin = EmbeddedJavalin()
+    val javalin: JavalinServlet = Javalin.createStandalone()
             .get("/rest") { ctx -> ctx.result("Hello!") }
-            .createServlet()
+            .servlet()
 
     override fun service(req: HttpServletRequest, resp: HttpServletResponse) {
         javalin.service(req, resp)
@@ -67,8 +67,8 @@ class MyRestServlet : HttpServlet() {
 }
 ```
 
-> Note: You must remember to use the `EmbeddedJavalin` class, which has been carefully
-designed to not to depend on Jetty. Using the original `Javalin` class
+> Note: You must remember to use the `createStandalone()` function, which has been carefully
+designed to make Javalin not to depend on Jetty. Using `Javalin.create()`
 will make the WAR app fail to start with `java.lang.ClassNotFoundException: org.eclipse.jetty.server.Server`.
 
 The Servlet container will automatically auto-discover the servlet (since it's annotated with `@WebServlet`);
