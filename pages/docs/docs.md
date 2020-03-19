@@ -561,22 +561,76 @@ interface CrudHandler {
 ```
 
 ## Validation
-You can access Javalin's `Validator` class through the parameter and body methods, or by
-calling `JavalinValidation.validate()`:
+You can access Javalin's `Validator` class through the query parameter, path parameter, header, and
+body methods, or by calling `JavalinValidation.validate()`. Query parameters and form parameters can
+be given a default value if a parameter is not present. Path parameters and headers cannot have default
+values.
 
 {% capture java %}
-String myQpStr = ctx.queryParam("my-qp");
-int myQpInt = ctx.queryParam("my-qp", Integer.class).get();
-int myQpInt = ctx.queryParam("my-qp", Integer.class).check(i -> i > 4).get();
-Instant instant = ctx.queryParam("my-qp", Instant.class).get();
+// Query Parameters
+// example url: /example?exampleId=123&color=blue&size=1&ts=1584647077000
+String color = ctx.queryParam("color"); // blue
+int exampleId = ctx.queryParam("exampleId", Integer.class).get(); // 123
+int size = ctx.queryParam("size", Integer.class).check(i -> i > 4).get(); // exception
+int qty = ctx.queryParam("qty", Integer.class, 12).get(); // uses default value 12
+Instant instant = ctx.queryParam("ts", Instant.class).get();
+
+// Path Parameters
+// example url: /example/:exampleId/:name/:quantity/:timestamp-ms
+String name = ctx.pathParam("name");
+int exampleId = ctx.pathParam("exampleId", Integer.class).get();
+int quantity = ctx.pathParam("quantity", Integer.class).check(i -> i > 4).get();
+Instant instant = ctx.pathParam("timestamp-ms", Instant.class).get();
+
+// Form Parameters
+String color = ctx.formParam("color");
+int exampleId = ctx.formParam("exampleId", Integer.class).get();
+int size = ctx.formParam("size", Integer.class).check(i -> i > 4).get();
+int qty = ctx.formParam("qty", Integer.class, 12).get(); // may default to value 12
+Instant instant = ctx.queryParam("ts", Instant.class).get();
+
+// Headers
+String exampleHeaderStr = ctx.header("Example");
+int version = ctx.header("Version", Integer.class).get();
+int version = ctx.header("Version", Integer.class).check(i -> i > 4).get();
+Instant instant = ctx.header("Date", Instant.class).get();
+
+// Body Validation
 MyObject myObject = ctx.bodyValidator(MyObject.class);
+
 {% endcapture %}
 {% capture kotlin %}
-val myQpStr = ctx.queryParam("my-qp")
-val myQpInt = ctx.queryParam<Int>("my-qp").get()
-val myQpInt = ctx.queryParam<Int>("my-qp").check({ it > 4 }).get()
-val instant = ctx.queryParam<Instant>("my-qp").get()
+// Query Parameters
+// example url: /example?exampleId=123&color=blue&size=1&ts=1584647077000
+val color = ctx.queryParam("color") // blue
+val exampleId = ctx.queryParam<Int>("exampleId").get(); // 123
+val size = ctx.queryParam<Int>("size").check({ it > 4 }).get(); // exception
+val qty = ctx.queryParam<Int>("qty", 12).get(); // uses default value 12
+val instant = ctx.queryParam<Instant>("ts").get();
+
+// Path Parameters
+// example url: /example/:exampleId/:name/:quantity/:timestamp-ms
+val name = ctx.pathParam("name")
+val exampleId = ctx.pathParam<Int>("exampleId").get()
+val quantity = ctx.pathParam<Int>("quantity").check({ it > 4 }).get()
+val instant = ctx.pathParam<Instant>("timestamp-ms").get()
+
+// Form Parameters
+val color = ctx.formParam("color");
+val exampleId = ctx.formParam<Int>("exampleId", Integer.class).get();
+val size = ctx.formParam<Int>("size").check(i -> i > 4).get();
+val qty = ctx.formParam<Int>("qty", 12).get(); // may default to value 12
+val instant = ctx.queryParam<Instant>("ts").get();
+
+// Headers
+val exampleHeaderStr = ctx.header("Example");
+val version = ctx.header<Int>("Version").get();
+val version = ctx.header<Int>("Version").check({ it > 4 }).get();
+val instant = ctx.header<Instant>("Date").get();
+
+// Body Validation
 val myObject = ctx.bodyValidator<MyObject>();
+
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
