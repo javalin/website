@@ -563,8 +563,8 @@ interface CrudHandler {
 ## Validation
 You can access Javalin's `Validator` class through the query parameter, path parameter, header, and
 body methods, or by calling `JavalinValidation.validate()`. Query parameters and form parameters can
-be given a default value if a parameter is not present. Path parameters and headers cannot have default
-values.
+be given a default value for the case when a parameter is not present. Path parameters and headers
+cannot have default values.
 
 {% capture java %}
 // Query Parameters
@@ -593,7 +593,7 @@ Instant instant = ctx.queryParam("ts", Instant.class).get();
 String exampleHeaderStr = ctx.header("Example");
 int version = ctx.header("Version", Integer.class).get();
 int version = ctx.header("Version", Integer.class).check(i -> i > 4).get();
-Instant instant = ctx.header("Date", Instant.class).get();
+MyValue myValue = ctx.header("X-My-Header", MyValue.class).get();
 
 // Body Validation
 MyObject myObject = ctx.bodyValidator(MyObject.class);
@@ -626,7 +626,7 @@ val instant = ctx.queryParam<Instant>("ts").get();
 val exampleHeaderStr = ctx.header("Example");
 val version = ctx.header<Int>("Version").get();
 val version = ctx.header<Int>("Version").check({ it > 4 }).get();
-val instant = ctx.header<Instant>("Date").get();
+val myValue = ctx.header<MyValue>("X-My-Header").get();
 
 // Body Validation
 val myObject = ctx.bodyValidator<MyObject>();
