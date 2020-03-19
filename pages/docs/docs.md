@@ -1079,7 +1079,6 @@ The logger runs after the WebSocket handler for the endpoint.
 
 #### Dev logging
 
-```
 {% capture java %}
 app.create(config -> {
     config.enableDevLogging(); // enable extensive development logging for http and websocket
@@ -1091,8 +1090,6 @@ app.create { config ->
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
-```
 
 ### Server setup
 
