@@ -1077,6 +1077,23 @@ app.create { config ->
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 The logger runs after the WebSocket handler for the endpoint.
 
+#### Dev logging
+
+```
+{% capture java %}
+app.create(config -> {
+    config.enableDevLogging(); // enable extensive development logging for http and websocket
+});
+{% endcapture %}
+{% capture kotlin %}
+app.create { config ->
+    config.enableDevLogging() // enable extensive development logging for http and websocket
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+```
+
 ### Server setup
 
 Javalin runs on an embedded [Jetty](http://eclipse.org/jetty/). To start and stop the server,
