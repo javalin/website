@@ -150,6 +150,7 @@ val app = Javalin.create { config ->
         <img src="/img/used-by/redhat.png" alt="Redhat">
         <img src="/img/used-by/ntnu.png" alt="NTNU">
         <img src="/img/used-by/pleo.png" alt="Pleo">
+        <img src="/img/used-by/uber.png" alt="Uber">
         <img src="/img/used-by/measuresforjustice.png" alt="Measures for Justice">
         <img src="/img/used-by/wit.png" alt="WIT">
         <img src="/img/used-by/briar.png" alt="Briar">
@@ -173,7 +174,7 @@ val app = Javalin.create { config ->
 <div class="landing whitepart">
     <h1>What is Javalin used for?</h1>
     <p class="survey-promo">
-        Check out our current <a href="/blog/javalin-user-survey-2018">survey results</a> (Summer 2018)
+        Check out our current <a href="/blog/javalin-user-survey-2020">survey results</a> (Spring 2020)
         to learn more about how people use Javalin.
     </p>
 </div>

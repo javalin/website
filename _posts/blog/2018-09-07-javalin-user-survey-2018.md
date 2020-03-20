@@ -66,7 +66,7 @@ Only the users who replied yes to `Are you using Javalin in production` were abl
 ### Q: How many users does your application have?
 <div class="bar-chart">
     <div style="width:63%" data-value="63%">Less than 1k per day</div>
-    <div style="width:16%" data-value="16%">1k - 10k per day</div>
+    <div style="width:22%" data-value="22%">1k - 10k per day</div>
     <div style="width:5%" data-value="5%">10k - 100k per day</div>
     <div style="width:10%" data-value="10%">100k - 1m per day</div>
     <div style="width:0%;background:transparent;" data-value="0%">More than 1m per day</div>

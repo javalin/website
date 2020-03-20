@@ -745,6 +745,8 @@ The `AccessManager` will also run before your WebSocket upgrade request
 (if you have added roles to the endpoint), but keep in mind that WebSockets are long lived,
 so it might be wise to perform a check in `wsBefore` too/instead.
 
+If you want to perform less restricted access management, you should consider using a `before` filter.
+
 ## Default responses
 
 Javalin comes with a built in class called `HttpResponseException`, which can be used for default responses.\\
