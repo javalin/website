@@ -617,7 +617,7 @@ val instant = ctx.pathParam<Instant>("timestamp-ms").get()
 
 // Form Parameters
 val color = ctx.formParam("color");
-val exampleId = ctx.formParam<Int>("exampleId", Integer.class).get();
+val exampleId = ctx.formParam<Int>("exampleId").get();
 val size = ctx.formParam<Int>("size").check(i -> i > 4).get();
 val qty = ctx.formParam<Int>("qty", 12).get(); // may default to value 12
 val instant = ctx.queryParam<Instant>("ts").get();
