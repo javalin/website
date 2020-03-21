@@ -1490,15 +1490,15 @@ Remember to exclude Jetty when setting this up. If you need more instructions, f
 Uploaded files are easily accessible via `ctx.uploadedFiles()`:
 {% capture java %}
 app.post("/upload", ctx -> {
-    ctx.uploadedFiles("files").forEach(file -> {
-        FileUtil.streamToFile(file.getContent(), "upload/" + file.getName())
+    ctx.uploadedFiles("files").forEach(uploadedFile -> {
+        FileUtil.streamToFile(uploadedFile.getContent(), "upload/" + uploadedFile.getFilename())
     });
 });
 {% endcapture %}
 {% capture kotlin %}
 app.post("/upload") { ctx ->
-    ctx.uploadedFiles("files").forEach { (contentType, content, name, extension) ->
-        FileUtil.streamToFile(content, "upload/$name")
+    ctx.uploadedFiles("files").forEach { uploadedFile ->
+        FileUtil.streamToFile(uploadedFile.content, "upload/${uploadedFile.filename}")
     }
 }
 {% endcapture %}
