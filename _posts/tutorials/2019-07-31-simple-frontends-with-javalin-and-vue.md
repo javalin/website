@@ -69,7 +69,7 @@ We'll also add Vue (view library) for our frontend:
 
 <div class="comment" markdown="1">
 You can add all frontend dependencies as [Webjars](https://www.webjars.org/), which can be built directly from NPM.
-If something is available on NPM, it's also available as a Webjar.
+If something is available on NPM, it's also available as a Webjar, but as a prebuilt dist version (it has no dependencies).
 To view the full POM, please go to [GitHub](https://github.com/tipsy/javalinvue-example/blob/master/pom.xml).
 </div>
 
@@ -154,7 +154,13 @@ fun main() {
 The `@routeComponent` that we added in `layout.html` earlier will be replaced by the String inside of `VueComponent`.
 This means a call to `/` will load the layout and display our `<hello-world></hello-world>` component.
 
-Restart the server, go to `http://localhost:7000/`, and you'll see "Hello, World!" in a nice goldenrod color.
+Restart the server, go to `http://localhost:7000/`, and you'll see `Hello, World!` in a nice goldenrod color.
+
+<div class="comment" markdown="1">
+Note that you don't have to restart the server when making changes to `.vue` files,
+Javalin will pick up on those automatically.\\
+The reason we needed to restart now was because we added a new route in the `main` function.
+</div>
 
 ## Routing and error handling
 

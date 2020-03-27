@@ -243,9 +243,11 @@ ctx.userAgent()                         // get request user agent
 ctx.result(resultString)                // set a string result that will be sent to the client
 ctx.resultString()                      // get the string result that will be sent to the client
 ctx.result(resultStream)                // set a stream result that will be sent to the client
+ctx.result(byteArray)                   // set a byte[] result that will be sent to the client
 ctx.resultStream()                      // get the stream that will be sent to the client
 ctx.result(future)                      // set a future result that will be sent to the client (async)
 ctx.resultFuture()                      // get the future result that will be sent to the client
+ctx.seekableStream(resultStream)        // set a stream that will be sent to the client in byte ranges
 ctx.contentType(contentType)            // set the response content type
 ctx.header(name, value)                 // set a response header
 ctx.redirect(location)                  // send a redirect response to location
@@ -466,6 +468,9 @@ ctx.cookieMap()              // get a map of all request cookies
 ctx.attribute(key, value)    // set request attribute
 ctx.attribute(key)           // get request attribute
 ctx.attributeMap()           // get a map of request attributes
+
+ctx.sessionAttribute(key)    // get request session attribute (from when WebSocket upgrade was performed)
+ctx.sessionAttributeMap()    // get a map of session attributes (from when WebSocket upgrade was performed)
 ```
 
 ### WsMessageContext
@@ -1660,6 +1665,8 @@ get("/messages/:user", VueComponent("<thread-view></thread-view>"))
 This will give you a lot of the benefits of a modern frontend architecture,
 with very few of the downsides.
 
+There's a tutorial explaining the concepts: [/tutorials/simple-frontends-with-javalin-and-vue](/tutorials/simple-frontends-with-javalin-and-vue)
+
 #### Shared state
 If you want to share state from your server with Vue, you can provide `JavalinVue` with a state function:
 
@@ -1691,6 +1698,11 @@ This can cause issues when running a jar locally or in docker. You can override 
 JavalinVue.rootDirectory(path, location); // String path, String location
 JavalinVue.rootDirectory(path); // java.nio.Path path
 ```
+
+#### CDN WebJars
+You can reference your WebJars with `@cdnWebjar/` instead of the normal `/webjars/`.
+If you do this, the path will resolve to `/webjars/` on localhost, and `//cdn.jsdelivr.net/webjars/org.webjars.npm/`
+on non-localhost. **Note that this only works with NPM webjars.**
 
 ### TimeoutExceptions and ClosedChannelExceptions
 If you encounter `TimeoutExceptions` and `ClosedChannelExceptions` in your DEBUG logs,

@@ -52,6 +52,7 @@ if (document.location.pathname.includes("/documentation")) {
         "rate-limiting": "3.7.0",
         "setting-the-host": "3.7.0",
         "dynamic-single-page-handler": "3.7.0",
+        "cdn-webjars": "3.8.0",
     };
     Object.keys(addedTags).forEach(key => {
         document.getElementById(key).classList.add("added-parent");
