@@ -577,7 +577,7 @@ cannot have default values.
 String color = ctx.queryParam("color"); // blue
 int exampleId = ctx.queryParam("exampleId", Integer.class).get(); // 123
 int size = ctx.queryParam("size", Integer.class).check(i -> i > 4).get(); // exception
-int qty = ctx.queryParam("qty", Integer.class, 12).get(); // uses default value 12
+int qty = ctx.queryParam("qty", Integer.class, "12").get(); // uses default value 12
 Instant instant = ctx.queryParam("ts", Instant.class).get();
 
 // Path Parameters
@@ -591,7 +591,7 @@ Instant instant = ctx.pathParam("timestamp-ms", Instant.class).get();
 String color = ctx.formParam("color");
 int exampleId = ctx.formParam("exampleId", Integer.class).get();
 int size = ctx.formParam("size", Integer.class).check(i -> i > 4).get();
-int qty = ctx.formParam("qty", Integer.class, 12).get(); // may default to value 12
+int qty = ctx.formParam("qty", Integer.class, "12").get(); // may default to value 12
 Instant instant = ctx.queryParam("ts", Instant.class).get();
 
 // Headers
@@ -610,7 +610,7 @@ MyObject myObject = ctx.bodyValidator(MyObject.class);
 val color = ctx.queryParam("color") // blue
 val exampleId = ctx.queryParam<Int>("exampleId").get(); // 123
 val size = ctx.queryParam<Int>("size").check({ it > 4 }).get(); // exception
-val qty = ctx.queryParam<Int>("qty", 12).get(); // uses default value 12
+val qty = ctx.queryParam<Int>("qty", "12").get(); // uses default value 12
 val instant = ctx.queryParam<Instant>("ts").get();
 
 // Path Parameters
@@ -624,7 +624,7 @@ val instant = ctx.pathParam<Instant>("timestamp-ms").get()
 val color = ctx.formParam("color");
 val exampleId = ctx.formParam<Int>("exampleId").get();
 val size = ctx.formParam<Int>("size").check(i -> i > 4).get();
-val qty = ctx.formParam<Int>("qty", 12).get(); // may default to value 12
+val qty = ctx.formParam<Int>("qty", "12").get(); // may default to value 12
 val instant = ctx.queryParam<Instant>("ts").get();
 
 // Headers
