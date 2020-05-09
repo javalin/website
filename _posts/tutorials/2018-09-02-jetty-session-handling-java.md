@@ -221,10 +221,11 @@ As we saw earlier, the `SessionHandler` has a `SessionCache` which again has a `
 so no further configuration is required.  All session configuration happens through Jetty classes.
 
 #### SameSite session cookie settings
-By default Jetty uses lenient cookie security settings. In order to harden and to mitigate 
-cross-site request forgery ([CSRF](https://en.wikipedia.org/wiki/Cross-site_request_forgery)) attacks, it is useful 
-to set the `SameSite=strict` cookie flag. This is particularly recommended if the `JSESSIONID` cookie is also used 
+By default Jetty uses lenient cookie security settings. In order to harden and to mitigate
+cross-site request forgery ([CSRF](https://en.wikipedia.org/wiki/Cross-site_request_forgery)) attacks, it is useful
+to set the `SameSite=strict` cookie flag. This is particularly recommended if the `JSESSIONID` cookie is also used
 directly or indirectly for authentication purposes.
+
 {% capture java %}
 private static Supplier<SessionHandler> customSessionHandlerSupplier() {
     final SessionHandler sessionHandler = new SessionHandler();
@@ -243,8 +244,10 @@ private fun customSessionHandlerSupplier(): SessionHandler = SessionHandler().ap
     sessionCookieConfig.comment = "__SAME_SITE_STRICT__"
 }
 {% endcapture %}
-N.B. some browsers (see e.g. [here](https://blog.chromium.org/2020/02/samesite-cookie-changes-in-february.html)) 
-will eventually further restrict cookies to first-party access by default in case the `SameSite` and `secure` 
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+N.B. some browsers (see e.g. [here](https://blog.chromium.org/2020/02/samesite-cookie-changes-in-february.html))
+will eventually further restrict cookies to first-party access by default in case the `SameSite` and `secure`
 cookie settings are not being set.
 
 ### Working with sessions
