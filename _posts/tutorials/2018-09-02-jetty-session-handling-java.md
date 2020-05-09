@@ -243,6 +243,7 @@ private fun customSessionHandlerSupplier(): SessionHandler = SessionHandler().ap
     sessionCookieConfig.comment = "__SAME_SITE_STRICT__"
 }
 {% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 N.B. some browsers (see e.g. [here](https://blog.chromium.org/2020/02/samesite-cookie-changes-in-february.html)) 
 will eventually further restrict cookies to first-party access by default in case the `SameSite` and `secure` 
 cookie settings are not being set.
