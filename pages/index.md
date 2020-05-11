@@ -165,6 +165,8 @@ val app = Javalin.create { config ->
         <img src="/img/used-by/revolut.png" alt="Revolut">
         <img src="/img/used-by/expressscripts.png" alt="Express Scripts">
         <img src="/img/used-by/dkb.png" alt="Deutsche Kreditbank">
+        <img src="/img/used-by/c6bank.png" alt="C6 Bank">
+        <img src="/img/used-by/nordstrom.png" alt="Nordstrom">
     </div>
     <p>
         Are you using Javalin? <a href="https://github.com/javalin/javalin.github.io/issues/18">Let us know</a>!
