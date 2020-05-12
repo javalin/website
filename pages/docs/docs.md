@@ -259,7 +259,7 @@ ctx.cookie(cookie)                      // set cookie
 ctx.removeCookie(name, path)            // remove a cookie
 ctx.html(html)                          // call result(string).contentType("text/html")
 ctx.json(obj)                           // call result(JavalinJson.toJson(obj)).contentType("application/json")
-ctx.json(future)                        // call result(future(JavalinJson.toJson(obj))).contentType("application/json")
+ctx.json(future)                        // call result(future(JavalinJson.toJson(future))).contentType("application/json")
 ctx.render(filePath, model)             // call html(JavalinRenderer.render(filePath, model)
 ```
 
@@ -1248,7 +1248,7 @@ val statisticsHandler = StatisticsHandler()
 
 Javalin.create { config ->
     config.server {
-        Server(queuedThreadPool).apply {
+        Server().apply {
             handler = statisticsHandler
         }
     }
