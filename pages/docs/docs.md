@@ -1260,7 +1260,7 @@ Javalin.create { config ->
 
 To configure SSL or HTTP2 you need to use a custom server (see previous section).\\
 An example of a custom server with SSL can be found in the examples,
-[HelloWorldSecure](https://github.com/tipsy/javalin/blob/master/src/test/java/io/javalin/examples/HelloWorldSecure.java#L24-L32).
+[HelloWorldSecure](https://github.com/tipsy/javalin/blob/master/javalin/src/test/java/io/javalin/examples/HelloWorldSecure.java#L22-L30).
 
 A custom HTTP2 server is a bit more work to set up, but we have a repo with a
 fully functioning example server in both Kotlin and Java: [javalin-http2-example](https://github.com/tipsy/javalin-http2-example)
