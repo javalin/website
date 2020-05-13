@@ -1583,7 +1583,7 @@ JavalinJson.toJsonMapper = object : ToJsonMapper {
 Javalin is designed to work with other `Servlet` and `Filter` instances running on the Jetty Server.
 Filters are pretty straighforward to add, since they don't finish the request. If you need to add a serlvet
 there's an example in the repo:
-[/src/test/java/io/javalin/examples/HelloWorldServlet.java#L19-L27](https://github.com/tipsy/javalin/blob/master/src/test/java/io/javalin/examples/HelloWorldServlet.java#L19-L27)
+[/src/test/java/io/javalin/examples/HelloWorldServlet.java#L21-L29](https://github.com/tipsy/javalin/blob/master/javalin/src/test/java/io/javalin/examples/HelloWorldServlet.java#L21-L29)
 
 ### Views and Templates
 Javalin looks for templates/markdown files in `src/resources`,
