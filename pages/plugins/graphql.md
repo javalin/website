@@ -24,14 +24,9 @@ Add the dependencies:
 
 ```xml
 <dependency>
-    <groupId>com.expediagroup</groupId>
-    <artifactId>graphql-kotlin-schema-generator</artifactId>
-    <version>1.1.0</version>
-</dependency>
-<dependency>
-    <groupId>io.projectreactor</groupId>
-    <artifactId>reactor-core</artifactId>
-    <version>3.2.9.RELEASE</version>
+    <groupId>io.javalin</groupId>
+    <artifactId>javalin-graphql</artifactId>
+    <version>3.8.0</version>
 </dependency>
 ```
 
