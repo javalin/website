@@ -163,7 +163,7 @@ public class MyApplication {
       app.post("/users", OpenApiBuilder.documented(createUserDocumentation, ctx -> {
           // ...
       }));
-  }https://docs.oracle.com/javase/7/docs/technotes/guides/language/annotations.html
+  }
 }
 {% endcapture %}
 {% capture kotlin %}
