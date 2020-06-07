@@ -33,6 +33,7 @@ permalink: /documentation
 * * [Server setup](#server-setup)
 * [Lifecycle events](#lifecycle-events)
 * [Plugins](#plugins)
+* [Modules](#modules)
 * [FAQ](#faq)
 </div>
 
@@ -949,6 +950,7 @@ Javalin.create(config -> {
     config.addSinglePageRoot(root, file, location)  // ex ("/", "src/file.html", Location.EXTERNAL)
     config.addStaticFiles(directory)                // ex ("/public")
     config.addStaticFiles(directory, location)      // ex ("src/folder", Location.EXTERNAL)
+    config.addStaticFiles(prefix, dir, location)    // ex ("/assets", "src/folder", Location.EXTERNAL)
     config.asyncRequestTimeout = timeoutInMs        // timeout for async requests (default is 0, no timeout)
     config.autogenerateEtags = true/false           // auto generate etags (default is false)
     config.compressionStrategy(Brotli(4), Gzip(6))  // set the compression strategy and levels - since 3.2.0
@@ -961,6 +963,7 @@ Javalin.create(config -> {
     config.enableWebjars()                          // enable webjars (static files)
     config.enforceSsl = true/false                  // redirect http traffic to https (default is false)
     config.logIfServerNotStarted = true/false       // log a warning if user doesn't start javalin instance (default is true)
+    config.precompressStaticFiles = true/false      // store compressed files in memory (avoid recompression and ensure content-length is set)
     config.prefer405over404 = true/false            // send a 405 if handlers exist for different verb on the same path (default is false)
     config.requestCacheSize = sizeInBytes           // set the request cache size, used for reading request body multiple times (default is 4kb)
     config.requestLogger { ... }                    // set a request logger
@@ -987,6 +990,7 @@ Javalin.create { config ->
     config.addSinglePageRoot(root, file, location)  // ex ("/", "src/file.html", Location.EXTERNAL)
     config.addStaticFiles(directory)                // ex ("/public")
     config.addStaticFiles(directory, location)      // ex ("src/folder", Location.EXTERNAL)
+    config.addStaticFiles(prefix, dir, location)    // ex ("/assets", "src/folder", Location.EXTERNAL)
     config.asyncRequestTimeout = timeoutInMs        // timeout for async requests (default is 0, no timeout)
     config.autogenerateEtags = true/false           // auto generate etags (default is false)
     config.compressionStrategy(Brotli(4), Gzip(6))  // set the compression strategy and levels - since 3.2.0
@@ -999,6 +1003,7 @@ Javalin.create { config ->
     config.enableWebjars()                          // enable webjars (static files)
     config.enforceSsl = true/false                  // redirect http traffic to https (default is false)
     config.logIfServerNotStarted = true/false       // log a warning if user doesn't start javalin instance (default is true)
+    config.precompressStaticFiles = true/false      // store compressed files in memory (avoid recompression and ensure content-length is set)
     config.prefer405over404 = true/false            // send a 405 if handlers exist for different verb on the same path (default is false)
     config.requestCacheSize = sizeInBytes           // set the request cache size, used for reading request body multiple times (default is 4kb)
     config.requestLogger { ... }                    // set a request logger
@@ -1045,6 +1050,10 @@ WebJars can be enabled by calling `enableWebJars()`, they will be available at `
 
 WebJars can be found on [https://www.webjars.org/](https://www.webjars.org/).
 Everything available through NPM is also available through WebJars.
+
+#### Path prefix
+As of `3.9.0`, you can call `config.addStaticFiles("/hosting-path", "/dir-path")`, which will make the
+files available on `http://{host}:{port}/hosting-path/...`
 
 #### Caching
 Javalin serves static files with the `Cache-Control` header set to `max-age=0`. This means
@@ -1414,7 +1423,10 @@ val app = Javalin.create {
 }
 ```
 
-Full documentation for the OpenAPI plugin can be found at [/plugins/openapi](/plugins/openapi),
+Full documentation for the OpenAPI plugin can be found at [/plugins/openapi](/plugins/openapi).
+
+### GraphQL plugin
+Javalin has an GraphQL plugin. You can see its documentation at [/plugins/graphql](/plugins/graphql).
 
 ### Redirect-to-lowercase-path plugin
 
@@ -1432,7 +1444,7 @@ Javalin.create(config ->
 
 ### Rate limiting
 
-There is a very simple rate-limited included in Javalin 3.7.0 and newer.
+There is a very simple rate-limited included in Javalin `3.7.0` and newer.
 You can call it in the beginning of your endpoint `Handler` functions:
 
 {% capture java %}
@@ -1455,6 +1467,17 @@ Every rate limiter is independent (IP and `Handler` based), so different endpoin
 * On each request the counter for that IP is incremented.
 * If the counter exceeds the number of requests specified, an exception is thrown.
 * All counters are cleared periodically on every timeunit that you specified.
+
+## Modules
+
+As of `3.9.0`, Javalin is a multi-module project. The current modules (for `{{site.javalinversion}}`)  are:
+
+* `javalin` - the standard Javalin dependency, just as before
+* `javalin-bundle` - `javalin`, `javalin-openapi`, `jackson` and `logback`
+* `javalin-openapi` - the OpenAPI plugin and all required dependencies
+* `javalin-graphql` - the new GraphQL plugin (thanks to [7agustibm](https://github.com/7agustibm))
+* `javalin-without-jetty` - `javalin` with all `jetty` dependencies excluded
+  and Jetty specific methods removed (useful for running on e.g. Tomcat)
 
 ## FAQ
 Frequently asked questions.
