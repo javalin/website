@@ -28,30 +28,17 @@ or [generate client code](https://swagger.io/tools/swagger-codegen/).
 
 ## Getting Started
 
-Add the dependencies:
+Add the dependency:
 
 ```xml
 <dependency>
-    <groupId>io.swagger.core.v3</groupId>
-    <artifactId>swagger-core</artifactId>
-    <version>2.1.2</version>
-</dependency>
-
-<dependency>
-    <groupId>com.fasterxml.jackson.module</groupId>
-    <artifactId>jackson-module-kotlin</artifactId>
-    <version>2.11.0</version>
+    <groupId>io.javalin</groupId>
+    <artifactId>javalin-openapi</artifactId>
+    <version>{{site.javalinversion}}</version>
 </dependency>
 ```
 
-If you want to use dsl to document your api, the following dependency is also needed:
-```xml
-<dependency>
-    <groupId>cc.vileda</groupId>
-    <artifactId>kotlin-openapi3-dsl</artifactId>
-    <version>0.20.2</version>
-</dependency>
-```
+<div class="comment">Note that if you're using <code>javalin-bundle</code> the OpenAPI plugin is already included.</div>
 
 Register the plugin:
 
@@ -69,7 +56,7 @@ private OpenApiOptions getOpenApiOptions() {
 {% endcapture %}
 {% capture kotlin %}
 Javalin.create {
-    config: JavalinConfig -> config.registerPlugin(OpenApiPlugin(getOpenApiOptions()!!)) 
+    config: JavalinConfig -> config.registerPlugin(OpenApiPlugin(getOpenApiOptions()!!))
 }.start()
 
 private fun getOpenApiOptions(): OpenApiOptions? {
@@ -101,9 +88,11 @@ Or you can pass a lambda, which creates the initial documentation.
 Here is an overview of the options:
 
 {% capture java %}
-InitialConfigurationCreator initialConfigurationCreator = () -> new OpenAPI()
-    .info(new Info().version("1.0").description("My Application"))
-    .addServersItem(new Server().url("http://my-server.com").description("My Server"));
+InitialConfigurationCreator initialConfigurationCreator = () -> {
+    return new OpenAPI()
+        .info(new Info().version("1.0").description("My Application"))
+        .addServersItem(new Server().url("http://my-server.com").description("My Server"));
+}
 
 new OpenApiOptions(initialConfigurationCreator)
     .path("/swagger-docs") // Activate the open api endpoint
@@ -120,8 +109,8 @@ new OpenApiOptions(initialConfigurationCreator)
 {% capture kotlin %}
 val initialConfigurationCreator = InitialConfigurationCreator {
     OpenAPI()
-    .info(Info().version("1.0").description("My Application"))
-    .addServersItem(Server().url("http://my-server.com").description("My Server"))
+        .info(Info().version("1.0").description("My Application"))
+        .addServersItem(Server().url("http://my-server.com").description("My Server"))
 }
 
 OpenApiOptions(initialConfigurationCreator)
@@ -140,9 +129,9 @@ OpenApiOptions(initialConfigurationCreator)
 
 ## Documenting Handler
 
-Because of the dynamic definition of endpoints in Javalin, it is necessary to attach some metadata to the endpoints. 
-The OpenAPI documentation can be defined via a [DSL](https://en.wikipedia.org/wiki/Domain-specific_language)- and/or 
-by an [annotations](https://en.wikipedia.org/wiki/Java_annotation)-based approach. Both can be mixed in the same 
+Because of the dynamic definition of endpoints in Javalin, it is necessary to attach some metadata to the endpoints.
+The OpenAPI documentation can be defined via a [DSL](https://en.wikipedia.org/wiki/Domain-specific_language)- and/or
+by an [annotations](https://en.wikipedia.org/wiki/Java_annotation)-based approach. Both can be mixed in the same
 application. If both approaches are used on the same handler, the DSL documentation will take precedence over annotations.
 
 <!--- alt annotation reference: [oracle annptation documentation](https://docs.oracle.com/javase/7/docs/technotes/guides/language/annotations.html)) --->
@@ -172,7 +161,7 @@ fun main() {
     val createUserDocumentation: OpenApiDocumentation = document()
         .body(User::class.java)
         .json("200", User::class.java)
-    
+
     app.get("/users", documented(createUserDocumentation) { ctx -> {
         // ...
     }})
@@ -261,8 +250,8 @@ val createUserDocumentation2: OpenApiDocumentation = document()
     // Body
     .body<User>()
     .bodyAsBytes("image/png") // Composed body
-    .body(anyOf(documentedContent<User>(), documentedContent<Address>())) 
-    
+    .body(anyOf(documentedContent<User>(), documentedContent<Address>()))
+
     // Responses
     .json<User>("200")
     .jsonArray<User>("200") // For Arrays
@@ -274,7 +263,7 @@ val createUserDocumentation2: OpenApiDocumentation = document()
         documentedContent<SomeMessage>(),
         documentedContent<User>("return type description", true)
     ))
-            
+
     // Other
     .ignore(); // Hide this endpoint in the documentation
 {% endcapture %}
@@ -282,8 +271,8 @@ val createUserDocumentation2: OpenApiDocumentation = document()
 
 ### Annotations
 
-The OpenAPI metadata can also be declared using the `@OpenApi(...)` annotation attached to a `Handler`. Both, method- 
-and field-type annotations are supported. This is, for example, useful if the metadata and developers 
+The OpenAPI metadata can also be declared using the `@OpenApi(...)` annotation attached to a `Handler`. Both, method-
+and field-type annotations are supported. This is, for example, useful if the metadata and developers
 intention should be documented close to the source code that implements the given `Handler` logic.
 
 {% capture java %}
@@ -296,7 +285,7 @@ public class MyApplication {
     }
 }
 
-// Handler declared as class method 
+// Handler declared as class method
 class UserControllerV0 {
     @OpenApi(
         requestBody = @OpenApiRequestBody(content = @OpenApiContent(from = User.class)),
@@ -336,10 +325,10 @@ object MyApplication {
 // Handler declared as class method
 internal class UserController {
     @OpenApi(
-            requestBody = OpenApiRequestBody(content = [OpenApiContent(from = User::class)]),
-            responses = [
-                OpenApiResponse(status = "200", content = [OpenApiContent(from = User::class)])
-            ])
+        requestBody = OpenApiRequestBody(content = [OpenApiContent(from = User::class)]),
+        responses = [
+            OpenApiResponse(status = "200", content = [OpenApiContent(from = User::class)])
+        ])
     fun createUser(ctx: Context?) {
         // ...
     }
@@ -348,10 +337,10 @@ internal class UserController {
 // Handler declared as static class field
 internal object UserController2 {
     @OpenApi(
-            requestBody = OpenApiRequestBody(content = [OpenApiContent(from = User::class)]),
-            responses = [
-                OpenApiResponse(status = "200", content = [OpenApiContent(from = User::class)])
-            ])
+        requestBody = OpenApiRequestBody(content = [OpenApiContent(from = User::class)]),
+        responses = [
+            OpenApiResponse(status = "200", content = [OpenApiContent(from = User::class)])
+        ])
     val createUser = Handler {
         // ...
     }
@@ -500,12 +489,15 @@ fun myHandler(ctx: Context?) {
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-#### Howto: resolve possible OpenAPI metadata matching ambiguities for externally 
-In case there are multiple non-statically defined `Handler` field implementations in one class, it may be necessary 
-to explicitly specify their paths via `@OpenApi(path = "...", /* ... */)` or 
-`@OpenApi(path = "...", method = <HttpMethod>, /* ... */)` to resove the metadata matching ambiguities. The latter is 
+#### Java quirks
+
+##### OpenAPI metadata matching ambiguities
+For Java, in case there are multiple non-statically defined `Handler` field implementations in one class, it may be necessary
+to explicitly specify their paths via `@OpenApi(path = "...", /* ... */)` or
+`@OpenApi(path = "...", method = <HttpMethod>, /* ... */)` to resove the metadata matching ambiguities. The latter is
 only necessary if the given path is the same but HTTP-method differs (e.g. in case of CRUD-type handlers).
-{% capture java %}
+
+```java
 class JavaMultipleFieldReferences {
     @OpenApi(
         path = "/test1", // parameter needed to resolve ambiguity
@@ -527,108 +519,66 @@ class JavaMultipleFieldReferences {
         responses = {@OpenApiResponse(status = "200")})
     public final Handler deleteHandler = ctx -> { /* custom user code */ };
 }
-{% endcapture %}
-{% capture kotlin %}
-class JavaMultipleFieldReferences {
-    @OpenApi(path = "/test1", responses = [OpenApiResponse(status = "200")])
-    val handler1 = Handler { ctx -> { /* custom user code */ }}
+```
 
-    @OpenApi(method = HttpMethod.PUT, responses = [OpenApiResponse(status = "200")])
-    val putHandler = Handler { ctx -> { /* custom user code */ } }
-
-    @OpenApi(method = HttpMethod.DELETE, responses = [OpenApiResponse(status = "200")])
-    val deleteHandler = Handler { ctx -> { /* custom user code */ } }
-
-    companion object {
-        @OpenApi(path = "/test2", responses = [OpenApiResponse(status = "200")])
-        val handler2 = Handler { ctx -> { /* custom user code */ } }
-    }
-}
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
-##### OpenAPI metadata on field references to external classes implementing Handler  
-In case the `Handler` is implemented or wrapped by an _external_ class 
-(ie. `class CustomOuterClassHandler implements Hander { /* ... */}`) and used as a class field reference, it may 
-be useful to turn the inner field reference of the externally defined class into an anonymous class by adding a pair 
+##### OpenAPI metadata on field references to external classes implementing Handler
+In case the `Handler` is implemented or wrapped by an _external_ class
+(ie. `class CustomOuterClassHandler implements Hander { /* ... */}`) and used as a class field reference, it may
+be useful to turn the inner field reference of the externally defined class into an anonymous class by adding a pair
 of curly brackets `{}` after the field definitions.
-{% capture java %}
+
+```java
 class JavaOuterClassFieldReference {
     @OpenApi(responses = {@OpenApiResponse(status = "200")})
     public final Handler handler = new CustomOuterClassHandler(ctx -> { /*custom user handler*/}){};
     // note curly brackets '{}' to make the external class an inner pseudo-anonymous class
 }
-{% endcapture %}
-{% capture kotlin %}
-class JavaOuterClassFieldReference {
-    @OpenApi(responses = [OpenApiResponse(status = "200")])
-    val handler: Handler = object : CustomOuterClassHandler({ ctx -> }) {} 
-    // note curly brackets '{}' to make the external class an inner pseudo-anonymous class
-}
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
-This scheme is useful, for example, in cases where `CustomOuterClassHandler` is implementing common behaviour for every 
+```
+
+This scheme is useful, for example, in cases where `CustomOuterClassHandler` is implementing common behaviour for every
 handler in a given sub-group but not globally for every handler (e.g. abstracting every 'GET' handler to also implement
-an 'SSE' handler). N.B. This work-around is not necessary if the `Handler` implementing class is defined as within as 
+an 'SSE' handler). N.B. This work-around is not necessary if the `Handler` implementing class is defined as within as
 an inner classes parallel to the class field referencing to it.
 
 ##### OpenAPI metadata on static Java methods
 To make the annotation api work with static java methods, a few extra steps are necessary. This is only
 required for static Java methods. Static Kotlin methods or Java instance methods work by default.
 
-1. Install the ClassGraph dependency:
+Activate annotation scanning for your package path:
 
-    ```xml
-    <dependency>
-        <groupId>io.github.classgraph</groupId>
-        <artifactId>classgraph</artifactId>
-        <version>4.8.34</version>
-    </dependency>
-    ```
+```java
+OpenApiOptions openApiOptions = new OpenApiOptions(applicationInfo)
+   .activateAnnotationScanningFor("my.package.path")
+```
 
-2. Activate annotation scanning for your package path:
-
-   {% capture java %}
-   OpenApiOptions openApiOptions = new OpenApiOptions(applicationInfo)
-       .activateAnnotationScanningFor("my.package.path")
-       // ...
-   {% endcapture %}
-   {% capture kotlin %}
-   val openApiOptions = new OpenApiOptions(applicationInfo)
-       .activateAnnotationScanningFor("my.package.path")
-       // ...
-   {% endcapture %}
-   {% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
-3. Include the `path` and `method` parameters on the `OpenApi` annotation. N.B. These parameters are
+Include the `path` and `method` parameters on the `OpenApi` annotation. N.B. These parameters are
 used for annotation scanning only.
 
-    {% capture java %}
-    public class MyApplication {
-      public static void main(String[] args) {
-          // ...
-          app.post("/users", UserController::createUser);
-      }
-    }
+```java
+public class MyApplication {
+  public static void main(String[] args) {
+      // ...
+      app.post("/users", UserController::createUser);
+  }
+}
 
-    class UserController {
-      @OpenApi(
-                path = "/users",
-                method = HttpMethod.POST,
-                // ...
-      )
-      public static void createUser(Context ctx) {
-          // ...
-      }
-    }
-    {% endcapture %}
-    {% include macros/docsSnippet.html java=java %}
+class UserController {
+  @OpenApi(
+            path = "/users",
+            method = HttpMethod.POST,
+            // ...
+  )
+  public static void createUser(Context ctx) {
+      // ...
+  }
+}
+```
 
 ### Server-sent events
 The `app.sse` method for adding a SSE endpoint in Javalin is just a wrapped `app.get` call.
 To document your `app.sse` method, you will have to declare a standard `app.get` `Handler` and call the SSE handler manually:
 
-{% capture kotlin %}
+```kotlin
 @OpenApi(
     description = "Server Sent Events",
     tags = ["My Tag"]
@@ -640,8 +590,7 @@ fun sseEvents(ctx: Context) {
 }
 
 app.get("/events", ::sseEvents)
-{% endcapture %}
-{% include macros/docsSnippet.html kotlin=kotlin %}
+```
 
 ## Documenting CrudHandler
 The `CrudHandler` ([docs](/documentation#crudhandler)) is an interface with the five main CRUD operations.
@@ -770,21 +719,7 @@ class UserCrudHandler : CrudHandler {
 The OpenAPI plugin supports both [Swagger UI](https://swagger.io/tools/swagger-ui/)
 and/or [ReDoc](https://redoc.ly/) for rendering docs.
 
-To enable this functionality you need to add the dependencies, then configure your `openApiOptions`.
-
-### Swagger UI
-
-Start by adding the WebJar for Swagger UI. This contains all the HTML/CSS/JavaScript you need:
-
-```xml
-<dependency>
-    <groupId>org.webjars</groupId>
-    <artifactId>swagger-ui</artifactId>
-    <version>3.24.3</version>
-</dependency>
-```
-
-You then have to enable Swagger UI on your `OpenApiOptions` object:
+Enable Swagger UI on your `OpenApiOptions` object:
 {% capture java %}
 OpenApiOptions openApiOptions = new OpenApiOptions(applicationInfo)
     .path("/swagger-docs")
@@ -803,17 +738,7 @@ You can have both Swagger UI and ReDoc enabled at the same time.
 
 ### ReDoc
 
-Start by adding the WebJar for ReDoc. This contains all the HTML/CSS/JavaScript you need:
-
-```xml
-<dependency>
-    <groupId>org.webjars.npm</groupId>
-    <artifactId>redoc</artifactId>
-    <version>2.0.0-rc.2</version>
-</dependency>
-```
-
-You then have to enable ReDoc on your `OpenApiOptions` object:
+Enable ReDoc on your `OpenApiOptions` object:
 
 {% capture java %}
 OpenApiOptions openApiOptions = new OpenApiOptions(applicationInfo)
@@ -831,9 +756,15 @@ val openApiOptions = new OpenApiOptions(applicationInfo)
 
 You can have both ReDoc and Swagger UI enabled at the same time.
 
-#### Acknowledgement
+#### Acknowledgements
 
-This plugin and its documentation was written almost
-entirely by Tobias Walle ([GitHub](https://github.com/TobiasWalle) and [LinkedIn](https://www.linkedin.com/in/tobias-walle/)).
+The original version of this plugin and its documentation was written almost
+entirely by [Tobias Walle](https://github.com/tipsy/javalin/pulls?q=is%3Apr+author%3ATobiasWalle) ([LinkedIn](https://www.linkedin.com/in/tobias-walle/)).
 
-Thank you, Tobias!
+It has later been improved upon by many contributors, most notably:
+
+* [maxemann96](https://github.com/tipsy/javalin/pulls?q=is%3Apr+author%3Amaxemann96)
+* [sealedtx](https://github.com/tipsy/javalin/pulls?q=is%3Apr+author%3Asealedtx)
+* [28Smiles](https://github.com/tipsy/javalin/pulls?q=is%3Apr+author%3A28Smiles)
+* [chsfleury](https://github.com/tipsy/javalin/pulls?q=is%3Apr+author%3Achsfleury)
+* [RalphSteinhagen](https://github.com/tipsy/javalin/pulls?q=is%3Apr+author%3ARalphSteinhagen)

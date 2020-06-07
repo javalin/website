@@ -26,7 +26,7 @@ Add the dependencies:
 <dependency>
     <groupId>io.javalin</groupId>
     <artifactId>javalin-graphql</artifactId>
-    <version>3.8.0</version>
+    <version>{{site.javalinversion}}</version>
 </dependency>
 ```
 
