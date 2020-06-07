@@ -55,11 +55,11 @@ private OpenApiOptions getOpenApiOptions() {
 }
 {% endcapture %}
 {% capture kotlin %}
-Javalin.create {
-    config: JavalinConfig -> config.registerPlugin(OpenApiPlugin(getOpenApiOptions()!!))
+Javalin.create { config ->
+    config.registerPlugin(OpenApiPlugin(getOpenApiOptions()))
 }.start()
 
-private fun getOpenApiOptions(): OpenApiOptions? {
+private fun getOpenApiOptions(): OpenApiOptions {
     val applicationInfo: Info = Info()
             .version("1.0")
             .description("My Application")
@@ -420,68 +420,68 @@ public void myHandler(Context ctx) {
 {% endcapture %}
 {% capture kotlin %}
 @OpenApi(
-        description = "My Operation",
-        operationId = "myOperationId",
-        summary = "My Summary",
-        deprecated = false,
-        tags = ["user"],
+    description = "My Operation",
+    operationId = "myOperationId",
+    summary = "My Summary",
+    deprecated = false,
+    tags = ["user"],
 
-        // Parameters
-        pathParams = [
-            OpenApiParam(name = "my-path-param", description = "My Path Parameter")
-        ],
-        queryParams = [
-            OpenApiParam(name = "my-query-param", type = Integer::class)
-        ],
-        headers = [
-            OpenApiParam(name = "my-custom-header")
-        ],
-        cookies = [
-            OpenApiParam(name = "my-cookie")
-        ],
-        fileUploads = [
-            OpenApiFileUpload(name = "my-file"),
-            OpenApiFileUpload(name = "my-files", isArray = true)
-        ],
-        formParams = [
-            OpenApiFormParam(name = "my-form-param", type = Integer::class)
-        ],
+    // Parameters
+    pathParams = [
+        OpenApiParam(name = "my-path-param", description = "My Path Parameter")
+    ],
+    queryParams = [
+        OpenApiParam(name = "my-query-param", type = Integer::class)
+    ],
+    headers = [
+        OpenApiParam(name = "my-custom-header")
+    ],
+    cookies = [
+        OpenApiParam(name = "my-cookie")
+    ],
+    fileUploads = [
+        OpenApiFileUpload(name = "my-file"),
+        OpenApiFileUpload(name = "my-files", isArray = true)
+    ],
+    formParams = [
+        OpenApiFormParam(name = "my-form-param", type = Integer::class)
+    ],
 
-        // Body
-        requestBody = OpenApiRequestBody(content = [OpenApiContent(from = User::class)]),
-        // alt: requestBody = OpenApiRequestBody(content = [OpenApiContent(from = ByteArray::class, type = "image/png")]),
+    // Body
+    requestBody = OpenApiRequestBody(content = [OpenApiContent(from = User::class)]),
+    // alt: requestBody = OpenApiRequestBody(content = [OpenApiContent(from = ByteArray::class, type = "image/png")]),
 
-        // Composed body
-        composedRequestBody = OpenApiComposedRequestBody(
-                oneOf = [
-                    OpenApiContent(from = User::class),
-                    OpenApiContent(from = Address::class)
-                ],
-                // or
-                anyOf = [
-                    OpenApiContent(from = User::class),
-                    OpenApiContent(from = Address::class)
-                ],
-                required = true,
-                contentType = "application/json"
-        ),
-
-        // Responses
-        responses = [
-            // responses with same status and content type will be auto-grouped to the oneOf composed scheme
-            OpenApiResponse(status = "200", content = [OpenApiContent(from = User::class)]),
-            OpenApiResponse(status = "200", content = [OpenApiContent(from = User::class, isArray = true)]),
-            OpenApiResponse(status = "200", content = [OpenApiContent(type = "text/html")]),
-            // also compiles to the oneOf ]composed scheme
-            OpenApiResponse(status = "200", content = [
-                OpenApiContent(from = User::class),
-                OpenApiContent(from = Address::class)
-            ]),
-            OpenApiResponse(status = "204") // No content
+    // Composed body
+    composedRequestBody = OpenApiComposedRequestBody(
+        oneOf = [
+            OpenApiContent(from = User::class),
+            OpenApiContent(from = Address::class)
         ],
+        // or
+        anyOf = [
+            OpenApiContent(from = User::class),
+            OpenApiContent(from = Address::class)
+        ],
+        required = true,
+        contentType = "application/json"
+    ),
 
-        // Other
-        ignore = true // Hide this endpoint in the documentation
+    // Responses
+    responses = [
+        // responses with same status and content type will be auto-grouped to the oneOf composed scheme
+        OpenApiResponse(status = "200", content = [OpenApiContent(from = User::class)]),
+        OpenApiResponse(status = "200", content = [OpenApiContent(from = User::class, isArray = true)]),
+        OpenApiResponse(status = "200", content = [OpenApiContent(type = "text/html")]),
+        // also compiles to the oneOf ]composed scheme
+        OpenApiResponse(status = "200", content = [
+            OpenApiContent(from = User::class),
+            OpenApiContent(from = Address::class)
+        ]),
+        OpenApiResponse(status = "204") // No content
+    ],
+
+    // Other
+    ignore = true // Hide this endpoint in the documentation
 )
 fun myHandler(ctx: Context?) {
     // ...
