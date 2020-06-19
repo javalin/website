@@ -643,6 +643,37 @@ val myObject = ctx.bodyValidator<MyObject>();
 ### Validator Nullability
 If you want a nullable value, you can use `getOrNull()` instead of just `get()`.
 
+### Validator Error Collection
+By default when accessing a value that has failed checks it will throw an exception on the first failed check.
+If you instead want to collect all failures (such as to return errors to be displayed on a form) you can 
+access them with `errors()` which returns a map where the key is the value being checked (the param value in
+the case of headers, query params and path values) and the value is a list of error messages.
+
+{% capture java %}
+Validator<String> stringValidator = ctx.queryParam("first_name", String.class)
+    .check(n -> !n.contains("-"), "cannot contain hyphens.")
+    .check(n -> n.length() < 10, "cannot be longer than 10 characters.");
+
+//Empty map if no errors, otherwise a map with the key "first_name" and failed check messages in the list.
+Map<String, List<String>> errors = stringValidator.errors();
+
+// Merges all errors from all validators in the list. Empty map if no errors exist.
+Map<String, List<String>> manyErrors = Validator.collectErrors(stringValidator, otherValidator, etc)
+{% endcapture %}
+{% capture kotlin %}
+val stringValidator = ctx.queryParam<String>("first_name")
+    .check({ !it.contains("-") }, "cannot contain hyphens.")
+    .check({ it.length < 10 }, "cannot be longer than 10 characters.")
+    
+//Empty map if no errors, otherwise a map with the key "first_name" and failed check messages in the list.
+val errors = stringValidator.errors() 
+
+// Merges all errors from all validators in the list. Empty map if no errors exist.
+val manyErrors = listOf(stringValidator, otherValidator, etc)
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+
 ### Custom converters
 If you need to convert non-included class, you have to register a custom converter:
 
