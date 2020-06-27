@@ -568,9 +568,8 @@ interface CrudHandler {
 
 ## Validation
 You can access Javalin's `Validator` class through the query parameter, path parameter, header, and
-body methods, or by calling `JavalinValidation.validate()`. Query parameters and form parameters can
-be given a default value for the case when a parameter is not present. Path parameters and headers
-cannot have default values.
+body methods. Query parameters and form parameters can be given a default value for the case when a
+parameter is not present. Path parameters and headers cannot have default values.
 
 {% capture java %}
 // Query Parameters
@@ -641,11 +640,11 @@ val myObject = ctx.bodyValidator<MyObject>();
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ### Validator Nullability
-If you want a nullable value, you can use `getOrNull()` instead of just `get()`.
+If null is a valid value for your parameter, you can use `getOrNull()` instead of `get()`.
 
 ### Validator Error Collection
 By default when accessing a value that has failed checks it will throw an exception on the first failed check.
-If you instead want to collect all failures (such as to return errors to be displayed on a form) you can 
+If you instead want to collect all failures (such as to return errors to be displayed on a form) you can
 access them with `errors()` which returns a map where the key is the value being checked (the param value in
 the case of headers, query params and path values) and the value is a list of error messages.
 
@@ -664,9 +663,9 @@ Map<String, List<String>> manyErrors = Validator.collectErrors(stringValidator, 
 val stringValidator = ctx.queryParam<String>("first_name")
     .check({ !it.contains("-") }, "cannot contain hyphens.")
     .check({ it.length < 10 }, "cannot be longer than 10 characters.")
-    
+
 //Empty map if no errors, otherwise a map with the key "first_name" and failed check messages in the list.
-val errors = stringValidator.errors() 
+val errors = stringValidator.errors()
 
 // Merges all errors from all validators in the list. Empty map if no errors exist.
 val manyErrors = listOf(stringValidator, otherValidator, etc)
