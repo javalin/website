@@ -70,8 +70,8 @@ class MyRestServlet : HttpServlet() {
 > Note: You must remember to use the `createStandalone()` function, which has been carefully
 designed to make Javalin not to depend on Jetty. Using `Javalin.create()`
 will make the WAR app fail to start with `java.lang.ClassNotFoundException: org.eclipse.jetty.server.Server`.
-Annotate your class with @MultipartConfig in order to populate UploadedFile or UploadedFiles servlet-request getters. 
+ 
 
 The Servlet container will automatically auto-discover the servlet (since it's annotated with `@WebServlet`);
 any requests to the servlet will be directed straight to Javalin which will then take care
-of handling the request properly.
+of handling the request properly. Annotate your class with @MultipartConfig in order to populate UploadedFile or UploadedFiles servlet-request getters.
