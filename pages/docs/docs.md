@@ -1514,21 +1514,22 @@ Frequently asked questions.
 
 ### Android
 To use javalin in an android project, you'll need to:
-1- Target the android sdk 26 or higher.
-2- Target java 8:
+#### 1- Target the android sdk 26 or higher.
+#### 2- Target java 8:
 ```
 compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_8
     targetCompatibility JavaVersion.VERSION_1_8
 }
 ```
-2- Insert this in your build.gradle file:
+
+#### 2- Insert this in your build.gradle file:
 ```
 packagingOptions {
   exclude 'org/eclipse/jetty/http/encoding.properties'
 }
 ```
-3- Specify `android.enableD8=true` in your gradle.properties file.
+#### 3- Specify `android.enableD8=true` in your gradle.properties file.
 
 ### Testing
 People often ask how to test Javalin apps. Since Javalin is just a library, you can
