@@ -1514,7 +1514,13 @@ Frequently asked questions.
 
 ### Android
 To use javalin in an android project, you'll need to:
-#### 1- Target the android sdk 26 or higher.
+#### 1- Target the android sdk 26 and higher:
+```
+defaultconfig {
+  minSdkVersion 26
+  targetSdkVersion 28
+}
+```
 #### 2- Target java 8:
 ```
 compileOptions {
@@ -1522,7 +1528,6 @@ compileOptions {
     targetCompatibility JavaVersion.VERSION_1_8
 }
 ```
-
 #### 2- Insert this in your build.gradle file:
 ```
 packagingOptions {
