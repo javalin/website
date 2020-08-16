@@ -1513,28 +1513,35 @@ As of `3.9.0`, Javalin is a multi-module project. The current modules (for `{{si
 Frequently asked questions.
 
 ### Android
-To use javalin in an android project, you'll need to:
-#### 1- Target the android sdk 26 and higher:
+To use Javalin in an Android project, you will need to:
+
+*1: Target the Android SDK 26 and higher:*
+
 ```
 defaultconfig {
   minSdkVersion 26
   targetSdkVersion 28
 }
 ```
-#### 2- Target java 8:
+
+*2: Target Java 8:*
+
 ```
 compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_8
     targetCompatibility JavaVersion.VERSION_1_8
 }
 ```
-#### 2- Insert this in your build.gradle file:
+
+*3: Insert this in your build.gradle file:*
+
 ```
 packagingOptions {
   exclude 'org/eclipse/jetty/http/encoding.properties'
 }
 ```
-#### 3- Specify `android.enableD8=true` in your gradle.properties file.
+
+*4: Specify `android.enableD8=true` in your `gradle.properties` file.*
 
 ### Testing
 People often ask how to test Javalin apps. Since Javalin is just a library, you can
