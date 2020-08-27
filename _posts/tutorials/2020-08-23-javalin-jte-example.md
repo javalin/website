@@ -94,7 +94,7 @@ jte supports hot reloading of templates out of the box \o/
 
 
 ## Error handling
-jte does everything to pass meaningful error messages to the developer.
+jte does everything it can to pass meaningful error messages to the developer.
 
 Let's try to call a method that does not exist and see what happens.
 
