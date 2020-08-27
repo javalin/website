@@ -32,7 +32,7 @@ The Javalin jte extension comes with Javalin 3.10.0, so make sure to use the lat
 <dependency>
     <groupId>io.javalin</groupId>
     <artifactId>javalin</artifactId>
-    <version>3.10.0</version>
+    <version>{{site.javalinversion}}</version>
 </dependency>
 ```
 
