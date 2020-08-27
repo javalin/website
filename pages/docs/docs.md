@@ -677,7 +677,7 @@ val manyErrors = listOf(stringValidator, otherValidator, etc)
 If you need to convert non-included class, you have to register a custom converter:
 
 {% capture java %}
-JavalinValidation.register(Instant.java, v -> Instant.ofEpochMilli(v.toLong());
+JavalinValidation.register(Instant.class, v -> Instant.ofEpochMilli(v.toLong());
 {% endcapture %}
 {% capture kotlin %}
 JavalinValidation.register(Instant::class.java) { Instant.ofEpochMilli(it.toLong()) }
