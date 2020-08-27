@@ -36,7 +36,7 @@ The Javalin jte extension comes with Javalin 3.10.0, so make sure to use the lat
 ```
 
 In case you use IntelliJ, I'd highly recommend to install the [jte plugin](https://plugins.jetbrains.com/plugin/14521-jte).
-It offers full completion and refactoring support and it is what makes working with jte so much fun!
+It offers full auto-completion and refactoring support, and makes working with jte a lot of fun!
 
 <img alt="jte in IntelliJ" src="https://github.com/casid/jte/raw/master/jte-intellij.gif" width="696" /><br>
 
