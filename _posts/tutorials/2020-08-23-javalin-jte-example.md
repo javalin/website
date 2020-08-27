@@ -11,7 +11,6 @@ github: https://github.com/casid/jte-javalin-tutorial
 ---
 
 ## Introduction
-Even in the age of reactive web apps, server-side rendering is still the way to go if SEO is a requirement.
 [jte](https://jte.gg/) is a modern, type-safe template engine, that glues HTML and Java with as little extra syntax as possible.
 In this tutorial you will learn how to use jte in Javalin.
 
