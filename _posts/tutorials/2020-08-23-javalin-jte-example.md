@@ -228,7 +228,7 @@ Now we can use the page object in our template:
 You now need to restart the server, since we added Kotlin/Java signatures.
 Once you refresh the page, you should see the new output in your browser. 
 
-> Why the page object and no map? jte allows multiple params in a template, so you could as well pass a map to the template without creating a page object if you like. However you will lose completion and refactoring support for those parameter names.
+Why the `Page` object and not the more common `Map<String, Object>? jte allows multiple params in a template, so you could pass a map without creating a page object if you like. However, you would lose auto-completion and refactoring support for those parameter names.
 
 ## Output escaping
 
