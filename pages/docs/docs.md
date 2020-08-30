@@ -217,7 +217,7 @@ ctx.cookieMap()                         // get request cookie map
 ctx.header(header)                      // get request header
 ctx.headerMap()                         // get request header map
 ctx.host()                              // get request host
-ctx.ip()                                // get request host
+ctx.ip()                                // get request ip address
 ctx.isMultipart()                       // check if request is multipart
 ctx.isMultipartFormData()               // check if request is multipart/form data
 ctx.method()                            // get request method
