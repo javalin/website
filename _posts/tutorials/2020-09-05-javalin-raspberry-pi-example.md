@@ -99,9 +99,10 @@ Now we can add the REST API with our app in main:
 fun main() {
     val stringDao = StringDao()
 
+    val ipAddress = "0.0.0.0" // change this to your Raspberry Pi's IP address
     val app = Javalin.create().apply {
         exception(Exception::class.java) { e, _ -> e.printStackTrace() }
-    }.start("your.raspberry.pi.ipaddress", 8080)
+    }.start(ipAddress, 8080)
 
     app.routes {
         get("/strings") { context ->
