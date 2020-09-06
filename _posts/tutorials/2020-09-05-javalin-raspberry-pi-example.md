@@ -128,7 +128,7 @@ fun main() {
 
 ## Building A Fat Jar
 
-A fat jar is a runnable java file (like a normal jar) which contains all its necessary dependencies within itself to ensure it can run.
+A fat jar is a single file which contains all the compiled Java classes and dependencies required to run an application.
 
 To create our fat jar we need to add a custom task at the bottom of our `build.gradle` file:
 
