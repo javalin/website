@@ -33,7 +33,7 @@ fun main() {
 
 ## Setting Up Javalin Dependencies
 
-First, you will need to change the kotlin dependency from `implementation` to `compile` which will be necessary later for building the runnable jar.
+First, you will need to change the Kotlin dependency from `implementation` to `compile` which will be necessary later for building the runnable jar.
 
 You will need to add `jcenter` to the respositories that dependencies are included in:
 
