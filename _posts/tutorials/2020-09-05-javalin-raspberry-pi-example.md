@@ -59,9 +59,10 @@ We need to create the Javalin app with the IP address and port to be used on the
 
 ``` kotlin
 fun main() {
+    val ipAddress = "0.0.0.0" // change this to your Raspberry Pi's IP address
     val app = Javalin.create().apply {
         exception(Exception::class.java) { e, _ -> e.printStackTrace() }
-    }.start("your.raspberry.pi.ipaddress", 8080)
+    }.start(ipAddress, 8080)
 }
 ```
 
