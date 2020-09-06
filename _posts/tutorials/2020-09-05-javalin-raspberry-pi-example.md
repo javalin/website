@@ -12,7 +12,7 @@ language: Kotlin
 
 * Setting up Kotlin with Gradle
 * Creating a simple REST API using Javalin
-* Deploying and running the API on an embedded Jetty runner on a Raspberry Pi
+* Deploying and running the API on an embedded Jetty running on a Raspberry Pi
 
 The instructions for this tutorial will be used with IntelliJ IDEA. It is recommended to download the free community edition of IDEA.
 
