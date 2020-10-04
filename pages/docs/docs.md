@@ -992,6 +992,7 @@ Javalin.create(config -> {
     config.enableDevLogging()                       // enable extensive development logging for http and websocket
     config.enableWebjars()                          // enable webjars (static files)
     config.enforceSsl = true/false                  // redirect http traffic to https (default is false)
+    config.ignoreTrailingSlashes = true/false       // default is true
     config.logIfServerNotStarted = true/false       // log a warning if user doesn't start javalin instance (default is true)
     config.precompressStaticFiles = true/false      // store compressed files in memory (avoid recompression and ensure content-length is set)
     config.prefer405over404 = true/false            // send a 405 if handlers exist for different verb on the same path (default is false)
@@ -1032,6 +1033,7 @@ Javalin.create { config ->
     config.enableDevLogging()                       // enable extensive development logging for http and websocket
     config.enableWebjars()                          // enable webjars (static files)
     config.enforceSsl = true/false                  // redirect http traffic to https (default is false)
+    config.ignoreTrailingSlashes = true/false       // default is true
     config.logIfServerNotStarted = true/false       // log a warning if user doesn't start javalin instance (default is true)
     config.precompressStaticFiles = true/false      // store compressed files in memory (avoid recompression and ensure content-length is set)
     config.prefer405over404 = true/false            // send a 405 if handlers exist for different verb on the same path (default is false)
@@ -1543,6 +1545,8 @@ packagingOptions {
 
 *4: Specify `android.enableD8=true` in your `gradle.properties` file.*
 
+---
+
 ### Testing
 People often ask how to test Javalin apps. Since Javalin is just a library, you can
 instantiate and start the server programmatically. This means testing is really up to you.
@@ -1550,15 +1554,21 @@ There is a tutorial at [/tutorials/testing](/tutorials/testing) which goes throu
 some different types of tests (unit tests, functional/integration tests, ui/end-to-end tests).
 You can read it to get some ideas for how to test your app.
 
+---
+
 ### Javadoc
 There is a Javadoc available at [javadoc.io](http://javadoc.io/doc/io.javalin/javalin).
 Please contribute to the Javadoc if you can.
+
+---
 
 ### Deploying
 To deploy Javalin, simply create a [jar with dependencies](https://maven.apache.org/plugins/maven-assembly-plugin/usage.html),
 then launch the jar with `java -jar filename.jar`. That's it.
 Javalin has an embedded server, so you don't need an application server.
 There is also a tutorial on [deploying Javalin to Heroku](/tutorials/heroku).
+
+---
 
 ### Other web servers
 <div class="comment"><strong>Ctrl+f</strong>: "without jetty", "tomcat", "standalone", "servlet container", "war".</div>
@@ -1573,7 +1583,7 @@ functionality has a hard dependency on Jetty, and will not work in standalone mo
 Remember to exclude Jetty when setting this up. If you need more instructions, follow the
 [tutorial](https://javalin.io/2018/11/15/javalin-embedded-example.html).
 
-
+---
 
 ### Uploads
 Uploaded files are easily accessible via `ctx.uploadedFiles()`:
@@ -1600,6 +1610,8 @@ The corresponding HTML might look something like this:
     <button>Submit</button>
 </form>
 ```
+
+---
 
 ### Asynchronous requests
 While the default threadpool (200 threads) is enough for most use cases,
@@ -1629,6 +1641,8 @@ the future has been resolved or rejected.
 Jetty has a default timeout of 30 seconds for async requests (this is not related to the `idleTimeout` of a connector).
 If you wait for processes that run for longer than this, you can configure the async request manually by calling `ctx.req.startAsync()`.
 For more information, see [issue 448](https://github.com/tipsy/javalin/issues/448).
+
+---
 
 ### Configuring the JSON mapper
 
@@ -1663,11 +1677,15 @@ JavalinJson.toJsonMapper = object : ToJsonMapper {
 }
 ```
 
+---
+
 ### Adding other Servlets and Filters to Javalin
 Javalin is designed to work with other `Servlet` and `Filter` instances running on the Jetty Server.
 Filters are pretty straighforward to add, since they don't finish the request. If you need to add a serlvet
 there's an example in the repo:
 [/src/test/java/io/javalin/examples/HelloWorldServlet.java#L21-L29](https://github.com/tipsy/javalin/blob/master/javalin/src/test/java/io/javalin/examples/HelloWorldServlet.java#L21-L29)
+
+---
 
 ### Views and Templates
 Javalin looks for templates/markdown files in `src/resources`,
@@ -1703,7 +1721,9 @@ JavalinCommonmark.configure(htmlRenderer, markdownParser)
 ```
 Note that these are global settings, and can't be configured per instance of Javalin.
 
-### Vue support
+---
+
+### Vue support (JavalinVue)
 If you don't want to deal with NPM and frontend builds, Javalin has support for simplified Vue.js development.
 This requires you to make a layout template, `src/main/resources/vue/layout.html`:
 
@@ -1742,8 +1762,8 @@ which you can access:
 To map a path to a Vue component you use the `VueComponent` class:
 
 ```java
-get("/messages", VueComponent("<inbox-view></inbox-view>"))
-get("/messages/:user", VueComponent("<thread-view></thread-view>"))
+get("/messages", VueComponent("inbox-view"))
+get("/messages/:user", VueComponent("thread-view"))
 ```
 
 This will give you a lot of the benefits of a modern frontend architecture,
@@ -1769,9 +1789,25 @@ This can then be accessed from the `state` variable:
 The function runs for every request, so the state is always up to
 date when the user navigates or refreshes the page.
 
+#### Inline files
+You can inline files into your layout template by using the following functions:
+
+```html
+<head>
+    <style>@inlineFile("/vue/styles.css")</style> <!-- always included -->
+    <script>@inlineFileDev("/vue/scripts-dev.js")</script> <!-- only included in dev -->
+    <script>@inlineFileNotDev("/vue/scripts-not-dev.js")</script> <!-- only included in not dev -->
+</head>
+```
+
+#### CDN WebJars
+You can reference your WebJars with `@cdnWebjar/` instead of the normal `/webjars/`.
+If you do this, the path will resolve to `/webjars/` on when `isDevFunction` returns true, and `https//cdn.jsdelivr.net/.../`
+on non-localhost. **Note that this only works with NPM webjars.**
+
 #### Vue directory location
 
-By default, JavalinVue will set the vue root directory on the first request it serves.
+By default, JavalinVue will set the vue root directory based on the first request it serves.
 
 * On localhost, the root dir will be set to the `src/main/resources/vue` (external location)
 * On non-localhost, the root dir will be set to `/vue` (classpath location)
@@ -1783,10 +1819,15 @@ JavalinVue.rootDirectory(path, location); // String path, String location
 JavalinVue.rootDirectory(path); // java.nio.Path path
 ```
 
-#### CDN WebJars
-You can reference your WebJars with `@cdnWebjar/` instead of the normal `/webjars/`.
-If you do this, the path will resolve to `/webjars/` on localhost, and `//cdn.jsdelivr.net/webjars/org.webjars.npm/`
-on non-localhost. **Note that this only works with NPM webjars.**
+#### isDevFunction
+You can override the `JavalinVue.isDevFunction` to let `JavalinVue` know if the environment is develop or not.
+This is used to disable caching on dev to speed up development. The default function returns true if the request is on localhost.
+
+#### Optimize dependencies
+If you set `JavalinVue.optimizeDependencies` to true, `JavalinVue` will only load the required dependencies for your route component.
+This is set to false by default.
+
+---
 
 ### TimeoutExceptions and ClosedChannelExceptions
 If you encounter `TimeoutExceptions` and `ClosedChannelExceptions` in your DEBUG logs,

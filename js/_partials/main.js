@@ -53,6 +53,9 @@ if (document.location.pathname.includes("/documentation")) {
         "setting-the-host": "3.7.0",
         "dynamic-single-page-handler": "3.7.0",
         "cdn-webjars": "3.8.0",
+        "inline-files": "3.11.0",
+        "isdevfunction": "3.11.0",
+        "optimize-dependencies": "3.11.0",
     };
     Object.keys(addedTags).forEach(key => {
         document.getElementById(key).classList.add("added-parent");

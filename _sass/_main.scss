@@ -60,6 +60,12 @@ h4 {
   }
 }
 
+main.width-limit hr {
+  margin: 56px 0;
+  border: 0;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.2);
+}
+
 .has-right-menu {
   h2,
   h3,
