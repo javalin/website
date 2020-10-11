@@ -496,6 +496,12 @@ partner-portal with 30 components and 25 views (pages), and the total weight of 
 components is only 20kb (100kb before GZIP). It's been running for a year, and I've been
 waiting for issues and flaws to present themselves, but I haven't seen any yet.
 
+<div class="comment" markdown="1" style="margin-top:16px;font-size:14px;">
+Update, October 2020: The app has been running for over two years without
+any issues. It's now using the new `JavalinVue.optimizeDependencies` config option, which brings the
+average request size down to about 8kb gzipped.
+</div>
+
 Performance is pretty good. The app loads fast and never flickers. Below you see the
 Chrome audit results for the 30 component + 25 view app that I mentioned earlier:
 
