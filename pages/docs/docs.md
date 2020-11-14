@@ -981,6 +981,7 @@ Javalin.create(config -> {
     config.addStaticFiles(directory)                // ex ("/public")
     config.addStaticFiles(directory, location)      // ex ("src/folder", Location.EXTERNAL)
     config.addStaticFiles(prefix, dir, location)    // ex ("/assets", "src/folder", Location.EXTERNAL)
+    config.aliasCheckForStaticFiles = AliasCheck    // symlink config, ex new ContextHandler.ApproveAliases();
     config.asyncRequestTimeout = timeoutInMs        // timeout for async requests (default is 0, no timeout)
     config.autogenerateEtags = true/false           // auto generate etags (default is false)
     config.compressionStrategy(Brotli(4), Gzip(6))  // set the compression strategy and levels - since 3.2.0
@@ -1022,6 +1023,7 @@ Javalin.create { config ->
     config.addStaticFiles(directory)                // ex ("/public")
     config.addStaticFiles(directory, location)      // ex ("src/folder", Location.EXTERNAL)
     config.addStaticFiles(prefix, dir, location)    // ex ("/assets", "src/folder", Location.EXTERNAL)
+    config.aliasCheckForStaticFiles = AliasCheck    // symlink config, ex ContextHandler.ApproveAliases();
     config.asyncRequestTimeout = timeoutInMs        // timeout for async requests (default is 0, no timeout)
     config.autogenerateEtags = true/false           // auto generate etags (default is false)
     config.compressionStrategy(Brotli(4), Gzip(6))  // set the compression strategy and levels - since 3.2.0
