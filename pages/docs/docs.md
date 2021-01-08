@@ -1389,6 +1389,8 @@ Javalin.create(config ->
 )
 ```
 
+Additional documentation for the plugin can be found [here](/plugins/micrometer).
+
 ### OpenAPI Plugin
 
 Javalin has an OpenAPI (Swagger) plugin. Full documentation for the plugin can be found [here](/plugins/openapi),
