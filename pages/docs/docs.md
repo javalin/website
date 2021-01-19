@@ -138,16 +138,16 @@ app.get("/hello/:name") { ctx ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-Handler-paths can also include wildcard parameters, which are like unnamed path-parameters:
+Handler-paths can also include wildcard parameters (splats). These are available via `Context.splat()`
 
 {% capture java %}
-app.get("/hello/*", ctx -> {
-    // capture all request to sub-paths of /hello/
+app.get("/hello/*/and/*", ctx -> {
+    ctx.result("Hello: " + ctx.splat(0) + " and " + ctx.splat(1));
 });
 {% endcapture %}
 {% capture kotlin %}
-app.get("/hello/*") { ctx ->
-    // capture all request to sub-paths of /hello/
+app.get("/hello/*/and/*") { ctx ->
+    ctx.result("Hello: " + ctx.splat(0) + " and " + ctx.splat(1))
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -205,6 +205,8 @@ ctx.formParamMap()                      // get form parameter map
 ctx.pathParam(key)                      // get path parameter
 ctx.pathParam(key, class)               // get path as class
 ctx.pathParamMap()                      // get path parameter map
+ctx.splat(0);                           // get splat by index, ex "/*" -> splat(0)
+ctx.splats();                           // get array of splat-values
 ctx.basicAuthCredentials()              // get basic auth credentials (username/pwd)
 ctx.basicAuthCredentialsExist()         // check if proper basic auth credentials exist
 ctx.attribute(key, value)               // set request attribute
