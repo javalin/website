@@ -791,7 +791,7 @@ Javalin comes with a built in class called `HttpResponseException`, which can be
 If the client accepts JSON, a JSON object is returned. Otherwise a plain text response is returned.
 
 ```java
-app.post("/") { throw ForbiddenResponse("Off limits!") }
+app.post("/") { throw new ForbiddenResponse("Off limits!") }
 ```
 If client accepts JSON:
 ```java
