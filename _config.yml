@@ -1,4 +1,4 @@
-javalinversion: 3.13.3
+javalinversion: 3.13.4
 slf4jversion: 1.7.30
 repourl: https://github.com/javalin/javalin.github.io
 description: Javalin - A lightweight Java and Kotlin web framework. Create REST APIs in Java or Kotlin easily.
