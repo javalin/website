@@ -22,7 +22,7 @@ user is logged in.
 
 The architecture of session management changed significantly in Jetty 9.4, and this tutorial
 is intended to get you up to speed. You can view the
-[documentation](https://www.eclipse.org/jetty/documentation/9.4.x/session-management.html)
+[documentation](https://www.eclipse.org/jetty/documentation/jetty-9/index.html#session-management)
 on Jetty's website if you need all the details.
 
 ## Persisting sessions
