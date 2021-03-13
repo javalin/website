@@ -603,7 +603,7 @@ int version = ctx.header("Version", Integer.class).check(i -> i > 4).get();
 MyValue myValue = ctx.header("X-My-Header", MyValue.class).get();
 
 // Body Validation
-MyObject myObject = ctx.bodyValidator(MyObject.class);
+MyObject myObject = ctx.bodyValidator(MyObject.class).get();
 
 {% endcapture %}
 {% capture kotlin %}
