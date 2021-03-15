@@ -368,8 +368,6 @@ The different flavors of `WsContext` expose different things, for example,
 `WsMessageContext` has the method `.message()` which gives you the message that the client sent.
 The differences between the different contexts is small, and a full overview can be seen in the [WsContext](#wscontext) section.
 
-WebSocket connections are handled in parallel, so WebSocket handlers must be thread-safe. However, the order of messages from a given connection is guaranteed because each connection handles the messages sequentially. 
-
 ### WsBefore
 The `app.wsBefore` adds a handler that runs before a WebSocket handler.
 You can have as many before-handlers as you want per WebSocket endpoint, and all events are supported.
@@ -1651,6 +1649,18 @@ the future has been resolved or rejected.
 Jetty has a default timeout of 30 seconds for async requests (this is not related to the `idleTimeout` of a connector).
 If you wait for processes that run for longer than this, you can configure the async request manually by calling `ctx.req.startAsync()`.
 For more information, see [issue 448](https://github.com/tipsy/javalin/issues/448).
+
+---
+
+### WebSocket Message Ordering
+
+WebSocket operates over TCP, so messages will arrive at the server in the order that they were sent 
+by the client. Javalin then handles the messages from a given WebSocket connection sequentially. 
+Therefore, the order that messages are handled is guaranteed to be the same as the order the client 
+sent them in. 
+
+However, different connections will be handled in parallel on multiple threads, so the WebSocket 
+handlers must be thread-safe. 
 
 ---
 
