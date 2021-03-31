@@ -75,7 +75,7 @@ The before-, endpoint- and after-handlers require three parts:
 
 The `Handler` interface has a void return type. You use `ctx.result()` to set the response which will be returned to the user.
 
-Handlers are invoked in parallel on multiple threads, so all handlers must be thread-safe. 
+Handlers are invoked in parallel on multiple threads, so all handler implementations should be thread-safe. 
 
 ### Before handlers
 Before-handlers are matched before every request (including static files, if you enable those).
@@ -367,6 +367,9 @@ ws.onBinaryMessage(WsBinaryMessageContext)
 The different flavors of `WsContext` expose different things, for example,
 `WsMessageContext` has the method `.message()` which gives you the message that the client sent.
 The differences between the different contexts is small, and a full overview can be seen in the [WsContext](#wscontext) section.
+
+WebSocket event handlers should be thread-safe. For details, please see the 
+[WebSocket Message Ordering](#websocket-message-ordering) section of the FAQ. 
 
 ### WsBefore
 The `app.wsBefore` adds a handler that runs before a WebSocket handler.
@@ -1660,7 +1663,7 @@ Therefore, the order that messages are handled is guaranteed to be the same as t
 sent them in. 
 
 However, different connections will be handled in parallel on multiple threads, so the WebSocket 
-handlers must be thread-safe. 
+event handlers should be thread-safe. 
 
 ---
 
