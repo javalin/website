@@ -75,7 +75,7 @@ The before-, endpoint- and after-handlers require three parts:
 
 The `Handler` interface has a void return type. You use `ctx.result()` to set the response which will be returned to the user.
 
-Handlers are invoked in parallel on multiple threads, so all handler implementations should be thread-safe. 
+You can learn more about how Javalin handles concurrency in [FAQ - Concurrency](#concurrency).
 
 ### Before handlers
 Before-handlers are matched before every request (including static files, if you enable those).
@@ -368,8 +368,7 @@ The different flavors of `WsContext` expose different things, for example,
 `WsMessageContext` has the method `.message()` which gives you the message that the client sent.
 The differences between the different contexts is small, and a full overview can be seen in the [WsContext](#wscontext) section.
 
-WebSocket event handlers should be thread-safe. For details, please see the 
-[WebSocket Message Ordering](#websocket-message-ordering) section of the FAQ. 
+You can learn more about how Javalin handles WebSocket concurrency in [FAQ - Concurrency](#concurrency).
 
 ### WsBefore
 The `app.wsBefore` adds a handler that runs before a WebSocket handler.
@@ -1558,6 +1557,32 @@ packagingOptions {
 
 ---
 
+### Concurrency
+
+By default, Javalin serves requests using a Jetty `QueuedThreadPool` with 250 threads.
+Handlers are invoked in parallel on multiple threads, so all handler implementations should be thread-safe.
+
+The default configuration adds a very thin abstraction layer on top of Jetty. It has similar performance to raw
+Jetty, which is able to handle
+[over a million plaintext requests per second](https://www.techempower.com/benchmarks/#section=data-r20&hw=ph&test=plaintext&l=zik0vz-sf&p=ziimf3-zik0zj-zik0zj-zik0zj-1ekf).
+
+If you have *a lot* of long running requests, it might be worth looking into [Asynchronous requests](#asynchronous-requests),
+or [setting up Javalin with project Loom](https://github.com/tipsy/loomylin).
+
+If you're not sure if you need async requests, you probably don't.
+
+#### WebSocket Message Ordering
+
+WebSocket operates over TCP, so messages will arrive at the server in the order that they were sent
+by the client. Javalin then handles the messages from a given WebSocket connection sequentially.
+Therefore, the order that messages are handled is guaranteed to be the same as the order the client
+sent them in.
+
+However, different connections will be handled in parallel on multiple threads, so the WebSocket
+event handlers should be thread-safe.
+
+---
+
 ### Testing
 People often ask how to test Javalin apps. Since Javalin is just a library, you can
 instantiate and start the server programmatically. This means testing is really up to you.
@@ -1652,18 +1677,6 @@ the future has been resolved or rejected.
 Jetty has a default timeout of 30 seconds for async requests (this is not related to the `idleTimeout` of a connector).
 If you wait for processes that run for longer than this, you can configure the async request manually by calling `ctx.req.startAsync()`.
 For more information, see [issue 448](https://github.com/tipsy/javalin/issues/448).
-
----
-
-### WebSocket Message Ordering
-
-WebSocket operates over TCP, so messages will arrive at the server in the order that they were sent 
-by the client. Javalin then handles the messages from a given WebSocket connection sequentially. 
-Therefore, the order that messages are handled is guaranteed to be the same as the order the client 
-sent them in. 
-
-However, different connections will be handled in parallel on multiple threads, so the WebSocket 
-event handlers should be thread-safe. 
 
 ---
 
