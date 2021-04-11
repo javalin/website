@@ -29,53 +29,17 @@ First, we need to create a Maven project with our dependencies: [(→ Tutorial)]
 
 ~~~xml
 <dependencies>
-    <dependency>
-        <groupId>io.javalin</groupId>
-        <artifactId>javalin</artifactId>
-        <version>3.7.0</version>
-    </dependency>
-    <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-simple</artifactId>
-        <version>1.7.28</version>
-    </dependency>
-    <dependency>
-        <groupId>io.swagger.core.v3</groupId>
-        <artifactId>swagger-core</artifactId>
-        <version>2.0.9</version>
-    </dependency>
-    <dependency>
-        <groupId>org.webjars</groupId>
-        <artifactId>swagger-ui</artifactId>
-        <version>3.24.3</version>
-    </dependency>
-    <dependency>
-        <groupId>org.webjars.npm</groupId>
-        <artifactId>redoc</artifactId>
-        <version>2.0.0-rc.2</version>
-    </dependency>
-    <dependency>
-        <groupId>com.fasterxml.jackson.module</groupId>
-        <artifactId>jackson-module-kotlin</artifactId> <!-- only required if you use Kotlin -->
-        <version>2.10.1</version>
-    </dependency>
-    <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-databind</artifactId> <!-- only required if you use Java -->
-        <version>2.10.1</version>
-    </dependency>
-    <dependency>
-        <groupId>io.github.classgraph</groupId>
-        <artifactId>classgraph</artifactId> <!-- only required for annotated static handlers in Java -->
-        <version>4.8.34</version>
-    </dependency>
+     <dependency>
+         <groupId>io.javalin</groupId>
+         <artifactId>javalin-bundle</artifactId>
+         <version>{{site.javalinversion}}</version>
+     </dependency>
 </dependencies>
 ~~~
 
-Most of these are necessary for both Kotlin and Java, the few which aren't have been commented. \\
-ReDoc and Swagger UI are two different presentation UIs for OpenAPI specs.
-Usually you would only include one of these, but both are included in the example project so
-you can try them out and see which one you like. You can view the full [POM](https://github.com/tipsy/javalin-openapi-example/blob/master/pom.xml) on GitHub.
+The `javalin-bundle` dependency includes Javalin, OpenAPI, Jackson and a logger.
+
+You can view the full [POM](https://github.com/tipsy/javalin-openapi-example/blob/master/pom.xml) on GitHub.
 
 ## Building the API
 
