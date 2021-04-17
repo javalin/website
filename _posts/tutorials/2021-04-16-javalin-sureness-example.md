@@ -250,43 +250,43 @@ Use postman basic auth, as shown below:
 
 * success - input username: admin, password: admin  
 
-![success](../../img/posts/javalinSureness/test1.PNG)  
+![success](/img/posts/javalinSureness/test1.PNG)  
 
 
 * fail - input username: admin, password: 12345    
 
-![fail](../../img/posts/javalinSureness/test2.PNG)  
+![fail](/img/posts/javalinSureness/test2.PNG)  
 
 ####  2. Digest Auth Test   
 
 Note: If password has been encrypted,  digest auth not support.(So the account admin not support digest auth).  
 Use chrome to digest auth, as shown below:   
 
-![success](../../img/posts/javalinSureness/test3.PNG)  
+![success](/img/posts/javalinSureness/test3.PNG)  
 
-![success](../../img/posts/javalinSureness/test4.PNG)  
+![success](/img/posts/javalinSureness/test4.PNG)  
 
 ####  3. Jwt Auth Test   
 
 First, we should access [GET /auth/token] api to get a jwt to use, as shown below:  
 
-![success](../../img/posts/javalinSureness/test5.PNG)  
+![success](/img/posts/javalinSureness/test5.PNG)  
 
 Then, use the jwt as Bearer Token to access rest api, as shown below:  
 
-![success](../../img/posts/javalinSureness/test6.PNG)  
+![success](/img/posts/javalinSureness/test6.PNG)  
 
 
 ### Test authorization  
 
 * success - user **tom** has role **role3**, the api **[DELETE - /api/v2/host]** support **role3** access, so **tom** can access api **[DELETE - /api/v2/host]** success, as shown below:    
 
-![success](../../img/posts/javalinSureness/test7.PNG)  
+![success](/img/posts/javalinSureness/test7.PNG)  
 
 
 * fail - user **tom** only has role **role3**, the api **[GET - /api/v1/source1]** only support **role2** access, not support **role3**,  so **tom** can not access api **[GET - /api/v1/source1]**, as shown below:    
 
-![fail](../../img/posts/javalinSureness/test8.PNG)  
+![fail](/img/posts/javalinSureness/test8.PNG)  
 
 
 ## Conclusion   
