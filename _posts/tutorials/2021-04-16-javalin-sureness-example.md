@@ -10,23 +10,23 @@ language: Java
 
 ## What is Sureness   
 
-> [Sureness](https://github.com/usthe/sureness) is a simple and efficient open-source security framework that focus on protection of restful api.  
+> [Sureness](https://github.com/usthe/sureness) is a simple and efficient open-source security framework that focus on the protection of restful APIs.  
 > Provide authentication and authorization, based on RBAC.   
-> No specific framework dependency(support javalin, springboot, quarkus, ktor and more).    
-> Support dynamic modification of permissions.   
-> Support websocket, mainstream http container(servlet and jax-rs).    
-> Supports JWT, Basic Auth, Digest Auth... Can extend custom supported authentication methods.    
-> High performance due dictionary matching tree.      
-> Good extension interface, demo and document.    
+> No specific framework dependency (supports Javalin, Spring Boot, Quarkus, Ktor, and more).    
+> Supports dynamic modification of permissions.   
+> Supports WebSockets and mainstream HTTP containers (Servlet and JAX-RS).    
+> Supports JWT, Basic Auth, Digest Auth, and can be extended to support custom authentication methods.    
+> High performance due to dictionary matching tree.      
+> Good extension interface, demos and documentation.    
 
-> The low configuration of sureness, easy to expand, and not coupled with other frameworks, enables developers to quickly and safely protect their projects in multiple scenarios.   
+> Sureness has a sensible default configuration, is easy to customize, and is not couple to any one framework, which enables developers to quickly and safely protect their projects in multiple scenarios.   
 
 
 ## What You Will Learn
 
 * Creating a simple REST API using Javalin  
 * Learn how to integrate Sureness into a Javalin application  
-* Learn how to issue a jwt  
+* Learn how to issue a JWT
 * Test API authentication - use jwt auth, basic auth, digest auth to test the security of the REST API   
 * Test API authorization - use different users to verify that they can access the REST API   
 
