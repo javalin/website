@@ -10,7 +10,7 @@ language: Java
 
 ## What is Sureness   
 
-> [Sureness](https://github.com/usthe/sureness) is a simple and efficient open-source security framework that focus on the protection of restful APIs.  
+> [Sureness](https://github.com/usthe/sureness) is a simple and efficient open-source security framework that focus on the protection of REST API.  
 > Provide authentication and authorization, based on RBAC.   
 > No specific framework dependency (supports Javalin, Spring Boot, Quarkus, Ktor, and more).    
 > Supports dynamic modification of permissions.   
