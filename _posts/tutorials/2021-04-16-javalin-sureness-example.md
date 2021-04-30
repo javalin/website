@@ -14,7 +14,7 @@ language: Java
 > Provide authentication and authorization, based on RBAC.   
 > No specific framework dependency (supports Javalin, Spring Boot, Quarkus, Ktor, and more).    
 > Supports dynamic modification of permissions.   
-> Supports WebSockets and mainstream HTTP containers (Servlet and JAX-RS).    
+> Supports WebSocket and mainstream HTTP containers (Servlet and JAX-RS).    
 > Supports JWT, Basic Auth, Digest Auth, and can be extended to support custom authentication methods.    
 > High performance due to dictionary matching tree.      
 > Good extension interface, demos and documentation.    
@@ -32,7 +32,7 @@ language: Java
 
 
 The tutorial assumes that you know what  JWT, Basic Auth, Digest Auth, RBAC are. If you 
-do not, then you can check [jwt](https://jwt.io/introduction/), [basic auth](https://docs.oracle.com/cd/E50612_01/doc.11122/user_guide/content/authn_http_basic.html) , [digest auth](https://docs.oracle.com/cd/E50612_01/doc.11122/user_guide/content/authn_http_digest.html), [rbac](https://en.wikipedia.org/wiki/Role-based_access_control) for an introduction.
+do not, then you can check [JWT](https://jwt.io/introduction/), [Basic Auth](https://docs.oracle.com/cd/E50612_01/doc.11122/user_guide/content/authn_http_basic.html) , [Digest Auth](https://docs.oracle.com/cd/E50612_01/doc.11122/user_guide/content/authn_http_digest.html), [RBAC](https://en.wikipedia.org/wiki/Role-based_access_control) for an introduction.
 
 ## Setting Up Dependencies
 
@@ -101,6 +101,7 @@ We need to create a simple Javalin app and provide some  REST API for test.
 
 The default configuration -`DefaultSurenessConfig` uses the document datasource `sureness.yml` as the auth datasource.  
 It supports JWT, Basic Auth, Digest Auth authentication.  
+
 ```java
     public static void main(String[] args) {
         // init sureness default config
@@ -220,7 +221,7 @@ Here we need to customize the exceptions thrown by `checkIn`, passed directly wh
 ````
 
 
-## Provide an Issue JWT Api    
+## Provide an Issue JWT API    
 
 Now we provide a REST API to issue JWT. We can use this JWT to test JWT auth.   
 
@@ -246,7 +247,7 @@ Now we provide a REST API to issue JWT. We can use this JWT to test JWT auth.
 ## Test   
 
 Through the above steps, a complete auth function project is completed. Someone maybe think that with only these few steps, where is its complete function and what can it support?   
-This built project is based on the RBAC permission model and supports Baisc authentication, Digest authentication and JWT authentication. It can fine-grained control the user's access to the restful api provided by the Javalin. That is to control which users can access which api.   
+This built project is based on the RBAC permission model and supports Basic authentication, Digest authentication and JWT authentication. It can fine-grained control the user's access to the REST API provided by the Javalin. That is to control which users can access which API.   
 
 Let's test it. (we use postman and chrome to test.)   
 
@@ -276,7 +277,7 @@ Use chrome to Digest auth, as shown below:
 
 ####  3. JWT Auth Test   
 
-First, we should access **[GET /auth/token]** api to get a JWT to use, as shown below:  
+First, we should access **[GET /auth/token]** API to get a JWT to use, as shown below:  
 
 ![success](/img/posts/javalinSureness/test5.PNG)  
 
@@ -287,12 +288,12 @@ Then, use the JWT as Bearer Token to access REST API, as shown below:
 
 ### Test Authorization  
 
-* success - user **tom** has role **role3**, the api **[DELETE - /api/v2/host]** support **role3** access, so **tom** can access api **[DELETE - /api/v2/host]** success, as shown below:    
+* success - user **tom** has role **role3**, the API  **[DELETE - /api/v2/host]** support **role3** access, so **tom** can access API  **[DELETE - /api/v2/host]** success, as shown below:    
 
 ![success](/img/posts/javalinSureness/test7.PNG)  
 
 
-* fail - user **tom** only has role **role3**, the api **[GET - /api/v1/source1]** only support **role2** access, not support **role3**,  so **tom** can not access api **[GET - /api/v1/source1]**, as shown below:    
+* fail - user **tom** only has role **role3**, the API  **[GET - /api/v1/source1]** only support **role2** access, not support **role3**,  so **tom** can not access API  **[GET - /api/v1/source1]**, as shown below:    
 
 ![fail](/img/posts/javalinSureness/test8.PNG)  
 
