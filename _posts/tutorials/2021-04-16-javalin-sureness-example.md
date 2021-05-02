@@ -18,9 +18,7 @@ language: Java
 > Supports JWT, Basic Auth, Digest Auth, and can be extended to support custom authentication methods.    
 > High performance due to dictionary matching tree.      
 > Good extension interface, demos and documentation.    
-
 > Sureness has a sensible default configuration, is easy to customize, and is not couple to any one framework, which enables developers to quickly and safely protect their projects in multiple scenarios.   
-
 
 ## What You Will Learn
 
@@ -30,7 +28,6 @@ language: Java
 * Test API authentication - use JWT Auth, Basic Auth, Digest Auth to test the security of the REST API   
 * Test API authorization - use different users to verify that they can access the REST API   
 
-
 The tutorial assumes that you know what  JWT, Basic Auth, Digest Auth, RBAC are. If you 
 do not, then you can check [JWT](https://jwt.io/introduction/), [Basic Auth](https://docs.oracle.com/cd/E50612_01/doc.11122/user_guide/content/authn_http_basic.html) , [Digest Auth](https://docs.oracle.com/cd/E50612_01/doc.11122/user_guide/content/authn_http_digest.html), [RBAC](https://en.wikipedia.org/wiki/Role-based_access_control) for an introduction.
 
@@ -38,62 +35,54 @@ do not, then you can check [JWT](https://jwt.io/introduction/), [Basic Auth](htt
 
 First, you will need to create a maven project and add Javalin, Sureness dependencies coordinate   
 
-````xml
-        <dependency>
-            <groupId>io.javalin</groupId>
-            <artifactId>javalin</artifactId>
-            <version>{{site.javalinversion}}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.usthe.sureness</groupId>
-            <artifactId>sureness-core</artifactId>
-            <version>1.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.30</version>
-        </dependency>
-````
-
+```xml
+<dependency>
+    <groupId>io.javalin</groupId>
+    <artifactId>javalin</artifactId>
+    <version>{{site.javalinversion}}</version>
+</dependency>
+<dependency>
+    <groupId>com.usthe.sureness</groupId>
+    <artifactId>sureness-core</artifactId>
+    <version>1.0.2</version>
+</dependency>
+<dependency>
+    <groupId>org.slf4j</groupId>
+    <artifactId>slf4j-simple</artifactId>
+    <version>1.7.30</version>
+</dependency>
+```
 
 ## Setting Up Javalin and Create REST API   
 
-We need to create a simple Javalin app and provide some  REST API for test.    
-
-```
-        // init javalin
-        Javalin app = Javalin.create().start(8088);
-```
+We need to create a simple Javalin app and provide a REST API for testing:    
 
 ```java
-        // create simple rest api
-        // simple rest api
-        app.routes(() ->
-            path("api", () -> {
-                path("v3", () -> {
-                    get("host", ctx -> ctx.result("get /api/v3/host success"));
-                    put("book", ctx -> ctx.result("put /api/v3/book success"));
-                });
-                path("v2", () -> {
-                    path("host", () -> {
-                        get(ctx -> ctx.result("get /api/v2/host success"));
-                        post(ctx -> ctx.result("post /api/v2/host success"));
-                        put(ctx -> ctx.result("put /api/v2/host success"));
-                        delete(ctx -> ctx.result("delete /api/v2/host success"));
-                    });
-                });
-                path("v1", () -> {
-                    path("source1", () -> {
-                        get(ctx -> ctx.result("get /api/v1/source1 success"));
-                        post(ctx -> ctx.result("post /api/v1/source1 success"));
-                        put(ctx -> ctx.result("put /api/v1/source1 success"));
-                        delete(ctx -> ctx.result("delete /api/v1/source1 success"));
-                    });
-                });
-            }));
+Javalin app = Javalin.create().routes(() -> {
+    path("api", () -> {
+        path("v3", () -> {
+            get("host", ctx -> ctx.result("get /api/v3/host success"));
+            put("book", ctx -> ctx.result("put /api/v3/book success"));
+        });
+        path("v2", () -> {
+            path("host", () -> {
+                get(ctx -> ctx.result("get /api/v2/host success"));
+                post(ctx -> ctx.result("post /api/v2/host success"));
+                put(ctx -> ctx.result("put /api/v2/host success"));
+                delete(ctx -> ctx.result("delete /api/v2/host success"));
+            });
+        });
+        path("v1", () -> {
+            path("source1", () -> {
+                get(ctx -> ctx.result("get /api/v1/source1 success"));
+                post(ctx -> ctx.result("post /api/v1/source1 success"));
+                put(ctx -> ctx.result("put /api/v1/source1 success"));
+                delete(ctx -> ctx.result("delete /api/v1/source1 success"));
+            });
+        });
+    });
+}).start(8088);
 ```
-
 
 ## Setting Up Sureness   
 
@@ -103,10 +92,10 @@ The default configuration -`DefaultSurenessConfig` uses the document datasource 
 It supports JWT, Basic Auth, Digest Auth authentication.  
 
 ```java
-    public static void main(String[] args) {
-        // init sureness default config
-        new DefaultSurenessConfig();
-    }
+public static void main(String[] args) {
+    // init sureness default config
+    new DefaultSurenessConfig();
+}
 ```
 
 ####  2. Config Document Datasource - `sureness.yml`  
@@ -115,7 +104,7 @@ Sureness authentication requires us to provide our own account data, role permis
 
 Create a file named `sureness.yml` in the `resource` directory. Configure account data, role permission data in the `sureness.yml`.  eg:  
 
-````yaml
+```yaml
 ## -- sureness.yml document dataSource-- ##
 
 # load api resource which need be protected, config role who can access these resource.
@@ -163,7 +152,7 @@ account:
     credential: 32113
     role: [role3]
 
-````
+```
 
 
 
@@ -172,17 +161,16 @@ account:
 The essence of sureness is to intercept all rest requests for authenticating and authorizing.     The interceptor can be a filter or interceptor, it intercepts all request to check them. In Javalin, we use `app.before()`.  
 
 ```java
-        // intercept all rest requests for authenticating and authorizing
-        app.before(ctx -> {
-            SubjectSum subject = SurenessSecurityManager.getInstance().checkIn(ctx.req);
-            // when auth error , the exception throw, you should use app.exception() catch it and define return
-            if (subject != null) {
-                SurenessContextHolder.bindSubject(subject);
-            }
-        });
+// intercept all rest requests for authenticating and authorizing
+app.before(ctx -> {
+    SubjectSum subject = SurenessSecurityManager.getInstance().checkIn(ctx.req);
+    // when auth error , the exception throw, you should use app.exception() catch it and define return
+    if (subject != null) {
+        SurenessContextHolder.bindSubject(subject);
+    }
+});
 
-        app.after(ctx ->  SurenessContextHolder.unbindSubject());
-
+app.after(ctx ->  SurenessContextHolder.unbindSubject());
 ```
 
 #### 4. Last, Implement Auth Exception Handling Process      
@@ -196,51 +184,50 @@ We need to continue the subsequent process based on these exceptions.(eg: return
 
 Here we need to customize the exceptions thrown by `checkIn`, passed directly when auth success, catch exception when auth failure and do something:    
 
-````java
-        // when auth error , the exception throw, you should use app.exception() catch it and define return
-        app.exception(UnknownAccountException.class, (e, ctx) -> {
-            log.debug("this request user account not exist");
-            ctx.status(401).result(e.getMessage());
-        }).exception(IncorrectCredentialsException.class, (e, ctx) -> {
-            log.debug("this account credential is incorrect");
-            ctx.status(401).result(e.getMessage());
-        }).exception(ExpiredCredentialsException.class, (e, ctx) -> {
-            log.debug("this account credential expired");
-            ctx.status(401).result(e.getMessage());
-        }).exception(NeedDigestInfoException.class, (e, ctx) -> {
-            log.debug("you should try once again with digest auth information");
-            ctx.status(401).header("WWW-Authenticate", e.getAuthenticate());
-        }).exception(UnauthorizedException.class, (e, ctx) -> {
-            log.debug("this account can not access this resource");
-            ctx.status(403).result(e.getMessage());
-        }).exception(Exception.class, (e, ctx) -> {
-            log.error("other exception happen: ", e);
-            ctx.status(500).result(e.getMessage());
-        });
-
-````
+```java
+// when auth error , the exception throw, you should use app.exception() catch it and define return
+app.exception(UnknownAccountException.class, (e, ctx) -> {
+    log.debug("this request user account not exist");
+    ctx.status(401).result(e.getMessage());
+}).exception(IncorrectCredentialsException.class, (e, ctx) -> {
+    log.debug("this account credential is incorrect");
+    ctx.status(401).result(e.getMessage());
+}).exception(ExpiredCredentialsException.class, (e, ctx) -> {
+    log.debug("this account credential expired");
+    ctx.status(401).result(e.getMessage());
+}).exception(NeedDigestInfoException.class, (e, ctx) -> {
+    log.debug("you should try once again with digest auth information");
+    ctx.status(401).header("WWW-Authenticate", e.getAuthenticate());
+}).exception(UnauthorizedException.class, (e, ctx) -> {
+    log.debug("this account can not access this resource");
+    ctx.status(403).result(e.getMessage());
+}).exception(Exception.class, (e, ctx) -> {
+    log.error("other exception happen: ", e);
+    ctx.status(500).result(e.getMessage());
+});
+```
 
 
 ## Provide an Issue JWT API    
 
 Now we provide a REST API to issue JWT. We can use this JWT to test JWT auth.   
 
-````
-       // issue jwt rest api
-        app.get("/auth/token", ctx -> {
-            SubjectSum subjectSum = SurenessContextHolder.getBindSubject();
-            if (subjectSum == null) {
-                ctx.result("Please auth!");
-            } else {
-                String principal = (String) subjectSum.getPrincipal();
-                List<String> roles = (List<String>) subjectSum.getRoles();
-                // issue jwt
-                String jwt = JsonWebTokenUtil.issueJwt(UUID.randomUUID().toString(), principal,
-                        "token-server", 3600L, roles);
-                ctx.result(jwt);
-            }
-        });
-````
+```java
+// issue jwt rest api
+app.get("/auth/token", ctx -> {
+    SubjectSum subjectSum = SurenessContextHolder.getBindSubject();
+    if (subjectSum == null) {
+        ctx.result("Please auth!");
+    } else {
+        String principal = (String) subjectSum.getPrincipal();
+        List<String> roles = (List<String>) subjectSum.getRoles();
+        // issue jwt
+        String jwt = JsonWebTokenUtil.issueJwt(UUID.randomUUID().toString(), principal,
+                "token-server", 3600L, roles);
+        ctx.result(jwt);
+    }
+});
+```
 
 **All done, we can test now!**   
 
@@ -260,7 +247,6 @@ Use postman Basic auth, as shown below:
 * success - input username: admin, password: admin  
 
 ![success](/img/posts/javalinSureness/test1.PNG)  
-
 
 * fail - input username: admin, password: 12345    
 
