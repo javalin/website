@@ -106,6 +106,3 @@ document.addEventListener("click", function (e) {
         }
     }, 10);
 })();
-
-
-
