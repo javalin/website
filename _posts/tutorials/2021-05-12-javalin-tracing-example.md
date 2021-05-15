@@ -15,7 +15,7 @@ We’ll see how to get started on Elastic Java APM using a simple Java CRUD app.
 
 ## Introduction
 
-Elasticsearch is a java based distributed search engine used for building search engines, analyzing logs, storing metrics, security events, and even application traces, enabling distributing tracing for microservice environments.
+Elasticsearch is a Java based distributed search engine used for building search engines, analyzing logs, storing metrics, security events, and even application traces, enabling distributing tracing for microservice environments.
 Elastic launched an Opensource Application Performance Monitoring (APM) in 2018 with Elasticsearch 6.2, enabling applications to ship their traces. APM today has many more features like correlations.
 
 We’ll look at how to configure tracing for a Java Application using Java Agent and spin required infrastructure for APM deployment on Cloud. Elastic APM also supports Open Telemetry, and there is an elastic exporter too. But, we’re focussing on the native Elastic APM Java language agent.
@@ -26,7 +26,7 @@ Distributed tracing helps you to understand the flow of requests happening in di
 
 Developers are intrigued by the microservices architecture with other ecosystem tools like Docker, Kubernetes, Java frameworks.
 
-<blockquote class="twitter-tweet"><p lang="en" dir="ltr">We replaced our monolith with micro services so that every outage could be more like a murder mystery.</p>&mdash; Honestly Black Lives Matter (@honest_update) <a href="https://twitter.com/honest_update/status/651897353889259520?ref_src=twsrc%5Etfw">October 7, 2015</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+> We replaced our monolith with micro services so that every outage could be more like a murder mystery. &mdash; [@honest_update](https://twitter.com/honest_update/status/651897353889259520)
 
 ## High-level Architecture of Elastic APM
 
@@ -47,8 +47,9 @@ The application has two endpoints:
 - _/student_ : GET, POST, PUT, DELETE
 - _/school/_count_ : finds the count of students.
 
-
-> Note: You could use VS Code or IntelliJ to add code. Either way, there is a pom.xml at the root of the project.
+<div class="comment" markdown="1">
+**Note**: You could use VS Code or IntelliJ to add code. Either way, there is a pom.xml at the root of the project.
+</div>
 
 ## Creating an APM deployment:
 
@@ -62,12 +63,8 @@ Choose any cloud vendor, preferably the latest version of Elastic Stack, and cli
 
 Once the deployment is created, you need to copy the APM server URL and the secret token.
 
-- Click on the APM link on the left menu, as shown in the image above.
-
-<img src="/img/posts/apmExample/apm-menu.png" alt="APM Console Create Deployment" class="bordered-image">
-
-
-- We will need the APM server URL, secret token.
+- Click on the "APM" link on the left menu
+- We will need the APM Server secret token:
 
 <img src="/img/posts/apmExample/apm-secret-token.png" alt="APM Console Create Deployment" class="bordered-image">
 
@@ -75,32 +72,28 @@ Once the deployment is created, you need to copy the APM server URL and the secr
 
 ```git
 git clone https://github.com/aravindputrevu/javalin-student.git
-
 ```
 
-<img src="/img/posts/apmExample/apm-intellij.png" alt="APM Console Create Deployment" class="bordered-image">
-
 After cloning, notice the file under the resources folder. Add the APM Server URL, secret token copied from console to server_urls and secret_token.
+
+<img src="/img/posts/apmExample/apm-intellij.png" alt="APM Console Create Deployment" class="bordered-image">
 
 ### elasticapm.properties
 
 ```
-
 service_name=javalin
 application_packages=com.example
 server_urls=
 secret_token=
-
 ```
 
 ## Building application
 
 ### Dependencies
 
-In the root folder of the source, you can find the project. There are very few dependencies like javalin, sl4j, and Jackson.
+In the root folder of the source, you can find the project. There are very few dependencies like Javalin, sl4j, and Jackson.
 
 ```xml
-
 <dependencies>
     <dependency>
         <groupId>io.javalin</groupId>
@@ -118,12 +111,13 @@ In the root folder of the source, you can find the project. There are very few d
          <version>2.11.2</version>
      </dependency>
 </dependencies>
-
 ```
 
 Execute `mvn clean` , `mvn install` to generate the jar under `target` folder.
 
-> Note: You need to have maven installed on your machine (which java dev doesn’t have ant, maven, gradle on their laptop! 😉)
+<div class="comment" markdown="1">
+**Note**: You need to have maven installed on your machine (which Java dev doesn’t have ant, maven, gradle on their laptop! 😉)
+</div>
 
 To start the application: `java -jar target/javalin-student-1.0-snapshot.jar`
 
@@ -181,7 +175,9 @@ You need to start the application with javaagent flag as shown in the example be
 $ java -javaagent:elastic-apm-agent-1.22.0.jar -jar target/javalin-student-1.0-SNAPSHOT.jar
 ```
 
-> **Note:** You can also configure supported application servers as mentioned in the documentation.
+<div class="comment" markdown="1">
+**Note:** You can also configure supported application servers as mentioned in the documentation.
+</div>
 
 ### Viewing Application Traces in Kibana
 
@@ -204,10 +200,17 @@ In addition to all this, you could enable log correlation to find logs belonging
 
 It is easy to get started with Elastic Java APM. Most application servers and frameworks are supported. You could also use the [public API](https://www.elastic.co/guide/en/apm/agent/java/1.x/public-api.html) to create traces, transactions manually.
 
-
 ## Resources:
 
 - [APM Quick Start Training](https://www.elastic.co/training/apm-quick-start)
 - [Elastic Common APM Page](https://github.com/elastic/apm)
 - [APM Server Source Code](https://github.com/elastic/apm-server)
 - [Java Agent Source code](https://github.com/elastic/apm-agent-java)
+
+<style>
+blockquote {
+    margin: 20px 0 !important;
+    font-size: 20px;
+    letter-spacing: -0.5px;
+}
+</style>
