@@ -6,7 +6,7 @@ date: 2021-05-20
 permalink: /tutorials/frontends-with-javalinmithril
 github: https://github.com/TareqK/javalinmithril-example
 summarytitle: Frontends With Mithril and Javalin
-summary: Thuis tutorial shows how to use the JavalinMithril plugin for simplified frontend development
+summary: This tutorial shows how to use the JavalinMithril plugin for simplified frontend development
 language: java
 ---
 
