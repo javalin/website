@@ -1,6 +1,6 @@
 ---
 layout: tutorial
-title: Simple Frontends With Mithril/js
+title: Simple Frontends With Mithril.js
 author: <a href="https://www.linkedin.com/in/tareq-kirresh" target="_blank">Tareq Kirresh</a>
 date: 2021-05-20
 permalink: /tutorials/frontends-with-javalinmithril
