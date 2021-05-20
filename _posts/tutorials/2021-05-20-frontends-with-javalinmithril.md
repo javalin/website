@@ -426,9 +426,9 @@ javalinvue-example
 ├───src
 │   └─── main
 │       └───java
-│           ├───io/javalinmithril/demo
-│           │   ├───'Java Source Code'
-│           └───resources/mihtril
+│       |   ├───io/javalinmithril/demo
+│       |        └───'Java Source Code'
+│       └───resources/mihtril
 │               └───app-frame.js
 │               └───not-found.js
 │               └───user-overview.js
