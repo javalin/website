@@ -53,7 +53,7 @@ We'll also add Vue (view library) for our frontend:
     <artifactId>jackson-databind</artifactId>
     <version>2.10.3</version>
 </dependency>
-
+```
 <div class="comment" markdown="1">
 You can add all frontend dependencies as [Webjars](https://www.webjars.org/), which can be built directly from NPM.
 If something is available on NPM, it's also available as a Webjar, but as a prebuilt dist version (it has no dependencies).
@@ -79,7 +79,7 @@ public class Main {
 Our App class, which has the start method, looks like this
 
 ```java
-...
+/*package and imports*/
 private Javalin app;
 
 public void start(){
@@ -95,7 +95,7 @@ public void start(){
 ...
 
 ```
-Notice the `JavalinMithirl.configure` method. We are basically telling the plugin to work in dev mode, and giving it the state function that will be injected into each component - in this case, its the name of the logged in user.
+Notice the `JavalinMithirl.configure` method. We are basically telling the plugin to work in dev mode, and giving it the state function that will be injected into each component - in this case, its the name of the logged in user(We will get back to this in a bit).
 
 We also need an HTML file to load our dependencies and to initialize Mithril. \\
 Let's create `/src/main/resources/mithril/layout.html`:
@@ -107,7 +107,7 @@ Let's create `/src/main/resources/mithril/layout.html`:
         <meta charset="utf8"/>
         <script src="@cdnWebjar/mithril/2.0.4/mithril.min.js"></script>
         <style>
-            ...
+            <!-- Your style here -->
         </style>
         @componentRegistration
     </head>
@@ -234,7 +234,7 @@ This will require two views, and we should probably also include a 404 page.
 
 Let's change the server by adding the following lines:
 
-```kotlin
+```java
 app.get("/", new MithrilComponent("io.javalin.mithril.demo.HelloWorld"));
 app.get("/users", new MithrilComponent("io.javalin.mithril.demo.UserOverview"));
 app.get("/users/:user-id", new MithrilComponent("io.javalin.mithril.demo.UserProfile"));
@@ -420,7 +420,7 @@ Since our frontend dependencies are prepacked WebJars, we don't need NPM, and we
 manage any frontend libraries manually. The project structure is very clean:
 
 <div class="compressed-code" markdown="1">
-```kotlin
+```java
 javalinvue-example
 ├───src
 │   └─── main
