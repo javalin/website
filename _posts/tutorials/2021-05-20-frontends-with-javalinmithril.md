@@ -62,7 +62,7 @@ To view the full POM, please go to [GitHub](https://github.com/TareqK/javalinmit
 
 Now that we have all our dependencies in order, we need to configure our web server. Lets start off with 2 classes : the Main class, and the app class.
 
-Starting off, our Main class, in `/src/main/java/io/javalinmithril/demo/Main.java` is just a wrapper class(which I add because I am a sad non-kotlin boi :C  and I like neat class names too much C: ) that calls and starts our App
+Starting off, our Main class, in `/src/main/java/io/javalinmithril/demo/Main.java`, is just a wrapper class that calls and starts our App:
 
 ```java
 import io.javalin.Javalin
