@@ -123,7 +123,7 @@ Let's create `/src/main/resources/mithril/layout.html`:
 There are two JavalinMithril specific things here: `@componentRegistration` and `@routeComponent`. The JavalinMithril plugin will scan your `/resources/mithril` folder and put all the dependencies you have imported in your current component into `@componentRegistration`, similar to how libraries are loaded via `<script>` tags. It will also will also let you choose one component to mount based on the current URL, this is the `@routeComponent`.
 
 <div class="comment" markdown="1">
-its important to note that there are differences between `m.mount` and `m.render`, but this is something you can refer to the mithril.js docs to figure out. 
+Its important to note that there are differences between `m.mount` and `m.render`, but this is something you can refer to the mithril.js docs to figure out. 
 </div>
 
 ## Hello World
