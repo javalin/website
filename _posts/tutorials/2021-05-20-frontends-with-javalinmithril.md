@@ -30,30 +30,29 @@ Our backend will be Java, and we'll be using Maven to build.
 We need to bring in Javalin (web library), Jackson (JSON serializer), and JavalinMithril (front end). We also need the Webjar for Mithril.js\\
 We'll also add Vue (view library) for our frontend:
 
-```markup
+```xml
 <dependency>
     <groupId>io.javalin</groupId>
-        <artifactId>javalin</artifactId>
-        <version>3.13.6</version
-        <type>jar</type>
-    </dependency>
-    <dependency>
-        <groupId>io.github.javalin</groupId>
-        <artifactId>javalinmithril</artifactId>
-        <version>0.1.0</version>
-         <type>jar</type>
-    </dependency>
-    <dependency>
-        <groupId>org.webjars.npm</groupId>
-        <artifactId>mithril</artifactId>
-        <version>2.0.4</version>
-    </dependency>
-    <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-databind</artifactId>
-        <version>2.10.3</version>
-    </dependency>
-```
+    <artifactId>javalin</artifactId>
+    <version>3.13.6</version
+    <type>jar</type>
+</dependency>
+<dependency>
+    <groupId>io.github.javalin</groupId>
+    <artifactId>javalinmithril</artifactId>
+    <version>0.1.0</version>
+    <type>jar</type>
+</dependency>
+<dependency>
+    <groupId>org.webjars.npm</groupId>
+    <artifactId>mithril</artifactId>
+    <version>2.0.4</version>
+</dependency>
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.10.3</version>
+</dependency>
 
 <div class="comment" markdown="1">
 You can add all frontend dependencies as [Webjars](https://www.webjars.org/), which can be built directly from NPM.
