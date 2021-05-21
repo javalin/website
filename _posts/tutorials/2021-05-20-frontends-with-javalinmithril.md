@@ -95,7 +95,7 @@ public void start(){
 ...
 
 ```
-Notice the `JavalinMithirl.configure` method. We are basically telling the plugin to work in dev mode, and giving it the state function that will be injected into each component - in this case, its the name of the logged in user
+Notice the `JavalinMithirl.configure` method. We are basically telling the plugin to work in dev mode, and giving it the state function that will be injected into each component - in this case, its the name of the logged in user.
 
 We also need an HTML file to load our dependencies and to initialize Mithril. \\
 Let's create `/src/main/resources/mithril/layout.html`:
