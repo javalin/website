@@ -153,7 +153,7 @@ Here we are telling JavlainMithril that we are declaring a `HelloWorld` class. N
 
 To display our component to the user, we need to tell Javalin when to show it. Lets add a new route to our application
 
-```kotlin
+```java
 import io.javalin.Javalin
 import io.javalin.plugin.rendering.mithril.JavalinMithril;
 import io.javalin.plugin.rendering.mithril.MithrilComponent;
