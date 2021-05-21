@@ -60,7 +60,7 @@ If something is available on NPM, it's also available as a Webjar, but as a preb
 To view the full POM, please go to [GitHub](https://github.com/TareqK/javalinmithril-example/blob/master/pom.xml).
 </div>
 
-Now that we have all our dependencies in order, we need to configure our web server. Lets start off with 2 classes : the Main class, and the app class.
+Now that we have all our dependencies in order, we need to configure our web server. Lets start off with 2 classes : the `Main` class, and the `App` class.
 
 Starting off, our Main class, in `/src/main/java/io/javalinmithril/demo/Main.java`, is just a wrapper class that calls and starts our App:
 
