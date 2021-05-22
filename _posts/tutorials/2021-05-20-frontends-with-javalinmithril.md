@@ -15,7 +15,7 @@ The tutorial is only an intro, but covers the import and package system in the p
 application layouts, and state sharing between server and client.
 
 JavalinMithril is still in its infancy, but I belive that it has a place in your application - the main benefit of using it vs JavalinVue is that it gives you the ability to make frontends with more files and better Namespacing, instead of relying on component names that are unique in an application, allowing for more complex frontends. 
-The background section dives into the idea behind JavalinMithril and how it is used,  but if you're just here to learn how to use JavalinMithril(Or morbid curiousity, I don,t judge), you can skip ahead to [setup](#setup) section.
+The background section dives into the idea behind JavalinMithril and how it is used,  but if you're just here to learn how to use JavalinMithril(Or morbid curiousity, I don't judge), you can skip ahead to [setup](#setup) section.
 
 ## Background
 
@@ -34,7 +34,7 @@ We'll also add Vue (view library) for our frontend:
 <dependency>
     <groupId>io.javalin</groupId>
     <artifactId>javalin</artifactId>
-    <version>3.13.6</version
+    <version>3.13.6</version>
     <type>jar</type>
 </dependency>
 <dependency>
