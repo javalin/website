@@ -19,6 +19,7 @@ permalink: /plugins/javalinvue
   * [optimizeDependencies](#optimizedependencies)
   * [cacheControl](#cachecontrol)
 * [Layout macros](#layout-macros)
+* [LoadableData](#loadabledata)
 * [Good to know](#good-to-know)
 </div>
 
@@ -254,6 +255,47 @@ JavalinVue.cacheControl = "...";
 You can reference your WebJars with `@cdnWebjar/` instead of the normal `/webjars/`.
 If you do this, the path will resolve to `/webjars/` on when `isDevFunction` returns true, and `https//cdn.jsdelivr.net/.../`
 on non-localhost. **Note that this only works with NPM webjars.**
+
+## LoadableData
+
+The JavalinVue plugin includes a small class for making HTTP get-requests
+to your backend, it can be used like this:
+
+```html
+<template id="books-component">
+    <div>
+        <div v-if="books.loading">Loading books ...</div>
+        <div v-if="books.loadError">Failed to load books! ({{books.loadError.text}})</div>
+        <div v-if="books.loaded" v-for="book in books.data">{{book}}</div>
+    </div>
+</template>
+<script>
+    Vue.component("books-component", {
+        template: "#books-component",
+        data: () => ({
+            books: new LoadableData("/api/books"),    
+        }),
+    });
+</script>
+```
+
+The class automatically caches the request in `localStorage`, 
+so subsequent requests will appear to load instantly. 
+All configuration options and methods (there's just one) are included below:
+
+```javascript
+const useCache = true/false;
+const errorCallback = error => alert(`An error occurred! Code: ${error.code}, text: ${error.text}`);
+
+// Create a new instance
+const loadableData = new LoadableData("/api/books", useCache, errorCallback);
+
+// Refresh data (can use cache to avoid flickering)
+loadableData.refresh(useCache, errorCallback);
+```
+
+The `loadError` object contains the HTTP status and error message, 
+and is available in both the template and in the error callback function.
 
 ## Good to know
 
