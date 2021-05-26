@@ -30,7 +30,7 @@ As with most clever programming tricks, you will probably either love it or hate
 These docs are only valid for Javalin 4.X.
 
 ## How does it work?
-The JavalinVue plugin basically a very specialized templating engine.
+The JavalinVue plugin is basically a very specialized templating engine.
 It finds `.vue` (and optionally `.js` and `.css`) files and glues them together,
 and serves it all as one big HTML file. You start by creating a layout file:
 
@@ -56,7 +56,7 @@ When a user tries to access `/my-page` in their browser, JavalinVue will serve t
 <head>
     <script src="/webjars/vue/2.6.10/dist/vue.min.js"></script>
     <style>body{background:red}</style> <!-- whatever was in styles.css -->
-    <!-- all the dependencies of the <my-page></my-page> component -->
+    <!-- <my-page></my-page> component and all of its dependencies -->
 </head>
 <body>
 <main id="main-vue" v-cloak>
@@ -68,8 +68,8 @@ When a user tries to access `/my-page` in their browser, JavalinVue will serve t
 </body>
 ```
 
-You don't need any sort of frontend build tool (like Webpack, Parcel, Grunt, etc),
-and you don't need any JavaScript imports. JavalinVue takes care of all of that.
+You don't need any frontend build tool (like Webpack, Parcel, Grunt, etc) – JavalinVue takes care of all that.
+As a consequence import/export of ES modules is not needed (and not supported as of now).
 
 There is a longer tutorial which includes the motivation behind creating this
 integration, as well as some discussion about pros and cons:
@@ -90,7 +90,7 @@ src
             └───layout.html
 ```
 
-Your `layout.html` file will be responsible for initializing Vue, and including all your dependencies.
+Your `layout.html` file will be responsible for initializing Vue and including all your dependencies.
 The snippet below shows all the available macros (`@macroName`):
 
 ```html
