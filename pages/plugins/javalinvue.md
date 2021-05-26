@@ -315,11 +315,24 @@ which you can access like this:
 ```
 
 ### Local state
-Originally intended to be a secret, and not to be used by anyone other than one specific person,
-JavalinVue also supports the concept of local component state. This means that you can do this:
+This feature came to life because someone was abusing `JavalinVue.stateFunction` 
+by overwriting it for every request. If you find yourself doing this, you should 
+either rewrite your app to fetch data using `LoadableData` (recommended), or use 
+local state for `VueComponent` (usually not recommended).
+
+Every `VueComponent` can take a state object as a second parameter. This state overwrites the state from
+`stateFunction`. You can either add it directly in a route declaration:
 
 ```kotlin
-app.get("/specific-state", VueComponent("<test-component></test-component>", mapOf("test" to "tast")))
+app.get("/specific-state", VueComponent("test-component", mapOf("test" to "tast")))
+```
+
+Or inside a handler:
+```kotlin
+app.get("/specific-state") { ctx ->
+    val myState = mapOf("test" to "tast")
+    VueComponent("test-component", myState).handle(ctx)
+}
 ```
 
 Note that this is something that you CAN do it, not something that you SHOULD do. 
