@@ -79,8 +79,8 @@ integration, as well as some discussion about pros and cons:
 
 ### Creating a layout
 
-Create a root directory for your vue files and place your `layout.html` in it. 
-By default, JavalinVue will look in `src/main/resources/vue`: 
+Create a root directory for your vue files and place your `layout.html` in it.
+By default, JavalinVue will look in `src/main/resources/vue`:
 
 ```
 src
@@ -158,7 +158,7 @@ If you set the root dir explicitly, Javalin won't try to guess what to do:
 
 {% capture java %}
 JavalinVue.rootDirectory(c -> c.classpathPath("/path")); // use the path on the same classpath as Javalin
-JavalinVue.rootDirectory(c -> c.classpathPath("/path", MyClass.class)); // use the path on the classpath of provided Class 
+JavalinVue.rootDirectory(c -> c.classpathPath("/path", MyClass.class)); // use the path on the classpath of provided Class
 JavalinVue.rootDirectory(c -> c.externalPath("/path")); // use an external path
 JavalinVue.rootDirectory(c -> c.explicitPath(path)); // use an explicit Path object
 {% endcapture %}
@@ -246,7 +246,7 @@ JavalinVue.cacheControl = "...";
 @inlineFile("/path/to/file.ext")        // this file will always be inlined
 @inlineFileDev("/path/to/file.ext")     // this file will be inlined if JavalinVue.isDev is true
 @inlineFileNotDev("/path/to/file.ext")  // this file will be inlined if JavalinVue.isDev is false
-@componentRegistration                  // all required components will be inlined here 
+@componentRegistration                  // all required components will be inlined here
 @routeComponent                         // the current route component will be inlined here
 @cdnWebjar                              // will resolve to webjar path if dev, cdn if not dev
 ```
@@ -265,22 +265,22 @@ to your backend, it can be used like this:
 <template id="books-component">
     <div>
         <div v-if="books.loading">Loading books ...</div>
-        <div v-if="books.loadError">Failed to load books! ({{books.loadError.text}})</div>
-        <div v-if="books.loaded" v-for="book in books.data">{{book}}</div>
+        {% raw %}<div v-if="books.loadError">Failed to load books! ({{books.loadError.text}})</div>{% endraw %}
+        {% raw %}<div v-if="books.loaded" v-for="book in books.data">{{book}}</div>{% endraw %}
     </div>
 </template>
 <script>
     Vue.component("books-component", {
         template: "#books-component",
         data: () => ({
-            books: new LoadableData("/api/books"),    
+            books: new LoadableData("/api/books"),
         }),
     });
 </script>
 ```
 
-The class automatically caches the request in `localStorage`, 
-so subsequent requests will appear to load instantly. 
+The class automatically caches the request in `localStorage`,
+so subsequent requests will appear to load instantly.
 All configuration options and methods (there's just one) are included below:
 
 ```javascript
@@ -294,7 +294,7 @@ const loadableData = new LoadableData("/api/books", useCache, errorCallback);
 loadableData.refresh(useCache, errorCallback);
 ```
 
-The `loadError` object contains the HTTP status and error message, 
+The `loadError` object contains the HTTP status and error message,
 and is available in both the template and in the error callback function.
 
 ## Good to know
@@ -315,9 +315,9 @@ which you can access like this:
 ```
 
 ### Local state
-This feature came to life because someone was abusing `JavalinVue.stateFunction` 
-by overwriting it for every request. If you find yourself doing this, you should 
-either rewrite your app to fetch data using `LoadableData` (recommended), or use 
+This feature came to life because someone was abusing `JavalinVue.stateFunction`
+by overwriting it for every request. If you find yourself doing this, you should
+either rewrite your app to fetch data using `LoadableData` (recommended), or use
 local state for `VueComponent` (usually not recommended).
 
 Every `VueComponent` can take a state object as a second parameter. This state overwrites the state from
@@ -335,5 +335,5 @@ app.get("/specific-state") { ctx ->
 }
 ```
 
-Note that this is something that you CAN do it, not something that you SHOULD do. 
+Note that this is something that you CAN do it, not something that you SHOULD do.
 Only do this if you have thought hard about it, and it solves a real problem for you.
