@@ -46,3 +46,5 @@ One exception: Non sub-path wildcards. You have to add an additional star there 
 
 `/path*` and `/path/{param}**`, will match both `/path`+`/path/*` and `/path/{param}`+`/path/{param}/*` respectively.
 This is particularly useful when you want to run a `before`/`after` handler for a resource (and all sub-paths of the resource).
+
+TODO: Talk about angle brackets.

@@ -5,6 +5,8 @@ rightmenu: true
 permalink: /archive/docs/v4.0.0
 ---
 
+<!-- TODO: find a better permalink -->
+
 {% include notificationBanner.html %}
 
 <div id="spy-nav" class="right-menu" markdown="1">
@@ -136,6 +138,8 @@ app.get("/hello/{name}") { ctx ->
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+<!-- Add part here about angle brackets path parameters -->
 
 Handler-paths can also include wildcard parameters (splats). These are available via `Context.splat()`
 
@@ -584,7 +588,7 @@ int qty = ctx.queryParam("qty", Integer.class, "12").get(); // uses default valu
 Instant instant = ctx.queryParam("ts", Instant.class).get();
 
 // Path Parameters
-// example url: /example/:exampleId/:name/:quantity/:timestamp-ms
+// example url: /example/{exampleId}/{name}/{quantity}/{timestamp-ms}
 String name = ctx.pathParam("name");
 int exampleId = ctx.pathParam("exampleId", Integer.class).get();
 int quantity = ctx.pathParam("quantity", Integer.class).check(i -> i > 4).get();
@@ -617,7 +621,7 @@ val qty = ctx.queryParam<Int>("qty", "12").get(); // uses default value 12
 val instant = ctx.queryParam<Instant>("ts").get();
 
 // Path Parameters
-// example url: /example/:exampleId/:name/:quantity/:timestamp-ms
+// example url: /example/{exampleId}/{name}/{quantity}/{timestamp-ms}
 val name = ctx.pathParam("name")
 val exampleId = ctx.pathParam<Int>("exampleId").get()
 val quantity = ctx.pathParam<Int>("quantity").check({ it > 4 }).get()
@@ -1470,7 +1474,7 @@ Javalin has an GraphQL plugin. You can see its documentation at [/plugins/graphq
 ### Redirect-to-lowercase-path plugin
 
 This plugin redirects requests with uppercase/mixcase paths to lowercase paths.
-For example, `/Users/John` redirects to `/users/John` (if endpoint is `/users/:userId`).
+For example, `/Users/John` redirects to `/users/John` (if endpoint is `/users/{userId}`).
 It does not affect the casing of path-params and query-params, only static
 URL fragments (`Users` becomes `users` above, but `John` remains `John`).\\
 When using this plugin, you can only add paths with lowercase URL fragments.
