@@ -44,7 +44,7 @@ nav ul li a:hover {
 
 .bluepart.blackpart {
     background: #343434;
-    background: radial-gradient(#404040, #1c1c1c);
+    background: radial-gradient(#333333, #1c1c1c);
     padding: 80px 20px 100px; /* Uneven padding to deal with text height */
     box-shadow: 0 0 35px rgba(0, 0, 0, 0.1) inset;
 }
