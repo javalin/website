@@ -18,7 +18,7 @@ main.width-limit {
 header {
     position: absolute;
     border: 0;
-    background: #008abc;
+    background: radial-gradient(#131313, #1d1d1d);
 }
 
 nav ul li + li {
@@ -35,17 +35,23 @@ nav ul li a:hover {
 
 .landing h1 {
     text-align: center;
+    margin: 32px 0 40px; /* offset line height */
 }
 
-.bluepart::selection {
-    background: #027aa3;
+.bluepart *::selection {
+    background: #000000;
+}
+
+.bluepart.blackpart {
+    background: #343434;
+    background: radial-gradient(#404040, #1c1c1c);
+    padding: 80px 20px 100px; /* Uneven padding to deal with text height */
+    box-shadow: 0 0 35px rgba(0, 0, 0, 0.1) inset;
 }
 
 .bluepart {
-    background: #028ebc;
+    padding: 60px 20px;
     background: radial-gradient(#02a2d7, #028ebc);
-    padding: 80px 20px;
-    box-shadow: 0 0 35px rgba(0, 0, 0, 0.1) inset;
 }
 
 .bluepart:first-of-type {
@@ -54,15 +60,15 @@ nav ul li a:hover {
 
 .bluepart .multitab-code {
     max-width: 520px;
-    margin: 32px auto 0;
+    margin: 40px auto;
 }
 
 .bluepart .multitab-code ul {
-    background: rgba(0, 0, 0, 0.15);
+    background: rgba(0, 0, 0, 0.25);
 }
 
 .bluepart .multitab-code pre {
-    background: rgba(0, 0, 0, 0.15);
+    background: rgba(0, 0, 0, 0.25);
 }
 
 .bluepart .multitab-code pre code {
@@ -95,7 +101,15 @@ nav ul li a:hover {
     color: white;
     font-weight: 500;
     margin: 0;
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+.blackpart h1 {
+    text-shadow: 2px 2px 0 #000;
+}
+
+.whitepart h1 {
+    text-decoration: underline;
 }
 
 .bluepart > p {
@@ -108,25 +122,27 @@ nav ul li a:hover {
     text-decoration: underline;
 }
 
-.whitepart {
-    border-top: 2px solid #fff;
-    border-bottom: 2px solid #fff;
-}
-
 .center {
     text-align: center;
 }
 
 .landing-btn {
-    margin: 32px 8px 0;
-    padding: 10px 15px;
+    margin: 0 8px;
+    padding: 12px 20px;
     text-align: center;
     display: inline-block;
     background: rgba(255, 255, 255, 0.15);
-    border-bottom: 2px solid rgba(0, 0, 0, 0.4);
+    border-bottom: 2px solid rgba(0, 0, 0, 0.3);
     color: white;
     cursor: pointer;
     border-radius: 50px;
+    font-family: 'Roboto Slab', arial, sans-serif;
+    font-weight: 500;
+}
+
+.blackpart .landing-btn {
+    border-bottom: 3px solid rgba(0, 0, 0, 0.3);
+    border-bottom: 3px solid rgba(0, 0, 0, 0.7);
 }
 
 .landing-btn:hover {
@@ -134,7 +150,7 @@ nav ul li a:hover {
 }
 
 .boxes {
-    padding: 20px;
+    padding: 0 20px;
     display: flex;
     max-width: 1080px;
     margin: 0 auto 32px;
@@ -189,6 +205,28 @@ nav ul li a:hover {
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
     object-fit: contain;
 }
+
+.small-used-by {
+    padding: 20px;
+    background: #fff;
+}
+
+.small-used-by .content {
+    margin: 0 auto;
+    max-width: 1040px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.small-used-by img {
+    display: block;
+    width: 100px;
+    padding: 10px;
+    border-radius: 5px;
+    background: #fff;
+    filter: grayscale(1);
+}
+
 
 .survey-promo {
     max-width: 500px;

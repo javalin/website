@@ -6,12 +6,26 @@ permalink: /
 
 <style>{% include landing.css %}</style>
 
-<div class="landing bluepart">
+<div class="landing bluepart blackpart">
     <h1>A simple web framework<br>for Java and Kotlin</h1>
     {% include macros/gettingStarted.md %}
     <div class="center">
-        <a class="landing-btn" href="/documentation">Show me the docs</a>
         <a class="landing-btn" href="/tutorials">Show me tutorials</a>
+        <a class="landing-btn" href="/documentation">Show me the docs</a>
+    </div>
+</div>
+
+<div class="small-used-by">
+    <div class="content">
+        <img src="/img/used-by/microsoft.png" alt="Microsoft">
+        <img src="/img/used-by/redhat.png" alt="Redhat">
+        <img src="/img/used-by/uber.png" alt="Uber">
+        <img src="/img/used-by/nav.png" alt="nav">
+        <img src="/img/used-by/datawire.png" alt="Datawire">
+        <img src="/img/used-by/telenor.png" alt="Telenor">
+        <img src="/img/used-by/revolut.png" alt="Revolut">
+        <img src="/img/used-by/c6bank.png" alt="C6 Bank">
+        <img src="/img/used-by/nordstrom.png" alt="Nordstrom">
     </div>
 </div>
 
@@ -112,11 +126,11 @@ val app = Javalin.create { config ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-<p>Creating a REST API has never been easier</p>
+<p style="margin: 40px 0">Creating a REST API has never been easier</p>
 
 <div class="center">
-    <a class="landing-btn" href="/documentation">Show me the docs</a>
     <a class="landing-btn" href="/tutorials">Show me tutorials</a>
+    <a class="landing-btn" href="/documentation">Show me the docs</a>
 </div>
 </div>
 
@@ -142,7 +156,7 @@ val app = Javalin.create { config ->
     </div>
 </div>
 
-<div class="landing bluepart">
+<div class="landing bluepart whos-using-javalin">
     <h1 id="whos-using-javalin">Who's using Javalin?</h1>
     <div class="used-by">
         <img src="/img/used-by/jhu.png" alt="JHU">
