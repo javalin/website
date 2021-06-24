@@ -48,7 +48,7 @@ h2,
 h3,
 h4 {
   font-family: 'Roboto Slab', sans-serif;
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: -0.5px;
   margin-top: 1.75em;
   margin-bottom: 0.25em;
@@ -64,17 +64,6 @@ main.width-limit hr {
   margin: 56px 0;
   border: 0;
   border-bottom: 1px dashed rgba(0, 0, 0, 0.2);
-}
-
-.has-right-menu {
-  h2,
-  h3,
-  h4 {
-    &::before {
-      content: "#";
-      margin-right: 8px;
-    }
-  }
 }
 
 p {

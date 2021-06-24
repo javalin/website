@@ -102,7 +102,7 @@ nav ul li a:hover {
 .bluepart h1 {
     text-align: center;
     color: white;
-    font-weight: 500;
+    font-weight: 600;
     margin: 0;
     text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
 }
@@ -157,9 +157,8 @@ nav ul li a:hover {
 }
 
 .boxes {
-    padding: 0 24px;
     display: flex;
-    max-width: 1240px;
+    max-width: 1200px;
     justify-content: center;
     margin: 0 auto;
 }
@@ -287,7 +286,7 @@ nav ul li a:hover {
     }
 
     .box p {
-        font-size: 4vw;
+        font-size: 16px;
     }
 
     .used-by img {
