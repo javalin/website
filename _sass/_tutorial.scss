@@ -5,10 +5,11 @@
     right: 16px;
     top: 16px;
     .tutorial-language {
+      text-transform: capitalize;
       background: #008ab4;
-      border-radius: 3px;
+      border-radius: 20px;
       color: white;
-      padding: 1px 6px;
+      padding: 1px 12px;
       display: inline-block;
       font-size: 14px;
     }

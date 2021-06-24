@@ -20,12 +20,12 @@ permalink: /
         <img src="/img/used-by/microsoft.png" alt="Microsoft">
         <img src="/img/used-by/redhat.png" alt="Redhat">
         <img src="/img/used-by/uber.png" alt="Uber">
-        <img src="/img/used-by/nav.png" alt="nav">
-        <img src="/img/used-by/datawire.png" alt="Datawire">
         <img src="/img/used-by/telenor.png" alt="Telenor">
         <img src="/img/used-by/revolut.png" alt="Revolut">
         <img src="/img/used-by/c6bank.png" alt="C6 Bank">
+        <img src="/img/used-by/datawire.png" alt="Datawire">
         <img src="/img/used-by/nordstrom.png" alt="Nordstrom">
+        <img src="/img/used-by/dkb.png" alt="Deutsche Kreditbank">
     </div>
 </div>
 
@@ -50,17 +50,19 @@ permalink: /
         <div class="box">
             <h3>Interoperable</h3>
             <p>
-                Other Java and Kotlin web frameworks usually offer separate version for each language.
-                Javalin is being developed with interoperability in mind, so apps are built the same way in both Java and Kotlin.
+                Other Java and Kotlin web frameworks usually offer one version for each language.
+                Javalin is being made with inter-operability in mind, apps are built the same way in both Java and Kotlin.
             </p>
         </div>
         <div class="box">
             <h3>Flexible</h3>
             <p>
                 Javalin is designed to be simple and blocking, as this is the easiest programming model to reason about.
-                However, if you set a <code>Future</code> as a result, Javalin switches into asynchronous mode.
+                But, if you set a <code>Future</code> as a result, Javalin switches into asynchronous mode.
             </p>
         </div>
+    </div>
+    <div class="boxes">
         <div class="box">
             <h3>Educational</h3>
             <p>
@@ -70,11 +72,18 @@ permalink: /
             </p>
         </div>
         <div class="box">
-            <h3>OpenAPI integration</h3>
+            <h3>OpenAPI</h3>
             <p>
-                Many lightweight Java and Kotlin web frameworks don't support OpenAPI, but Javalin has a full
-                integration, including Swagger UI and redoc to display the generate docs.
-                Learn more at the dedicated <a href="/plugins/openapi">OpenAPI plugin page</a>.
+                Many lightweight Java and Kotlin web frameworks don't support OpenAPI, but Javalin does
+                (including Swagger UI and ReDoc). Learn more at the <a href="/plugins/openapi">OpenAPI plugin page</a>.
+            </p>
+        </div>
+        <div class="box">
+            <h3>Jetty</h3>
+            <p>
+                Javalin runs on top of Jetty, one of the most used and stable web-servers on the JVM.
+                You can configure the Jetty server fully, including SSL and HTTP2 and everything else
+                that Jetty offers.
             </p>
         </div>
     </div>
@@ -135,25 +144,14 @@ val app = Javalin.create { config ->
 </div>
 
 <div class="landing whitepart">
-    <h1>A solid foundation</h1>
-    <div class="boxes">
-        <div class="box">
-            <h3>Jetty</h3>
-            <p>
-                Javalin runs on top of Jetty, one of the most used and stable web-servers on the JVM.
-                You can configure the Jetty server fully, so you can easily get SSL and HTTP2 and everything else
-                that Jetty has to offer.
-            </p>
-        </div>
-        <div class="box">
-            <h3>SparkJava and Koa.js</h3>
-            <p>
-                Javalin started as a fork of the Java and Kotlin web framework SparkJava,
-                but turned into a ground-up rewrite influenced by the Javascript framework koa.js.
-                Javalin takes the best concepts from these two frameworks.
-            </p>
-        </div>
-    </div>
+    <h1>An active community</h1>
+    {% include commit-history.html %}
+    <div class="comment">Commit history, 2017-2021</div>
+    <p class="white-paragraph">
+        Javalin 1.0 was released in 2017, and has been in steady development since.<br><br>
+        The project has more than a hundred contributors, over four hundred forks, and around five thousand
+        stars on GitHub.
+    </p>
 </div>
 
 <div class="landing bluepart whos-using-javalin">
@@ -189,11 +187,8 @@ val app = Javalin.create { config ->
 
 <div class="landing whitepart">
     <h1>What is Javalin used for?</h1>
-    <p class="survey-promo">
-        Check out our current <a href="/blog/javalin-user-survey-2020">survey results</a> (Spring 2020)
+    <p class="white-paragraph">
+        Check out our current <a href="/blog/javalin-user-survey-2020">survey results</a> (Spring 2020)<br>
         to learn more about how people use Javalin.
     </p>
 </div>
-
-
-

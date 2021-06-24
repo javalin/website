@@ -9,13 +9,13 @@ permalink: /download
 
 <h1 class="no-margin-top">A lightweight REST API library</h1>
 
-Javalin is a true microframework with only two dependencies:
-the embedded web-server (Jetty) and a logging facade (SLF4J).
+Javalin is a true microframework with only one required dependency: SLF4J (logging).
 
-Javalin has plugins for JSON mapping, template rendering, and OpenAPI (Swagger), but they're
+By default Javalin also depends on Jetty, but you can exclude it (or use the `javalin-without-jetty` artifact)
+if you want to use a different Webserver (like Tomcat, etc).
+
+Javalin also has plugins for JSON mapping, template rendering, and OpenAPI (Swagger), but they're
 optional dependencies that you have to add manually.
-
-You can exclude the Jetty dependency if you want to run Javalin on a different servlet container.
 
 ## Download Javalin
 {% include macros/mavenDep.md %}
