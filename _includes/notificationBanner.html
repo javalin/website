@@ -1,24 +1,24 @@
 <script>
-    const notificationId = "javalin-4-alpha";
-    const hasBeenDismissed = localStorage.getItem(notificationId + "-dismissed") === "true";
-    const pageLoadCount = parseInt(localStorage.getItem(notificationId + "-count") || 0);
-    localStorage.setItem(notificationId + "-count", (pageLoadCount + 1).toString());
-    if (!hasBeenDismissed /*&& pageLoadCount >= 5*/) {
-        document.write(`
-            <div id="notification-banner">
-                The Javalin 4 alpha is out!
-                Join the discussion on <a href="https://github.com/tipsy/javalin/issues/1172">GitHub</a>.
-                Feature requests welcome!
-            </div>
-        `);
-        // if (pageLoadCount > 13) {
-        //     document.querySelector("#notification-banner").insertAdjacentHTML("beforeend", `<span class="close">×</span>`);
-        //     document.querySelector("#notification-banner .close").addEventListener("click", () => {
-        //         document.querySelector("#notification-banner").style.display = "none";
-        //         localStorage.setItem(notificationId + "-dismissed", "true");
-        //     });
-        // }
-    }
+    // const notificationId = "javalin-4-alpha";
+    // const hasBeenDismissed = localStorage.getItem(notificationId + "-dismissed") === "true";
+    // const pageLoadCount = parseInt(localStorage.getItem(notificationId + "-count") || 0);
+    // localStorage.setItem(notificationId + "-count", (pageLoadCount + 1).toString());
+    // if (!hasBeenDismissed /*&& pageLoadCount >= 5*/) {
+    //     document.write(`
+    //         <div id="notification-banner">
+    //             The Javalin 4 alpha is out!
+    //             Join the discussion on <a href="https://github.com/tipsy/javalin/issues/1172">GitHub</a>.
+    //             Feature requests welcome!
+    //         </div>
+    //     `);
+    //     // if (pageLoadCount > 13) {
+    //     //     document.querySelector("#notification-banner").insertAdjacentHTML("beforeend", `<span class="close">×</span>`);
+    //     //     document.querySelector("#notification-banner .close").addEventListener("click", () => {
+    //     //         document.querySelector("#notification-banner").style.display = "none";
+    //     //         localStorage.setItem(notificationId + "-dismissed", "true");
+    //     //     });
+    //     // }
+    // }
 </script>
 <style>
     #notification-banner {

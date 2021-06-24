@@ -18,7 +18,7 @@ main.width-limit {
 header {
     position: absolute;
     border: 0;
-    background: #008abc;
+    background: radial-gradient(#1a1a1a, #212121);
 }
 
 nav ul li + li {
@@ -35,34 +35,43 @@ nav ul li a:hover {
 
 .landing h1 {
     text-align: center;
+    margin: 32px 0 40px; /* offset line height */
 }
 
-.bluepart::selection {
-    background: #027aa3;
+.bluepart *::selection {
+    background: #000000;
+}
+
+.bluepart.blackpart {
+    background: #343434;
+    background: radial-gradient(#313131, #212121);
+    padding: 70px 20px 90px; /* Uneven padding to deal with text height */
 }
 
 .bluepart {
-    background: #028ebc;
+    padding: 60px 20px;
     background: radial-gradient(#02a2d7, #028ebc);
-    padding: 80px 20px;
-    box-shadow: 0 0 35px rgba(0, 0, 0, 0.1) inset;
-}
-
-.bluepart:first-of-type {
-    box-shadow: 0 -20px 35px -10px rgba(0, 0, 0, 0.1) inset;
 }
 
 .bluepart .multitab-code {
     max-width: 520px;
-    margin: 32px auto 0;
+    margin: 40px auto;
 }
 
 .bluepart .multitab-code ul {
-    background: rgba(0, 0, 0, 0.15);
+    background: rgba(0, 0, 0, 0.35);
 }
 
 .bluepart .multitab-code pre {
-    background: rgba(0, 0, 0, 0.15);
+    background: rgba(0, 0, 0, 0.30);
+}
+
+.bluepart.blackpart .multitab-code ul {
+    background: rgba(0, 0, 0, 0.30);
+}
+
+.bluepart.blackpart .multitab-code pre {
+    background: rgba(0, 0, 0, 0.25);
 }
 
 .bluepart .multitab-code pre code {
@@ -93,9 +102,21 @@ nav ul li a:hover {
 .bluepart h1 {
     text-align: center;
     color: white;
-    font-weight: 500;
+    font-weight: 600;
     margin: 0;
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+.blackpart h1 {
+    text-shadow: 2px 2px 0 #000;
+}
+
+.whitepart {
+    padding: 0 20px;
+}
+
+.whitepart h1 {
+    text-decoration: underline;
 }
 
 .bluepart > p {
@@ -108,25 +129,27 @@ nav ul li a:hover {
     text-decoration: underline;
 }
 
-.whitepart {
-    border-top: 2px solid #fff;
-    border-bottom: 2px solid #fff;
-}
-
 .center {
     text-align: center;
 }
 
 .landing-btn {
-    margin: 32px 8px 0;
-    padding: 10px 15px;
+    margin: 0 8px;
+    padding: 12px 20px;
     text-align: center;
     display: inline-block;
     background: rgba(255, 255, 255, 0.15);
-    border-bottom: 2px solid rgba(0, 0, 0, 0.4);
+    border-bottom: 2px solid rgba(0, 0, 0, 0.3);
     color: white;
     cursor: pointer;
     border-radius: 50px;
+    font-family: 'Roboto Slab', arial, sans-serif;
+    font-weight: 500;
+}
+
+.blackpart .landing-btn {
+    border-bottom: 3px solid rgba(0, 0, 0, 0.3);
+    border-bottom: 3px solid rgba(0, 0, 0, 0.7);
 }
 
 .landing-btn:hover {
@@ -134,36 +157,55 @@ nav ul li a:hover {
 }
 
 .boxes {
-    padding: 20px;
     display: flex;
-    max-width: 1080px;
-    margin: 0 auto 32px;
-    justify-content: space-between;
-    flex-wrap: wrap;
+    max-width: 1200px;
+    justify-content: center;
+    margin: 0 auto;
 }
 
 .boxes .box {
-    text-align: left;
-    flex-basis: calc(50% - 16px);
-    padding: 15px;
+    flex-basis: calc(25% - 32px);
+    margin: 0 16px 32px 16px;
+    padding: 32px;
     background: #fff;
-    font-size: 16px;
-    margin-bottom: 32px;
     border-radius: 5px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.7;
+    color: rgba(0, 0, 0, 0.7);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
 }
 
 .boxes .box h3 {
+    color: rgba(0, 0, 0, 0.9);
     margin-top: 0;
+    margin-bottom: 16px;
     font-weight: 500;
     text-transform: none;
 }
 
-@media (max-width: 480px) {
-    .boxes .box {
-        flex-basis: 100%;
+.boxes + .boxes {
+    margin-bottom: 64px;
+}
+
+@media (max-width: 1200px) {
+    .boxes {
+        flex-wrap: wrap;
     }
 
+    .boxes .box {
+        flex-basis: calc(50% - 32px);
+    }
+}
+
+@media (max-width: 600px) {
+    .boxes .box {
+        margin: 0 0 32px 0;
+        flex-basis: 100%;
+    }
+}
+
+@media (max-width: 480px) {
     .bluepart {
         padding: 40px 20px;
     }
@@ -186,15 +228,44 @@ nav ul li a:hover {
     margin: 20px;
     border-radius: 5px;
     background: #fff;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
     object-fit: contain;
 }
 
-.survey-promo {
-    max-width: 500px;
-    margin: 0 auto 100px;
+.small-used-by {
+    padding: 20px;
+    background: #fff;
+    overflow: hidden;
+}
+
+.small-used-by .content {
+    margin: 0 auto;
+    max-width: 1140px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.small-used-by img {
+    display: block;
+    width: 100px;
+    padding: 10px;
+    border-radius: 5px;
+    background: #fff;
+    filter: grayscale(1);
+}
+
+.whitepart .comment {
+    margin-top: -16px;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.white-paragraph {
+    max-width: 700px;
+    margin: 32px auto 100px;
     text-align: center;
     padding: 0 20px;
+    line-height: 1.7;
 }
 
 @media (max-width: 480px) {
@@ -210,8 +281,12 @@ nav ul li a:hover {
         margin-right: 4px;
     }
 
+    .landing-btn + .landing-btn {
+        margin-top: 16px;
+    }
+
     .box p {
-        font-size: 4vw;
+        font-size: 16px;
     }
 
     .used-by img {
@@ -224,4 +299,23 @@ nav ul li a:hover {
         height: 34px;
     }
 
+}
+
+.bluepart.blackpart.image {
+    padding: 60px 20px 120px;
+    background: url("/img/background.jpg") center;
+    background-size: cover;
+}
+
+.bluepart.blackpart.image .multitab-code ul,
+.bluepart.blackpart.image .multitab-code pre {
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.bluepart.blackpart.image .landing-btn {
+    background: rgb(36, 70, 101);
+}
+
+.bluepart.blackpart.image .landing-btn:hover {
+    background: rgb(35, 75, 113);
 }
