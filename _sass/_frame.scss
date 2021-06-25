@@ -51,46 +51,40 @@ footer {
 }
 
 nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   font-family: 'Roboto Slab', sans-serif;
   height: 80px;
   position: relative;
 
   #logo img {
-    margin: 20px 0;
+    display: block;
     height: 40px;
   }
 
   ul {
+    margin: 0;
     padding: 0;
     list-style: none;
-    float: right;
-    height: 40px;
-    margin: 20px 0;
-
+    display: flex;
     li {
+      margin: 0;
       + li {
         border-left: 1px solid $light-border;
       }
-
-      display: inline-block;
-
       a {
+        margin: 0 6px;
         font-weight: 500;
         font-size: 18px;
         display: block;
         color: #333;
         text-decoration: none;
-        padding: 0 15px;
-        line-height: 32px;
-
+        padding: 8px 16px;
+        transition: color .1s ease-in-out;
         &:hover {
-          color: #000;
+          color: $javalin-brand-primary;
         }
-      }
-
-      &:last-of-type a {
-        padding-right: 0;
-        margin-right: 0;
       }
     }
   }
@@ -210,7 +204,8 @@ nav {
 @media (max-width: 480px) {
   nav ul li a {
     font-size: 16px;
-    padding: 0 8px;
+    padding: 8px;
+    margin: 0;
   }
   footer {
     display: none;
@@ -223,7 +218,6 @@ nav {
 @media (max-width: 400px) {
   nav {
     #logo img {
-      margin: 25px 0;
       height: 26px;
     }
   }

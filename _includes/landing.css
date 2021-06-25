@@ -3,7 +3,7 @@ main {
 }
 
 header nav {
-    text-align: center;
+    justify-content: center;
 }
 
 header nav ul {
@@ -295,7 +295,6 @@ nav ul li a:hover {
     }
 
     nav #logo img {
-        margin: 23px 0;
         height: 34px;
     }
 
