@@ -3,8 +3,8 @@
 
   .tutorial-languages {
     position: absolute;
-    right: 16px;
-    top: 16px;
+    right: 24px;
+    top: 24px;
 
     .tutorial-language {
       text-transform: capitalize;
@@ -14,6 +14,9 @@
       padding: 1px 12px;
       display: inline-block;
       font-size: 14px;
+      + .tutorial-language {
+        margin-left: 4px;
+      }
     }
   }
 }
@@ -87,5 +90,11 @@
 @media (max-width: 600px) {
   .tutorial-tabs .tutorial-tab {
     font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tutorial-tabs .tutorial-tab {
+    font-size: 16px;
   }
 }
