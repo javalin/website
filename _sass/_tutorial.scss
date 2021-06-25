@@ -1,9 +1,11 @@
 .tutorials .post-summary {
   position: relative;
+
   .tutorial-languages {
     position: absolute;
     right: 16px;
     top: 16px;
+
     .tutorial-language {
       text-transform: capitalize;
       background: #008ab4;
@@ -20,9 +22,11 @@
   #timeToRead {
     float: right;
   }
+
   .tutorial-header .notification {
     font-size: 14px;
     margin-bottom: 30px;
+
     .github-link {
       display: block;
       width: 100%;
@@ -47,11 +51,13 @@
   margin-top: 40px;
   margin-bottom: 20px;
   display: flex;
+
   .tutorial-tab {
     font-size: 24px;
     font-family: 'Roboto Slab', arial, sans-serif;
     font-weight: 500;
     cursor: pointer;
+
     + .tutorial-tab {
       margin-left: 20px;
     }
@@ -62,6 +68,7 @@
   [data-tutorial-tab=official] {
     border-bottom: 3px solid $javalin-brand-primary;
   }
+
   [data-tutorial-content=community] {
     display: none;
   }
@@ -71,7 +78,14 @@
   [data-tutorial-tab=community] {
     border-bottom: 3px solid $javalin-brand-primary;
   }
+
   [data-tutorial-content=official] {
     display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .tutorial-tabs .tutorial-tab {
+    font-size: 18px;
   }
 }
