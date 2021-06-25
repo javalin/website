@@ -23,7 +23,6 @@ permalink: /
         <img src="/img/used-by/telenor.png" alt="Telenor">
         <img src="/img/used-by/revolut.png" alt="Revolut">
         <img src="/img/used-by/c6bank.png" alt="C6 Bank">
-        <img src="/img/used-by/datawire.png" alt="Datawire">
         <img src="/img/used-by/nordstrom.png" alt="Nordstrom">
         <img src="/img/used-by/dkb.png" alt="Deutsche Kreditbank">
     </div>
@@ -33,14 +32,14 @@ permalink: /
     <h1>Why Javalin?</h1>
     <div class="boxes">
         <div class="box">
-            <h3>Simple</h3>
+            <h2>Simple</h2>
             <p>
                 Unlike other Java and Kotlin web frameworks, Javalin has very few concepts that you need to learn.
                 You never extend classes and you rarely implement interfaces.
             </p>
         </div>
         <div class="box">
-            <h3>Lightweight</h3>
+            <h2>Lightweight</h2>
             <p>
                 Javalin is just a few thousand lines of code on top of Jetty, and
                 its performance is equivalent to raw Jetty code. Due to its size, it's
@@ -48,14 +47,14 @@ permalink: /
             </p>
         </div>
         <div class="box">
-            <h3>Interoperable</h3>
+            <h2>Interoperable</h2>
             <p>
                 Other Java and Kotlin web frameworks usually offer one version for each language.
                 Javalin is being made with inter-operability in mind, apps are built the same way in both Java and Kotlin.
             </p>
         </div>
         <div class="box">
-            <h3>Flexible</h3>
+            <h2>Flexible</h2>
             <p>
                 Javalin is designed to be simple and blocking, as this is the easiest programming model to reason about.
                 But, if you set a <code>Future</code> as a result, Javalin switches into asynchronous mode.
@@ -64,7 +63,7 @@ permalink: /
     </div>
     <div class="boxes">
         <div class="box">
-            <h3>Educational</h3>
+            <h2>Educational</h2>
             <p>
                 Visit our <a href="/for-educators">educators page</a> if you're teaching web programming
                 and looking for a web framework which will get out of your way and let you focus on the
@@ -72,14 +71,14 @@ permalink: /
             </p>
         </div>
         <div class="box">
-            <h3>OpenAPI</h3>
+            <h2>OpenAPI</h2>
             <p>
                 Many lightweight Java and Kotlin web frameworks don't support OpenAPI, but Javalin does
                 (including Swagger UI and ReDoc). Learn more at the <a href="/plugins/openapi">OpenAPI plugin page</a>.
             </p>
         </div>
         <div class="box">
-            <h3>Jetty</h3>
+            <h2>Jetty</h2>
             <p>
                 Javalin runs on top of Jetty, one of the most used and stable web-servers on the JVM.
                 You can configure the Jetty server fully, including SSL and HTTP2 and everything else

@@ -176,12 +176,13 @@ nav ul li a:hover {
     box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
 }
 
-.boxes .box h3 {
+.boxes .box h2 {
     color: rgba(0, 0, 0, 0.9);
     margin-top: 0;
     margin-bottom: 16px;
     font-weight: 500;
     text-transform: none;
+    font-size: 24px;
 }
 
 .boxes + .boxes {
@@ -214,7 +215,7 @@ nav ul li a:hover {
 .used-by {
     display: flex;
     flex-wrap: wrap;
-    max-width: 1000px;
+    max-width: 1140px;
     margin: 40px auto 0;
     align-items: center;
     justify-content: space-around;
@@ -222,8 +223,8 @@ nav ul li a:hover {
 
 .used-by img {
     display: inline-block;
-    width: 200px;
-    height: auto;
+    width: 240px;
+    height: 135px;
     padding: 20px;
     margin: 20px;
     border-radius: 5px;
@@ -233,7 +234,7 @@ nav ul li a:hover {
 }
 
 .small-used-by {
-    padding: 20px;
+    padding: 16px 20px;
     background: #fff;
     overflow: hidden;
 }
@@ -247,10 +248,9 @@ nav ul li a:hover {
 
 .small-used-by img {
     display: block;
-    width: 100px;
+    width: 120px;
+    height: 68px;
     padding: 10px;
-    border-radius: 5px;
-    background: #fff;
     filter: grayscale(1);
 }
 
