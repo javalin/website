@@ -1,66 +1,83 @@
 <script>
-    // const notificationId = "javalin-4-alpha";
-    // const hasBeenDismissed = localStorage.getItem(notificationId + "-dismissed") === "true";
-    // const pageLoadCount = parseInt(localStorage.getItem(notificationId + "-count") || 0);
-    // localStorage.setItem(notificationId + "-count", (pageLoadCount + 1).toString());
-    // if (!hasBeenDismissed /*&& pageLoadCount >= 5*/) {
-    //     document.write(`
-    //         <div id="notification-banner">
-    //             The Javalin 4 alpha is out!
-    //             Join the discussion on <a href="https://github.com/tipsy/javalin/issues/1172">GitHub</a>.
-    //             Feature requests welcome!
-    //         </div>
-    //     `);
-    //     // if (pageLoadCount > 13) {
-    //     //     document.querySelector("#notification-banner").insertAdjacentHTML("beforeend", `<span class="close">×</span>`);
-    //     //     document.querySelector("#notification-banner .close").addEventListener("click", () => {
-    //     //         document.querySelector("#notification-banner").style.display = "none";
-    //     //         localStorage.setItem(notificationId + "-dismissed", "true");
-    //     //     });
-    //     // }
-    // }
+    const notificationId = "javalin-4-alpha";
+    const hasBeenDismissed = localStorage.getItem(notificationId + "-dismissed") === "true";
+    const pageLoadCount = parseInt(localStorage.getItem(notificationId + "-count") || 0);
+    localStorage.setItem(notificationId + "-count", (pageLoadCount + 1).toString());
+    if (!hasBeenDismissed /*&& pageLoadCount >= 5*/) {
+        document.write(`
+            <div id="notification-banner">
+                <h1>Javalin 4 is coming!</h1>
+                Join the discussion on <a href="https://github.com/tipsy/javalin/issues/1172">GitHub</a>
+                <br>Feature requests welcome!
+            </div>
+        `);
+        if (pageLoadCount > 0) {
+            document.querySelector("#notification-banner").insertAdjacentHTML("beforeend", `<span class="close">×</span>`);
+            document.querySelector("#notification-banner .close").addEventListener("click", () => {
+                document.querySelector("#notification-banner").style.display = "none";
+                localStorage.setItem(notificationId + "-dismissed", "true");
+            });
+        }
+    }
 </script>
 <style>
     #notification-banner {
         line-height: 1.5;
-        position: relative;
-        margin: 12px 0 20px;
-        width: 100%;
-        background: #008cbb;
+        position: fixed;
+        bottom: 32px;
+        right: 32px;
+        width: 360px;
+        z-index: 9999;
+        background: linear-gradient(20deg, #29292d 30%, #008cbb);
         color: white;
-        text-shadow: 1px 1px rgba(0, 0, 0, 0.5);
-        text-align: center;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+        font-size: 16px;
+        border-radius: 8px;
+        padding: 24px;
+    }
+
+    #notification-banner h1 {
+        line-height: 1;
+        margin: 0 0 20px 0;
         font-family: 'Encode Sans', sans-serif;
-        font-size: 18px;
-        border-radius: 5px;
-        padding: 10px 20px;
-        border-bottom: 5px solid #035e7f;
+        font-weight: 400;
+        font-size: 22px;
+        text-decoration: underline;
     }
 
     #notification-banner a {
-        color: white;
-        text-decoration: underline;
+        font-weight: 700;
+        border: 1px solid white;
+        padding: 1px 3px;
+        background: white;
+        color: #333;
+        border-radius: 3px;
+        margin: 0 2px;
     }
 
     #notification-banner .close {
         position: absolute;
-        right: -10px;
-        top: -10px;
+        right: 24px;
+        top: 24px;
         height: 30px;
-        line-height: 30px;
         width: 30px;
-        text-align: center;
-        font-size: 24px;
-        background: #ff6666;
-        border-radius: 24px;
-        font-family: arial;
-        border-bottom: 2px solid #b13838;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        font-family: arial, sans-serif;
         cursor: pointer;
-        text-shadow: 0 0 0 white;
+        background: rgba(0, 0, 0, 0.15);
+        border-radius: 5px;
     }
 
     @media (max-width: 480px) {
         #notification-banner {
+            border-radius: 0;
+            width: 100%;
+            right: 0;
+            bottom: 0;
             font-size: 14px;
         }
     }

@@ -109,6 +109,7 @@ document.addEventListener("click", function (e) {
 
 (() => {
     const allTutorials = document.querySelector(".all-tutorials")
+    if (!allTutorials) return;
     document.querySelectorAll(".tutorial-tab").forEach(tab => {
         tab.addEventListener("click", e => {
             allTutorials.setAttribute("data-tab", e.target.getAttribute("data-tutorial-tab"));
