@@ -11,7 +11,7 @@ permalink: /news/
 Javalin is released frequently (once or twice a month). Please follow us on [Twitter](https://twitter.com/javalin_io)
 or [Facebook](https://www.facebook.com/javalin.io) to get notified about new releases.
 
-{% assign newsposts = (site.posts | where: "category" , "news") | sort: 'date' | reverse %}
+{% assign newsposts = site.posts | where: "category" , "news" | sort: 'date' | reverse %}
 
 <div class="posts-overview">
     <ul class="post-list">

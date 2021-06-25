@@ -20,6 +20,19 @@ optional dependencies that you have to add manually.
 ## Download Javalin
 {% include macros/mavenDep.md %}
 
+## Javalin modules
+
+There are multiple modules available for Javalin.
+All modules are released in sync with the core `javalin` module, you just have to replace
+the artifact id:
+
+* `javalin` - the core Javalin dependency (shown in the snippet above)
+* `javalin-bundle` - `javalin`, plus `javalin-openapi`, `jackson` and `logback` (good to get started fast)
+* `javalin-openapi` - the OpenAPI plugin and all required dependencies
+* `javalin-graphql` - the new GraphQL plugin
+* `javalin-without-jetty` - `javalin` with all `jetty` dependencies excluded
+  and Jetty specific methods removed (useful for running on e.g. Tomcat)
+
 ### Manual downloads
 You can get the prebuilt jar from [Maven Central](https://repo1.maven.org/maven2/io/javalin/javalin/).\\
 You can get the source on [GitHub](https://github.com/tipsy/javalin), or [download it as a zip](https://github.com/tipsy/javalin/archive/master.zip).

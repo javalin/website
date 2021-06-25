@@ -34,7 +34,7 @@ First, we need to create a project with these dependencies: [(→ Tutorial)](/tu
 
 Create a Main class with the following code:
 
-{% capture java %}
+{% capture java %}{% raw %}
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,7 +65,7 @@ public class Main {
     }
 
 }
-{% endcapture %}
+{% endraw %}{% endcapture %}
 {% capture kotlin %}
 import io.javalin.Javalin
 

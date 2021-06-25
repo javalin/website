@@ -45,7 +45,7 @@ the Jetty dependency:
 ```kotlin
 dependencies {
     compile(kotlin("stdlib-jdk8"))
-    compile("io.javalin:javalin:3.7.0") {
+    compile("io.javalin:javalin:{{site.javalinThreeVersion}}") {
         exclude(mapOf("group" to "org.eclipse.jetty"))
         exclude(mapOf("group" to "org.eclipse.jetty.websocket"))
     }

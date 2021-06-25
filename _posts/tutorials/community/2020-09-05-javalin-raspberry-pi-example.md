@@ -48,7 +48,7 @@ repositories {
 Then, add these dependencies as well:
 
 ``` groovy
-compile 'io.javalin:javalin:3.10.1'
+compile 'io.javalin:javalin:{{site.javalinThreeVersion}}'
 compile 'com.fasterxml.jackson.core:jackson-databind:2.10.3' // Necessary for serializing JSON
 compile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.10.3' // Necessary for serializing JSON
 compile 'org.slf4j:slf4j-simple:1.7.30' // Necessary to view logging output

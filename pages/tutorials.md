@@ -8,7 +8,7 @@ permalink: /tutorials/
 
 <h1 class="no-margin-top">Tutorials</h1>
 
-{% assign tutorials = (site.posts | where: "layout" , "tutorial") | sort: 'date' | reverse %}
+{% assign tutorials = site.posts | where: "layout" , "tutorial" | sort: 'date' | reverse %}
 {% assign communityTuts = tutorials | where: "official", false %}
 {% assign officialTuts = tutorials | where: "official", true %}
 

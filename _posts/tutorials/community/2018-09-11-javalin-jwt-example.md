@@ -178,6 +178,7 @@ requires the name of a JWT claim which declares the user's level, a mapping betw
 users' levels and roles, and a default role for when no token is available. For the
 sake of this example, here are the available roles and their mapping:
 ```java
+{% raw %}
 enum Roles implements Role {
     ANYONE,
     USER,
@@ -188,6 +189,7 @@ Map<String, Role> rolesMapping = new HashMap<String, Role>() {{
     put("user", Roles.USER);
     put("admin", Roles.ADMIN);
 }};
+{% endraw %}
 ```
 And the access manager is set simply like this:
 ```java

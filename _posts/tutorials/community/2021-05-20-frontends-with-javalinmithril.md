@@ -35,7 +35,7 @@ We'll also add Vue (view library) for our frontend:
 <dependency>
     <groupId>io.javalin</groupId>
     <artifactId>javalin</artifactId>
-    <version>3.13.6</version>
+    <version>{{site.javalinThreeVersion}}</version>
     <type>jar</type>
 </dependency>
 <dependency>

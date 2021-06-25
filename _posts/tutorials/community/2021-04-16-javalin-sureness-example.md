@@ -40,7 +40,7 @@ First, you will need to create a maven project and add Javalin, Sureness depende
 <dependency>
     <groupId>io.javalin</groupId>
     <artifactId>javalin</artifactId>
-    <version>{{site.javalinversion}}</version>
+    <version>{{site.javalinThreeVersion}}</version>
 </dependency>
 <dependency>
     <groupId>com.usthe.sureness</groupId>

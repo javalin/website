@@ -99,7 +99,7 @@ In the root folder of the source, you can find the project. There are very few d
     <dependency>
         <groupId>io.javalin</groupId>
         <artifactId>javalin</artifactId>
-        <version>3.9.1</version>
+        <version>{{site.javalinThreeVersion}}</version>
     </dependency>
     <dependency>
         <groupId>org.slf4j</groupId>

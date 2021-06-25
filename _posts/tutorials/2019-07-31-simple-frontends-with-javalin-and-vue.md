@@ -49,7 +49,7 @@ We'll also add Vue (view library) for our frontend:
 <dependency>
     <groupId>io.javalin</groupId>
     <artifactId>javalin</artifactId>
-    <version>3.3.0</version>
+    <version>{{site.javalinversion}}</version>
 </dependency>
 <dependency>
     <groupId>com.fasterxml.jackson.module</groupId>
@@ -59,7 +59,7 @@ We'll also add Vue (view library) for our frontend:
 <dependency>
     <groupId>org.slf4j</groupId>
     <artifactId>slf4j-simple</artifactId>
-    <version>1.7.26</version>
+    <version>{{site.slf4jversion}}</version>
 </dependency>
 <dependency>
     <groupId>org.webjars.npm</groupId>
