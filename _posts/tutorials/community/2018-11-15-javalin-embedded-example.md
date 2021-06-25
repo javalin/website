@@ -1,5 +1,6 @@
 ---
 layout: tutorial
+official: false
 title: "Embed Javalin Into Servlet Container"
 author: <a href="https://github.com/mvysny" target="_blank">Martin Vyšný</a>
 github: https://github.com/tipsy/javalin-tomcat-embed-example
@@ -70,7 +71,7 @@ class MyRestServlet : HttpServlet() {
 > Note: You must remember to use the `createStandalone()` function, which has been carefully
 designed to make Javalin not to depend on Jetty. Using `Javalin.create()`
 will make the WAR app fail to start with `java.lang.ClassNotFoundException: org.eclipse.jetty.server.Server`.
- 
+
 
 The Servlet container will automatically auto-discover the servlet (since it's annotated with `@WebServlet`);
 any requests to the servlet will be directed straight to Javalin which will then take care

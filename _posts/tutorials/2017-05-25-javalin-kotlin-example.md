@@ -1,5 +1,6 @@
 ---
 layout: tutorial
+official: true
 title: "Using Javalin with Kotlin to create a simple CRUD REST API"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2017-05-25
@@ -26,20 +27,20 @@ of IDEA while following this tutorial, but there is also Kotlin support in Eclip
 The good people over at [JetBrains](https://www.jetbrains.com) have an up-to-date
 [archetype](https://maven.apache.org/guides/introduction/introduction-to-archetypes.html)
 for Kotlin. To use it, do as follows:
- 
+
  * `File` `->` `New` `->` `Project`
  * `Maven` `->` `Create from archetype` `->` `org.jetbrains.kotlin:kotlin-archetype-jvm` `->` `Next`
  * Follow the instructions and pick a project name
  * Create `src/main/kotlin/app/Main.kt`
- 
+
  There is no `public static void main(String[] args)` in Kotlin, instead you have a `fun main(args: Array<String>)`.
- 
+
 ~~~kotlin
 fun main(args: Array<String>) {
     println("Hello, world!")
 }
 ~~~
- 
+
 <div class="comment">
 You'll have to point to the file (not class) containing this main function (not method)
 from your pom.xml if you want to build a jar. Doing this is not necessary for this tutorial,
@@ -166,7 +167,7 @@ return either a `User` or `null`. In Kotlin you have to specify the possibility 
 `findByEmail()`, Kotlin vs Java:
 
 ~~~kotlin
-// Kotlin 
+// Kotlin
 fun findByEmail(email: String): User? {
     return users.values.find { it.email == email }
 }

@@ -1,5 +1,6 @@
 ---
 layout: tutorial
+official: false
 title: "Running Javalin on GraalVM (22MB total size)"
 author: <a href="https://github.com/birdayz" target="_blank">Johannes Brüderl</a>
 github: https://github.com/tipsy/graal-javalin

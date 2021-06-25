@@ -1,5 +1,6 @@
 ---
 layout: tutorial
+official: true
 title: "Creating a simple chat-app with WebSockets"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2017-09-22

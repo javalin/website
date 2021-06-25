@@ -1,5 +1,6 @@
 ---
 layout: tutorial
+official: true
 title: "Jetty session handling - Persisting, caching and clustering"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2018-09-02

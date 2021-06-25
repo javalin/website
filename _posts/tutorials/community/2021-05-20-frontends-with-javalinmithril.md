@@ -1,5 +1,6 @@
 ---
 layout: tutorial
+official: false
 title: Simple Frontends With Mithril.js
 author: <a href="https://www.linkedin.com/in/tareq-kirresh" target="_blank">Tareq Kirresh</a>
 date: 2021-05-20
@@ -11,10 +12,10 @@ language: java
 ---
 
 In this tutorial you'll learn how to create simple frontends with Javalin and Mithril.js.
-The tutorial is only an intro, but covers the import and package system in the plugin, basic mithril.js components, 
+The tutorial is only an intro, but covers the import and package system in the plugin, basic mithril.js components,
 application layouts, and state sharing between server and client.
 
-JavalinMithril is still in its infancy, but I belive that it has a place in your application - the main benefit of using it vs JavalinVue is that it gives you the ability to make frontends with more files and better Namespacing, instead of relying on component names that are unique in an application, allowing for more complex frontends. 
+JavalinMithril is still in its infancy, but I belive that it has a place in your application - the main benefit of using it vs JavalinVue is that it gives you the ability to make frontends with more files and better Namespacing, instead of relying on component names that are unique in an application, allowing for more complex frontends.
 The background section dives into the idea behind JavalinMithril and how it is used,  but if you're just here to learn how to use JavalinMithril(Or morbid curiousity, I don't judge), you can skip ahead to [setup](#setup) section.
 
 ## Background
@@ -23,7 +24,7 @@ I'm a DevOps engineer by trade, but have worked several roles in the Software In
 
 I came across JavalinVue a year or so ago, I absolutely loved the simplicity, so much so that I have contributed to it,  and the performance and quick development time have been key to the success of my projects and initatives(also a story for another time). This Plugin is inspired by JavalinVue(and a dare), and adresses the only shortcoming I found in it : you need to manage your component ids to be unique, otherwise it doesnt work correctly.
 
-In this tutorial, we will go over the main workflow in JavalinMithril, and explain some choices along the way. There is no build system for the front end, But there is a well defined namespace(package) and class system that we need to stick to to get the results we want. 
+In this tutorial, we will go over the main workflow in JavalinMithril, and explain some choices along the way. There is no build system for the front end, But there is a well defined namespace(package) and class system that we need to stick to to get the results we want.
 
 ## Setup
 Our backend will be Java, and we'll be using Maven to build.
@@ -69,7 +70,7 @@ import io.javalin.Javalin
 package io.javalin.javalinmithril.demo;
 
 public class Main {
-    
+
     public static void main(String[] args){
         new App().start();
     }
@@ -123,7 +124,7 @@ Let's create `/src/main/resources/mithril/layout.html`:
 There are two JavalinMithril specific things here: `@componentRegistration` and `@routeComponent`. The JavalinMithril plugin will scan your `/resources/mithril` folder and put all the dependencies you have imported in your current component into `@componentRegistration`, similar to how libraries are loaded via `<script>` tags. It will also will also let you choose one component to mount based on the current URL, this is the `@routeComponent`.
 
 <div class="comment" markdown="1">
-Its important to note that there are differences between `m.mount` and `m.render`, but this is something you can refer to the mithril.js docs to figure out. 
+Its important to note that there are differences between `m.mount` and `m.render`, but this is something you can refer to the mithril.js docs to figure out.
 </div>
 
 ## Hello World
@@ -179,7 +180,7 @@ Note that you don't have to restart the server when making changes to `.js` file
 The reason we needed to restart now was because we added a new route in the `start` function.
 </div>
 
-## Importing and Nesting 
+## Importing and Nesting
 So now we are all setup, for the sake of consistency, lets create an app frame. Create a file `/resources/mithril/app-frame.js`
 ```javascript
 /*
@@ -245,7 +246,7 @@ app.get("/api/users/:user-id", UserController::getOne);
 
 We've referenced `UserController` in the previous snippet, and you can see the source for that - more or less its just a Controller that deals with some data in an in-memory set, So i will spare you the details. you can look at `/src/main/java/io/javalinmithril/demo/controller/UserController.java` to see what is up there.
 
-Now lets move back to the frontend. We Want 3 views here : user-overview, user-profile, and not-found. 
+Now lets move back to the frontend. We Want 3 views here : user-overview, user-profile, and not-found.
 This completes our backend, let's move on to the frontend. We want three views (user-overview, user-profile, and not-found), so
 we should create three separate files in `/src/main/resources/mithril/views`. We also need a model, since that is the Mithirl convention\\
 Lets start off with `/src/main/resources/mithril/user-model.js`
@@ -292,7 +293,7 @@ class UserOverview {
 
     view(vnode) {
         return m(AppFrame, {content:
-            m("ul.user-overview-list", 
+            m("ul.user-overview-list",
                 UserModel.list.map(function (user) {
                     return m("li",
                         m("a", {href: `/users/${user.id}`}, `${user.name} (${user.email})`))
@@ -303,7 +304,7 @@ class UserOverview {
     }
 }
 ```
-This component will start off by fetching our Users from the server, then loops through the array, and creates a list of links we can click for more info. This is all pure JS. infact, all of your mithril classes are pure JS, your CSS can be wherever you prefer. 
+This component will start off by fetching our Users from the server, then loops through the array, and creates a list of links we can click for more info. This is all pure JS. infact, all of your mithril classes are pure JS, your CSS can be wherever you prefer.
 
 Open `http://localhost:7000/users/` to view the list of users. If you click on one, a blank page will show.\\
 Let's fix this by creating `/src/main/resources/mithril/views/user-profile.js`:
@@ -443,7 +444,7 @@ That's about it. The Afterword contains a bit more discussion about this techniq
 but similarly to the Background section you can skip it if you're not that interested. **Thanks for reading**!
 
 ### Afterword
-The Library is still in its early days. However, there is a lot of potential here for growing front-ends without the associated tool-chain complexities, keeping a small overhead/request - and keeping that overhead consistent, even as your application grows in features and complexity. While Mithril.js is designed around single-page applications, it just offers so much out of the box that when we were considering the hyperscript framework to use for this plugin (trust me when I say, it was even more bonkers than it is right now - who even writes an import and package system?), we just decided to go with it because of the (outwardly looking) reactive nature, performance, and built in XHR functionality. 
+The Library is still in its early days. However, there is a lot of potential here for growing front-ends without the associated tool-chain complexities, keeping a small overhead/request - and keeping that overhead consistent, even as your application grows in features and complexity. While Mithril.js is designed around single-page applications, it just offers so much out of the box that when we were considering the hyperscript framework to use for this plugin (trust me when I say, it was even more bonkers than it is right now - who even writes an import and package system?), we just decided to go with it because of the (outwardly looking) reactive nature, performance, and built in XHR functionality.
 
 I've created [an issue on GitHub](https://github.com/TareqK/javalinmithril-example/issues/1)
 where you can post your pros/cons, or general comments on the tutorial.

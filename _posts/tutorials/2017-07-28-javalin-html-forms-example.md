@@ -1,5 +1,6 @@
 ---
 layout: tutorial
+official: true
 title: "Working with HTML forms and a Javalin backend"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2017-07-28

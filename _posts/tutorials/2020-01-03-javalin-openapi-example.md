@@ -1,12 +1,13 @@
 ---
 layout: tutorial
+official: true
 title: "Documenting endpoints with OpenAPI 3"
 permalink: /tutorials/openapi-example
 summarytitle: Documenting endpoints with OpenAPI 3
 summary: Learn how to document endpoints using OpenAPI 3, and how to render interactive docs using Swagger UI and ReDoc
 date: 2020-01-03
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
-language: ["kotlin", "java"]
+language: ["java", "kotlin"]
 github: https://github.com/tipsy/javalin-openapi-example
 ---
 

@@ -1,5 +1,6 @@
 ---
 layout: tutorial
+official: false
 title: "Javalin with Java 10 and Google Guice"
 author: <a href="https://www.linkedin.com/in/kristapsvitolins/" target="_blank">Kristaps Vītoliņš</a>
 date: 2018-04-29

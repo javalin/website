@@ -1,5 +1,6 @@
 ---
 layout: tutorial
+official: true
 title: "TODO MVC with Vue.js and Kotlin"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2017-05-27

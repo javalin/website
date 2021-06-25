@@ -1,5 +1,6 @@
 ---
 layout: tutorial
+official: true
 title: "Creating a Google Docs clone with WebSockets"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2018-04-22

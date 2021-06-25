@@ -1,11 +1,12 @@
 ---
 layout: tutorial
+official: false
 title: "Collecting real time analytics with influxDB"
 author: <a href="https://www.linkedin.com/in/ricardo-baumann-594b6b31/" target="_blank">Ricardo Baumann</a>
 date: 2017-12-11
 permalink: /tutorials/influxdb
 github: https://github.com/ricardobaumann/real-time-statistics
-summarytitle: Real time analytics with influxDB 
+summarytitle: Real time analytics with influxDB
 summary: Learn how to setup Javalin with docker and influxDB
 language: kotlin
 ---
@@ -13,8 +14,8 @@ language: kotlin
 ## What is InfluxDB?
 <blockquote>
     <p>
-        InfluxDB is a database for time series data, like metrics, analytics, IoT monitoring and etc. Its fast, available and scalable. 
-        For more details, visit 
+        InfluxDB is a database for time series data, like metrics, analytics, IoT monitoring and etc. Its fast, available and scalable.
+        For more details, visit
         &mdash; <a href="https://www.influxdata.com/">https://www.influxdata.com/</a>
     </p>
 </blockquote>
@@ -142,6 +143,6 @@ With the service running, try POSTing to `/upload` with
  	"count" : 40
 }`
 
-And then, GET the summary from `/statistics`. 
+And then, GET the summary from `/statistics`.
 
-Voila, boys and girls. Please let me know your insights about it. Thanks.  
+Voila, boys and girls. Please let me know your insights about it. Thanks.

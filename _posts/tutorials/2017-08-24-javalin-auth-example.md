@@ -1,5 +1,6 @@
 ---
 layout: tutorial
+official: true
 title: "Creating a secure REST API in Javalin"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2017-08-24

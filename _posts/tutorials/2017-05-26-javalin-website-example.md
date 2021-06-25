@@ -1,5 +1,6 @@
 ---
 layout: tutorial
+official: true
 title: "Creating a library website with login and multiple languages"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2017-05-26

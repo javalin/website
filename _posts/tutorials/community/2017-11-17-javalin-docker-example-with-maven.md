@@ -1,5 +1,6 @@
 ---
 layout: tutorial
+official: false
 title: "Deploying Javalin on Docker Container with Maven"
 author: <a href="https://www.linkedin.com/in/prasad-marne-7bb85b100/" target="_blank">Prasad Marne</a>
 date: 2017-11-17
@@ -19,8 +20,8 @@ language: java
         By doing so, thanks to the container, the developer can rest assured that the application will run on any other
         Linux machine regardless of any customized settings that machine might have that could differ from the machine
         used for writing and testing the code.
-        In a way, Docker is a bit like a virtual machine. But unlike a virtual machine, rather than creating a whole 
-        virtual operating system, Docker allows applications to use the same Linux kernel as the system that they're 
+        In a way, Docker is a bit like a virtual machine. But unlike a virtual machine, rather than creating a whole
+        virtual operating system, Docker allows applications to use the same Linux kernel as the system that they're
         running on and only requires applications be shipped with things not already running on the host computer.
         This gives a significant performance boost and reduces the size of the application.
         &mdash; <a href="https://opensource.com/resources/what-docker">opensource.com</a>
@@ -92,7 +93,7 @@ following configuration (below your dependencies tag):
 
 ## Configuring Docker
 Before we can configure anything we must create a Dockerfile.
-We can create a text file using any editor and name it Dockerfile. 
+We can create a text file using any editor and name it Dockerfile.
 Copy below contents to the Dockerfile and move this file to root of your project.
 ~~~markup
 FROM openjdk:8-jre-alpine
@@ -155,7 +156,7 @@ public class HelloWorld {
 ## Build and Push Docker image
 Now we can deploy our application using `mvn deploy`.
 This will build the docker image and push it to your registry server.
-Image name is same as repository value in the pom. 
+Image name is same as repository value in the pom.
 Additionally we add a tag to image to specify images for different versions.
 So image name for this example is localhost:5000/javalin:1.0.0-SNAPSHOT.
 Again, make sure you're in your project root, then enter:
@@ -163,7 +164,7 @@ Again, make sure you're in your project root, then enter:
 mvn deploy
 ~~~
 
-## Run Docker image 
+## Run Docker image
 Now we can run our application using `docker run`.
 open terminal then enter:
 ~~~bash

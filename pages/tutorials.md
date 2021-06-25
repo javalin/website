@@ -9,30 +9,31 @@ permalink: /tutorials/
 <h1 class="no-margin-top">Tutorials</h1>
 
 {% assign tutorials = (site.posts | where: "layout" , "tutorial") | sort: 'date' | reverse %}
+{% assign communityTuts = tutorials | where: "official", false %}
+{% assign officialTuts = tutorials | where: "official", true %}
 
 <div class="posts-header" markdown="1">
 Some of the tutorials have code examples in both Kotlin and Java (check the blue tags),
-but it should be easy to follow along even if they don't.
+but it should be easy to follow along even if they don't. The official tutorials are simple and
+mainly focus on one core concept at the time, while the community tutorials are usually more complex.
 </div>
 
-<div class="posts-overview">
-     <ul class="post-list tutorials">
-            {% for tutorial in tutorials %}
-            <li class="post-summary">
-                <a href="{{ tutorial.url }}">
-                    <h2>{{ tutorial.summarytitle }}</h2>
-                    <p>{{ tutorial.summary }}</p>
-                    <div class="tutorial-languages">
-                        {% for lang in tutorial.language %}
-                            <span class="tutorial-language">{{lang}}</span>
-                        {% endfor %}
-                    </div>
-                </a>
-            </li>
-            {% endfor %}
-        </ul>
-</div>
-<div class="posts-footer" markdown="1">
-The tutorials here are written by Javalin users and posted with their permission.
-If you have have a tutorial you want to submit, please create a pull request on [GitHub](https://github.com/javalin/javalin.github.io).
+<div class="all-tutorials">
+    <div class="tutorial-tabs">
+        <div class="tutorial-tab" data-tutorial-tab="official">Official tutorials</div>
+        <div class="tutorial-tab" data-tutorial-tab="community">Community tutorials</div>
+    </div>
+    <div class="tutorial-content">
+        <div data-tutorial-content="official">
+            {% include macros/tutorialPost.html tutorials=officialTuts %}
+        </div>
+        <div data-tutorial-content="community">
+            <div class="notification">
+                These community tutorials are written by Javalin users and posted at their request and/or
+                with their permission. If you have have a tutorial you want to submit,
+                please create a pull request on <a href="https://github.com/javalin/javalin.github.io)">GitHub</a>.
+            </div>
+            {% include macros/tutorialPost.html tutorials=communityTuts %}
+        </div>
+    </div>
 </div>

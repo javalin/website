@@ -1,5 +1,6 @@
 ---
 layout: tutorial
+official: true
 title: "Setting up monitoring in Javalin with Prometheus (and grafana)"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2017-12-02

@@ -1,5 +1,6 @@
 ---
 layout: tutorial
+official: true
 title: Clean Vue frontends without the hassle
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2019-07-31

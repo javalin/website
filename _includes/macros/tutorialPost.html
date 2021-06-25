@@ -1,0 +1,17 @@
+<div class="posts-overview">
+    <ul class="post-list tutorials">
+        {% for tutorial in include.tutorials %}
+        <li class="post-summary">
+            <a href="{{ tutorial.url }}">
+                <h2>{{ tutorial.summarytitle }}</h2>
+                <p>{{ tutorial.summary }}</p>
+                <div class="tutorial-languages">
+                    {% for lang in tutorial.language %}
+                    <span class="tutorial-language">{{lang}}</span>
+                    {% endfor %}
+                </div>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>

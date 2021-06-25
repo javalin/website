@@ -1,5 +1,6 @@
 ---
 layout: tutorial
+official: true
 title: "Deploying Javalin on Heroku"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2017-05-25
@@ -84,7 +85,7 @@ Heroku application. This can be done by using the `heroku create` command.\\
 Open a terminal and navigate to your project root, then enter:
 
 ~~~bash
-heroku create javalin-heroku-example #choose your own application name 
+heroku create javalin-heroku-example #choose your own application name
 ~~~
 
 Now that you have a Heroku application, we have to configure how to

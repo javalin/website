@@ -1,5 +1,6 @@
 ---
 layout: tutorial
+official: true
 title: "Setting up Javalin with Maven"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2017-05-24

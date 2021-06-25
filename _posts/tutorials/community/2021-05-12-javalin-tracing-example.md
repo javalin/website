@@ -1,5 +1,6 @@
 ---
 layout: tutorial
+official: false
 title: "Tracing Javalin Application"
 author: <a href="https://twitter.com/aravindputrevu" target="_blank">Aravind Putrevu</a>
 date: 2021-05-12
@@ -142,7 +143,7 @@ $ curl -X GET http://localhost:8080/students/003
 #### Update:
 
 ```shell
-$ curl -X PATCH -H "Content-Type: application/json" http://localhost:8080/students -d '{ "id": "001","name": "Quarkus","age": 32}' 
+$ curl -X PATCH -H "Content-Type: application/json" http://localhost:8080/students -d '{ "id": "001","name": "Quarkus","age": 32}'
 ```
 
 #### Delete:

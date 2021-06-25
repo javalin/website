@@ -106,3 +106,13 @@ document.addEventListener("click", function (e) {
         }
     }, 10);
 })();
+
+(() => {
+    const allTutorials = document.querySelector(".all-tutorials")
+    document.querySelectorAll(".tutorial-tab").forEach(tab => {
+        tab.addEventListener("click", e => {
+            allTutorials.setAttribute("data-tab", e.target.getAttribute("data-tutorial-tab"));
+        })
+    })
+    allTutorials.setAttribute("data-tab", "official");
+})();

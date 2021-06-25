@@ -1,5 +1,6 @@
 ---
 layout: tutorial
+official: false
 title: "Mocking Javalin classes in Mockito"
 author: <a href="https://github.com/StuAtGit" target="_blank">Stu S</a>
 date: 2019-10-20
@@ -10,12 +11,12 @@ language: java
 ---
 
 ## About Mockito
-Mockito is an open source unit testing framework for Java. Most notably, it provides the tools you need to generate 
-and inspect state of, mock objects that can be passed in to fulfill the dependencies of the system under test. 
+Mockito is an open source unit testing framework for Java. Most notably, it provides the tools you need to generate
+and inspect state of, mock objects that can be passed in to fulfill the dependencies of the system under test.
 
 ## Using Mockito with Javalin
 The only caveat to using Mockito with Javalin is that, at least some of, Javalin's classes are final,
-One of the first places you'll usually notice this is when you attempt to mock a 
+One of the first places you'll usually notice this is when you attempt to mock a
 Context object being passed into your http handlers.
 
 Example project: https://gitlab.com/stuAtGit/javalinmockitoexample
@@ -39,20 +40,20 @@ The Context class is final, so the mock silently fails, and creates a real Conte
 to missing dependencies. _*I think*_
 
 ## TLDR
-So the TLDR; version of this tutorial is that you can use Mockito (2 or greater) as you would 
+So the TLDR; version of this tutorial is that you can use Mockito (2 or greater) as you would
 with any other framework, but, until the classes are made non-final, you'll need to follow this:
 https://github.com/mockito/mockito/wiki/What%27s-new-in-Mockito-2#unmockable
-in order to mock them. What the mockito link tells you do do is add the file 
+in order to mock them. What the mockito link tells you do do is add the file
 `src/test/resources/mockito-extensions/org.mockito.plugins.MockMaker`
 to your source tree (this is assuming a standard maven-like source tree), and place the string:
-`mock-maker-inline` in that final. Nothing else should be in that file. 
+`mock-maker-inline` in that final. Nothing else should be in that file.
 More details: <a href="#mockmaker">
 
 ## Tutorial: a.k.a I've got the time for details!
 A basic step-by-step look at how to make this happen:
-- First, create a Java project, using your favoured approach. 
+- First, create a Java project, using your favoured approach.
 
-- Then, add whatever unit test runner you prefer, as long as it's compatible with Mockito 2. 
+- Then, add whatever unit test runner you prefer, as long as it's compatible with Mockito 2.
 I'd suggest JUnit 5 (Jupiter).
 
 - Then, add mockito 2 or greater as a dependency:
@@ -90,7 +91,7 @@ https://gitlab.com/stuAtGit/javalinmockitoexample
 
 ## What does putting this MockMaker file in my source tree do to my code?
 The presence of a file with the given
-name & content tells the mockito framework to enable a different mock creator factory that can 
+name & content tells the mockito framework to enable a different mock creator factory that can
 create mock objects on final classes:
 https://github.com/mockito/mockito/pull/648.
 

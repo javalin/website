@@ -1,12 +1,13 @@
 ---
 layout: tutorial
+official: false
 title: Rendering jte templates in Javalin
 permalink: /tutorials/jte
 summarytitle: Rendering jte templates in Javalin
 summary: Learn how to do type-safe server side rendering using jte.
 date: 2020-08-23
 author: <a href="https://github.com/casid" target="_blank">Andreas Hager</a>
-language: ["kotlin", "java"]
+language: ["java", "kotlin"]
 github: https://github.com/casid/jte-javalin-tutorial
 ---
 
@@ -75,7 +76,7 @@ object TutorialKotlin {
 {% include macros/docsSnippetKotlinFirst.html java=java kotlin=kotlin %}
 
 Fire up your browser and open [http://localhost:7000](http://localhost:7000).
-You should see `Hello jte!` displayed. 
+You should see `Hello jte!` displayed.
 
 With the server still running, change the content of `hello.jte` to this:
 
@@ -225,7 +226,7 @@ Now we can use the page object in our template:
 ```
 
 You now need to restart the server, since we added Kotlin/Java signatures.
-Once you refresh the page, you should see the new output in your browser. 
+Once you refresh the page, you should see the new output in your browser.
 
 Why the `Page` object and not the more common `Map<String, Object>? jte allows multiple params in a template, so you could pass a map without creating a page object if you like. However, you would lose auto-completion and refactoring support for those parameter names.
 
@@ -244,7 +245,7 @@ The <b>user of the day</b> is &lt;script&gt;alert('xss')&lt;/script&gt; (karma: 
 
 The output is escaped and no alert is displayed.
 This is because jte understands the HTML structure in templates and does context-sensitive output escaping at compile time.
-No surprising XSS attacks, no manual escaping needs to be done.  
+No surprising XSS attacks, no manual escaping needs to be done.
 
 In case you want to prevent output escaping, you can use the `$unsafe{}` keyword. Let's try it for the user name and see what happens.
 
@@ -252,7 +253,7 @@ In case you want to prevent output escaping, you can use the `$unsafe{}` keyword
 <p>The <b>user of the day</b> is $unsafe{page.userName} (karma: ${page.userKarma})!</p>
 ```
 
-When you refresh the page now, you will see an `xss` alert. So be very careful with the `$unsafe{}` keyword! 
+When you refresh the page now, you will see an `xss` alert. So be very careful with the `$unsafe{}` keyword!
 
 ## Localization
 
@@ -408,7 +409,7 @@ The <b>user of the day</b> is &lt;script&gt;alert('xss')&lt;/script&gt; (karma: 
 
 `LocalizationSupport` returns `gg.jte.Content` instead of `String`.
 `gg.jte.Content` is lazily rendered and `LocalizationSupport` knows what to escape and what not.
-Feel free to take a look if you're interested, `gg.jte.Content` is really powerful! 
+Feel free to take a look if you're interested, `gg.jte.Content` is really powerful!
 
 
 ## Precompiling templates
@@ -424,7 +425,7 @@ The Javalin jte extension allows to customize the used jte engine:
 {% capture java %}
 public static void main(String[] args) {
     JavalinJte.configure(createTemplateEngine());
-    
+
     Javalin app = Javalin.create().start(7000);
 
     app.get("/", TutorialJava::renderHelloPage);
@@ -444,7 +445,7 @@ private static TemplateEngine createTemplateEngine() {
 @JvmStatic
 fun main(args: Array<String>) {
     JavalinJte.configure(createTemplateEngine())
-    
+
     val app = Javalin.create().start(7000)
 
     app.get("/", this::renderHelloPage)
@@ -463,7 +464,7 @@ private fun createTemplateEngine(): TemplateEngine {
 {% include macros/docsSnippetKotlinFirst.html java=java kotlin=kotlin %}
 
 `ìsDevSystem` would be some boolean that determines if you are running a dev system or not.
-While developing, jte needs a way to resolve the jte template files. 
+While developing, jte needs a way to resolve the jte template files.
 This is what the `DirectoryCodeResolver` does.
 When running with precompiled templates, this is not needed.
 Instead, we need to pass the directory containing all precompiled jte classes.

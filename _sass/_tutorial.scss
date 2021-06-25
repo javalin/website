@@ -41,3 +41,37 @@
     float: none;
   }
 }
+
+/* Tutorial overview tabs */
+.tutorial-tabs {
+  margin-top: 40px;
+  margin-bottom: 20px;
+  display: flex;
+  .tutorial-tab {
+    font-size: 24px;
+    font-family: 'Roboto Slab', arial, sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    + .tutorial-tab {
+      margin-left: 20px;
+    }
+  }
+}
+
+.all-tutorials[data-tab=official] {
+  [data-tutorial-tab=official] {
+    border-bottom: 3px solid $javalin-brand-primary;
+  }
+  [data-tutorial-content=community] {
+    display: none;
+  }
+}
+
+.all-tutorials[data-tab=community] {
+  [data-tutorial-tab=community] {
+    border-bottom: 3px solid $javalin-brand-primary;
+  }
+  [data-tutorial-content=official] {
+    display: none;
+  }
+}

@@ -1,11 +1,12 @@
 ---
 layout: tutorial
+official: false
 title: "Using Javalin with Kotlin to deploy a simple REST API to a Raspberry Pi"
 author: <a href="https://github.com/NickM-27" target="_blank">Nick Mowen</a>
 date: 2020-09-05
 summarytitle: Deploy Kotlin REST API to Raspberry Pi.
 summary: Use Kotlin with Javalin to deploy a REST API to run on a Raspberry Pi"
-language: Kotlin
+language: kotlin
 ---
 
 ## What You Will Learn
@@ -49,7 +50,7 @@ Then, add these dependencies as well:
 ``` groovy
 compile 'io.javalin:javalin:3.10.1'
 compile 'com.fasterxml.jackson.core:jackson-databind:2.10.3' // Necessary for serializing JSON
-compile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.10.3' // Necessary for serializing JSON 
+compile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.10.3' // Necessary for serializing JSON
 compile 'org.slf4j:slf4j-simple:1.7.30' // Necessary to view logging output
 ```
 
@@ -82,11 +83,11 @@ Then create a DAO (Data Access Object) to allow for handling of server data
 class StringDao {
 
     val strings: MutableList<StringData> = mutableListOf() // Server starts with empty list
-    
+
     fun addStringData(data: StringData) {
         strings.add(data)
     }
-    
+
     fun removeStringData(stringId: Long): Boolean = strings.removeIf { it.id == stringId }
 }
 ```
@@ -159,7 +160,7 @@ Next, SSH into the Raspberry Pi using `ssh pi@your.raspberry.pi.ipaddress` and e
 
 ## Communicating With the REST API
 
-Open up a separate terminal so that we can send requests to the Raspberry Pi. 
+Open up a separate terminal so that we can send requests to the Raspberry Pi.
 
 To create a string, use:
 
