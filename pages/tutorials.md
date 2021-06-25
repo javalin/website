@@ -31,7 +31,7 @@ mainly focus on one core concept at the time, while the community tutorials are 
             <div class="notification">
                 These community tutorials are written by Javalin users and posted at their request and/or
                 with their permission. If you have have a tutorial you want to submit,
-                please create a pull request on <a href="https://github.com/javalin/javalin.github.io)">GitHub</a>.
+                please create a pull request on <a href="https://github.com/javalin/javalin.github.io">GitHub</a>.
             </div>
             {% include macros/tutorialPost.html tutorials=communityTuts %}
         </div>
