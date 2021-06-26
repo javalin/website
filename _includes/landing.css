@@ -298,6 +298,12 @@ nav ul li a:hover {
         height: 34px;
     }
 
+    .small-used-by img {
+        width: 61px;
+        height: 34px;
+        padding: 5px;
+    }
+
 }
 
 .bluepart.blackpart.image {
