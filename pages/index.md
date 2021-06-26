@@ -95,9 +95,10 @@ import io.javalin.Javalin;
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 Javalin app = Javalin.create(config -> {
-    config.defaultContentType = "application/json";
     config.addStaticFiles("/public");
     config.enableCorsForAllOrigins();
+    config.asyncRequestTimeout = 10_000L;
+    config.enforceSsl = true;
 }).routes(() -> {
     path("users", () -> {
         get(UserController::getAll);
@@ -116,9 +117,10 @@ import io.javalin.Javalin;
 import io.javalin.apibuilder.ApiBuilder.*;
 
 val app = Javalin.create { config ->
-    config.defaultContentType = "application/json"
     config.addStaticFiles("/public")
     config.enableCorsForAllOrigins()
+    config.asyncRequestTimeout = 10_000L
+    config.enforceSsl = true
 }.routes {
     path("users") {
         get(UserController::getAll)
