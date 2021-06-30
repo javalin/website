@@ -146,12 +146,13 @@ val app = Javalin.create { config ->
 
 <div class="landing whitepart">
     <h1>An active community</h1>
-    {% include commit-history.html %}
-    <div class="comment">Commit history, 2017-2021</div>
+    <img src="/img/javalin-stats-june-2021.svg" alt="Javalin Infographic" style="display:block;max-width:1000px;margin:0 auto;">
     <p class="white-paragraph">
         Javalin 1.0 was released in 2017, and has been in steady development since.<br><br>
-        The project has more than a hundred contributors, over four hundred forks, and around five thousand
-        stars on GitHub.
+        As of June 2021, the project consists of less than 7000 lines of code with more than 10 000 lines of tests.
+        It has more than a hundred contributors, more than four hundred forks, and almost five thousand stars on GitHub.
+        The project has around 110 000 downloads per month, and has has been released 82 times in four years
+        (about two times per month).
     </p>
 </div>
 
