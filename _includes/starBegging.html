@@ -23,20 +23,33 @@
             margin: 0 0 15px;
         }
         #star-begging .close {
-            cursor: pointer;
             position: absolute;
-            top: 12px;
-            right: 15px;
+            right: 20px;
+            top: 20px;
+            height: 40px;
+            width: 40px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-family: arial, sans-serif;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 5px;
         }
     </style>
-    <p>Do you like Javalin?</p>
-    <span class="close">✖</span>
+    <p>
+        Like Javalin?
+        <br>Prove it 😊
+    </p>
+    <span class="close">×</span>
     <iframe id="starFrame" class="githubStar" title="github-stars"
             src="https://ghbtns.com/github-btn.html?user=tipsy&amp;repo=javalin&amp;type=star&amp;count=true&size=large"
             frameborder="0" scrolling="0" width="150px" height="30px">
     </iframe>
     <script>
-        if (localStorage.getItem("dismissed") !== "true") {
+        if (localStorage.getItem("dismissed") !== "true" && document.getElementById("notification-banner") === null) {
             setTimeout(function () {
                 document.querySelector("#star-begging").classList.add("in");
             }, 15000);
