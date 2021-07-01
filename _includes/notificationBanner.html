@@ -1,17 +1,17 @@
 <script>
-    const notificationId = "javalin-4-alpha";
+    const notificationId = "javalin-2021-survey";
     const hasBeenDismissed = localStorage.getItem(notificationId + "-dismissed") === "true";
     const pageLoadCount = parseInt(localStorage.getItem(notificationId + "-count") || 0);
     localStorage.setItem(notificationId + "-count", (pageLoadCount + 1).toString());
-    if (!hasBeenDismissed /*&& pageLoadCount >= 5*/) {
+    if (!hasBeenDismissed && pageLoadCount >= 10) {
         document.write(`
             <div id="notification-banner">
-                <h1>Javalin 4 is coming!</h1>
-                Join the discussion on <a href="https://github.com/tipsy/javalin/issues/1172">GitHub</a>
-                <br>Feature requests welcome!
+                <h1>Javalin Survey 2021!</h1>
+                Please consider taking this <a href="https://forms.gle/NNLZRDJm3aTVDSp76">short survey</a>
+                on how you use Javalin. Thank you!
             </div>
         `);
-        if (pageLoadCount > 0) {
+        if (pageLoadCount >= 10) {
             document.querySelector("#notification-banner").insertAdjacentHTML("beforeend", `<span class="close">×</span>`);
             document.querySelector("#notification-banner .close").addEventListener("click", () => {
                 document.querySelector("#notification-banner").style.display = "none";
