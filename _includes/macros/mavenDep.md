@@ -23,7 +23,7 @@
 
 <div data-tab="2" markdown="1">
 ~~~java
-compile 'io.javalin:javalin:{{site.javalinversion}}'
+implementation group: 'io.javalin', name: 'javalin', version: '{{site.javalinversion}}'
 ~~~
 [Not familiar with Gradle? Click here for more detailed instructions.](/tutorials/gradle-setup)
 </div>
@@ -36,7 +36,7 @@ libraryDependencies += "io.javalin" % "javalin" % "{{site.javalinversion}}"
 
 <div data-tab="4" markdown="1">
 ~~~java
-@Grab(group='io.javalin', module='javalin', version='{{site.javalinversion}}') 
+@Grab(group='io.javalin', module='javalin', version='{{site.javalinversion}}')
 ~~~
 </div>
 
