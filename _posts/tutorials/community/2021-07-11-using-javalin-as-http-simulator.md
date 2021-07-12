@@ -14,12 +14,12 @@ language: kotlin
 _(adapted
 from [Testing a gateway using Javalin](https://medium.com/@lsoares/unit-testing-a-gateway-with-javalin-24e3b7e88ef2))_
 
-My proposal is to use Javalin as the test double, thereby replacing some depended-on external API. We’ll launch Javalin
-acting as the real API but running in localhost so that the gateway
-(the [SUT](https://en.wikipedia.org/wiki/System_under_test)) can’t tell the difference. We’ll confirm the tests validity
+My proposal is to use Javalin as the test double - fake gateway, thereby replacing some depended-on external API. 
+We’ll launch Javalin acting as the real API but running in *localhost* so that the gateway client
+(the test subject) can’t tell the difference. We’ll confirm the tests validity
 by asserting the calls made to the test double.
 
-Let's imagine a gateway that talks to some external HTTP API service - in our case some "User Profile API". We’ll have
+Let's imagine a client that talks to some external HTTP API service - in our case some "User Profile API". We’ll have
 two examples of (unit) testing `ProfileGateway`: a query and a command, according to the
 [command/query](https://martinfowler.com/bliki/CommandQuerySeparation.html) separation:
 
@@ -126,6 +126,58 @@ fun `posts a user profile`() {
 ⚠️ Whatever you do, never do assertions inside the Javalin test handler. Why? Because if they fail, they’ll throw a
 JUnit exception, which is swallowed by Javalin; and the test will be green! Always do the assertions in the end hence
 following the Arrange, Act, Assert pattern.
+
+## Making it generic
+Notice that we have the server as a global variable (bad practice), we have to start it in every test, and stop it after
+each. If you think you'll do more that just a few test variations, it's worth getting rid of that boilerplate code. 
+Let's create a reusable utility that start the fake gateway and initializes our test subject:
+
+```kotlin
+fun testProfileGateway(testBody: (Javalin, ProfileGateway) -> Unit) {
+    val server = Javalin.create().start(0)
+    val gatewayClient = ProfileGateway(apiUrl = "http://localhost:${server.port()}")
+    testBody(server, gatewayClient)
+    server.stop()
+}
+```
+
+Let's make use of it:
+```kotlin
+@Test
+fun `gets a user profile by id`() = testProfileGateway { server, gatewayClient ->
+    server.get("profile/abc") {
+        it.json(mapOf("id" to "abc", "email" to "x123@gmail.com"))
+    }
+
+    val result = gatewayClient.fetchProfile("abc")
+
+    assertEquals(Profile(id = "abc", email = "x123@gmail.com".toEmail()), result)
+}
+
+@Test
+fun `posts a user profile`() = testProfileGateway { server, profileGateway ->
+    var postedBody: String? = null
+    var contentType: String? = null
+    server.post("profile") {
+        postedBody = it.body()
+        contentType = it.contentType()
+        it.status(201)
+    }
+
+    profileGateway.saveProfile(Profile(id = "abc", email = "x123@gmail.com".toEmail()))
+
+    JSONAssert.assertEquals(
+        """ { "id": "abc", "email": "x123@gmail.com"}  """,
+        postedBody, true
+    )
+    assertEquals("application/json", contentType)
+}
+```
+
+Another benefit of this approach is that we hide some low-level details like startup of the fake server and its base URL 
+and port. We focus our test on what really matters.
+
+ℹ️ This approach in inspired in `javalin-testtools` which will be available in Javalin 4.
 
 ## Alternative approaches
 
