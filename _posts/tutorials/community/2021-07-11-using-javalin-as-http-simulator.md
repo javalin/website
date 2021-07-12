@@ -1,23 +1,34 @@
 ---
 layout: tutorial
-official: false 
+
+official: false
+
 title: Using Javalin as a simulator for HTTP-based APIs
+
 author: <a href="https://twitter.com/lsoares" target="_blank">Luís Soares</a>
-date: 2021-07-11 
+
+date: 2021-07-11
+
 permalink: /tutorials/using-javalin-as-http-simulator
+
 github: https://github.com/lsoares/clean-architecture-sample
+
 summarytitle: Javalin as a simulator for HTTP-based APIs
-summary: Let's learn how you can test that your app is properly consuming an external REST API making use of Javalin as a simulator of HTTP APIs that your app depends upon. 
+
+summary: Let's learn how you can test that your app is properly consuming an external REST API making use of Javalin as
+a simulator of HTTP APIs that your app depends upon.
+
 language: kotlin
+
 ---
 
 _(adapted
 from [Testing a gateway using Javalin](https://medium.com/@lsoares/unit-testing-a-gateway-with-javalin-24e3b7e88ef2))_
 
-My proposal is to use Javalin as the test double - fake gateway, thereby replacing some depended-on external API. 
-We’ll launch Javalin acting as the real API but running in *localhost* so that the gateway client
-(the test subject) can’t tell the difference. We’ll confirm the tests validity
-by asserting the calls made to the test double.
+My proposal is to use Javalin as the test double - fake gateway, thereby replacing some depended-on external API. We’ll
+launch Javalin acting as the real API but running in *localhost* so that the gateway client
+(the test subject) can’t tell the difference. We’ll confirm the tests validity by asserting the calls made to the test
+double.
 
 Let's imagine a client that talks to some external HTTP API service - in our case some "User Profile API". We’ll have
 two examples of (unit) testing `ProfileGateway`: a query and a command, according to the
@@ -28,10 +39,13 @@ two examples of (unit) testing `ProfileGateway`: a query and a command, accordin
 - **command**: check that a POST call was made as expected; we’ll assert a consequence, namely the posted body.
 
 Before starting, make sure you have Javalin in your Gradle file. If you’re using Javalin as your app web server, you
-won’t add extra libraries for testing. Otherwise, you need to include it only for the tests:
+won’t add extra libraries for testing. Otherwise, you need to include it only for the tests. Also, let's
+add [JSONassert](https://github.com/skyscreamer/JSONassert) library to make JSON comparison easier, although that's not
+mandatory as we could compare it in other ways.
 
 ```kotlin
 testImplementation("io.javalin:javalin:3.+")
+testImplementation("org.skyscreamer:jsonassert:1.+")
 ```
 
 Let's start with a boilerplate that guarantees that Javalin stops per every test (or tests will start to influence each
@@ -128,9 +142,10 @@ JUnit exception, which is swallowed by Javalin; and the test will be green! Alwa
 following the Arrange, Act, Assert pattern.
 
 ## Making it generic
+
 Notice that we have the server as a global variable (bad practice), we have to start it in every test, and stop it after
-each. If you think you'll do more that just a few test variations, it's worth getting rid of that boilerplate code. 
-Let's create a reusable utility that start the fake gateway and initializes our test subject:
+each. If you think you'll do more that just a few test variations, it's worth getting rid of that boilerplate code.
+Let's create a reusable utility that starts the fake gateway and initializes our test subject:
 
 ```kotlin
 fun testProfileGateway(testBody: (Javalin, ProfileGateway) -> Unit) {
@@ -142,17 +157,18 @@ fun testProfileGateway(testBody: (Javalin, ProfileGateway) -> Unit) {
 ```
 
 Let's make use of it:
+
 ```kotlin
 @Test
 fun `gets a user profile by id`() = testProfileGateway { server, gatewayClient ->
-    server.get("profile/abc") {
-        it.json(mapOf("id" to "abc", "email" to "x123@gmail.com"))
+        server.get("profile/abc") {
+            it.json(mapOf("id" to "abc", "email" to "x123@gmail.com"))
+        }
+
+        val result = gatewayClient.fetchProfile("abc")
+
+        assertEquals(Profile(id = "abc", email = "x123@gmail.com".toEmail()), result)
     }
-
-    val result = gatewayClient.fetchProfile("abc")
-
-    assertEquals(Profile(id = "abc", email = "x123@gmail.com".toEmail()), result)
-}
 
 @Test
 fun `posts a user profile`() = testProfileGateway { server, profileGateway ->
@@ -174,7 +190,7 @@ fun `posts a user profile`() = testProfileGateway { server, profileGateway ->
 }
 ```
 
-Another benefit of this approach is that we hide some low-level details like startup of the fake server and its base URL 
+Another benefit of this approach is that we hide some low-level details like startup of the fake server and its base URL
 and port. We focus our test on what really matters.
 
 ℹ️ This approach in inspired in `javalin-testtools` which will be available in Javalin 4.
