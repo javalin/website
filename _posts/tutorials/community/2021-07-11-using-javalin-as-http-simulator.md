@@ -1,29 +1,20 @@
 ---
 layout: tutorial
-
 official: false
-
 title: Using Javalin as a simulator for HTTP-based APIs
-
 author: <a href="https://twitter.com/lsoares" target="_blank">Luís Soares</a>
-
 date: 2021-07-11
-
 permalink: /tutorials/using-javalin-as-http-simulator
-
 github: https://github.com/lsoares/clean-architecture-sample
-
 summarytitle: Javalin as a simulator for HTTP-based APIs
-
 summary: Let's learn how you can test that your app is properly consuming an external REST API making use of Javalin as
-a simulator of HTTP APIs that your app depends upon.
-
+  a simulator of HTTP APIs that your app depends upon.
 language: kotlin
-
 ---
 
-_(adapted
-from [Testing a gateway using Javalin](https://medium.com/@lsoares/unit-testing-a-gateway-with-javalin-24e3b7e88ef2))_
+_This tutorial was first published on
+[Medium.com](https://medium.com/@lsoares/unit-testing-a-gateway-with-javalin-24e3b7e88ef2)
+and adapted by its author._
 
 My proposal is to use Javalin as the test double - fake gateway, thereby replacing some depended-on external API. We’ll
 launch Javalin acting as the real API but running in *localhost* so that the gateway client
@@ -63,8 +54,8 @@ class ProfileGatewayTest {
 }
 ```
 
-Don’t worry as this won’t make your tests slow; Javalin is extremely fast booting up (hundreds of start/stops in a few \
-seconds).
+Don’t worry as this won’t make your tests slow; Javalin is extremely fast booting up
+(hundreds of start/stops in a second).
 
 I won't include the implementations because this tutorial is focused on testing. If you're curious, you can find them at
 a [sample project](https://github.com/lsoares/clean-architecture-sample) I have for experiments (search
@@ -137,9 +128,10 @@ fun `posts a user profile`() {
 - **assert**: test that the stored values in the handler are correct; for example, the body must have been properly
   converted to the external API (your domain representation → API JSON).
 
-⚠️ Whatever you do, never do assertions inside the Javalin test handler. Why? Because if they fail, they’ll throw a
-JUnit exception, which is swallowed by Javalin; and the test will be green! Always do the assertions in the end hence
-following the Arrange, Act, Assert pattern.
+⚠️ Whatever you do, never do assertions inside the Javalin test `Handler`. Why? Because JUnit works by throwing exceptions,
+and Javalin `Handler`s are wrapped in an exception-handler (Javalin returns a HTTP 500 error for uncaught exceptions). This means
+that JUnit exceptions will be transformed into HTTP 500 errors, which JUnit considers a success!
+Always do the assertions in the end, hence following the Arrange, Act, Assert pattern.
 
 ## Making it generic
 
@@ -161,14 +153,14 @@ Let's make use of it:
 ```kotlin
 @Test
 fun `gets a user profile by id`() = testProfileGateway { server, gatewayClient ->
-        server.get("profile/abc") {
-            it.json(mapOf("id" to "abc", "email" to "x123@gmail.com"))
-        }
-
-        val result = gatewayClient.fetchProfile("abc")
-
-        assertEquals(Profile(id = "abc", email = "x123@gmail.com".toEmail()), result)
+    server.get("profile/abc") {
+        it.json(mapOf("id" to "abc", "email" to "x123@gmail.com"))
     }
+
+    val result = gatewayClient.fetchProfile("abc")
+
+    assertEquals(Profile(id = "abc", email = "x123@gmail.com".toEmail()), result)
+}
 
 @Test
 fun `posts a user profile`() = testProfileGateway { server, profileGateway ->
@@ -193,7 +185,8 @@ fun `posts a user profile`() = testProfileGateway { server, profileGateway ->
 Another benefit of this approach is that we hide some low-level details like startup of the fake server and its base URL
 and port. We focus our test on what really matters.
 
-ℹ️ This approach in inspired in `javalin-testtools` which will be available in Javalin 4.
+ℹ️ This approach in inspired by [javalin-testtools](https://github.com/tipsy/javalin/tree/master/javalin-testtools),
+which will be available in Javalin 4.
 
 ## Alternative approaches
 
