@@ -15,17 +15,17 @@ also been introduced, which allows for path parameters to accept slashes. A sing
 segment can now include both static and dynamic parts, and multiple path params:
 
 ```java
-get("/{param}", ...) // new
 get("/:param", ...) // old
+get("/{param}", ...) // new
 
-get("/{param}-suffix", ...) // new
 get("/:param-suffix", ...) // invalid
+get("/{param}-suffix", ...) // new
 
-get("/files/{filename}.{extension}", ...) // new
 get("/files/:filename.:extension", ...) // invalid
+get("/files/{filename}.{extension}", ...) // new
 
+get("/root/:subpaths/leaf") // old (will only match /root/1/leaf)
 get("/root/<subpaths>/leaf") // new (will match /root/1/2/3/leaf)
-get("/root/:subpaths/leaf") // old (can only match /root/1/leaf)
 ```
 
 The `ctx.splat(index)` method has been removed in favor of the new `ctx.pathParam(key)`
@@ -80,9 +80,9 @@ config.addStaticFiles(staticFiles ->
 Routes used to accept a `Set<Role>`, but they now accept a `RouteRole...` (varargs):
 
 ```java
-get("/path", controller::method, Role.ROLENAME) // new
 get("/path", controller::method, roles(MyRole.ROLENAME)) // old, using util-method
 get("/path", controller::method, new HashSet<>(Arrays.asList(MyRole.ROLENAME));) // old, no util method
+get("/path", controller::method, Role.ROLENAME) // new
 ```
 
 The marker interface was renamed from `Role` to `RouteRole`, both because it's clearer
