@@ -1,13 +1,13 @@
 ---
-layout: default
+layout: blogpost
 category: blog
 date: 2018-09-07
-title: Javalin user survey responses
+author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
+title: Javalin user survey responses, 2018
 summary: We ran a user-survey on https://javalin.io for a couple of months
-permalink: blog/javalin-user-survey-2018
+permalink: /blog/javalin-user-survey-2018
 ---
 
-## Javalin user survey, Summer 2018
 We polled a total of 100 users on [javalin.io](/). To filter out non-users
 the survey link was only shown to users who had performed 5 page loads.
 That wasn't enough though, as it turned out a third of respondents were not actually using Javalin yet.

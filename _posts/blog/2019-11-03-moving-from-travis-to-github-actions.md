@@ -1,13 +1,12 @@
 ---
-layout: default
+layout: blogpost
 category: blog
 date: 2019-11-03
+author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 title: GitHub actions for Java projects
 summary: Moving a JVM project from Travis CI to GitHub actions
-permalink: blog/moving-a-jvm-project-from-travis-to-github-actions
+permalink: /blog/moving-a-jvm-project-from-travis-to-github-actions
 ---
-
-# Moving from Travis CI to GitHub actions
 
 For our first two years we were very happy Travis CI users. We had chosen Travis because it had a
 dead simple config file and it just worked. Then it didn't anymore.

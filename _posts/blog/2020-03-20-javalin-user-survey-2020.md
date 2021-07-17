@@ -1,13 +1,13 @@
 ---
-layout: default
+layout: blogpost
 category: blog
 date: 2018-09-07
-title: Javalin user survey responses 2020
+author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
+title: Javalin user survey responses, 2020
 summary: We ran a user-survey on https://javalin.io for a couple of months
-permalink: blog/javalin-user-survey-2020
+permalink: /blog/javalin-user-survey-2020
 ---
 
-## Javalin user survey, Spring 2020
 We collected survey results from ~100 users on [javalin.io](/).
 To filter out non-users (first time visitors, etc) the survey link was only shown
 to users who had performed at least 8 page loads. A couple of survey result were still from non-users, so these have been discarded.
