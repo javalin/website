@@ -150,3 +150,45 @@ apps more readable.
 
 I've made a [GitHub issue](https://github.com/javalin/javalin.github.io/issues/105)
 if anyone wants to discuss this post.
+
+## Addendum
+It was [pointed out](https://www.reddit.com/r/java/comments/onenui/static_util_methods_within_lambdas/h5v4nil/)
+by [/u/Az4hiel](https://www.reddit.com/user/Az4hiel)
+that you could also write this API without scoped lambdas, but rather by using varargs:
+
+```java
+Javalin.create(config -> {
+    config.enableCorsForAllOrigins();
+}).routes(
+    path("users",
+        get(UserController::getAll),
+        post(UserController::create),
+        path(":user-id",
+            get(UserController::getOne),
+            patch(UserController::update),
+            delete(UserController::delete)
+        )
+    )
+).start(port);
+```
+
+Which is actually a pretty neat approach! It makes the API much less noisy from Java,
+but since Javalin is also about Kotlin interop, it might be considered a downgrade compared to:
+
+```kotlin
+Javalin.create { config ->
+    config.enableCorsForAllOrigins()
+}.routes {
+    path("users") {
+        get(UserController::getAll)
+        post(UserController::create)
+        path(":user-id") {
+            get(UserController::getOne)
+            patch(UserController::update)
+            delete(UserController::delete)
+        }
+    }
+}.start(port)
+```
+
+It's something to think about though!
