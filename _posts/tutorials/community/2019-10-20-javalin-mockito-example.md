@@ -1,7 +1,7 @@
 ---
 layout: tutorial
 official: false
-title: "Mocking Javalin classes in Mockito"
+title: "Mocking Javalin classes in Mockito (Javalin 2.1.0 or before)"
 author: <a href="https://github.com/StuAtGit" target="_blank">Stu S</a>
 date: 2019-10-20
 permalink: /tutorials/mockito-testing
@@ -14,14 +14,16 @@ language: java
 Mockito is an open source unit testing framework for Java. Most notably, it provides the tools you need to generate
 and inspect state of, mock objects that can be passed in to fulfill the dependencies of the system under test.
 
-## Using Mockito with Javalin
-The only caveat to using Mockito with Javalin is that, at least some of, Javalin's classes are final,
+This guide focuses on the workaround to use mockito on javalin 2.1.0 or before. If you are using a newer version you can skip this tutorial.
+
+## Using Mockito with Javalin 2.1.0 or before
+The only caveat to using Mockito with Javalin 2.1.0 or an earlier version is that, at least some of, Javalin's classes are final,
 One of the first places you'll usually notice this is when you attempt to mock a
 Context object being passed into your http handlers.
 
 Example project: https://gitlab.com/stuAtGit/javalinmockitoexample
 
-## Example error you'll see if you don't enable InlineMockMaker
+## Example error you'll see if you don't enable InlineMockMaker (javalin 2.1.0 or before)
 
 ```java
 java.lang.NullPointerException
@@ -41,7 +43,7 @@ to missing dependencies. _*I think*_
 
 ## TLDR
 So the TLDR; version of this tutorial is that you can use Mockito (2 or greater) as you would
-with any other framework, but, until the classes are made non-final, you'll need to follow this:
+with any other framework, but, if you are using javalin 2.1.0 or an earlier version you'll need to follow this:
 https://github.com/mockito/mockito/wiki/What%27s-new-in-Mockito-2#unmockable
 in order to mock them. What the mockito link tells you do do is add the file
 `src/test/resources/mockito-extensions/org.mockito.plugins.MockMaker`
