@@ -53,7 +53,7 @@ how you structure that code is entirely up to yourself.
 {% capture java %}
 public class UnitTest {
 
-    private Context ctx = mock(Context.class); // "mock-maker-inline" must be enabled
+    private Context ctx = mock(Context.class); // javalin 2.1.0 or before: "mock-maker-inline" must be enabled
 
     @Test
     public void POST_to_create_users_gives_201_for_valid_username() {
@@ -94,7 +94,7 @@ class UnitTest {
 {% include macros/docsSnippetKotlinFirst.html java=java kotlin=kotlin %}
 
 <div class="comment" markdown="1">
-In Java, in order to mock **Context** using Mockito, **mock-maker-inline** must be enabled.
+When using javalin 2.1.0 or before in Java, in order to mock **Context** using Mockito, **mock-maker-inline** must be enabled.
 This is done by adding a file **/resources/mockito-extensions/org.mockito.plugins.MockMaker**
 with the content **mock-maker-inline**. [Read more](https://stackoverflow.com/a/40018295/7916291).
 </div>
