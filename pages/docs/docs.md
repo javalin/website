@@ -47,12 +47,13 @@ ex: <span class="added-in">Added in v3.3.0</span>
 
 <div class="notification star-us">
     <div>
-        <span id="starUsLong">If you like Javalin, please consider starring us on GitHub:</span>
-        <span id="starUsShort">Like Javalin? Star us on GitHub:</span>
+        <span id="starUsLong">If you like Javalin, please consider sponsoring or starring us:</span>
+        <span id="starUsShort">Like Javalin?</span>
     </div>
+    <iframe src="https://github.com/sponsors/tipsy/button" title="Sponsor tipsy" height="35" width="116" style="border: 0;"></iframe>
     <iframe id="starFrame" class="githubStar"
             src="https://ghbtns.com/github-btn.html?user=tipsy&amp;repo=javalin&amp;type=star&amp;count=true&size=large"
-            frameborder="0" scrolling="0" width="150px" height="30px">
+            frameborder="0" scrolling="0" width="150px" height="35px">
     </iframe>
 </div>
 
