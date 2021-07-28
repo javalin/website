@@ -64,6 +64,7 @@ var location: Location = Location.CLASSPATH,
 var precompress: Boolean = false,
 var aliasCheck: AliasCheck? = null,
 var headers: Map<String, String> = mapOf(Header.CACHE_CONTROL to "max-age=0")
+var skipFileFunction: (HttpServletRequest) -> Boolean = { false },
 ```
 The global options have been removed, so all options are now per static file handler.
 These options can be configure in a familiar Javalin way:
