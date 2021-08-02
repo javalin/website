@@ -137,8 +137,8 @@ should be easy to swap it out with something else (at least if you're using a
 
 ## Conclusion
 Hopefully this gave you something to think about. Developer experience and library usability
-is something that is often overlooked in software development, and I think this
-is the primary reason for Javalin's success.
+are often overlooked in software development, and I Javalin's focus on these
+aspects is the primary reason for it's success.
 
 I've made a [GitHub issue](https://github.com/javalin/javalin.github.io/issues/109)
 if anyone wants to discuss this post.
