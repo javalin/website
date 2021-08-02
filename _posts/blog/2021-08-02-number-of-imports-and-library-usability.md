@@ -39,8 +39,6 @@ Let's find an example, with imports, that can serialize JSON.
 
 ```kotlin
 import com.ryanharter.ktor.moshi.moshi
-import com.squareup.moshi.JsonClass
-import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
@@ -49,16 +47,13 @@ import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import java.util.Date
 
 val someData = setOf<String>()
 
 fun main(args: Array<String>) {
   val server = embeddedServer(Netty, 8080) { // create server
     install(ContentNegotiation) {
-      moshi {
-        add(Date::class.java, Rfc3339DateJsonAdapter())
-      }
+      moshi
     }
     routing { // attach endpoint
       get("/data") { // attach endpoint
@@ -70,7 +65,7 @@ fun main(args: Array<String>) {
 }
 ```
 
-So, that's a lot of imports (twelve, to be exact). That in and of itself isn't necessarily bad,
+So, that's a lot of imports (nine, to be exact). That in and of itself isn't necessarily bad,
 *but how is the developer supposed to know about these functions?*
 How does someone find out that there is a `call`, a `Netty`, a `routing`, and an `embeddedServer`?
 The only real way is by looking at the docs and examples
