@@ -9,7 +9,6 @@ permalink: /blog/number-of-imports-and-library-usability
 ---
 
 ## Background
-
 When I was working on the first version Javalin, I was hanging out in the Kotlin Slack,
 where I got talking to the Ktor Developers
 (Ktor is Jetbrains' official server/client library for Kotlin).
@@ -137,3 +136,24 @@ aspects is the primary reason for it's success.
 
 I've made a [GitHub issue](https://github.com/javalin/javalin.github.io/issues/109)
 if anyone wants to discuss this post.
+
+## Addendum
+It was noted by [/u/RupertMaddenAbbott](https://www.reddit.com/user/RupertMaddenAbbott) in a
+[comment](https://www.reddit.com/r/java/comments/owhy66/number_of_imports_and_library_usability/h7j114o/)
+that I was equating **discoverability** with **import statement count**.
+
+<blockquote>
+In your blog post, you seem to go even further and equate discoverability with <em>import statement count</em>.
+I think this is obviously not. For example, ktor could have put all of their methods/objects in the same
+package and then a single wildcard import would do just fine. The difference in discoverability between
+Javalin and ktor would remain but the number of import statements would be equivalent.
+<br><br>
+Conversely, you could have a central class whose methods all return hundreds of different objects.
+For example, an SDK that exposed rich model objects for each of a REST API's responses.
+If a developer stores these results in variables then they will have hundreds of imports
+but the discoverability remains equivalent to Javalin, in my opinion.
+</blockquote>
+
+I largely with what is being said (although I think it's a little unrealistic to put your
+entire public API in one package). The point of this post was not to equate the two,
+just to point out one vector that is often overlooked when designing an API.
