@@ -264,6 +264,11 @@ html("html")                            // calls result(string), and also sets c
 render("/template.tmpl", model)         // calls html(renderedTemplate)
 
 // Other methods
+handlerType()                           // handler type of the current handler (BEFORE, AFTER, GET, etc)
+appAttribute("name")                    // get an attribute on the Javalin instance
+matchedPath()                           // get the path that was used to match this request (ex, "/hello/{name}")
+endpointHandlerPath()                   // get the path of the endpoint handler that was used to match this request
+cookieStore                             // see cookie store section below
 ```
 
 #### Cookie Store
