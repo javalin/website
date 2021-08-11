@@ -179,8 +179,6 @@ app.after("/path/*") { ctx ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-<h2>!!! DOCS BELOW ARE UNFINISHED !!!</h2>
-
 ### Context
 The `Context` object provides you with everything you need to handle a http-request.
 It contains the underlying servlet-request and servlet-response, and a bunch of getters
@@ -316,6 +314,8 @@ Since the client stores the cookie, the `get` request to `serverTwoApp`
 will be able to retrieve the information that was passed in the `post` to `serverOneApp`.
 
 Please note that cookies have a max-size of 4kb.
+
+<h2>!!! DOCS BELOW ARE UNFINISHED !!!</h2>
 
 ## WebSockets
 
