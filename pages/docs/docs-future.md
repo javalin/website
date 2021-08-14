@@ -487,11 +487,12 @@ error()                                 // the throwable error that occurred
 ### WsConnectContext
 The `WsConnectContext` class doesn't add anything to the base `WsContext`
 
-<h2>!!! DOCS BELOW ARE UNFINISHED !!!</h2>
-
 ## Handler groups
 You can group your endpoints by using the `routes()` and `path()` methods. `routes()` creates
 a temporary static instance of Javalin so you can skip the `app.` prefix before your handlers.
+This is equivalent to calling `ApiBuilder.get(app, ...)`, which translates
+to `app.get(...)`. It is **not** a global singleton that holds any information, so
+you can use this safely in multiple locations and from multiple threads.
 
 You can import all the HTTP methods with `import static io.javalin.apibuilder.ApiBuilder.*`.
 
@@ -500,12 +501,12 @@ app.routes(() -> {
     path("users", () -> {
         get(UserController::getAllUsers);
         post(UserController::createUser);
-        path(":id", () -> {
+        path("{id}", () -> {
             get(UserController::getUser);
             patch(UserController::updateUser);
             delete(UserController::deleteUser);
         });
-        ws("events", userController::webSocketEvents);
+        ws("events", UserController::webSocketEvents);
     });
 });
 {% endcapture %}
@@ -514,7 +515,7 @@ app.routes {
     path("users") {
         get(UserController::getAllUsers)
         post(UserController::createUser)
-        path(":id") {
+        path("{id}") {
             get(UserController::getUser)
             patch(UserController::updateUser)
             delete(UserController::deleteUser)
@@ -533,12 +534,12 @@ The `CrudHandler` is an interface that can be used within a `routes()` call:
 
 {% capture java %}
 app.routes(() -> {
-    crud("users/:user-id", new UserController());
+    crud("users/{user-id}", new UserController());
 });
 {% endcapture %}
 {% capture kotlin %}
 app.routes {
-    crud("users/:user-id", UserController())
+    crud("users/{user-id}", UserController())
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -553,6 +554,8 @@ interface CrudHandler {
     delete(ctx, resourceId)
 }
 ```
+
+<h2>!!! DOCS BELOW ARE UNFINISHED !!!</h2>
 
 ## Validation
 You can access Javalin's `Validator` class through the query parameter, path parameter, header, and
