@@ -315,8 +315,6 @@ will be able to retrieve the information that was passed in the `post` to `serve
 
 Please note that cookies have a max-size of 4kb.
 
-<h2>!!! DOCS BELOW ARE UNFINISHED !!!</h2>
-
 ## WebSockets
 
 Javalin has a very intuitive way of handling WebSockets. You declare an endpoint
@@ -377,7 +375,7 @@ A WebSocket endpoint is declared with `app.ws(path, handler)`. WebSocket handler
 app.ws("/websocket/{path}", ws -> {
     ws.onConnect(ctx -> System.out.println("Connected"));
     ws.onMessage(ctx -> {
-        User user = ctx.message(User.class); // convert from json
+        User user = ctx.messageAsClass(User.class); // convert from json
         ctx.send(user); // convert to json and send back
     });
     ws.onBinaryMessage(ctx -> System.out.println("Message"))
@@ -389,7 +387,7 @@ app.ws("/websocket/{path}", ws -> {
 app.ws("/websocket/{path}") { ws ->
     ws.onConnect { ctx -> println("Connected") }
     ws.onMessage { ctx ->
-        val user = ctx.message<User>(); // convert from json
+        val user = ctx.messageAsClass<User>(); // convert from json
         ctx.send(user); // convert to json and send back
     }
     ws.onBinaryMessage { ctx -> println("Message") }
@@ -427,26 +425,69 @@ It contains the underlying websocket session and servlet-request, and convenienc
 messages to the client.
 
 ```java
+// Session methods
+send(obj)                               // serialize object to json string and send it to client
+send("message")                         // send string to client
+send(byteBuffer)                        // send bytes to client
+
+// Upgrade Context methods (getters)
+matchedPath()                           // get the path that was used to match this request (ex, "/hello/{name}")
+host()                                  // host as string
+
+queryParam("name")                      // query param by name as string
+queryParamAsClass("name", clazz)        // query param parameter by name, as validator typed as specified class
+queryParams("name)                      // list of query parameters by name
+queryParamMap()                         // map of all query parameters
+queryString()                           // full query string
+
+pathParam("name")                       // path parameter by name as string
+pathParamAsClass("name", clazz)         // path parameter as validator typed as specified class
+pathParamMap()                          // map of all path parameters
+
+header("name")                          // request header by name (can be used with Header.HEADERNAME)
+headerAsClass("name", clazz)            // request header by name, as validator typed as specified class
+headerMap()                             // map of all request headers
+
+cookie("name")                          // request cookie by name
+cookieMap()                             // map of all request cookies
+
+attribute("name", value)                // set an attribute on the request
+attribute("name")                       // get an attribute on the request
+attributeMap()                          // map of all attributes on the request
+
+sessionAttribute("name")                // get a session attribute
+sessionAttributeMap()                   // map of all session attributes
 ```
+
 
 ### WsMessageContext
 ```java
+message()                               // receive a string message from the client
+messageAsClass(clazz)                   // deserialize message from client
 ```
 
 ### WsBinaryMessageContext
 ```java
+data()                                  // receive a byte array of data from the client
+offset()                                // the offset of the data
+length()                                // the length of the data
 ```
 
 ### WsCloseContext
 ```java
+status()                                // the int status for why connection was closed
+reason()                                // the string reason for why connection was closed
 ```
 
 ### WsErrorContext
 ```java
+error()                                 // the throwable error that occurred
 ```
 
 ### WsConnectContext
-Doesn't add anything to the base WsContext
+The `WsConnectContext` class doesn't add anything to the base `WsContext`
+
+<h2>!!! DOCS BELOW ARE UNFINISHED !!!</h2>
 
 ## Handler groups
 You can group your endpoints by using the `routes()` and `path()` methods. `routes()` creates
