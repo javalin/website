@@ -555,117 +555,122 @@ interface CrudHandler {
 }
 ```
 
-<h2>!!! DOCS BELOW ARE UNFINISHED !!!</h2>
-
 ## Validation
-You can access Javalin's `Validator` class through the query parameter, path parameter, header, and
-body methods. Query parameters and form parameters can be given a default value for the case when a
-parameter is not present. Path parameters and headers cannot have default values.
+You can use Javalin's `Validator` class for query, form, and path parameters, as well as
+headers and the request body:
 
 {% capture java %}
-// Query Parameters
-// example url: /example?exampleId=123&color=blue&size=1&ts=1584647077000
-String color = ctx.queryParam("color"); // blue
-int exampleId = ctx.queryParam("exampleId", Integer.class).get(); // 123
-int size = ctx.queryParam("size", Integer.class).check(i -> i > 4).get(); // exception
-int qty = ctx.queryParam("qty", Integer.class, "12").get(); // uses default value 12
-Instant instant = ctx.queryParam("ts", Instant.class).get();
-
-// Path Parameters
-// example url: /example/:exampleId/:name/:quantity/:timestamp-ms
-String name = ctx.pathParam("name");
-int exampleId = ctx.pathParam("exampleId", Integer.class).get();
-int quantity = ctx.pathParam("quantity", Integer.class).check(i -> i > 4).get();
-Instant instant = ctx.pathParam("timestamp-ms", Instant.class).get();
-
-// Form Parameters
-String color = ctx.formParam("color");
-int exampleId = ctx.formParam("exampleId", Integer.class).get();
-int size = ctx.formParam("size", Integer.class).check(i -> i > 4).get();
-int qty = ctx.formParam("qty", Integer.class, "12").get(); // may default to value 12
-Instant instant = ctx.queryParam("ts", Instant.class).get();
-
-// Headers
-String exampleHeaderStr = ctx.header("Example");
-int version = ctx.header("Version", Integer.class).get();
-int version = ctx.header("Version", Integer.class).check(i -> i > 4).get();
-MyValue myValue = ctx.header("X-My-Header", MyValue.class).get();
-
-// Body Validation
-MyObject myObject = ctx.bodyValidator(MyObject.class).get();
-
+ctx.queryParamAsClass("paramName", MyClass.class)   // creates a Validator<MyClass> for the value of queryParam("paramName")
+ctx.formParamAsClass("paramName", MyClass.class)    // creates a Validator<MyClass> for the value of formParam("paramName")
+ctx.pathParamAsClass("paramName", MyClass.class)    // creates a Validator<MyClass> for the value of pathParam("paramName")
+ctx.headerAsClass("headerName", MyClass.class)      // creates a Validator<MyClass> for the value of header("paramName")
+ctx.bodyValidator(MyClass.class)                    // creates a Validator<MyClass> for the value of body()
 {% endcapture %}
 {% capture kotlin %}
-// Query Parameters
-// example url: /example?exampleId=123&color=blue&size=1&ts=1584647077000
-val color = ctx.queryParam("color") // blue
-val exampleId = ctx.queryParam<Int>("exampleId").get(); // 123
-val size = ctx.queryParam<Int>("size").check({ it > 4 }).get(); // exception
-val qty = ctx.queryParam<Int>("qty", "12").get(); // uses default value 12
-val instant = ctx.queryParam<Instant>("ts").get();
-
-// Path Parameters
-// example url: /example/:exampleId/:name/:quantity/:timestamp-ms
-val name = ctx.pathParam("name")
-val exampleId = ctx.pathParam<Int>("exampleId").get()
-val quantity = ctx.pathParam<Int>("quantity").check({ it > 4 }).get()
-val instant = ctx.pathParam<Instant>("timestamp-ms").get()
-
-// Form Parameters
-val color = ctx.formParam("color");
-val exampleId = ctx.formParam<Int>("exampleId").get();
-val size = ctx.formParam<Int>("size").check(i -> i > 4).get();
-val qty = ctx.formParam<Int>("qty", "12").get(); // may default to value 12
-val instant = ctx.queryParam<Instant>("ts").get();
-
-// Headers
-val exampleHeaderStr = ctx.header("Example");
-val version = ctx.header<Int>("Version").get();
-val version = ctx.header<Int>("Version").check({ it > 4 }).get();
-val myValue = ctx.header<MyValue>("X-My-Header").get();
-
-// Body Validation
-val myObject = ctx.bodyValidator<MyObject>();
-
+ctx.queryParamAsClass<MyClass>("paramName")         // creates a Validator<MyClass> for the value of queryParam("paramName")
+ctx.formParamAsClass<MyClass>("paramName")          // creates a Validator<MyClass> for the value of formParam("paramName")
+ctx.pathParamAsClass<MyClass>("paramName")          // creates a Validator<MyClass> for the value of pathParam("paramName")
+ctx.headerAsClass<MyClass>("headerName")            // creates a Validator<MyClass> for the value of header("paramName")
+ctx.bodyValidator<MyClass>()                        // creates a Validator<MyClass> for the value of body()
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-### Validator Nullability
-If null is a valid value for your parameter, you can use `getOrNull()` instead of `get()`.
+You can also create your own validator manually through
+`Validator.create(clazz, value, fieldName)`.
 
-### Validator Error Collection
-By default when accessing a value that has failed checks it will throw an exception on the first failed check.
-If you instead want to collect all failures (such as to return errors to be displayed on a form) you can
-access them with `errors()` which returns a map where the key is the value being checked (the param value in
-the case of headers, query params and path values) and the value is a list of error messages.
+### Validator API
 
+```java
+allowNullable()                     // turn the Validator into a NullableValidator (must be called first)
+check(predicate, "error")           // add a check with a ValidationError("error") to the Validator
+check(predicate: validationError)   // add a check with a ValidationError to the Validator
+get()                               // return the validated value as the specified type, or throw BadRequestResponse
+getOrDefault()                      // return default-value if value is null, else call get()
+errors()                            // get all the errors of the Validator (as map("fieldName", List<ValidationError>))
+```
+
+### Validation examples
 {% capture java %}
-Validator<String> stringValidator = ctx.queryParam("first_name", String.class)
-    .check(n -> !n.contains("-"), "cannot contain hyphens.")
-    .check(n -> n.length() < 10, "cannot be longer than 10 characters.");
+// VALIDATE A SINGLE QUERY PARAMETER WITH A DEFAULT VALUE /////////////////////////////////////////////
+Integer myValue = ctx.queryParamAsClass<Integer>("value").getOrDefault(788) // validate value
+ctx.result(value) // return validated value to the client
+// GET ?value=a would yield HTTP 400 - {"my-qp":[{"message":"TYPE_CONVERSION_FAILED","args":{},"value":"a"}]}
+// GET ?value=1 would yield HTTP 200 - 1 (the validated value)
+// GET ?        would yield HTTP 200 - 788 (the default value)
 
-//Empty map if no errors, otherwise a map with the key "first_name" and failed check messages in the list.
-Map<String, List<String>> errors = stringValidator.errors();
 
-// Merges all errors from all validators in the list. Empty map if no errors exist.
-Map<String, List<String>> manyErrors = Validator.collectErrors(stringValidator, otherValidator, etc)
+// VALIDATE TWO DEPENDENT QUERY PARAMETERS ////////////////////////////////////////////////////////////
+Instant fromDate = ctx.queryParamAsClass("from", Instant.class).get();
+Instant toDate = ctx.queryParamAsClass("to", Instant.class)
+    .check(it -> it.isAfter(fromDate), "'to' has to be after 'from'")
+    .get();
+
+
+// VALIDATE A JSON BODY ///////////////////////////////////////////////////////////////////////////////
+MyObject myObject = ctx.bodyValidator(MyObject.class)
+    .check(obj -> obj.myObjectProperty == someValue, "THINGS_MUST_BE_EQUAL")
+    .get();
+
+// VALIDATE WITH CUSTOM VALIDATIONERROR ///////////////////////////////////////////////////////////////
+ctx.queryParamAsClass("param", Integer.class)
+    .check({ it > 5 }, new ValidationError("OVER_LIMIT", Map.of("limit", 5)))
+    .get();
+// GET ?param=10 would yield HTTP 400 - {"param":[{"message":"OVER_LIMIT","args":{"limit":5},"value":10}]}
 {% endcapture %}
 {% capture kotlin %}
-val stringValidator = ctx.queryParam<String>("first_name")
-    .check({ !it.contains("-") }, "cannot contain hyphens.")
-    .check({ it.length < 10 }, "cannot be longer than 10 characters.")
+// VALIDATE A SINGLE QUERY PARAMETER WITH A DEFAULT VALUE /////////////////////////////////////////////
+val myValue = ctx.queryParamAsClass<Int>("value").getOrDefault(788) // validate value
+ctx.result(value) // return validated value to the client
+// GET ?value=a would yield HTTP 400 - {"my-qp":[{"message":"TYPE_CONVERSION_FAILED","args":{},"value":"a"}]}
+// GET ?value=1 would yield HTTP 200 - 1 (the validated value)
+// GET ?        would yield HTTP 200 - 788 (the default value)
 
-//Empty map if no errors, otherwise a map with the key "first_name" and failed check messages in the list.
-val errors = stringValidator.errors()
 
-// Merges all errors from all validators in the list. Empty map if no errors exist.
-val manyErrors = listOf(stringValidator, otherValidator, etc)
+// VALIDATE TWO DEPENDENT QUERY PARAMETERS ////////////////////////////////////////////////////////////
+val fromDate = ctx.queryParamAsClass<Instant>("from").get()
+val toDate = ctx.queryParamAsClass<Instant>("to")
+    .check({ it.isAfter(fromDate) }, "'to' has to be after 'from'")
+    .get()
+
+
+// VALIDATE A JSON BODY ///////////////////////////////////////////////////////////////////////////////
+val myObject = ctx.bodyValidator<MyObject>()
+    .check({ it.myObjectProperty == someValue }, "THINGS_MUST_BE_EQUAL")
+    .get()
+
+// VALIDATE WITH CUSTOM VALIDATIONERROR ///////////////////////////////////////////////////////////////
+ctx.queryParamAsClass<Int>("param")
+    .check({ it > 5 }, ValidationError("OVER_LIMIT", args = mapOf("limit" to 5)))
+    .get()
+// GET ?param=10 would yield HTTP 400 - {"param":[{"message":"OVER_LIMIT","args":{"limit":5},"value":10}]}
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
+### Collecting multiple errors
+{% capture java %}
+Validator<Integer> ageValidator = ctx.queryParamAsClass("age", Integer.class)
+    .check(n -> !n.contains("-"), "ILLEGAL_CHARACTER")
+
+// Empty map if no errors, otherwise a map with the key "age" and failed check messages in the list.
+Map<String, List<Integer>> errors = ageValidator.errors();
+
+// Merges all errors from all validators in the list. Empty map if no errors exist.
+Map<String, List<Object>> manyErrors = Validator.collectErrors(ageValidator, otherValidator, ...)
+{% endcapture %}
+{% capture kotlin %}
+val ageValidator = ctx.queryParamAsClass<Int>("age")
+    .check({ !it.contains("-") }, "ILLEGAL_CHARACTER")
+
+// Empty map if no errors, otherwise a map with the key "age" and failed check messages in the list.
+val errors = ageValidator.errors()
+
+// Merges all errors from all validators in the list. Empty map if no errors exist.
+val manyErrors = listOf(ageValidator, otherValidator, ...)
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ### Custom converters
-If you need to convert non-included class, you have to register a custom converter:
+If you need to validate a non-included class, you have to register a custom converter:
 
 {% capture java %}
 JavalinValidation.register(Instant.class, v -> Instant.ofEpochMilli(v.toLong());
@@ -675,40 +680,7 @@ JavalinValidation.register(Instant::class.java) { Instant.ofEpochMilli(it.toLong
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-### Validation examples
-{% capture java %}
-// validate two dependent query parameters:
-Instant fromDate = ctx.queryParam("from", Instant.class).get();
-Instant toDate = ctx.queryParam("to", Instant.class)
-        .check(it -> it.isAfter(fromDate), "'to' has to be after 'from'")
-        .get();
-
-// validate a json body:
-MyObject myObject = ctx.bodyValidator(MyObject.class)
-        .check(obj -> obj.myObjectProperty == someValue)
-        .get();
-{% endcapture %}
-{% capture kotlin %}
-// validate two dependent query parameters:
-val fromDate = ctx.queryParam<Instant>("from").get()
-val toDate = ctx.queryParam<Instant>("to")
-        .check({ it.isAfter(fromDate) }, "'to' has to be after 'from'")
-        .get()
-
-// validate a json body:
-val myObject = ctx.bodyValidator<MyObject>()
-        .check({ it.myObjectProperty == someValue })
-        .get()
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
-If any of the validators find errors, a `BadRequestResponse` is thrown:
-
-```java
-"Query parameter 'from' with value 'TEST' is not a valid Instant"
-"Query parameter 'to' with value '1262347000000' invalid - 'to' has to be after 'from'"
-"Request body as MyObject invalid - Check failed" // can set custom error message in check()
-```
+<h2>!!! DOCS BELOW ARE UNFINISHED !!!</h2>
 
 ## Access manager
 Javalin has a functional interface `AccessManager`, which let's you
