@@ -823,8 +823,6 @@ Returns a [503 Service Unavailable](https://developer.mozilla.org/en-US/docs/Web
 ### GatewayTimeoutResponse
 Returns a [504 Gateway Timeout](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/504) response with the default title `Gateway timeout`.
 
-<h2>!!! DOCS BELOW ARE UNFINISHED !!!</h2>
-
 ## Exception Mapping
 All handlers (before, endpoint, after) can throw `Exception`
 (and any subclass of `Exception`)
@@ -941,13 +939,17 @@ app.sse("/sse") { client ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-The `SseClient` has access to three things:
+### SseClient API
 
 ```java
-client.sendEvent() // method(s) for sending events to client
-client.onClose(runnable) // callback which runs when a client closes its connection
-client.ctx // the Context for when the client connected (to fetch query-params, etc)
+sendEvent("myMessage")                      // calls emit("message", "myMessage", noId)
+sendEvent("eventName", "myMessage")         // calls emit("eventName", "myMessage", noId)
+sendEvent("eventName", "myMessage", "id")   // calls emit("eventName", "myMessage", "id")
+onClose(runnable)                           // callback which runs when a client closes its connection
+ctx                                         // the Context from when the client connected (to fetch query-params, etc)
 ```
+
+<h2>!!! DOCS BELOW ARE UNFINISHED !!!</h2>
 
 ## Configuration
 
