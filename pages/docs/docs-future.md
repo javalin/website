@@ -680,17 +680,16 @@ JavalinValidation.register(Instant::class.java) { Instant.ofEpochMilli(it.toLong
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-<h2>!!! DOCS BELOW ARE UNFINISHED !!!</h2>
-
 ## Access manager
 Javalin has a functional interface `AccessManager`, which let's you
-set per-endpoint authentication and/or authorization. It's common to use before-handlers for this,
-but per-endpoint security handlers give you much more explicit and readable code. You can implement your
-access-manager however you want. Here is an example implementation:
+set per-endpoint authentication and/or authorization. It's also common to use
+before-handlers for this, but enforcing per-endpoint roles give you much more
+explicit and readable code. You can implement your access-manager however you want.
+Below is an example implementation:
 
 {% capture java %}
 // Set the access-manager that Javalin should use
-config.accessManager((handler, ctx, permittedRoles) -> {
+config.accessManager((handler, ctx, routeRoles) -> {
     MyRole userRole = getUserRole(ctx);
     if (permittedRoles.contains(userRole)) {
         handler.handle(ctx);
@@ -700,22 +699,20 @@ config.accessManager((handler, ctx, permittedRoles) -> {
 });
 
 Role getUserRole(Context ctx) {
-    // determine user role based on request
-    // typically done by inspecting headers
+    // determine user role based on request.
+    // typically done by inspecting headers, cookies, or user session
 }
 
-enum MyRole implements Role {
+enum Role implements RouteRole {
     ANYONE, ROLE_ONE, ROLE_TWO, ROLE_THREE;
 }
 
-app.routes(() -> {
-    get("/un-secured",   ctx -> ctx.result("Hello"),   roles(ANYONE));
-    get("/secured",      ctx -> ctx.result("Hello"),   roles(ROLE_ONE));
-});
+app.get("/un-secured",   ctx -> ctx.result("Hello"),   Role.ANYONE);
+app.get("/secured",      ctx -> ctx.result("Hello"),   Role.ROLE_ONE);
 {% endcapture %}
 {% capture kotlin %}
 // Set the access-manager that Javalin should use
-config.accessManager { handler, ctx, permittedRoles ->
+config.accessManager { handler, ctx, routeRoles ->
     val userRole = getUserRole(ctx) // determine user role based on request
     if (permittedRoles.contains(userRole)) {
         handler.handle(ctx)
@@ -725,18 +722,16 @@ config.accessManager { handler, ctx, permittedRoles ->
 }
 
 fun getUserRole(ctx: Context) : Role {
-    // determine user role based on request
-    // typically done by inspecting headers
+    // determine user role based on request.
+    // typically done by inspecting headers, cookies, or user session
 }
 
-internal enum class MyRole : Role {
+enum class Role : RouteRole {
     ANYONE, ROLE_ONE, ROLE_TWO, ROLE_THREE
 }
 
-app.routes {
-    get("/un-secured",   { ctx -> ctx.result("Hello")},   roles(MyRole.ANYONE));
-    get("/secured",      { ctx -> ctx.result("Hello")},   roles(MyRole.ROLE_ONE));
-}
+app.get("/un-secured",   { ctx -> ctx.result("Hello") },   Role.ANYONE);
+app.get("/secured",      { ctx -> ctx.result("Hello") },   Role.ROLE_ONE);
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
@@ -744,7 +739,10 @@ The `AccessManager` will also run before your WebSocket upgrade request
 (if you have added roles to the endpoint), but keep in mind that WebSockets are long lived,
 so it might be wise to perform a check in `wsBefore` too/instead.
 
-If you want to perform less restricted access management, you should consider using a `before` filter.
+If you want to perform less restricted access management,
+you should consider using a `before` filter.
+
+<h2>!!! DOCS BELOW ARE UNFINISHED !!!</h2>
 
 ## Default responses
 
