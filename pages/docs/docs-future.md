@@ -949,38 +949,62 @@ onClose(runnable)                           // callback which runs when a client
 ctx                                         // the Context from when the client connected (to fetch query-params, etc)
 ```
 
-<h2>!!! DOCS BELOW ARE UNFINISHED !!!</h2>
-
 ## Configuration
 
 You can pass a config object when creating a new instance of Javalin.
-The below snippets shows all the available config options:
 
 {% capture java %}
 Javalin.create(config -> {
-
-    // JavalinServlet
-
-    // WsServlet
-
-    // Server
-
-    // Misc
+    config.addStaticFiles(...)
+    // your config here
 }).start()
 {% endcapture %}
 {% capture kotlin %}
 Javalin.create { config ->
-
-    // JavalinServlet
-
-    // WsServlet
-
-    // Server
-
-    // Misc
+    config.addStaticFiles(...)
+    // your config here
 }.start()
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+### Available config options
+
+```java
+// HTTP
+autogenerateEtags = false;                      // generate etags for responses
+prefer405over404 = false;                       // return 405 instead of 404 if path is mapped to different HTTP method
+enforceSsl = false;                             // redirect all http requests to https
+defaultContentType = "text/plain";              // the default content type
+maxRequestSize = 1_000_000L;                    // either increase this or use inputstream to handle large requests
+asyncRequestTimeout = 0L;                       // timeout in milliseconds for async requests (0 means no timeout)
+addSinglePageRoot("/path", "/file")             // fancy 404 handler that returns the specified file for 404s on /path
+addSinglePageRoot("/path", "/file", location)   // fancy 404 handler that returns the specified file for 404s on /path
+addSinglePageHandler("/path", Handler)          // fancy 404 handler that runs the specified Handler for 404s on /path
+addStaticFiles("/directory", location)          // add static files in directory at location (Location.CLASSPATH/Location.EXTERNAL)
+addStaticFiles(staticFileConfig)                // add static files by StaticFileConfig, see Static Files section
+enableWebjars()                                 // add static files though webjars
+enableCorsForAllOrigins()                       // enable CORS for all origins
+enableCorsForOrigin("origin1", "origin2", ...)  // enable CORS the specified origins
+enableDevLogging()                              // enable dev logging (extensive debug logging meant for development)
+registerPlugin(myPlugin)                        // register a plugin
+requestLogger((ctx, timeInMs) -> {})            // register a request logger
+
+// WebSocket
+wsFactoryConfig((factory) -> {})                // configure the Jetty WebSocketServletFactory
+wsLogger((ws) -> {})                            // register a WebSocket logger
+
+// Server
+ignoreTrailingSlashes = true;                   // treat '/path' and '/path/' as the same path
+contextPath = "/";                              // the context path (ex '/blog' if you are hosting an app on a subpath, like 'mydomain.com/blog')
+server(() -> Server())                          // set the Jetty Server
+sessionHandler(() -> SessionHandler())          // set the Jetty SessionHandler
+configureServletContextHandler(handler -> {})   // configure the Jetty ServletContextHandler
+
+// Misc
+showJavalinBanner = true;                         // show the glorious Javalin banner on startup
+```
+
+<h2>!!! DOCS BELOW ARE UNFINISHED !!!</h2>
 
 ### Static Files
 You can enabled static file serving by doing `config.addStaticFiles("/classpath-folder")`, and/or
