@@ -579,7 +579,6 @@ You can also create your own validator manually through
 `Validator.create(clazz, value, fieldName)`.
 
 ### Validator API
-
 ```java
 allowNullable()                     // turn the Validator into a NullableValidator (must be called first)
 check(predicate, "error")           // add a check with a ValidationError("error") to the Validator
@@ -765,11 +764,8 @@ so it might be wise to perform a check in `wsBefore` too/instead.
 If you want to perform less restricted access management,
 you should consider using a `before` filter.
 
-<h2>!!! DOCS BELOW ARE UNFINISHED !!!</h2>
-
 ## Default responses
-
-Javalin comes with a built in class called `HttpResponseException`, which can be used for default responses.\\
+Javalin comes with a built in class called `HttpResponseException`, which can be used for default responses.
 If the client accepts JSON, a JSON object is returned. Otherwise a plain text response is returned.
 
 ```java
@@ -826,6 +822,8 @@ Returns a [503 Service Unavailable](https://developer.mozilla.org/en-US/docs/Web
 
 ### GatewayTimeoutResponse
 Returns a [504 Gateway Timeout](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/504) response with the default title `Gateway timeout`.
+
+<h2>!!! DOCS BELOW ARE UNFINISHED !!!</h2>
 
 ## Exception Mapping
 All handlers (before, endpoint, after) can throw `Exception`
