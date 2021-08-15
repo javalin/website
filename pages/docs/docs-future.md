@@ -583,7 +583,7 @@ You can also create your own validator manually through
 ```java
 allowNullable()                     // turn the Validator into a NullableValidator (must be called first)
 check(predicate, "error")           // add a check with a ValidationError("error") to the Validator
-check(predicate: validationError)   // add a check with a ValidationError to the Validator
+check(predicate: validationError)   // add a check with a ValidationError to the Validator (can have args for localization)
 get()                               // return the validated value as the specified type, or throw BadRequestResponse
 getOrDefault()                      // return default-value if value is null, else call get()
 errors()                            // get all the errors of the Validator (as map("fieldName", List<ValidationError>))
@@ -666,6 +666,29 @@ val errors = ageValidator.errors()
 
 // Merges all errors from all validators in the list. Empty map if no errors exist.
 val manyErrors = listOf(ageValidator, otherValidator, ...)
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+### ValidationException
+When a `Validator` throws, it is mapped by:
+
+```kotlin
+app.exception(ValidationException::class.java) { e, ctx ->
+    ctx.json(e.errors).status(400)
+}
+```
+
+You can override this by doing:
+
+{% capture java %}
+app.exception(ValidationException.class, (e, ctx) -> {
+    // your code
+});
+{% endcapture %}
+{% capture kotlin %}
+app.exception(ValidationException::class.java) { e, ctx ->
+    // your code
+}
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
