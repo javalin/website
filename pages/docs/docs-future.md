@@ -979,7 +979,7 @@ maxRequestSize = 1_000_000L;                    // either increase this or use i
 asyncRequestTimeout = 0L;                       // timeout in milliseconds for async requests (0 means no timeout)
 addSinglePageRoot("/path", "/file")             // fancy 404 handler that returns the specified file for 404s on /path
 addSinglePageRoot("/path", "/file", location)   // fancy 404 handler that returns the specified file for 404s on /path
-addSinglePageHandler("/path", Handler)          // fancy 404 handler that runs the specified Handler for 404s on /path
+addSinglePageHandler("/path", handler)          // fancy 404 handler that runs the specified Handler for 404s on /path
 addStaticFiles("/directory", location)          // add static files in directory at location (Location.CLASSPATH/Location.EXTERNAL)
 addStaticFiles(staticFileConfig)                // add static files by StaticFileConfig, see Static Files section
 enableWebjars()                                 // add static files though webjars
@@ -1004,36 +1004,64 @@ configureServletContextHandler(handler -> {})   // configure the Jetty ServletCo
 showJavalinBanner = true;                         // show the glorious Javalin banner on startup
 ```
 
-<h2>!!! DOCS BELOW ARE UNFINISHED !!!</h2>
-
 ### Static Files
-You can enabled static file serving by doing `config.addStaticFiles("/classpath-folder")`, and/or
-`config.addStaticFiles("/folder", Location.EXTERNAL)`.
-Static resource handling is done **after** endpoint matching,
-meaning your self-defined endpoints have higher priority. The process looks like this:
+You can enabled static file serving by doing `config.addStaticFiles("/diretory", location)`.
+Static resource handling is done **after** endpoint matching, meaning your own
+GET endpoints have higher priority. The process looks like this:
 
 ```txt
 run before-handlers
 run endpoint-handlers
-if no-endpoint-handler-found
-    run static-file-handler
+if no endpoint-handler found
+    run static-file-handlers
     if static-file-found
         static-file-handler sends response
     else
         response is 404
-after-handlers
+run after-handlers
 ```
 
-If you do `config.addStaticFiles("/classpath-folder")`.
-Your `index.html` file at `/classpath-folder/index.html` will be available
-at `http://{host}:{port}/index.html` and `http://{host}:{port}/`.
+#### StaticFileConfig
+For more advanced use cases, Javalin has a `StaticFileConfig` class:
+
+{% capture java %}
+Javalin.create(config -> {
+  config.addStaticFiles(staticFiles -> {
+    staticFiles.hostedPath = "/";                   // change to host files on a subpath, like '/assets'
+    staticFiles.directory = "/public";              // the directory where your files are located
+    staticFiles.location = Location.CLASSPATH;      // Location.CLASSPATH (jar) or Location.EXTERNAL (file system)
+    staticFiles.precompress = false;                // if the files should be pre-compressed and cached in memory (optimization)
+    staticFiles.aliasCheck = null;                  // you can configure this to enable symlinks (= ContextHandler.ApproveAliases())
+    staticFiles.headers = Map.of(...);              // headers that will be set for the files
+    staticFiles.skipFileFunction = req -> false;    // you can use this to skip certain files in the dir, based on the HttpServletRequest
+  });
+});
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { config ->
+  config.addStaticFiles { staticFiles ->
+    staticFiles.hostedPath = "/"                    // change to host files on a subpath, like '/assets'
+    staticFiles.directory = "/public"               // the directory where your files are located
+    staticFiles.location = Location.CLASSPATH       // Location.CLASSPATH (jar) or Location.EXTERNAL (file system)
+    staticFiles.precompress = false                 // if the files should be pre-compressed and cached in memory (optimization)
+    staticFiles.aliasCheck = null                   // you can configure this to enable symlinks (= ContextHandler.ApproveAliases())
+    staticFiles.headers = mapOf(...)                // headers that will be set for the files
+    staticFiles.skipFileFunction = { req -> false } // you can use this to skip certain files in the dir, based on the HttpServletRequest
+  }
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 You can call `addStaticFiles` multiple times to set up multiple handlers.
+No configuration is shared between handlers.
 
-WebJars can be enabled by calling `enableWebJars()`, they will be available at `/webjars/name/version/file.ext`.
-
+#### WebJars
+WebJars can be enabled by calling `enableWebJars()`,
+they will be available at `/webjars/name/version/file.ext`.
 WebJars can be found on [https://www.webjars.org/](https://www.webjars.org/).
 Everything available through NPM is also available through WebJars.
+
+<h2>!!! DOCS BELOW ARE UNFINISHED !!!</h2>
 
 ### Single page mode
 Single page mode is similar to static file handling. It runs after endpoint matching and after static file handling.
