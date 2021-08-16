@@ -33,7 +33,7 @@ permalink: /future-documentation
   * [Server setup](#server-setup)
 * [Lifecycle events](#lifecycle-events)
 * [Plugins](#plugins)
-* [Modules](#modules)
+* [Modules](#different-javalin-modules)
 * [FAQ](#faq)
 </div>
 
@@ -999,9 +999,10 @@ contextPath = "/";                              // the context path (ex '/blog' 
 server(() -> Server())                          // set the Jetty Server
 sessionHandler(() -> SessionHandler())          // set the Jetty SessionHandler
 configureServletContextHandler(handler -> {})   // configure the Jetty ServletContextHandler
+jsonMapper(jsonMapper)                          // configure Javalin's JsonMapper
 
 // Misc
-showJavalinBanner = true;                         // show the glorious Javalin banner on startup
+showJavalinBanner = true;                       // show the glorious Javalin banner on startup
 ```
 
 ### Static Files
@@ -1061,10 +1062,8 @@ they will be available at `/webjars/name/version/file.ext`.
 WebJars can be found on [https://www.webjars.org/](https://www.webjars.org/).
 Everything available through NPM is also available through WebJars.
 
-<h2>!!! DOCS BELOW ARE UNFINISHED !!!</h2>
-
 ### Single page mode
-Single page mode is similar to static file handling. It runs after endpoint matching and after static file handling.
+Single page mode is similar to static file handling. It runs after endpoint matching, and after static file handling.
 It's basically a very fancy 404 mapper, which converts any 404's into a specified page.
 You can define multiple single page handlers for your application by specifying different root paths.
 
@@ -1144,7 +1143,6 @@ app.create { config ->
 The logger runs after the WebSocket handler for the endpoint.
 
 #### Dev logging
-
 {% capture java %}
 app.create(config -> {
     config.enableDevLogging(); // enable extensive development logging for http and websocket
@@ -1304,7 +1302,7 @@ app.stop() // serverStopping -> serverStopped
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ## Plugins
-Javalin 3 introduced a new plugin system with two interfaces, `Plugin` and `PluginLifecycleInit`:
+Javalin's plugin system has two interfaces, `Plugin` and `PluginLifecycleInit`:
 
 ```java
 interface Plugin {
@@ -1343,7 +1341,7 @@ Javalin.create(config ->
 
 ### Micrometer Plugin
 
-You can enable the Micrometer plugin by registering it on the `config`:
+You can enable the Micrometer plugin by registering it on the config:
 
 ```java
 Javalin.create(config ->
@@ -1440,45 +1438,53 @@ Javalin.create(config ->
 )
 ```
 
-### Rate limiting
+## Different Javalin modules
 
-There is a very simple rate-limited included in Javalin `3.7.0` and newer.
-You can call it in the beginning of your endpoint `Handler` functions:
-
-{% capture java %}
-app.get("/", ctx -> {
-    new RateLimit(ctx).requestPerTimeUnit(5, TimeUnit.MINUTES); // throws if rate limit is exceeded
-    ctx.status("Hello, rate-limited World!");
-});
-{% endcapture %}
-{% capture kotlin %}
-app.get("/") { ctx ->
-    RateLimit(ctx).requestPerTimeUnit(5, TimeUnit.MINUTES) // throws if rate limit is exceeded
-    ctx.status("Hello, rate-limited World!")
-}
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
-Every rate limiter is independent (IP and `Handler` based), so different endpoints can have different rate limits. It works as follows:
-
-* A map of maps holds one IP/counter map per method/path combination (`Handler`).
-* On each request the counter for that IP is incremented.
-* If the counter exceeds the number of requests specified, an exception is thrown.
-* All counters are cleared periodically on every timeunit that you specified.
-
-## Modules
-
-As of `3.9.0`, Javalin is a multi-module project. The current modules (for `{{site.javalinversion}}`)  are:
+Javalin is a multi-module project. The current modules (for `{{site.javalinversion}}`)  are:
 
 * `javalin` - the standard Javalin dependency, just as before
 * `javalin-bundle` - `javalin`, `javalin-openapi`, `jackson` and `logback`
 * `javalin-openapi` - the OpenAPI plugin and all required dependencies
+* `javalin-testtools` - tools for easily writing integration tests for Javalin apps
 * `javalin-graphql` - the new GraphQL plugin (thanks to [7agustibm](https://github.com/7agustibm))
 * `javalin-without-jetty` - `javalin` with all `jetty` dependencies excluded
   and Jetty specific methods removed (useful for running on e.g. Tomcat)
 
 ## FAQ
 Frequently asked questions.
+
+### Rate limiting
+There is a very simple rate limiter included in Javalin.
+You can call it in the beginning of your endpoint `Handler` functions:
+
+{% capture java %}
+app.get("/", ctx -> {
+    NaiveRateLimit.requestPerTimeUnit(ctx, 5, TimeUnit.MINUTES); // throws if rate limit is exceeded
+    ctx.status("Hello, rate-limited World!");
+});
+
+// you can overwrite the key-function:
+RateLimitUti.keyFunction = ctx -> // uses (ip+method+endpointPath) by default
+{% endcapture %}
+{% capture kotlin %}
+app.get("/") { ctx ->
+    NaiveRateLimit.requestPerTimeUnit(ctx, 5, TimeUnit.MINUTES) // throws if rate limit is exceeded
+    ctx.status("Hello, rate-limited World!")
+}
+
+// you can overwrite the key-function:
+RateLimitUti.keyFunction = { ctx -> } // uses (ip+method+endpointPath) by default
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+Different endpoints can have different rate limits. It works as follows:
+
+* A map of maps holds counter per key.
+* On each request the counter for that key is incremented.
+* If the counter exceeds the number of requests specified, an exception is thrown.
+* All counters are cleared periodically on every timeunit that you specified.
+
+---
 
 ### Android
 To use Javalin in an Android project, you will need to:
@@ -1566,14 +1572,7 @@ There is also a tutorial on [deploying Javalin to Heroku](/tutorials/heroku).
 <div class="comment"><strong>Ctrl+f</strong>: "without jetty", "tomcat", "standalone", "servlet container", "war".</div>
 
 Javalin is primarily meant to be used with the embedded Jetty server, but if you want to run Javalin
-on another web server (such as Tomcat), you can use the `Javalin.createStandalone()` factory method.
-
-This method will create a Javalin instance, which exposes the `HttpServlet` that
-Javalin uses to handle HTTP requests (via `app.servlet()`). Please note that Javalin's WebSockets
-functionality has a hard dependency on Jetty, and will not work in standalone mode.
-
-Remember to exclude Jetty when setting this up. If you need more instructions, follow the
-[tutorial](https://javalin.io/2018/11/15/javalin-embedded-example.html).
+on another web server (such as Tomcat), you can use the `javalin-without-jetty` artifact.
 
 ---
 
@@ -1606,9 +1605,9 @@ The corresponding HTML might look something like this:
 ---
 
 ### Asynchronous requests
-While the default threadpool (200 threads) is enough for most use cases,
+While the default ThreadPool (200 threads) is enough for most use cases,
 sometimes slow operations should be run asynchronously. Luckily it's very easy in Javalin, just
-pass a `CompletableFuture` to `ctx.result()`:
+pass a `CompletableFuture` to `ctx.future()`:
 
 ```kotlin
 import io.javalin.Javalin
@@ -1629,45 +1628,49 @@ You can only set future results in endpoint handlers (get/post/put/etc).\\
 After-handlers, exception-handlers and error-handlers run like you'd expect them to after
 the future has been resolved or rejected.
 
-#### Async timeout settings
-Jetty has a default timeout of 30 seconds for async requests (this is not related to the `idleTimeout` of a connector).
-If you wait for processes that run for longer than this, you can configure the async request manually by calling `ctx.req.startAsync()`.
-For more information, see [issue 448](https://github.com/tipsy/javalin/issues/448).
+#### Async callbacks
+The `ctx.future()` method's full signature is this:
+
+```kotlin
+@JvmOverloads
+fun future(future: CompletableFuture<*>, callback: Consumer<Any?>? = null): Context {
+    if (!handlerType.isHttpMethod() || inExceptionHandler) {
+        throw IllegalStateException("You can only set CompletableFuture results in endpoint handlers.")
+    }
+    resultStream = null
+    resultFuture = future
+    futureConsumer = callback ?: Consumer { result ->
+        when (result) {
+            is InputStream -> result(result)
+            is String -> result(result)
+            is Any -> json(result)
+        }
+    }
+    return this
+}
+```
+The default behavior is to set the result of the future using `ctx.result()` if it's an `InputStream`
+or a `String`, but to use `ctx.json()` if it's any other Object.
+
+You can provide your own callback to replace the default behavior:
+
+```java
+ctx.future(myFuture, result -> {
+    if (result != null) {
+        ctx.status(200)
+        ctx.json(result)
+    } else {
+        ctx.status(404)
+    }
+});
+```
 
 ---
 
 ### Configuring the JSON mapper
 
-Note that these are global settings, and can't be configured per instance of Javalin.
-
-#### Configuring Jackson
-The JSON mapper uses Jackson by default, which can be configured by calling:
-```java
-JavalinJackson.configure(objectMapper)
-```
-
-#### Using Gson
-Javalin can be configured to use [Gson](https://github.com/google/gson) instead of Jackson. In Java:
-
-```java
-Gson gson = new GsonBuilder().create();
-JavalinJson.setFromJsonMapper(gson::fromJson);
-JavalinJson.setToJsonMapper(gson::toJson);
-```
-
-In Kotlin:
-
-```kotlin
-val gson = GsonBuilder().create()
-
-JavalinJson.fromJsonMapper = object : FromJsonMapper {
-    override fun <T> map(json: String, targetClass: Class<T>) = gson.fromJson(json, targetClass)
-}
-
-JavalinJson.toJsonMapper = object : ToJsonMapper {
-    override fun map(obj: Any): String = gson.toJson(obj)
-}
-```
+To configure the JsonMapper, you need to pass an object which implements the `JsonMapper` interface
+to `config.jsonMapper()`.
 
 ---
 
@@ -1754,70 +1757,15 @@ which you can access:
 To map a path to a Vue component you use the `VueComponent` class:
 
 ```java
-get("/messages", VueComponent("inbox-view"))
-get("/messages/:user", VueComponent("thread-view"))
+get("/messages",        VueComponent("inbox-view"))
+get("/messages/{user}", VueComponent("thread-view"))
 ```
 
 This will give you a lot of the benefits of a modern frontend architecture,
 with very few of the downsides.
 
-There's a tutorial explaining the concepts: [/tutorials/simple-frontends-with-javalin-and-vue](/tutorials/simple-frontends-with-javalin-and-vue)
-
-#### Shared state
-If you want to share state from your server with Vue, you can provide `JavalinVue` with a state function:
-
-```java
-JavalinVue.stateFunction = { ctx -> mapOf("user" to getUser(ctx)) }
-```
-
-This can then be accessed from the `state` variable:
-
-```markup
-<template id="user-template">
-    {% raw %}<div>{{ $javalin.state.user }}</div>{% endraw %}
-</template>
-```
-
-The function runs for every request, so the state is always up to
-date when the user navigates or refreshes the page.
-
-#### Inline files
-You can inline files into your layout template by using the following functions:
-
-```html
-<head>
-    <style>@inlineFile("/vue/styles.css")</style> <!-- always included -->
-    <script>@inlineFileDev("/vue/scripts-dev.js")</script> <!-- only included in dev -->
-    <script>@inlineFileNotDev("/vue/scripts-not-dev.js")</script> <!-- only included in not dev -->
-</head>
-```
-
-#### CDN WebJars
-You can reference your WebJars with `@cdnWebjar/` instead of the normal `/webjars/`.
-If you do this, the path will resolve to `/webjars/` on when `isDevFunction` returns true, and `https//cdn.jsdelivr.net/.../`
-on non-localhost. **Note that this only works with NPM webjars.**
-
-#### Vue directory location
-
-By default, JavalinVue will set the vue root directory based on the first request it serves.
-
-* On localhost, the root dir will be set to the `src/main/resources/vue` (external location)
-* On non-localhost, the root dir will be set to `/vue` (classpath location)
-
-This can cause issues when running a jar locally or in docker. You can override the default dir:
-
-```java
-JavalinVue.rootDirectory(path, location); // String path, String location
-JavalinVue.rootDirectory(path); // java.nio.Path path
-```
-
-#### isDevFunction
-You can override the `JavalinVue.isDevFunction` to let `JavalinVue` know if the environment is develop or not.
-This is used to disable caching on dev to speed up development. The default function returns true if the request is on localhost.
-
-#### Optimize dependencies
-If you set `JavalinVue.optimizeDependencies` to true, `JavalinVue` will only load the required dependencies for your route component.
-This is set to false by default.
+There are more extensive docs at [/plugins/javalinvue](/plugins/javalinvue), and there is
+an in-depth tutorial at [/tutorials/simple-frontends-with-javalin-and-vue](/tutorials/simple-frontends-with-javalin-and-vue).
 
 ---
 
