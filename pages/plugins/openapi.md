@@ -105,8 +105,9 @@ new OpenApiOptions(initialConfigurationCreator)
     .reDoc(new ReDocOptions("/redoc").title("My ReDoc Documentation")) // Active the ReDoc UI
     .setDocumentation("/user", HttpMethod.POST, document()) // Override or set some documentation manually
     .ignorePath("/user*", HttpMethod.GET); // Disable documentation
+    .includePath("/items/*") // disable documentation for everything except this path
 	.responseModifier(new MyOpenApiModifier()) // Modify the OpenAPI model returned with information from the Context on each request.  Defaults to no modification.
-	.disableCaching() // Disable caching of the OpenAPI model if changes in the responseModifier are not idempotent.  
+	.disableCaching() // Disable caching of the OpenAPI model if changes in the responseModifier are not idempotent.
 {% endcapture %}
 {% capture kotlin %}
 val initialConfigurationCreator = InitialConfigurationCreator {
@@ -125,9 +126,10 @@ OpenApiOptions(initialConfigurationCreator)
     .swagger(SwaggerOptions("/swagger").title("My Swagger Documentation")) // Activate the swagger ui
     .reDoc(ReDocOptions("/redoc").title("My ReDoc Documentation")) // Active the ReDoc UI
     .setDocumentation("/user", HttpMethod.POST, document()) // Override or set some documentation manually
-    .ignorePath("/user*", HttpMethod.GET) // Disable documentation
+    .ignorePath("/user*", HttpMethod.GET) // Disable documentation for this path
+    .includePath("/items/*") // disable documentation for everything except this path
 	.responseModifier(MyOpenApiModifier()) // Modify the OpenAPI model returned with information from the Context on each request
-	.disableCaching() // Disable caching of the OpenAPI model if changes in the responseModifier are not idempotent.  
+	.disableCaching() // Disable caching of the OpenAPI model if changes in the responseModifier are not idempotent.
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
