@@ -591,7 +591,7 @@ errors()                            // get all the errors of the Validator (as m
 ### Validation examples
 {% capture java %}
 // VALIDATE A SINGLE QUERY PARAMETER WITH A DEFAULT VALUE /////////////////////////////////////////////
-Integer myValue = ctx.queryParamAsClass<Integer>("value").getOrDefault(788) // validate value
+Integer myValue = ctx.queryParamAsClass("value", Integer.class).getOrDefault(788) // validate value
 ctx.result(value) // return validated value to the client
 // GET ?value=a would yield HTTP 400 - {"my-qp":[{"message":"TYPE_CONVERSION_FAILED","args":{},"value":"a"}]}
 // GET ?value=1 would yield HTTP 200 - 1 (the validated value)
