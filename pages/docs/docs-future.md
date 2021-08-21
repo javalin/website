@@ -459,7 +459,6 @@ sessionAttribute("name")                // get a session attribute
 sessionAttributeMap()                   // map of all session attributes
 ```
 
-
 ### WsMessageContext
 ```java
 message()                               // receive a string message from the client
