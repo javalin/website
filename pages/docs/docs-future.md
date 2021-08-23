@@ -1452,6 +1452,21 @@ Javalin is a multi-module project. The current modules (for `{{site.javalinversi
 ## FAQ
 Frequently asked questions.
 
+### Request lifecycle
+The Javalin request lifecycle is pretty straightforward.
+The following snippet covers every place you can hook into:
+```java
+Javalin#before              // runs first, can throw exception (which will skip any endpoint handlers)
+Javalin#get/post/patch/etc  // runs second, can throw exception
+Javalin#after               // runs third, can throw exception
+Javalin#error               // runs fourth, can throw exception
+Javalin#exception           // runs any time a handler throws (cannot throw exception)
+JavalinConfig#requestLogger // runs after response is written to client
+JavalinConfig#accessManager // wraps all your endpoint handlers in a lambda of your choice
+```
+
+---
+
 ### Rate limiting
 There is a very simple rate limiter included in Javalin.
 You can call it in the beginning of your endpoint `Handler` functions:
