@@ -1728,6 +1728,14 @@ JavalinJtwig.configure(configuration)
 JavalinPebble.configure(configuration)
 JavalinCommonmark.configure(htmlRenderer, markdownParser)
 ```
+
+When you are configuring a template engine (for example, setting a root directory for your template files)
+please consult the documentation for that particular template engine. These kinds of settings are not handled
+through Javalin.
+
+If you need to configure settings beyond what's available in `JavalinTemplateEngine.configure`, you
+have to write your own implementation and register it using `JavalinRenderer.register`.
+
 Note that these are global settings, and can't be configured per instance of Javalin.
 
 ---
