@@ -1729,7 +1729,7 @@ JavalinPebble.configure(configuration)
 JavalinCommonmark.configure(htmlRenderer, markdownParser)
 ```
 
-When you are configuring a template engine (for example, setting a root directory for your template files)
+If you wish to configure a template engine (for example, to set a root directory for your template files)
 please consult the documentation for that particular template engine. These kinds of settings are not handled
 through Javalin.
 
