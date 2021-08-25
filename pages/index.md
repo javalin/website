@@ -95,7 +95,6 @@ import io.javalin.Javalin;
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 Javalin app = Javalin.create(config -> {
-    config.addStaticFiles("/public");
     config.enableCorsForAllOrigins();
     config.asyncRequestTimeout = 10_000L;
     config.enforceSsl = true;
@@ -103,7 +102,7 @@ Javalin app = Javalin.create(config -> {
     path("users", () -> {
         get(UserController::getAll);
         post(UserController::create);
-        path(":user-id", () -> {
+        path("{userId}", () -> {
             get(UserController::getOne);
             patch(UserController::update);
             delete(UserController::delete);
@@ -117,7 +116,6 @@ import io.javalin.Javalin;
 import io.javalin.apibuilder.ApiBuilder.*;
 
 val app = Javalin.create { config ->
-    config.addStaticFiles("/public")
     config.enableCorsForAllOrigins()
     config.asyncRequestTimeout = 10_000L
     config.enforceSsl = true
@@ -125,7 +123,7 @@ val app = Javalin.create { config ->
     path("users") {
         get(UserController::getAll)
         post(UserController::create)
-        path(":user-id") {
+        path("{userId}") {
             get(UserController::getOne)
             patch(UserController::update)
             delete(UserController::delete)

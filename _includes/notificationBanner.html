@@ -1,17 +1,17 @@
 <script>
-    const notificationId = "javalin-2021-survey";
+    const notificationId = "javalin-4-released";
     const hasBeenDismissed = localStorage.getItem(notificationId + "-dismissed") === "true";
     const pageLoadCount = parseInt(localStorage.getItem(notificationId + "-count") || 0);
     localStorage.setItem(notificationId + "-count", (pageLoadCount + 1).toString());
-    if (!hasBeenDismissed && pageLoadCount >= 10) {
+    if (!hasBeenDismissed && pageLoadCount >= 0) {
         document.write(`
             <div id="notification-banner">
-                <h1>Javalin Survey 2021!</h1>
-                Please consider taking this <a href="https://forms.gle/NNLZRDJm3aTVDSp76">short survey</a>
-                on how you use Javalin. Thank you!
+                <h1>Javalin 4 released!</h1>
+                Javalin 4 stable is finally here!
+                Read more in the <a href="/news/javalin-4.0.0-stable.html">release post</a>.
             </div>
         `);
-        if (pageLoadCount >= 10) {
+        if (pageLoadCount >= 0) {
             document.querySelector("#notification-banner").insertAdjacentHTML("beforeend", `<span class="close">×</span>`);
             document.querySelector("#notification-banner .close").addEventListener("click", () => {
                 document.querySelector("#notification-banner").style.display = "none";
