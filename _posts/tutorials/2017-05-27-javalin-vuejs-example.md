@@ -53,7 +53,7 @@ fun main(args: Array<String>) {
             ctx.json(todos)
         }
         put("/todos") { ctx ->
-            todos = ctx.body<Array<Todo>>()
+            todos = ctx.bodyAsClass<Array<Todo>>()
             ctx.status(204)
         }
     }

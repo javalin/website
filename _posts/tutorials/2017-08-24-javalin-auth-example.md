@@ -48,19 +48,19 @@ object UserController {
     }
 
     fun createUser(ctx: Context) {
-        users[randomId()] = ctx.body<User>()
+        users[randomId()] = ctx.bodyAsClass<User>()
     }
 
     fun getUser(ctx: Context) {
-        ctx.json(users[ctx.pathParam(":user-id")]!!)
+        ctx.json(users[ctx.pathParam("{user-id}")]!!)
     }
 
     fun updateUser(ctx: Context) {
-        users[ctx.pathParam(":user-id")!!] = ctx.body<User>()
+        users[ctx.pathParam("{user-id}")!!] = ctx.bodyAsClass<User>()
     }
 
     fun deleteUser(ctx: Context) {
-        users.remove(ctx.pathParam(":user-id"))
+        users.remove(ctx.pathParam("{user-id}"))
     }
 
     private fun randomId() = UUID.randomUUID().toString()
@@ -69,7 +69,7 @@ object UserController {
 ```
 
 <small><em>We're using `!!` to convert nullables to non-nullables.
-If `:user-id` is missing or `users[id]` returns null, we'll get a NullPointerException
+If `{user-id}` is missing or `users[id]` returns null, we'll get a NullPointerException
 and our application will crash. Handling this is outside the scope of the tutorial.</em></small>
 
 ## Creating roles
@@ -79,7 +79,7 @@ We'll define three roles, one for "anyone", one for permission to read user-data
 and one for permission to write user-data.
 
 ```kotlin
-enum class ApiRole : Role { ANYONE, USER_READ, USER_WRITE }
+enum class Role : RouteRole { ANYONE, USER_READ, USER_WRITE }
 ```
 
 ## Setting up the API
@@ -98,12 +98,12 @@ fun main(vararg args: String) {
 
     app.routes {
         path("users") {
-            get(UserController::getAllUserIds, roles(ApiRole.ANYONE))
-            post(UserController::createUser, roles(ApiRole.USER_WRITE))
-            path(":user-id") {
-                get(UserController::getUser, roles(ApiRole.USER_READ))
-                patch(UserController::updateUser, roles(ApiRole.USER_WRITE))
-                delete(UserController::deleteUser, roles(ApiRole.USER_WRITE))
+            get(UserController::getAllUserIds, Role.ANYONE)
+            post(UserController::createUser, Role.USER_WRITE)
+            path("{user-id}") {
+                get(UserController::getUser, Role.USER_READ)
+                patch(UserController::updateUser, Role.USER_WRITE)
+                delete(UserController::deleteUser, Role.USER_WRITE)
             }
         }
     }
@@ -148,8 +148,8 @@ username+password in cleartext (please don't do this for a real service), and va
 
 ```kotlin
 private val userRoleMap = hashMapOf(
-        Pair("alice", "weak-password") to setOf(ApiRole.USER_READ),
-        Pair("bob", "better-password") to setOf(ApiRole.USER_READ, ApiRole.USER_WRITE)
+        Pair("alice", "weak-password") to setOf(Role.USER_READ),
+        Pair("bob", "better-password") to setOf(Role.USER_READ, Role.USER_WRITE)
 )
 ```
 

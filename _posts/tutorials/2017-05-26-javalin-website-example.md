@@ -56,7 +56,7 @@ public class Application {
         userDao = new UserDao();
 
         Javalin app = Javalin.create()
-            .enableStaticFiles("/public")
+            .enableStaticFiles("/public", Location.CLASSPATH)
             .start(7000);
 
         app.routes(() -> {

@@ -148,7 +148,7 @@ fun main() {
         config.enableWebjars()
     }.start(7000)
 
-    app.get("/", VueComponent("<hello-world></hello-world>"))
+    app.get("/", VueComponent("hello-world"))
 }
 ```
 
@@ -173,12 +173,12 @@ This will require two views, and we should probably also include a 404 page.
 Let's change the server by adding the following lines:
 
 ```kotlin
-app.get("/users", VueComponent("<user-overview></user-overview>"))
-app.get("/users/:user-id", VueComponent("<user-profile></user-profile>"))
-app.error(404, "html", VueComponent("<not-found></not-found>"))
+app.get("/users", VueComponent("user-overview"))
+app.get("/users/{user-id}", VueComponent("user-profile"))
+app.error(404, "html", VueComponent("not-found"))
 
 app.get("/api/users", UserController::getAll)
-app.get("/api/users/:user-id", UserController::getOne)
+app.get("/api/users/{user-id}", UserController::getOne)
 ```
 
 We've referenced `UserController` in the previous snippet, but that doesn't exist yet.\\
@@ -303,7 +303,7 @@ Let's fix this by creating `/src/main/resources/vue/views/user-profile.vue`:
 
 This is pretty similar to our user-overview, but since this is a dynamic route,
 we have to ask our router what the current user-id is.
-JavalinVue includes path parameters and query parameters on `$javalin` by default
+JavalinVue includes path parameters on `$javalin` by default
 (it also has an optional state parameter we will look at later).
 
 Let's finish up our views with `/src/main/resources/vue/views/not-found.vue`:
@@ -385,7 +385,7 @@ import io.javalin.http.Context
 import io.javalin.plugin.rendering.vue.JavalinVue
 import io.javalin.plugin.rendering.vue.VueComponent
 
-enum class AppRole : Role { ANYONE, LOGGED_IN }
+enum class Role : RouteRole { ANYONE, LOGGED_IN }
 
 fun main() {
 
@@ -400,13 +400,14 @@ fun main() {
         }
     }.start(7000)
 
-    app.get("/", VueComponent("<hello-world></hello-world>"), roles(AppRole.ANYONE))
-    app.get("/users", VueComponent("<user-overview></user-overview>"), roles(AppRole.ANYONE))
-    app.get("/users/:user-id", VueComponent("<user-profile></user-profile>"), roles(AppRole.LOGGED_IN))
-    app.error(404, "html", VueComponent("<not-found></not-found>"))
+    app.get("/", VueComponent("hello-world"), Role.ANYONE)
+    app.get("/users", VueComponent("user-overview"), Role.ANYONE)
+    app.get("/users/{user-id}", VueComponent("user-profile"), Role.LOGGED_IN)
 
-    app.get("/api/users", UserController::getAll, roles(AppRole.ANYONE))
-    app.get("/api/users/:user-id", UserController::getOne, roles(AppRole.LOGGED_IN))
+    app.get("/api/users", UserController::getAll, Role.ANYONE)
+    app.get("/api/users/{user-id}", UserController::getOne, Role.LOGGED_IN)
+
+    app.error(404, "html", VueComponent("not-found"))
 
 }
 

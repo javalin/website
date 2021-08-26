@@ -60,8 +60,8 @@ public class Main {
     public static void main(String[] args) {
 
         Javalin.create(config -> {
-            config.addStaticFiles("/public");
-        }).ws("/docs/:doc-id", ws -> {
+            config.addStaticFiles("/public", Location.CLASSPATH);
+        }).ws("/docs/{doc-id}", ws -> {
             ws.onConnect(ctx -> {
                 if (getCollab(ctx) == null) {
                     createCollab(ctx);
@@ -102,9 +102,9 @@ fun main() {
     val collaborations = ConcurrentHashMap<String, Collaboration>()
 
     Javalin.create {
-        it.addStaticFiles("/public")
+        it.addStaticFiles("/public", Location.CLASSPATH)
     }.apply {
-        ws("/docs/:doc-id") { ws ->
+        ws("/docs/{doc-id}") { ws ->
             ws.onConnect { ctx ->
                 if (collaborations[ctx.docId] == null) {
                     collaborations[ctx.docId] = Collaboration()
