@@ -70,11 +70,11 @@ The global options have been removed, so all options are now per static file han
 These options can be configure in a familiar Javalin way:
 
 ```java
-config.addStaticFiles(staticFiles ->
+config.addStaticFiles(staticFiles -> {
     staticFiles.aliasCheck = ContextHandler.AliasCheck((path, resource) -> !path.endsWith(".txt"));
     staticFiles.directory = "src/test/external/";
     staticFiles.location = Location.EXTERNAL;
-}
+});
 ```
 
 ## Roles
