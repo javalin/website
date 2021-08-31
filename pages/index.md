@@ -190,7 +190,7 @@ val app = Javalin.create { config ->
 <div class="landing whitepart">
     <h1>What is Javalin used for?</h1>
     <p class="white-paragraph">
-        Check out our current <a href="/blog/javalin-user-survey-2020">survey results</a> (Spring 2020)<br>
+        Check out our current <a href="/blog/javalin-user-survey-2021">survey results</a> (Fall 2021)<br>
         to learn more about how people use Javalin.
     </p>
 </div>
