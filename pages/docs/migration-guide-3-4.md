@@ -197,9 +197,13 @@ using it accidentally. It's been renamed to `_conf` to discourage (mis)use.
 ## WebSocket renaming
 * The `WsHandlerController` class has been renamed to `WsConnection`
 * The `WsHandler` class has been renamed to `WsConfig`
+* The `WsMessageContext#message(Class)` method is now `WsMessageContext#messageAsClass(Class)`
 
 ## App attributes signatures
 The `Javalin#attribute(class, value)` method is now `Javalin#attribute(string, value)`.
 
 ## Default port 8080
 The default port was changed from `7000` to `8080` to conform with other JVM frameworks.
+
+## Context extensions are gone
+The `Context#register` and `Context#use` methods have been removed.
