@@ -1,7 +1,7 @@
 ---
 layout: blogpost
 category: blog
-date: 2018-09-07
+date: 2020-03-20
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 title: Javalin user survey responses, 2020
 summary: We ran a user-survey on https://javalin.io for a couple of months

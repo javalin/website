@@ -68,7 +68,7 @@ public class Chat {
 
     public static void main(String[] args) {
         Javalin app = Javalin.create(config -> {
-            config.addStaticFiles("/public");
+            config.addStaticFiles("/public",  Location.CLASSPATH);
         }).start(HerokuUtil.getHerokuAssignedPort());
 
         app.ws("/chat", ws -> {
@@ -116,7 +116,7 @@ private var nextUserNumber = 1 // Assign to username for next connecting user
 
 fun main(args: Array<String>) {
     Javalin.create {
-        it.addStaticFiles("/public")
+        it.addStaticFiles("/public",  Location.CLASSPATH)
     }.apply {
         ws("/chat") { ws ->
             ws.onConnect { ctx ->

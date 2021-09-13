@@ -50,7 +50,7 @@ public class Main {
     public static void main(String[] args) {
 
         Javalin app = Javalin.create(config -> {
-            config.addStaticFiles("/public");
+            config.addStaticFiles("/public", Location.CLASSPATH);
         }).start(7777);
 
         app.post("/make-reservation", ctx -> {
@@ -77,7 +77,7 @@ val reservations = mutableMapOf<String?, String?>(
 fun main(args: Array<String>) {
 
     val app = Javalin.create {
-        it.addStaticFiles("/public")
+        it.addStaticFiles("/public", Location.CLASSPATH)
     }.start(7777)
 
     app.post("/make-reservation") { ctx ->

@@ -120,7 +120,7 @@ nav {
     }
 
     ul {
-      font-size: 14px;
+      font-size: 90%;
       padding-left: 15px;
 
       a {
@@ -140,14 +140,15 @@ nav {
   }
 }
 
-@media (max-height: 850px) {
+@media (max-height: 820px) {
   .right-menu {
     font-size: 14px;
   }
 }
 
-@media (max-height: 750px) {
+@media (max-height: 720px) {
   .right-menu {
+    font-size: 12px;
     ul a {
       margin: 0;
     }
@@ -156,7 +157,7 @@ nav {
 
 @media (max-height: 650px) {
   .right-menu {
-    font-size: 12px;
+    font-size: 11px;
   }
 }
 
@@ -195,17 +196,36 @@ nav {
   }
 }
 
+@media (max-width: 650px) {
+  nav ul li a {
+    font-size: 17px;
+    padding: 8px 12px;
+  }
+}
+
 @media (max-width: 600px) {
-  a[href="/download"] {
+  nav ul li a {
+    font-size: 16px;
+    padding: 8px;
+  }
+  a[href="/news"] {
     display: none;
   }
 }
 
 @media (max-width: 480px) {
+  nav #logo img {
+    height: 32px;
+    margin-right: 8px;
+  }
   nav ul li a {
     font-size: 16px;
     padding: 8px;
     margin: 0;
+    letter-spacing: -0.5px;
+  }
+  a[href="/community"] {
+    letter-spacing: -1.5px;
   }
   footer {
     display: none;

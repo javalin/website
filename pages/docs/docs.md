@@ -10,15 +10,15 @@ permalink: /documentation
 <div id="spy-nav" class="right-menu" markdown="1">
 * [Getting Started](#getting-started)
 * [HTTP Handlers](#handlers)
-* * [Before](#before-handlers)
-* * [Endpoint](#endpoint-handlers)
-* * [After](#after-handlers)
-* * [Context (ctx)](#context)
+  * [Before](#before-handlers)
+  * [Endpoint](#endpoint-handlers)
+  * [After](#after-handlers)
+  * [Context (ctx)](#context)
 * [WebSockets](#websockets)
-* * [Before](#wsbefore)
-* * [Endpoint](#wsendpoint)
-* * [After](#wsafter)
-* * [Context (ctx)](#wscontext)
+  * [Before](#wsbefore)
+  * [Endpoint](#wsendpoint)
+  * [After](#wsafter)
+  * [Context (ctx)](#wscontext)
 * [Handler groups](#handler-groups)
 * [Validation](#validation)
 * [Access manager](#access-manager)
@@ -27,13 +27,13 @@ permalink: /documentation
 * [Error Mapping](#error-mapping)
 * [Server-sent Events](#server-sent-events)
 * [Configuration](#configuration)
-* * [Static Files](#static-files)
-* * [Single page mode](#single-page-mode)
-* * [Logging](#logging)
-* * [Server setup](#server-setup)
+  * [Static Files](#static-files)
+  * [Single page mode](#single-page-mode)
+  * [Logging](#logging)
+  * [Server setup](#server-setup)
 * [Lifecycle events](#lifecycle-events)
 * [Plugins](#plugins)
-* [Modules](#modules)
+* [Modules](#different-javalin-modules)
 * [FAQ](#faq)
 </div>
 
@@ -41,9 +41,9 @@ permalink: /documentation
 
 The documentation on this page is always for the latest version of Javalin, currently `{{site.javalinversion}}`.
 Javalin follows [semantic versioning](http://semver.org/), meaning there are no breaking
-changes unless the major (leftmost) digit changes, for example `3.X.X` to `4.X.X`.
-Functionality added after `3.0.0` is marked with a label containing the version number,
-ex: <span class="added-in">Added in v3.3.0</span>
+changes unless the major (leftmost) digit changes, for example `4.X.X` to `5.X.X`.
+Functionality added after `4.0.0` is marked with a label containing the version number,
+ex: <span class="added-in">Added in v4.1.0</span>
 
 {% include sponsorOrStar.html %}
 
@@ -61,15 +61,16 @@ Javalin has three main handler types: before-handlers, endpoint-handlers, and af
 The before-, endpoint- and after-handlers require three parts:
 
 * A verb, one of: `before`, `get`, `post`, `put`, `patch`, `delete`, `after` <small>(... `head`, `options`, `trace`, `connect`)</small>
-* A path, ex: `/`, `/hello-world`, `/hello/:name`
-* A handler implementation `ctx -> { ... }`
+* A path, ex: `/`, `/hello-world`, `/hello/{name}`
+* A handler implementation, ex `ctx -> { ... }`, `MyClass implements Handler`, etc
 
-The `Handler` interface has a void return type. You use `ctx.result()` to set the response which will be returned to the user.
+The `Handler` interface has a void return type. You use a method like `ctx.result(result)`,
+`ctx.json(obj)`, or `ctx.future(future)` to set the response which will be returned to the user.
 
-You can learn more about how Javalin handles concurrency in [FAQ - Concurrency](#concurrency).
+You can learn about how Javalin handles concurrency in [FAQ - Concurrency](#concurrency).
 
 ### Before handlers
-Before-handlers are matched before every request (including static files, if you enable those).
+Before-handlers are matched before every request (including static files).
 <div class="comment">You might know before-handlers as filters, interceptors, or middleware from other libraries.</div>
 
 {% capture java %}
@@ -91,27 +92,33 @@ app.before("/path/*") { ctx ->
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ### Endpoint handlers
+Endpoint handlers are the main handler type, and defines your API. You can add a GET handler to
+server data to a client, or a POST handler to receive some data.
+Common methods are supported directly on the `Javalin` class (<small>GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS</small>),
+uncommon operations (<small>TRACE, CONNECT</small>) are supported via `Javalin#addHandler`.
+
 Endpoint-handlers are matched in the order they are defined.
+
 <div class="comment">You might know endpoint-handlers as routes or middleware from other libraries.</div>
 
 {% capture java %}
-app.get("/", ctx -> {
+app.get("/output", ctx -> {
     // some code
     ctx.json(object);
 });
 
-app.post("/", ctx -> {
+app.post("/input", ctx -> {
     // some code
     ctx.status(201);
 });
 {% endcapture %}
 {% capture kotlin %}
-app.get("/") { ctx ->
+app.get("/output") { ctx ->
     // some code
     ctx.json(object)
 }
 
-app.post("/") { ctx ->
+app.post("/input") { ctx ->
     // some code
     ctx.status(201)
 }
@@ -120,30 +127,39 @@ app.post("/") { ctx ->
 
 Handler paths can include path-parameters. These are available via `ctx.pathParam("key")`:
 {% capture java %}
-app.get("/hello/:name", ctx -> {
+app.get("/hello/{name}", ctx -> { // the {} syntax does not allow slashes ('/') as part of the parameter
+    ctx.result("Hello: " + ctx.pathParam("name"));
+});
+app.get("/hello/<name>", ctx -> { // the <> syntax allows slashes ('/') as part of the parameter
     ctx.result("Hello: " + ctx.pathParam("name"));
 });
 {% endcapture %}
 {% capture kotlin %}
-app.get("/hello/:name") { ctx ->
+app.get("/hello/{name}") { ctx -> // the {} syntax does not allow slashes ('/') as part of the parameter
+    ctx.result("Hello: " + ctx.pathParam("name"))
+}
+app.get("/hello/<name>") { ctx -> // the <> syntax allows slashes ('/') as part of the parameter
     ctx.result("Hello: " + ctx.pathParam("name"))
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-Handler-paths can also include wildcard parameters (splats). These are available via `Context.splat()`
+Handler paths can also include wildcard parameters:
 
 {% capture java %}
-app.get("/hello/*/and/*", ctx -> {
+app.get("/path/*", ctx -> { // will match anything starting with /path/
     ctx.result("Hello: " + ctx.splat(0) + " and " + ctx.splat(1));
 });
 {% endcapture %}
 {% capture kotlin %}
-app.get("/hello/*/and/*") { ctx ->
+app.get("/path/*") { ctx -> // will match anything starting with /path/
     ctx.result("Hello: " + ctx.splat(0) + " and " + ctx.splat(1))
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+However, you cannot extract the value of a wildcard.
+Use a slash accepting path-parameter (`<param-name>`) if you need this behavior.
 
 ### After handlers
 After-handlers run after every request (even if an exception occurred)
@@ -170,93 +186,91 @@ app.after("/path/*") { ctx ->
 ### Context
 The `Context` object provides you with everything you need to handle a http-request.
 It contains the underlying servlet-request and servlet-response, and a bunch of getters
-and setters. The getters operate mostly on the request-object, while the setters operate exclusively on
-the response object.
-```java
-ctx.appAttribute(class)                 // get an attribute set on the app
-ctx.register(class, object)             // register an extension on the context
-ctx.use(class)                          // use an extension on the context
-ctx.cookieStore(key)                    // get cookie store value
-ctx.cookieStore(key, value)             // set a cookie store value
-ctx.clearCookieStore()                  // clear the cookie store
-ctx.matchedPath()                       // path that was used to match request (also includes before/after paths)
-ctx.endpointHandlerPath()               // endpoint path that was used to match request (null in before, available in after)
+and setters.
 
+```java
 // Request methods
-ctx.body()                              // get body as string (consumes underlying request body if not cached)
-ctx.bodyAsBytes()                       // get body as bytes (consumes underlying request body if not cached)
-ctx.bodyAsClass(class)                  // get body as class (consumes underlying request body if not cached)
-ctx.bodyValidator(class)                // get typed validator for body (consumes underlying body request if not cached)
-ctx.uploadedFile(name)                  // get uploaded file by name
-ctx.uploadedFiles(name)                 // get uploaded file(s) by name
-ctx.formParam(key)                      // get form parameter
-ctx.formParam(key, default)             // get form parameter (or default value)
-ctx.formParam(key, class)               // get form parameter as class
-ctx.formParam(key, class, default)      // get form parameter (or default value) as class
-ctx.formParams(key)                     // get form parameters (multiple)
-ctx.formParamMap()                      // get form parameter map
-ctx.pathParam(key)                      // get path parameter
-ctx.pathParam(key, class)               // get path as class
-ctx.pathParamMap()                      // get path parameter map
-ctx.splat(0);                           // get splat by index, ex "/*" -> splat(0)
-ctx.splats();                           // get array of splat-values
-ctx.basicAuthCredentials()              // get basic auth credentials (username/pwd)
-ctx.basicAuthCredentialsExist()         // check if proper basic auth credentials exist
-ctx.attribute(key, value)               // set request attribute
-ctx.attribute(key)                      // get request attribute
-ctx.attributeMap()                      // get request attribute map
-ctx.contentLength()                     // get request content length
-ctx.contentType()                       // get request content type
-ctx.cookie(name)                        // get request cookie
-ctx.cookieMap()                         // get request cookie map
-ctx.header(header)                      // get request header
-ctx.headerMap()                         // get request header map
-ctx.host()                              // get request host
-ctx.ip()                                // get request ip address
-ctx.isMultipart()                       // check if request is multipart
-ctx.isMultipartFormData()               // check if request is multipart/form data
-ctx.method()                            // get request method
-ctx.path()                              // get request path
-ctx.port()                              // get request port
-ctx.protocol()                          // get request protocol
-ctx.queryParam(key)                     // get query parameter
-ctx.queryParam(key, default)            // get query parameter (or default value)
-ctx.queryParam(key, class)              // get query parameter as class
-ctx.queryParam(key, class, default)     // get query parameter (or default value) as class
-ctx.queryParams(key)                    // get query parameters (multiple)
-ctx.queryParamMap()                     // get query parameter map
-ctx.queryString()                       // get query string
-ctx.scheme()                            // get request scheme
-ctx.sessionAttribute(key, value)        // set session attribute (server side attribute)
-ctx.sessionAttribute(key)               // get session attribute
-ctx.sessionAttributeMap()               // get attribute map
-ctx.url()                               // get request url
-ctx.fullUrl()                           // get request url + query param
-ctx.contextPath()                       // get request context path
-ctx.userAgent()                         // get request user agent
+body()                                  // request body as string
+bodyAsBytes()                           // request body as array of bytes
+bodyAsInputStream()                     // request body as input stream
+bodyAsClass(clazz)                      // request body as specified class (deserialized from JSON)
+bodyStreamAsClass(clazz)                // request body as specified class (memory optimized version of above)
+bodyValidator(clazz)                    // request body as validator typed as specified class
+uploadedFile("name")                    // uploaded file by name
+uploadedFiles("name")                   // all uploaded files by name
+uploadedFiles()                         // all uploaded files as list
+formParam("name")                       // form parameter by name, as string
+formParamAsClass("name", clazz)         // form parameter by name, as validator typed as specified class
+formParams("name")                      // list of form parameters by name
+formParamMap()                          // map of all form parameters
+pathParam("name")                       // path parameter by name as string
+pathParamAsClass("name", clazz)         // path parameter as validator typed as specified class
+pathParamMap()                          // map of all path parameters
+basicAuthCredentialsExist()             // true if request has basic auth credentials
+basicAuthCredentials()                  // basic auth credentials (if set)
+attribute("name", value)                // set an attribute on the request
+attribute("name")                       // get an attribute on the request
+attributeMap()                          // map of all attributes on the request
+contentLength()                         // content length of the request body
+contentType()                           // request content type
+cookie("name")                          // request cookie by name
+cookieMap()                             // map of all request cookies
+header("name")                          // request header by name (can be used with Header.HEADERNAME)
+headerAsClass("name", clazz)            // request header by name, as validator typed as specified class
+headerMap()                             // map of all request headers
+host()                                  // host as string
+ip()                                    // ip as string
+isMultipart()                           // true if the request is multipart
+isMultipartFormData()                   // true if the request is multipart/formdata
+method()                                // request methods (GET, POST, etc)
+path()                                  // request path
+port()                                  // request port
+protocol()                              // request protocol
+queryParam("name")                      // query param by name as string
+queryParamAsClass("name", clazz)        // query param parameter by name, as validator typed as specified class
+queryParams("name)                      // list of query parameters by name
+queryParamMap()                         // map of all query parameters
+queryString()                           // full query string
+scheme()                                // request scheme
+sessionAttribute("name", value)         // set a session attribute
+sessionAttribute("name")                // get a session attribute
+consumeSessionAttribute("name")         // get a session attribute, and set value to null
+cachedSessionAttribute("name", value)   // get a session attribute, and cache the value as a request attribute
+cachedSessionAttribute("name")          // set a session attribute, and cache the value as a request attribute
+sessionAttributeMap()                   // map of all session attributes
+url()                                   // request url
+fullUrl()                               // request url + query string
+contextPath()                           // request context path
+userAgent()                             // request user agent
 
 // Response methods
-ctx.result(resultString)                // set a string result that will be sent to the client
-ctx.resultString()                      // get the string result that will be sent to the client
-ctx.result(resultStream)                // set a stream result that will be sent to the client
-ctx.result(byteArray)                   // set a byte[] result that will be sent to the client
-ctx.resultStream()                      // get the stream that will be sent to the client
-ctx.result(future)                      // set a future result that will be sent to the client (async)
-ctx.resultFuture()                      // get the future result that will be sent to the client
-ctx.seekableStream(resultStream)        // set a stream that will be sent to the client in byte ranges
-ctx.contentType(contentType)            // set the response content type
-ctx.header(name, value)                 // set a response header
-ctx.redirect(location)                  // send a redirect response to location
-ctx.redirect(location, httpStatusCode)  // send a redirect response to location with status code
-ctx.status(statusCode)                  // set response status
-ctx.status()                            // get response status
-ctx.cookie(name, value)                 // set cookie by name and value
-ctx.cookie(cookie)                      // set cookie
-ctx.removeCookie(name, path)            // remove a cookie
-ctx.html(html)                          // call result(string).contentType("text/html")
-ctx.json(obj)                           // call result(JavalinJson.toJson(obj)).contentType("application/json")
-ctx.json(future)                        // call result(future(JavalinJson.toJson(future))).contentType("application/json")
-ctx.render(filePath, model)             // call html(JavalinRenderer.render(filePath, model)
+result("result")                        // set result stream to specified string (overwrites any previously set result)
+result(byteArray)                       // set result stream to specified byte array (overwrites any previously set result)
+result(inputStream)                     // set result stream to specified input stream (overwrites any previously set result)
+seekableStream(inputStream, "type")     // write content immediately as seekable stream (useful for audio and video)
+resultStream()                          // get current result stream
+resultString()                          // get current result stream as string (if possible), and reset result stream
+future(future, callback)                // set the result to be a future, see async section (overwrites any previously set result)
+resultFuture()                          // get current result future
+contentType("type")                     // set the response content type
+header("name", "value")                 // set response header by name (can be used with Header.HEADERNAME)
+redirect("/path", code)                 // redirect to the given path with the given status code
+status(code)                            // set the response status code
+status()                                // get the response status code
+cookie("name", "value", maxAge)         // set response cookie by name, with value and max-age (optional).
+cookie(cookie)                          // set cookie using servlet Cookie class
+removeCookie("name", "/path")           // removes cookie by name and path (optional)
+json(obj)                               // calls result(jsonString), and also sets content type to json
+jsonStream(obj)                         // calls result(jsonStream), and also sets content type to json
+html("html")                            // calls result(string), and also sets content type to html
+render("/template.tmpl", model)         // calls html(renderedTemplate)
+
+// Other methods
+handlerType()                           // handler type of the current handler (BEFORE, AFTER, GET, etc)
+appAttribute("name")                    // get an attribute on the Javalin instance
+matchedPath()                           // get the path that was used to match this request (ex, "/hello/{name}")
+endpointHandlerPath()                   // get the path of the endpoint handler that was used to match this request
+cookieStore                             // see cookie store section below
 ```
 
 #### Cookie Store
@@ -305,41 +319,18 @@ will be able to retrieve the information that was passed in the `post` to `serve
 
 Please note that cookies have a max-size of 4kb.
 
-#### Context extensions
-Context extensions give Java developers a way of extending the `Context` object.
-
-One of the most popular features of Kotlin is [extension functions](https://kotlinlang.org/docs/reference/extensions.html).
-When working with an object you don't own in Java, you often end up making `MyUtil.action(object, ...)`.
-If you, for example, want to serialize an object and set it as the result on the `Context`, you might do:
-
-```java
-app.get("/", ctx -> MyMapperUtil.serialize(ctx, myMapper, myObject)); // three args, what happens where?
-```
-
-With context extensions you can add custom extensions on the context:
-
-```java
-app.get("/", ctx -> ctx.use(MyMapper.class).serialize(object)); // use MyMapper to serialize object
-```
-
-Context extensions have to be added before you can use them, this would typically be done in the first `before` filter of your app:
-
-```java
-app.before(ctx -> ctx.register(MyMapper.class, new MyMapper(ctx, otherDependency));
-```
-
 ## WebSockets
 
 Javalin has a very intuitive way of handling WebSockets. You declare an endpoint
 with a path and configure the different event handlers in a lambda:
 
 {% capture java %}
-app.ws("/websocket/:path", ws -> {
+app.ws("/websocket/{path}", ws -> {
     ws.onConnect(ctx -> System.out.println("Connected"));
 });
 {% endcapture %}
 {% capture kotlin %}
-app.ws("/websocket/:path") { ws ->
+app.ws("/websocket/{path}") { ws ->
     ws.onConnect { ctx -> println("Connected") }
 }
 {% endcapture %}
@@ -359,7 +350,7 @@ The different flavors of `WsContext` expose different things, for example,
 `WsMessageContext` has the method `.message()` which gives you the message that the client sent.
 The differences between the different contexts is small, and a full overview can be seen in the [WsContext](#wscontext) section.
 
-You can learn more about how Javalin handles WebSocket concurrency in [FAQ - Concurrency](#concurrency).
+You can learn about how Javalin handles WebSocket concurrency in [FAQ - Concurrency](#concurrency).
 
 ### WsBefore
 The `app.wsBefore` adds a handler that runs before a WebSocket handler.
@@ -385,10 +376,10 @@ app.wsBefore("/path/*") { ws ->
 ### WsEndpoint
 A WebSocket endpoint is declared with `app.ws(path, handler)`. WebSocket handlers require unique paths.
 {% capture java %}
-app.ws("/websocket/:path", ws -> {
+app.ws("/websocket/{path}", ws -> {
     ws.onConnect(ctx -> System.out.println("Connected"));
     ws.onMessage(ctx -> {
-        User user = ctx.message(User.class); // convert from json
+        User user = ctx.messageAsClass(User.class); // convert from json
         ctx.send(user); // convert to json and send back
     });
     ws.onBinaryMessage(ctx -> System.out.println("Message"))
@@ -397,10 +388,10 @@ app.ws("/websocket/:path", ws -> {
 });
 {% endcapture %}
 {% capture kotlin %}
-app.ws("/websocket/:path") { ws ->
+app.ws("/websocket/{path}") { ws ->
     ws.onConnect { ctx -> println("Connected") }
     ws.onMessage { ctx ->
-        val user = ctx.message<User>(); // convert from json
+        val user = ctx.messageAsClass<User>(); // convert from json
         ctx.send(user); // convert to json and send back
     }
     ws.onBinaryMessage { ctx -> println("Message") }
@@ -426,7 +417,7 @@ app.wsAfter("/path/*", ws -> {
 app.wsAfter { ws ->
     // runs after all WebSocket requests
 }
-app.wsAfter("/path/:path") { ws ->
+app.wsAfter("/path/*") { ws ->
     // runs after websocket requests to /path/*
 }
 {% endcapture %}
@@ -438,69 +429,73 @@ It contains the underlying websocket session and servlet-request, and convenienc
 messages to the client.
 
 ```java
-ctx.matchedPath()            // get the path used to match this request, ex "/path/:param"
+// Session methods
+send(obj)                               // serialize object to json string and send it to client
+send("message")                         // send string to client
+send(byteBuffer)                        // send bytes to client
 
-ctx.send(object)             // send an object as JSON (string message)
-ctx.send(string)             // send a string message
-ctx.send(byteBuffer)         // send a bytebuffer message
+// Upgrade Context methods (getters)
+matchedPath()                           // get the path that was used to match this request (ex, "/hello/{name}")
+host()                                  // host as string
 
-ctx.queryString()            // get the query string
-ctx.queryParamMap()          // get a map of the query parameters
-ctx.queryParams(key)         // get query parameters by key
-ctx.queryParam(key)          // get query parameter by key
-ctx.queryParam(key, default) // get query parameter (or default value)
-ctx.queryParam(key, class)   // get query parameter as class
+queryParam("name")                      // query param by name as string
+queryParamAsClass("name", clazz)        // query param parameter by name, as validator typed as specified class
+queryParams("name)                      // list of query parameters by name
+queryParamMap()                         // map of all query parameters
+queryString()                           // full query string
 
-ctx.pathParamMap()           // get path parameter map
-ctx.pathParam(key)           // get path parameter
-ctx.pathParam(key, class)    // get path parameter as class
+pathParam("name")                       // path parameter by name as string
+pathParamAsClass("name", clazz)         // path parameter as validator typed as specified class
+pathParamMap()                          // map of all path parameters
 
-ctx.host()                   // get the host
+header("name")                          // request header by name (can be used with Header.HEADERNAME)
+headerAsClass("name", clazz)            // request header by name, as validator typed as specified class
+headerMap()                             // map of all request headers
 
-ctx.header(key)              // get request header
-ctx.headerMap()              // get a map of the request headers
+cookie("name")                          // request cookie by name
+cookieMap()                             // map of all request cookies
 
-ctx.cookie(key)              // get request cookie
-ctx.cookieMap()              // get a map of all request cookies
+attribute("name", value)                // set an attribute on the request
+attribute("name")                       // get an attribute on the request
+attributeMap()                          // map of all attributes on the request
 
-ctx.attribute(key, value)    // set request attribute
-ctx.attribute(key)           // get request attribute
-ctx.attributeMap()           // get a map of request attributes
-
-ctx.sessionAttribute(key)    // get request session attribute (from when WebSocket upgrade was performed)
-ctx.sessionAttributeMap()    // get a map of session attributes (from when WebSocket upgrade was performed)
+sessionAttribute("name")                // get a session attribute
+sessionAttributeMap()                   // map of all session attributes
 ```
 
 ### WsMessageContext
 ```java
-ctx.message() // String (String)
-ctx.message(MyObject.class) // T (T)
+message()                               // receive a string message from the client
+messageAsClass(clazz)                   // deserialize message from client
 ```
 
 ### WsBinaryMessageContext
 ```java
-ctx.data() // Byte[] (Array<Byte>)
-ctx.offset() // int (Int)
-ctx.length() // int (Int)
+data()                                  // receive a byte array of data from the client
+offset()                                // the offset of the data
+length()                                // the length of the data
 ```
 
 ### WsCloseContext
 ```java
-ctx.status() // int (Int)
-ctx.reason() // String or null (String?)
+status()                                // the int status for why connection was closed
+reason()                                // the string reason for why connection was closed
 ```
 
 ### WsErrorContext
 ```java
-ctx.error() // Throwable or null (Throwable?)
+error()                                 // the throwable error that occurred
 ```
 
 ### WsConnectContext
-Doesn't add anything to the base WsContext
+The `WsConnectContext` class doesn't add anything to the base `WsContext`
 
 ## Handler groups
 You can group your endpoints by using the `routes()` and `path()` methods. `routes()` creates
 a temporary static instance of Javalin so you can skip the `app.` prefix before your handlers.
+This is equivalent to calling `ApiBuilder.get(app, ...)`, which translates
+to `app.get(...)`. It is **not** a global singleton that holds any information, so
+you can use this safely in multiple locations and from multiple threads.
 
 You can import all the HTTP methods with `import static io.javalin.apibuilder.ApiBuilder.*`.
 
@@ -509,12 +504,12 @@ app.routes(() -> {
     path("users", () -> {
         get(UserController::getAllUsers);
         post(UserController::createUser);
-        path(":id", () -> {
+        path("{id}", () -> {
             get(UserController::getUser);
             patch(UserController::updateUser);
             delete(UserController::deleteUser);
         });
-        ws("events", userController::webSocketEvents);
+        ws("events", UserController::webSocketEvents);
     });
 });
 {% endcapture %}
@@ -523,7 +518,7 @@ app.routes {
     path("users") {
         get(UserController::getAllUsers)
         post(UserController::createUser)
-        path(":id") {
+        path("{id}") {
             get(UserController::getUser)
             patch(UserController::updateUser)
             delete(UserController::deleteUser)
@@ -542,12 +537,12 @@ The `CrudHandler` is an interface that can be used within a `routes()` call:
 
 {% capture java %}
 app.routes(() -> {
-    crud("users/:user-id", new UserController());
+    crud("users/{user-id}", new UserController());
 });
 {% endcapture %}
 {% capture kotlin %}
 app.routes {
-    crud("users/:user-id", UserController())
+    crud("users/{user-id}", UserController())
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -564,114 +559,143 @@ interface CrudHandler {
 ```
 
 ## Validation
-You can access Javalin's `Validator` class through the query parameter, path parameter, header, and
-body methods. Query parameters and form parameters can be given a default value for the case when a
-parameter is not present. Path parameters and headers cannot have default values.
+You can use Javalin's `Validator` class for query, form, and path parameters, as well as
+headers and the request body:
 
 {% capture java %}
-// Query Parameters
-// example url: /example?exampleId=123&color=blue&size=1&ts=1584647077000
-String color = ctx.queryParam("color"); // blue
-int exampleId = ctx.queryParam("exampleId", Integer.class).get(); // 123
-int size = ctx.queryParam("size", Integer.class).check(i -> i > 4).get(); // exception
-int qty = ctx.queryParam("qty", Integer.class, "12").get(); // uses default value 12
-Instant instant = ctx.queryParam("ts", Instant.class).get();
-
-// Path Parameters
-// example url: /example/:exampleId/:name/:quantity/:timestamp-ms
-String name = ctx.pathParam("name");
-int exampleId = ctx.pathParam("exampleId", Integer.class).get();
-int quantity = ctx.pathParam("quantity", Integer.class).check(i -> i > 4).get();
-Instant instant = ctx.pathParam("timestamp-ms", Instant.class).get();
-
-// Form Parameters
-String color = ctx.formParam("color");
-int exampleId = ctx.formParam("exampleId", Integer.class).get();
-int size = ctx.formParam("size", Integer.class).check(i -> i > 4).get();
-int qty = ctx.formParam("qty", Integer.class, "12").get(); // may default to value 12
-Instant instant = ctx.queryParam("ts", Instant.class).get();
-
-// Headers
-String exampleHeaderStr = ctx.header("Example");
-int version = ctx.header("Version", Integer.class).get();
-int version = ctx.header("Version", Integer.class).check(i -> i > 4).get();
-MyValue myValue = ctx.header("X-My-Header", MyValue.class).get();
-
-// Body Validation
-MyObject myObject = ctx.bodyValidator(MyObject.class).get();
-
+ctx.queryParamAsClass("paramName", MyClass.class)   // creates a Validator<MyClass> for the value of queryParam("paramName")
+ctx.formParamAsClass("paramName", MyClass.class)    // creates a Validator<MyClass> for the value of formParam("paramName")
+ctx.pathParamAsClass("paramName", MyClass.class)    // creates a Validator<MyClass> for the value of pathParam("paramName")
+ctx.headerAsClass("headerName", MyClass.class)      // creates a Validator<MyClass> for the value of header("paramName")
+ctx.bodyValidator(MyClass.class)                    // creates a Validator<MyClass> for the value of body()
 {% endcapture %}
 {% capture kotlin %}
-// Query Parameters
-// example url: /example?exampleId=123&color=blue&size=1&ts=1584647077000
-val color = ctx.queryParam("color") // blue
-val exampleId = ctx.queryParam<Int>("exampleId").get(); // 123
-val size = ctx.queryParam<Int>("size").check({ it > 4 }).get(); // exception
-val qty = ctx.queryParam<Int>("qty", "12").get(); // uses default value 12
-val instant = ctx.queryParam<Instant>("ts").get();
-
-// Path Parameters
-// example url: /example/:exampleId/:name/:quantity/:timestamp-ms
-val name = ctx.pathParam("name")
-val exampleId = ctx.pathParam<Int>("exampleId").get()
-val quantity = ctx.pathParam<Int>("quantity").check({ it > 4 }).get()
-val instant = ctx.pathParam<Instant>("timestamp-ms").get()
-
-// Form Parameters
-val color = ctx.formParam("color");
-val exampleId = ctx.formParam<Int>("exampleId").get();
-val size = ctx.formParam<Int>("size").check(i -> i > 4).get();
-val qty = ctx.formParam<Int>("qty", "12").get(); // may default to value 12
-val instant = ctx.queryParam<Instant>("ts").get();
-
-// Headers
-val exampleHeaderStr = ctx.header("Example");
-val version = ctx.header<Int>("Version").get();
-val version = ctx.header<Int>("Version").check({ it > 4 }).get();
-val myValue = ctx.header<MyValue>("X-My-Header").get();
-
-// Body Validation
-val myObject = ctx.bodyValidator<MyObject>();
-
+ctx.queryParamAsClass<MyClass>("paramName")         // creates a Validator<MyClass> for the value of queryParam("paramName")
+ctx.formParamAsClass<MyClass>("paramName")          // creates a Validator<MyClass> for the value of formParam("paramName")
+ctx.pathParamAsClass<MyClass>("paramName")          // creates a Validator<MyClass> for the value of pathParam("paramName")
+ctx.headerAsClass<MyClass>("headerName")            // creates a Validator<MyClass> for the value of header("paramName")
+ctx.bodyValidator<MyClass>()                        // creates a Validator<MyClass> for the value of body()
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-### Validator Nullability
-If null is a valid value for your parameter, you can use `getOrNull()` instead of `get()`.
+You can also create your own validator manually through
+`Validator.create(clazz, value, fieldName)`.
 
-### Validator Error Collection
-By default when accessing a value that has failed checks it will throw an exception on the first failed check.
-If you instead want to collect all failures (such as to return errors to be displayed on a form) you can
-access them with `errors()` which returns a map where the key is the value being checked (the param value in
-the case of headers, query params and path values) and the value is a list of error messages.
+### Validator API
+```java
+allowNullable()                     // turn the Validator into a NullableValidator (must be called first)
+check(predicate, "error")           // add a check with a ValidationError("error") to the Validator
+check(predicate: validationError)   // add a check with a ValidationError to the Validator (can have args for localization)
+get()                               // return the validated value as the specified type, or throw BadRequestResponse
+getOrDefault()                      // return default-value if value is null, else call get()
+errors()                            // get all the errors of the Validator (as map("fieldName", List<ValidationError>))
+```
 
+### Validation examples
 {% capture java %}
-Validator<String> stringValidator = ctx.queryParam("first_name", String.class)
-    .check(n -> !n.contains("-"), "cannot contain hyphens.")
-    .check(n -> n.length() < 10, "cannot be longer than 10 characters.");
+// VALIDATE A SINGLE QUERY PARAMETER WITH A DEFAULT VALUE /////////////////////////////////////////////
+Integer myValue = ctx.queryParamAsClass("value", Integer.class).getOrDefault(788) // validate value
+ctx.result(value) // return validated value to the client
+// GET ?value=a would yield HTTP 400 - {"my-qp":[{"message":"TYPE_CONVERSION_FAILED","args":{},"value":"a"}]}
+// GET ?value=1 would yield HTTP 200 - 1 (the validated value)
+// GET ?        would yield HTTP 200 - 788 (the default value)
 
-//Empty map if no errors, otherwise a map with the key "first_name" and failed check messages in the list.
-Map<String, List<String>> errors = stringValidator.errors();
 
-// Merges all errors from all validators in the list. Empty map if no errors exist.
-Map<String, List<String>> manyErrors = Validator.collectErrors(stringValidator, otherValidator, etc)
+// VALIDATE TWO DEPENDENT QUERY PARAMETERS ////////////////////////////////////////////////////////////
+Instant fromDate = ctx.queryParamAsClass("from", Instant.class).get();
+Instant toDate = ctx.queryParamAsClass("to", Instant.class)
+    .check(it -> it.isAfter(fromDate), "'to' has to be after 'from'")
+    .get();
+
+
+// VALIDATE A JSON BODY ///////////////////////////////////////////////////////////////////////////////
+MyObject myObject = ctx.bodyValidator(MyObject.class)
+    .check(obj -> obj.myObjectProperty == someValue, "THINGS_MUST_BE_EQUAL")
+    .get();
+
+// VALIDATE WITH CUSTOM VALIDATIONERROR ///////////////////////////////////////////////////////////////
+ctx.queryParamAsClass("param", Integer.class)
+    .check({ it > 5 }, new ValidationError("OVER_LIMIT", Map.of("limit", 5)))
+    .get();
+// GET ?param=10 would yield HTTP 400 - {"param":[{"message":"OVER_LIMIT","args":{"limit":5},"value":10}]}
 {% endcapture %}
 {% capture kotlin %}
-val stringValidator = ctx.queryParam<String>("first_name")
-    .check({ !it.contains("-") }, "cannot contain hyphens.")
-    .check({ it.length < 10 }, "cannot be longer than 10 characters.")
+// VALIDATE A SINGLE QUERY PARAMETER WITH A DEFAULT VALUE /////////////////////////////////////////////
+val myValue = ctx.queryParamAsClass<Int>("value").getOrDefault(788) // validate value
+ctx.result(value) // return validated value to the client
+// GET ?value=a would yield HTTP 400 - {"my-qp":[{"message":"TYPE_CONVERSION_FAILED","args":{},"value":"a"}]}
+// GET ?value=1 would yield HTTP 200 - 1 (the validated value)
+// GET ?        would yield HTTP 200 - 788 (the default value)
 
-//Empty map if no errors, otherwise a map with the key "first_name" and failed check messages in the list.
-val errors = stringValidator.errors()
 
-// Merges all errors from all validators in the list. Empty map if no errors exist.
-val manyErrors = listOf(stringValidator, otherValidator, etc)
+// VALIDATE TWO DEPENDENT QUERY PARAMETERS ////////////////////////////////////////////////////////////
+val fromDate = ctx.queryParamAsClass<Instant>("from").get()
+val toDate = ctx.queryParamAsClass<Instant>("to")
+    .check({ it.isAfter(fromDate) }, "'to' has to be after 'from'")
+    .get()
+
+
+// VALIDATE A JSON BODY ///////////////////////////////////////////////////////////////////////////////
+val myObject = ctx.bodyValidator<MyObject>()
+    .check({ it.myObjectProperty == someValue }, "THINGS_MUST_BE_EQUAL")
+    .get()
+
+// VALIDATE WITH CUSTOM VALIDATIONERROR ///////////////////////////////////////////////////////////////
+ctx.queryParamAsClass<Int>("param")
+    .check({ it > 5 }, ValidationError("OVER_LIMIT", args = mapOf("limit" to 5)))
+    .get()
+// GET ?param=10 would yield HTTP 400 - {"param":[{"message":"OVER_LIMIT","args":{"limit":5},"value":10}]}
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
+### Collecting multiple errors
+{% capture java %}
+Validator<Integer> ageValidator = ctx.queryParamAsClass("age", Integer.class)
+    .check(n -> !n.contains("-"), "ILLEGAL_CHARACTER")
+
+// Empty map if no errors, otherwise a map with the key "age" and failed check messages in the list.
+Map<String, List<Integer>> errors = ageValidator.errors();
+
+// Merges all errors from all validators in the list. Empty map if no errors exist.
+Map<String, List<Object>> manyErrors = Validator.collectErrors(ageValidator, otherValidator, ...)
+{% endcapture %}
+{% capture kotlin %}
+val ageValidator = ctx.queryParamAsClass<Int>("age")
+    .check({ !it.contains("-") }, "ILLEGAL_CHARACTER")
+
+// Empty map if no errors, otherwise a map with the key "age" and failed check messages in the list.
+val errors = ageValidator.errors()
+
+// Merges all errors from all validators in the list. Empty map if no errors exist.
+val manyErrors = listOf(ageValidator, otherValidator, ...)
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+### ValidationException
+When a `Validator` throws, it is mapped by:
+
+```kotlin
+app.exception(ValidationException::class.java) { e, ctx ->
+    ctx.json(e.errors).status(400)
+}
+```
+
+You can override this by doing:
+
+{% capture java %}
+app.exception(ValidationException.class, (e, ctx) -> {
+    // your code
+});
+{% endcapture %}
+{% capture kotlin %}
+app.exception(ValidationException::class.java) { e, ctx ->
+    // your code
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ### Custom converters
-If you need to convert non-included class, you have to register a custom converter:
+If you need to validate a non-included class, you have to register a custom converter:
 
 {% capture java %}
 JavalinValidation.register(Instant.class, v -> Instant.ofEpochMilli(v.toLong());
@@ -681,50 +705,16 @@ JavalinValidation.register(Instant::class.java) { Instant.ofEpochMilli(it.toLong
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-### Validation examples
-{% capture java %}
-// validate two dependent query parameters:
-Instant fromDate = ctx.queryParam("from", Instant.class).get();
-Instant toDate = ctx.queryParam("to", Instant.class)
-        .check(it -> it.isAfter(fromDate), "'to' has to be after 'from'")
-        .get();
-
-// validate a json body:
-MyObject myObject = ctx.bodyValidator(MyObject.class)
-        .check(obj -> obj.myObjectProperty == someValue)
-        .get();
-{% endcapture %}
-{% capture kotlin %}
-// validate two dependent query parameters:
-val fromDate = ctx.queryParam<Instant>("from").get()
-val toDate = ctx.queryParam<Instant>("to")
-        .check({ it.isAfter(fromDate) }, "'to' has to be after 'from'")
-        .get()
-
-// validate a json body:
-val myObject = ctx.bodyValidator<MyObject>()
-        .check({ it.myObjectProperty == someValue })
-        .get()
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
-If any of the validators find errors, a `BadRequestResponse` is thrown:
-
-```java
-"Query parameter 'from' with value 'TEST' is not a valid Instant"
-"Query parameter 'to' with value '1262347000000' invalid - 'to' has to be after 'from'"
-"Request body as MyObject invalid - Check failed" // can set custom error message in check()
-```
-
 ## Access manager
 Javalin has a functional interface `AccessManager`, which let's you
-set per-endpoint authentication and/or authorization. It's common to use before-handlers for this,
-but per-endpoint security handlers give you much more explicit and readable code. You can implement your
-access-manager however you want. Here is an example implementation:
+set per-endpoint authentication and/or authorization. It's also common to use
+before-handlers for this, but enforcing per-endpoint roles give you much more
+explicit and readable code. You can implement your access-manager however you want.
+Below is an example implementation:
 
 {% capture java %}
 // Set the access-manager that Javalin should use
-config.accessManager((handler, ctx, permittedRoles) -> {
+config.accessManager((handler, ctx, routeRoles) -> {
     MyRole userRole = getUserRole(ctx);
     if (permittedRoles.contains(userRole)) {
         handler.handle(ctx);
@@ -734,22 +724,20 @@ config.accessManager((handler, ctx, permittedRoles) -> {
 });
 
 Role getUserRole(Context ctx) {
-    // determine user role based on request
-    // typically done by inspecting headers
+    // determine user role based on request.
+    // typically done by inspecting headers, cookies, or user session
 }
 
-enum MyRole implements Role {
+enum Role implements RouteRole {
     ANYONE, ROLE_ONE, ROLE_TWO, ROLE_THREE;
 }
 
-app.routes(() -> {
-    get("/un-secured",   ctx -> ctx.result("Hello"),   roles(ANYONE));
-    get("/secured",      ctx -> ctx.result("Hello"),   roles(ROLE_ONE));
-});
+app.get("/un-secured",   ctx -> ctx.result("Hello"),   Role.ANYONE);
+app.get("/secured",      ctx -> ctx.result("Hello"),   Role.ROLE_ONE);
 {% endcapture %}
 {% capture kotlin %}
 // Set the access-manager that Javalin should use
-config.accessManager { handler, ctx, permittedRoles ->
+config.accessManager { handler, ctx, routeRoles ->
     val userRole = getUserRole(ctx) // determine user role based on request
     if (permittedRoles.contains(userRole)) {
         handler.handle(ctx)
@@ -759,18 +747,16 @@ config.accessManager { handler, ctx, permittedRoles ->
 }
 
 fun getUserRole(ctx: Context) : Role {
-    // determine user role based on request
-    // typically done by inspecting headers
+    // determine user role based on request.
+    // typically done by inspecting headers, cookies, or user session
 }
 
-internal enum class MyRole : Role {
+enum class Role : RouteRole {
     ANYONE, ROLE_ONE, ROLE_TWO, ROLE_THREE
 }
 
-app.routes {
-    get("/un-secured",   { ctx -> ctx.result("Hello")},   roles(MyRole.ANYONE));
-    get("/secured",      { ctx -> ctx.result("Hello")},   roles(MyRole.ROLE_ONE));
-}
+app.get("/un-secured",   { ctx -> ctx.result("Hello") },   Role.ANYONE);
+app.get("/secured",      { ctx -> ctx.result("Hello") },   Role.ROLE_ONE);
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
@@ -778,11 +764,11 @@ The `AccessManager` will also run before your WebSocket upgrade request
 (if you have added roles to the endpoint), but keep in mind that WebSockets are long lived,
 so it might be wise to perform a check in `wsBefore` too/instead.
 
-If you want to perform less restricted access management, you should consider using a `before` filter.
+If you want to perform less restricted access management,
+you should consider using a `before` filter.
 
 ## Default responses
-
-Javalin comes with a built in class called `HttpResponseException`, which can be used for default responses.\\
+Javalin comes with a built in class called `HttpResponseException`, which can be used for default responses.
 If the client accepts JSON, a JSON object is returned. Otherwise a plain text response is returned.
 
 ```java
@@ -956,150 +942,131 @@ app.sse("/sse") { client ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-The `SseClient` has access to three things:
+### SseClient API
 
 ```java
-client.sendEvent() // method(s) for sending events to client
-client.onClose(runnable) // callback which runs when a client closes its connection
-client.ctx // the Context for when the client connected (to fetch query-params, etc)
+sendEvent("myMessage")                      // calls emit("message", "myMessage", noId)
+sendEvent("eventName", "myMessage")         // calls emit("eventName", "myMessage", noId)
+sendEvent("eventName", "myMessage", "id")   // calls emit("eventName", "myMessage", "id")
+onClose(runnable)                           // callback which runs when a client closes its connection
+ctx                                         // the Context from when the client connected (to fetch query-params, etc)
 ```
 
 ## Configuration
 
 You can pass a config object when creating a new instance of Javalin.
-The below snippets shows all the available config options:
 
 {% capture java %}
 Javalin.create(config -> {
-
-    // JavalinServlet
-    config.addSinglePageRoot(root, file)            // ex ("/", "/index.html")
-    config.addSinglePageRoot(root, file, location)  // ex ("/", "src/file.html", Location.EXTERNAL)
-    config.addStaticFiles(directory)                // ex ("/public")
-    config.addStaticFiles(directory, location)      // ex ("src/folder", Location.EXTERNAL)
-    config.addStaticFiles(prefix, dir, location)    // ex ("/assets", "src/folder", Location.EXTERNAL)
-    config.aliasCheckForStaticFiles = AliasCheck    // symlink config, ex new ContextHandler.ApproveAliases();
-    config.asyncRequestTimeout = timeoutInMs        // timeout for async requests (default is 0, no timeout)
-    config.autogenerateEtags = true/false           // auto generate etags (default is false)
-    config.compressionStrategy(Brotli(4), Gzip(6))  // set the compression strategy and levels - since 3.2.0
-    config.contextPath = contextPath                // context path for the http servlet (default is "/")
-    config.defaultContentType = contentType         // content type to use if no content type is set (default is "text/plain")
-    config.dynamicGzip = true/false                 // dynamically gzip http responses (default is true)
-    config.enableCorsForAllOrigins()                // enable cors for all origins
-    config.enableCorsForOrigin(origins)             // enable cors for specific origins
-    config.enableDevLogging()                       // enable extensive development logging for http and websocket
-    config.enableWebjars()                          // enable webjars (static files)
-    config.enforceSsl = true/false                  // redirect http traffic to https (default is false)
-    config.ignoreTrailingSlashes = true/false       // default is true
-    config.logIfServerNotStarted = true/false       // log a warning if user doesn't start javalin instance (default is true)
-    config.precompressStaticFiles = true/false      // store compressed files in memory (avoid recompression and ensure content-length is set)
-    config.prefer405over404 = true/false            // send a 405 if handlers exist for different verb on the same path (default is false)
-    config.requestCacheSize = sizeInBytes           // set the request cache size, used for reading request body multiple times (default is 4kb)
-    config.requestLogger { ... }                    // set a request logger
-    config.sessionHandler { ... }                   // set a SessionHandler
-
-    // WsServlet
-    config.wsContextPath = contextPath              // context path for the websocket servlet (default is "/")
-    config.wsFactoryConfig { ... }                  // set a websocket factory config
-    config.wsLogger { ... }                         // set a websocket logger
-
-    // Server
-    config.server { ... }                           // set a Jetty server for Javalin to run on
-
-    // Misc
-    config.accessManager { ... }                    // set an access manager (affects both http and websockets)
-    config.showJavalinBanner = true/false           // show the Javalin banner when starting the instance
+    config.addStaticFiles(...)
+    // your config here
 }).start()
 {% endcapture %}
 {% capture kotlin %}
 Javalin.create { config ->
-
-    // JavalinServlet
-    config.addSinglePageRoot(root, file)            // ex ("/", "/index.html")
-    config.addSinglePageRoot(root, file, location)  // ex ("/", "src/file.html", Location.EXTERNAL)
-    config.addStaticFiles(directory)                // ex ("/public")
-    config.addStaticFiles(directory, location)      // ex ("src/folder", Location.EXTERNAL)
-    config.addStaticFiles(prefix, dir, location)    // ex ("/assets", "src/folder", Location.EXTERNAL)
-    config.aliasCheckForStaticFiles = AliasCheck    // symlink config, ex ContextHandler.ApproveAliases();
-    config.asyncRequestTimeout = timeoutInMs        // timeout for async requests (default is 0, no timeout)
-    config.autogenerateEtags = true/false           // auto generate etags (default is false)
-    config.compressionStrategy(Brotli(4), Gzip(6))  // set the compression strategy and levels - since 3.2.0
-    config.contextPath = contextPath                // context path for the http servlet (default is "/")
-    config.defaultContentType = contentType         // content type to use if no content type is set (default is "text/plain")
-    config.dynamicGzip = true/false                 // dynamically gzip http responses (default is true)
-    config.enableCorsForAllOrigins()                // enable cors for all origins
-    config.enableCorsForOrigin(origins)             // enable cors for specific origins
-    config.enableDevLogging()                       // enable extensive development logging for http and websocket
-    config.enableWebjars()                          // enable webjars (static files)
-    config.enforceSsl = true/false                  // redirect http traffic to https (default is false)
-    config.ignoreTrailingSlashes = true/false       // default is true
-    config.logIfServerNotStarted = true/false       // log a warning if user doesn't start javalin instance (default is true)
-    config.precompressStaticFiles = true/false      // store compressed files in memory (avoid recompression and ensure content-length is set)
-    config.prefer405over404 = true/false            // send a 405 if handlers exist for different verb on the same path (default is false)
-    config.requestCacheSize = sizeInBytes           // set the request cache size, used for reading request body multiple times (default is 4kb)
-    config.requestLogger { ... }                    // set a request logger
-    config.sessionHandler { ... }                   // set a SessionHandler
-
-    // WsServlet
-    config.wsContextPath = contextPath              // context path for the websocket servlet (default is "/")
-    config.wsFactoryConfig { ... }                  // set a websocket factory config
-    config.wsLogger { ... }                         // set a websocket logger
-
-    // Server
-    config.server { ... }                           // set a Jetty server for Javalin to run on
-
-    // Misc
-    config.accessManager { ... }                    // set an access manager (affects both http and websockets)
-    config.showJavalinBanner = true/false           // show the Javalin banner when starting the instance
+    config.addStaticFiles(...)
+    // your config here
 }.start()
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
+### Available config options
+
+```java
+// HTTP
+autogenerateEtags = false;                      // generate etags for responses
+prefer405over404 = false;                       // return 405 instead of 404 if path is mapped to different HTTP method
+enforceSsl = false;                             // redirect all http requests to https
+defaultContentType = "text/plain";              // the default content type
+maxRequestSize = 1_000_000L;                    // either increase this or use inputstream to handle large requests
+asyncRequestTimeout = 0L;                       // timeout in milliseconds for async requests (0 means no timeout)
+addSinglePageRoot("/path", "/file")             // fancy 404 handler that returns the specified file for 404s on /path
+addSinglePageRoot("/path", "/file", location)   // fancy 404 handler that returns the specified file for 404s on /path
+addSinglePageHandler("/path", handler)          // fancy 404 handler that runs the specified Handler for 404s on /path
+addStaticFiles("/directory", location)          // add static files in directory at location (Location.CLASSPATH/Location.EXTERNAL)
+addStaticFiles(staticFileConfig)                // add static files by StaticFileConfig, see Static Files section
+enableWebjars()                                 // add static files though webjars
+enableCorsForAllOrigins()                       // enable CORS for all origins
+enableCorsForOrigin("origin1", "origin2", ...)  // enable CORS the specified origins
+enableDevLogging()                              // enable dev logging (extensive debug logging meant for development)
+registerPlugin(myPlugin)                        // register a plugin
+requestLogger((ctx, timeInMs) -> {})            // register a request logger
+
+// WebSocket
+wsFactoryConfig((factory) -> {})                // configure the Jetty WebSocketServletFactory
+wsLogger((ws) -> {})                            // register a WebSocket logger
+
+// Server
+ignoreTrailingSlashes = true;                   // treat '/path' and '/path/' as the same path
+contextPath = "/";                              // the context path (ex '/blog' if you are hosting an app on a subpath, like 'mydomain.com/blog')
+server(() -> Server())                          // set the Jetty Server
+sessionHandler(() -> SessionHandler())          // set the Jetty SessionHandler
+configureServletContextHandler(handler -> {})   // configure the Jetty ServletContextHandler
+jsonMapper(jsonMapper)                          // configure Javalin's JsonMapper
+
+// Misc
+showJavalinBanner = true;                       // show the glorious Javalin banner on startup
+```
+
 ### Static Files
-You can enabled static file serving by doing `config.addStaticFiles("/classpath-folder")`, and/or
-`config.addStaticFiles("/folder", Location.EXTERNAL)`.
-Static resource handling is done **after** endpoint matching,
-meaning your self-defined endpoints have higher priority. The process looks like this:
-```bash
-before-handlers
-endpoint-handlers
-if no-endpoint-handler-found
-    static-file-handler
+You can enabled static file serving by doing `config.addStaticFiles("/diretory", location)`.
+Static resource handling is done **after** endpoint matching, meaning your own
+GET endpoints have higher priority. The process looks like this:
+
+```txt
+run before-handlers
+run endpoint-handlers
+if no endpoint-handler found
+    run static-file-handlers
     if static-file-found
-        static-file-handler send response
+        static-file-handler sends response
     else
         response is 404
-after-handlers
+run after-handlers
 ```
-If you do `config.addStaticFiles("/classpath-folder")`.
-Your `index.html` file at `/classpath-folder/index.html` will be available
-at `http://{host}:{port}/index.html` and `http://{host}:{port}/`.
+
+#### StaticFileConfig
+For more advanced use cases, Javalin has a `StaticFileConfig` class:
+
+{% capture java %}
+Javalin.create(config -> {
+  config.addStaticFiles(staticFiles -> {
+    staticFiles.hostedPath = "/";                   // change to host files on a subpath, like '/assets'
+    staticFiles.directory = "/public";              // the directory where your files are located
+    staticFiles.location = Location.CLASSPATH;      // Location.CLASSPATH (jar) or Location.EXTERNAL (file system)
+    staticFiles.precompress = false;                // if the files should be pre-compressed and cached in memory (optimization)
+    staticFiles.aliasCheck = null;                  // you can configure this to enable symlinks (= ContextHandler.ApproveAliases())
+    staticFiles.headers = Map.of(...);              // headers that will be set for the files
+    staticFiles.skipFileFunction = req -> false;    // you can use this to skip certain files in the dir, based on the HttpServletRequest
+  });
+});
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { config ->
+  config.addStaticFiles { staticFiles ->
+    staticFiles.hostedPath = "/"                    // change to host files on a subpath, like '/assets'
+    staticFiles.directory = "/public"               // the directory where your files are located
+    staticFiles.location = Location.CLASSPATH       // Location.CLASSPATH (jar) or Location.EXTERNAL (file system)
+    staticFiles.precompress = false                 // if the files should be pre-compressed and cached in memory (optimization)
+    staticFiles.aliasCheck = null                   // you can configure this to enable symlinks (= ContextHandler.ApproveAliases())
+    staticFiles.headers = mapOf(...)                // headers that will be set for the files
+    staticFiles.skipFileFunction = { req -> false } // you can use this to skip certain files in the dir, based on the HttpServletRequest
+  }
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 You can call `addStaticFiles` multiple times to set up multiple handlers.
+No configuration is shared between handlers.
 
-WebJars can be enabled by calling `enableWebJars()`, they will be available at `/webjars/name/version/file.ext`.
-
+#### WebJars
+WebJars can be enabled by calling `enableWebJars()`,
+they will be available at `/webjars/name/version/file.ext`.
 WebJars can be found on [https://www.webjars.org/](https://www.webjars.org/).
 Everything available through NPM is also available through WebJars.
 
-#### Path prefix
-As of `3.9.0`, you can call `config.addStaticFiles("/hosting-path", "/dir-path")`, which will make the
-files available on `http://{host}:{port}/hosting-path/...`
-
-#### Caching
-Javalin serves static files with the `Cache-Control` header set to `max-age=0`. This means
-that browsers will always ask if the file is still valid. If the version the browser has in cache
-is the same as the version on the server, Javalin will respond with a `304 Not modified` status,
-and no response body. This tells the browser that it's okay to keep using the cached version.
-If you want to skip this check, you can put files in a dir called `immutable`,
-and Javalin will set `max-age=31622400`, which means that the browser will wait
-one year before checking if the file is still valid.
-This should only be used for versioned library files, like `vue-2.4.2.min.js`, to avoid
-the browser ending up with an outdated version if you change the file content.
-WebJars also use `max-age=31622400`, as the version number is always part of the path.
-
 ### Single page mode
-Single page mode is similar to static file handling. It runs after endpoint matching and after static file handling.
+Single page mode is similar to static file handling. It runs after endpoint matching, and after static file handling.
 It's basically a very fancy 404 mapper, which converts any 404's into a specified page.
 You can define multiple single page handlers for your application by specifying different root paths.
 
@@ -1179,7 +1146,6 @@ app.create { config ->
 The logger runs after the WebSocket handler for the endpoint.
 
 #### Dev logging
-
 {% capture java %}
 app.create(config -> {
     config.enableDevLogging(); // enable extensive development logging for http and websocket
@@ -1339,7 +1305,7 @@ app.stop() // serverStopping -> serverStopped
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ## Plugins
-Javalin 3 introduced a new plugin system with two interfaces, `Plugin` and `PluginLifecycleInit`:
+Javalin's plugin system has two interfaces, `Plugin` and `PluginLifecycleInit`:
 
 ```java
 interface Plugin {
@@ -1378,7 +1344,7 @@ Javalin.create(config ->
 
 ### Micrometer Plugin
 
-You can enable the Micrometer plugin by registering it on the `config`:
+You can enable the Micrometer plugin by registering it on the config:
 
 ```java
 Javalin.create(config ->
@@ -1475,45 +1441,68 @@ Javalin.create(config ->
 )
 ```
 
-### Rate limiting
+## Different Javalin modules
 
-There is a very simple rate-limited included in Javalin `3.7.0` and newer.
-You can call it in the beginning of your endpoint `Handler` functions:
-
-{% capture java %}
-app.get("/", ctx -> {
-    new RateLimit(ctx).requestPerTimeUnit(5, TimeUnit.MINUTES); // throws if rate limit is exceeded
-    ctx.status("Hello, rate-limited World!");
-});
-{% endcapture %}
-{% capture kotlin %}
-app.get("/") { ctx ->
-    RateLimit(ctx).requestPerTimeUnit(5, TimeUnit.MINUTES) // throws if rate limit is exceeded
-    ctx.status("Hello, rate-limited World!")
-}
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
-Every rate limiter is independent (IP and `Handler` based), so different endpoints can have different rate limits. It works as follows:
-
-* A map of maps holds one IP/counter map per method/path combination (`Handler`).
-* On each request the counter for that IP is incremented.
-* If the counter exceeds the number of requests specified, an exception is thrown.
-* All counters are cleared periodically on every timeunit that you specified.
-
-## Modules
-
-As of `3.9.0`, Javalin is a multi-module project. The current modules (for `{{site.javalinversion}}`)  are:
+Javalin is a multi-module project. The current modules (for `{{site.javalinversion}}`)  are:
 
 * `javalin` - the standard Javalin dependency, just as before
 * `javalin-bundle` - `javalin`, `javalin-openapi`, `jackson` and `logback`
 * `javalin-openapi` - the OpenAPI plugin and all required dependencies
+* `javalin-testtools` - tools for easily writing integration tests for Javalin apps
 * `javalin-graphql` - the new GraphQL plugin (thanks to [7agustibm](https://github.com/7agustibm))
 * `javalin-without-jetty` - `javalin` with all `jetty` dependencies excluded
   and Jetty specific methods removed (useful for running on e.g. Tomcat)
 
 ## FAQ
 Frequently asked questions.
+
+### Request lifecycle
+The Javalin request lifecycle is pretty straightforward.
+The following snippet covers every place you can hook into:
+```java
+Javalin#before              // runs first, can throw exception (which will skip any endpoint handlers)
+Javalin#get/post/patch/etc  // runs second, can throw exception
+Javalin#after               // runs third, can throw exception
+Javalin#error               // runs fourth, can throw exception
+Javalin#exception           // runs any time a handler throws (cannot throw exception)
+JavalinConfig#requestLogger // runs after response is written to client
+JavalinConfig#accessManager // wraps all your endpoint handlers in a lambda of your choice
+```
+
+---
+
+### Rate limiting
+There is a very simple rate limiter included in Javalin.
+You can call it in the beginning of your endpoint `Handler` functions:
+
+{% capture java %}
+app.get("/", ctx -> {
+    NaiveRateLimit.requestPerTimeUnit(ctx, 5, TimeUnit.MINUTES); // throws if rate limit is exceeded
+    ctx.status("Hello, rate-limited World!");
+});
+
+// you can overwrite the key-function:
+RateLimitUti.keyFunction = ctx -> // uses (ip+method+endpointPath) by default
+{% endcapture %}
+{% capture kotlin %}
+app.get("/") { ctx ->
+    NaiveRateLimit.requestPerTimeUnit(ctx, 5, TimeUnit.MINUTES) // throws if rate limit is exceeded
+    ctx.status("Hello, rate-limited World!")
+}
+
+// you can overwrite the key-function:
+RateLimitUti.keyFunction = { ctx -> } // uses (ip+method+endpointPath) by default
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+Different endpoints can have different rate limits. It works as follows:
+
+* A map of maps holds counter per key.
+* On each request the counter for that key is incremented.
+* If the counter exceeds the number of requests specified, an exception is thrown.
+* All counters are cleared periodically on every timeunit that you specified.
+
+---
 
 ### Android
 To use Javalin in an Android project, you will need to:
@@ -1601,14 +1590,7 @@ There is also a tutorial on [deploying Javalin to Heroku](/tutorials/heroku).
 <div class="comment"><strong>Ctrl+f</strong>: "without jetty", "tomcat", "standalone", "servlet container", "war".</div>
 
 Javalin is primarily meant to be used with the embedded Jetty server, but if you want to run Javalin
-on another web server (such as Tomcat), you can use the `Javalin.createStandalone()` factory method.
-
-This method will create a Javalin instance, which exposes the `HttpServlet` that
-Javalin uses to handle HTTP requests (via `app.servlet()`). Please note that Javalin's WebSockets
-functionality has a hard dependency on Jetty, and will not work in standalone mode.
-
-Remember to exclude Jetty when setting this up. If you need more instructions, follow the
-[tutorial](https://javalin.io/2018/11/15/javalin-embedded-example.html).
+on another web server (such as Tomcat), you can use the `javalin-without-jetty` artifact.
 
 ---
 
@@ -1641,9 +1623,9 @@ The corresponding HTML might look something like this:
 ---
 
 ### Asynchronous requests
-While the default threadpool (200 threads) is enough for most use cases,
+While the default ThreadPool (200 threads) is enough for most use cases,
 sometimes slow operations should be run asynchronously. Luckily it's very easy in Javalin, just
-pass a `CompletableFuture` to `ctx.result()`:
+pass a `CompletableFuture` to `ctx.future()`:
 
 ```kotlin
 import io.javalin.Javalin
@@ -1664,45 +1646,49 @@ You can only set future results in endpoint handlers (get/post/put/etc).\\
 After-handlers, exception-handlers and error-handlers run like you'd expect them to after
 the future has been resolved or rejected.
 
-#### Async timeout settings
-Jetty has a default timeout of 30 seconds for async requests (this is not related to the `idleTimeout` of a connector).
-If you wait for processes that run for longer than this, you can configure the async request manually by calling `ctx.req.startAsync()`.
-For more information, see [issue 448](https://github.com/tipsy/javalin/issues/448).
+#### Async callbacks
+The `ctx.future()` method's full signature is this:
+
+```kotlin
+@JvmOverloads
+fun future(future: CompletableFuture<*>, callback: Consumer<Any?>? = null): Context {
+    if (!handlerType.isHttpMethod() || inExceptionHandler) {
+        throw IllegalStateException("You can only set CompletableFuture results in endpoint handlers.")
+    }
+    resultStream = null
+    resultFuture = future
+    futureConsumer = callback ?: Consumer { result ->
+        when (result) {
+            is InputStream -> result(result)
+            is String -> result(result)
+            is Any -> json(result)
+        }
+    }
+    return this
+}
+```
+The default behavior is to set the result of the future using `ctx.result()` if it's an `InputStream`
+or a `String`, but to use `ctx.json()` if it's any other Object.
+
+You can provide your own callback to replace the default behavior:
+
+```java
+ctx.future(myFuture, result -> {
+    if (result != null) {
+        ctx.status(200)
+        ctx.json(result)
+    } else {
+        ctx.status(404)
+    }
+});
+```
 
 ---
 
 ### Configuring the JSON mapper
 
-Note that these are global settings, and can't be configured per instance of Javalin.
-
-#### Configuring Jackson
-The JSON mapper uses Jackson by default, which can be configured by calling:
-```java
-JavalinJackson.configure(objectMapper)
-```
-
-#### Using Gson
-Javalin can be configured to use [Gson](https://github.com/google/gson) instead of Jackson. In Java:
-
-```java
-Gson gson = new GsonBuilder().create();
-JavalinJson.setFromJsonMapper(gson::fromJson);
-JavalinJson.setToJsonMapper(gson::toJson);
-```
-
-In Kotlin:
-
-```kotlin
-val gson = GsonBuilder().create()
-
-JavalinJson.fromJsonMapper = object : FromJsonMapper {
-    override fun <T> map(json: String, targetClass: Class<T>) = gson.fromJson(json, targetClass)
-}
-
-JavalinJson.toJsonMapper = object : ToJsonMapper {
-    override fun map(obj: Any): String = gson.toJson(obj)
-}
-```
+To configure the JsonMapper, you need to pass an object which implements the `JsonMapper` interface
+to `config.jsonMapper()`.
 
 ---
 
@@ -1746,6 +1732,14 @@ JavalinJtwig.configure(configuration)
 JavalinPebble.configure(configuration)
 JavalinCommonmark.configure(htmlRenderer, markdownParser)
 ```
+
+If you wish to configure a template engine (for example, to set a root directory for your template files)
+please consult the documentation for that particular template engine. These kinds of settings are not handled
+through Javalin.
+
+If you need to configure settings beyond what's available in `JavalinTemplateEngine.configure`, you
+have to write your own implementation and register it using `JavalinRenderer.register`.
+
 Note that these are global settings, and can't be configured per instance of Javalin.
 
 ---
@@ -1789,70 +1783,15 @@ which you can access:
 To map a path to a Vue component you use the `VueComponent` class:
 
 ```java
-get("/messages", VueComponent("inbox-view"))
-get("/messages/:user", VueComponent("thread-view"))
+get("/messages",        VueComponent("inbox-view"))
+get("/messages/{user}", VueComponent("thread-view"))
 ```
 
 This will give you a lot of the benefits of a modern frontend architecture,
 with very few of the downsides.
 
-There's a tutorial explaining the concepts: [/tutorials/simple-frontends-with-javalin-and-vue](/tutorials/simple-frontends-with-javalin-and-vue)
-
-#### Shared state
-If you want to share state from your server with Vue, you can provide `JavalinVue` with a state function:
-
-```java
-JavalinVue.stateFunction = { ctx -> mapOf("user" to getUser(ctx)) }
-```
-
-This can then be accessed from the `state` variable:
-
-```markup
-<template id="user-template">
-    {% raw %}<div>{{ $javalin.state.user }}</div>{% endraw %}
-</template>
-```
-
-The function runs for every request, so the state is always up to
-date when the user navigates or refreshes the page.
-
-#### Inline files
-You can inline files into your layout template by using the following functions:
-
-```html
-<head>
-    <style>@inlineFile("/vue/styles.css")</style> <!-- always included -->
-    <script>@inlineFileDev("/vue/scripts-dev.js")</script> <!-- only included in dev -->
-    <script>@inlineFileNotDev("/vue/scripts-not-dev.js")</script> <!-- only included in not dev -->
-</head>
-```
-
-#### CDN WebJars
-You can reference your WebJars with `@cdnWebjar/` instead of the normal `/webjars/`.
-If you do this, the path will resolve to `/webjars/` on when `isDevFunction` returns true, and `https//cdn.jsdelivr.net/.../`
-on non-localhost. **Note that this only works with NPM webjars.**
-
-#### Vue directory location
-
-By default, JavalinVue will set the vue root directory based on the first request it serves.
-
-* On localhost, the root dir will be set to the `src/main/resources/vue` (external location)
-* On non-localhost, the root dir will be set to `/vue` (classpath location)
-
-This can cause issues when running a jar locally or in docker. You can override the default dir:
-
-```java
-JavalinVue.rootDirectory(path, location); // String path, String location
-JavalinVue.rootDirectory(path); // java.nio.Path path
-```
-
-#### isDevFunction
-You can override the `JavalinVue.isDevFunction` to let `JavalinVue` know if the environment is develop or not.
-This is used to disable caching on dev to speed up development. The default function returns true if the request is on localhost.
-
-#### Optimize dependencies
-If you set `JavalinVue.optimizeDependencies` to true, `JavalinVue` will only load the required dependencies for your route component.
-This is set to false by default.
+There are more extensive docs at [/plugins/javalinvue](/plugins/javalinvue), and there is
+an in-depth tutorial at [/tutorials/simple-frontends-with-javalin-and-vue](/tutorials/simple-frontends-with-javalin-and-vue).
 
 ---
 
@@ -1863,5 +1802,6 @@ server terminates it. When this happens is decided by the server's `idleTimeout`
 which is 30 seconds by default in Jetty/Javalin. This is not a bug.
 
 ### Documentation for previous versions
+Docs for 3.13.X (last 3.X version) can be found [here](/archive/docs/v3.13.X.html).\\
 Docs for 2.8.0 (last 2.X version) can be found [here](/archive/docs/v2.8.0.html).\\
 Docs for 1.7.0 (last 1.X version) can be found [here](/archive/docs/v1.7.0.html).

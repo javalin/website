@@ -69,7 +69,7 @@ public class Main {
             path("users", () -> {
                 get(UserController::getAll);
                 post(UserController::create);
-                path(":userId", () -> {
+                path("{userId}", () -> {
                     get(UserController::getOne);
                     patch(UserController::update);
                     delete(UserController::delete);
@@ -118,7 +118,7 @@ fun main() {
         path("users") {
             get(UserController::getAll)
             post(UserController::create)
-            path(":userId") {
+            path("{userId}") {
                 get(UserController::getOne)
                 patch(UserController::update)
                 delete(UserController::delete)
@@ -287,8 +287,8 @@ Let's document the `Update user` endpoint, which takes some input and has multip
 
 {% capture java %}
 @OpenApi(
-    path = "/users/:userId",     // only necessary to include when using static method references
-    method = HttpMethod.PATCH,   // only necessary to include when using static method references
+    path = "/users/{userId}",     // only necessary to include when using static method references
+    method = HttpMethod.PATCH,    // only necessary to include when using static method references
     summary = "Update user by ID",
     operationId = "updateUserById",
     pathParams = {@OpenApiParam(name = "userId", type = Integer.class, description = "The user ID")},

@@ -45,17 +45,7 @@ setTimeout(function () {
 if (document.location.pathname.includes("/documentation")) {
     // "Added in" labels
     let addedTags = {
-        "validator-nullability": "3.1.0",
-        "shared-state": "3.2.0",
-        "vue-directory-location": "3.5.0",
-        "redirect-to-lowercase-path-plugin": "3.7.0",
-        "rate-limiting": "3.7.0",
-        "setting-the-host": "3.7.0",
-        "dynamic-single-page-handler": "3.7.0",
-        "cdn-webjars": "3.8.0",
-        "inline-files": "3.11.0",
-        "isdevfunction": "3.11.0",
-        "optimize-dependencies": "3.11.0",
+        // "heading-id": "version",
     };
     Object.keys(addedTags).forEach(key => {
         document.getElementById(key).classList.add("added-parent");
