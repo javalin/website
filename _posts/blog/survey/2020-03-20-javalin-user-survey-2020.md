@@ -221,9 +221,15 @@ We'll run it again next year with the same questions and see if anything changes
         margin-top: 16px;
         display: flex;
         justify-content: space-between;
+        flex-wrap: wrap;
     }
     .chart-flex > * {
         width: calc(50% - 12px);
+    }
+    @media (max-width: 700px) {
+        .chart-flex > * {
+            width: 100%
+        }
     }
     .bar-chart {
         border: 1px solid #ddd;
