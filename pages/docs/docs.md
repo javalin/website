@@ -657,7 +657,7 @@ Validator<Integer> ageValidator = ctx.queryParamAsClass("age", Integer.class)
 Map<String, List<Integer>> errors = ageValidator.errors();
 
 // Merges all errors from all validators in the list. Empty map if no errors exist.
-Map<String, List<Object>> manyErrors = Validator.collectErrors(ageValidator, otherValidator, ...)
+Map<String, List<Object>> manyErrors = JavalinValidation.collectErrors(ageValidator, otherValidator, ...)
 {% endcapture %}
 {% capture kotlin %}
 val ageValidator = ctx.queryParamAsClass<Int>("age")
