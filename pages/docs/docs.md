@@ -586,7 +586,7 @@ You can also create your own validator manually through
 allowNullable()                     // turn the Validator into a NullableValidator (must be called first)
 check(predicate, "error")           // add a check with a ValidationError("error") to the Validator
 check(predicate: validationError)   // add a check with a ValidationError to the Validator (can have args for localization)
-get()                               // return the validated value as the specified type, or throw BadRequestResponse
+get()                               // return the validated value as the specified type, or throw ValidationException
 getOrDefault()                      // return default-value if value is null, else call get()
 errors()                            // get all the errors of the Validator (as map("fieldName", List<ValidationError>))
 ```
