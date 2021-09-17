@@ -182,6 +182,7 @@ val app = Javalin.create { config ->
         <img src="/img/used-by/apexar.png" alt="Apexar">
         <img src="/img/used-by/celer.png" alt="Celer">
         <img src="/img/used-by/essential.png" alt="Essential.gg">
+        <img src="/img/used-by/carilion-clinic.png" alt="Carilion Clinic">
     </div>
     <p>
         Are you using Javalin? <a href="https://github.com/javalin/javalin.github.io/issues/18">Let us know</a>!
