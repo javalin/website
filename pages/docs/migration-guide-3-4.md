@@ -207,3 +207,13 @@ The default port was changed from `7000` to `8080` to conform with other JVM fra
 
 ## Context extensions are gone
 The `Context#register` and `Context#use` methods have been removed.
+
+These methods were intended for Java users who couldn't use Kotlin extension functions.
+You can instead create a class which wraps context:
+
+```java
+void myHandler(Context ctx) {
+    ContextExtensions myExtensions = new ContextExtensions(ctx);
+    myExtensions.methodName();
+});
+```
