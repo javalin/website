@@ -273,6 +273,27 @@ endpointHandlerPath()                   // get the path of the endpoint handler 
 cookieStore                             // see cookie store section below
 ```
 
+#### ContextResolvers
+Some of the methods in `Context` can be configure through the `ContextResolvers` configuration class:
+
+{% capture java %}
+Javalin.create(config -> {
+    config.contextResolvers(resolvers -> {
+        resolvers.ip = ctx -> "custom ip";     // called by Context#ip
+        resolvers.host = ctx -> "custom host"; // called by Context#host
+    });
+});
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { config ->
+    config.contextResolvers { resolvers ->
+        resolvers.ip = { ctx -> "custom ip" }     // called by Context#ip
+        resolvers.host = { ctx -> "custom host" } // called by Context#host
+    }
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
 #### Cookie Store
 
 The `ctx.cookieStore()` functions provide a convenient way for sharing information between handlers, request, or even servers:
