@@ -118,6 +118,11 @@ app.exception(ValidationException::class.java) { e, ctx ->
 }
 ```
 
+## Removed default overloads for queryParam and formParam
+The `ctx.queryParam("key", "default")` and `ctx.formParam("key", "default")` methods have been removed.
+You can use `Validator#getOrDefault()`, or rely on the built in mechanisms for defaults in your language.
+This would mean the `?:` operator in Kotlin, or `Optional#ofNullable` in Java.
+
 ## Reified methods on `Context`
 The reified methods on `Context` and `WsContext` have been renamed from `ctx.queryParam<Int>` to `ctx.queryParamAsClass<Int>("key")`.
 This change was necessary because mocking libraries were confused by the seemingly identical signatures of
@@ -217,3 +222,4 @@ void myHandler(Context ctx) {
     myExtensions.methodName();
 });
 ```
+
