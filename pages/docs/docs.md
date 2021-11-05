@@ -279,16 +279,16 @@ Some of the methods in `Context` can be configured through the `ContextResolvers
 {% capture java %}
 Javalin.create(config -> {
     config.contextResolvers(resolvers -> {
-        resolvers.ip = ctx -> "custom ip";     // called by Context#ip
-        resolvers.host = ctx -> "custom host"; // called by Context#host
+        resolvers.ip = ctx -> "custom ip";     // called by Context#ip()
+        resolvers.host = ctx -> "custom host"; // called by Context#host()
     });
 });
 {% endcapture %}
 {% capture kotlin %}
 Javalin.create { config ->
     config.contextResolvers { resolvers ->
-        resolvers.ip = { ctx -> "custom ip" }     // called by Context#ip
-        resolvers.host = { ctx -> "custom host" } // called by Context#host
+        resolvers.ip = { ctx -> "custom ip" }     // called by Context#ip()
+        resolvers.host = { ctx -> "custom host" } // called by Context#host()
     }
 }
 {% endcapture %}
