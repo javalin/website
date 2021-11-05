@@ -274,7 +274,7 @@ cookieStore                             // see cookie store section below
 ```
 
 #### ContextResolvers
-Some of the methods in `Context` can be configure through the `ContextResolvers` configuration class:
+Some of the methods in `Context` can be configured through the `ContextResolvers` configuration class:
 
 {% capture java %}
 Javalin.create(config -> {
