@@ -258,7 +258,7 @@ redirect("/path", code)                 // redirect to the given path with the g
 status(code)                            // set the response status code
 status()                                // get the response status code
 cookie("name", "value", maxAge)         // set response cookie by name, with value and max-age (optional).
-cookie(cookie)                          // set cookie using servlet Cookie class
+cookie(cookie)                          // set cookie using javalin Cookie class
 removeCookie("name", "/path")           // removes cookie by name and path (optional)
 json(obj)                               // calls result(jsonString), and also sets content type to json
 jsonStream(obj)                         // calls result(jsonStream), and also sets content type to json
