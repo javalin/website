@@ -148,12 +148,12 @@ Handler paths can also include wildcard parameters:
 
 {% capture java %}
 app.get("/path/*", ctx -> { // will match anything starting with /path/
-    ctx.result("Hello: " + ctx.splat(0) + " and " + ctx.splat(1));
+    ctx.result("You are here because " + ctx.path() + " matches " + ctx.matchedPath());
 });
 {% endcapture %}
 {% capture kotlin %}
 app.get("/path/*") { ctx -> // will match anything starting with /path/
-    ctx.result("Hello: " + ctx.splat(0) + " and " + ctx.splat(1))
+    ctx.result("You are here because " + ctx.path() + " matches " + ctx.matchedPath())
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
