@@ -129,34 +129,6 @@ main {
   }
 }
 
-.star-us {
-  overflow: auto;
-  margin: 25px 0 10px;
-
-  > * {
-    height: 35px;
-    line-height: 35px;
-    float: left;
-    margin-right: 10px;
-  }
-}
-
-#starUsShort {
-  font-size: 15px;
-  letter-spacing: -0.5px;
-  font-weight: bold;
-  display: none;
-}
-
-@media (max-width: 700px) {
-  #starUsLong {
-    display: none;
-  }
-  #starUsShort {
-    display: block;
-  }
-}
-
 .post-content blockquote,
 blockquote {
   background: rgba(0, 0, 0, 0.04);
