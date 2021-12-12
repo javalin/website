@@ -19,19 +19,12 @@
     <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
     <link rel="shortcut icon" type="image/png" href="/img/favicon.png">
     <link rel="stylesheet" href="/css/main.css">
-    <noscript><style>
-        :target:before {
-            content: "";
-            display: block;
-            height: 100px;
-        }
-    </style></noscript>
     <style>{% include inlineCss.css %}</style>
 </head>
 <body>
     {% include gtm-body.html %}
     {% include forkMe.html %}
-    <header>
+    <header class="top-nav-header">
         <nav class="width-limit">
             <a id="logo" href="/" aria-label="Javalin">
                 {% if page.splash %}<img src="/img/logo_inv.svg" alt="Javalin">{% else %}<img src="/img/logo.svg" alt="Javalin">{% endif %}

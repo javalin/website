@@ -16,3 +16,7 @@ li code {
 .multitab-code div[data-tab] {
     display: none;
 }
+
+:target {
+    scroll-margin-top: 108px;
+}
