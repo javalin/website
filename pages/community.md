@@ -50,6 +50,8 @@ This page lists all of the places to ask for help or discuss Javalin, in no part
   </div>
 </div>
 
+{% include contributors.html %}
+
 <style>
   .community-box {
     position: relative;
