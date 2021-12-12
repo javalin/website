@@ -6,4 +6,6 @@
 {% include_relative _partials/vendor/smoothscroll.min.js %}
 {% include_relative _partials/vendor/gumshoe.min.js %}
 {% include_relative _partials/tutorials.js %}
+{% include_relative _partials/code.js %}
+{% include_relative _partials/scrolling.js %}
 {% include_relative _partials/main.js %}
