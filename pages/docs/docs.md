@@ -1711,6 +1711,47 @@ ctx.future(myFuture, result -> {
 To configure the JsonMapper, you need to pass an object which implements the `JsonMapper` interface
 to `config.jsonMapper()`.
 
+The `JsonMapper` interface has four optional methods:
+
+```java
+String toJsonString(Object obj) { // basic method for mapping to json
+InputStream toJsonStream(Object obj) { // memory efficient method for mapping to json
+<T> T fromJsonString(String json, Class<T> targetClass) { // basic method for mapping from json
+<T> T fromJsonStream(InputStream json, Class<T> targetClass) { // memory efficient method for mapping from json
+```
+
+#### GSON example
+
+{% capture java %}
+Gson gson = new GsonBuilder().create();
+JsonMapper gsonMapper = new JsonMapper() {
+    @Override
+    public String toJsonString(@NotNull Object obj) {
+        return gson.toJson(obj);
+    }
+    @Override
+    public <T> T fromJsonString(@NotNull String json, @NotNull Class<T> targetClass) {
+        return gson.fromJson(json, targetClass);
+    }
+};
+Javalin app = Javalin.create(config -> config.jsonMapper(gsonMapper)).start(7070);
+{% endcapture %}
+{% capture kotlin %}
+val gson = GsonBuilder().create()
+
+val gsonMapper = object : JsonMapper {
+    override fun <T> fromJsonString(json: String, targetClass: Class<T>): T {
+        return gson.fromJson(json, targetClass)
+    }
+    override fun toJsonString(obj: Any): String {
+        return gson.toJson(obj)
+    }
+}
+
+val app = Javalin.create { it.jsonMapper(gsonMapper) }.start(7070)
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
 ---
 
 ### Adding other Servlets and Filters to Javalin
