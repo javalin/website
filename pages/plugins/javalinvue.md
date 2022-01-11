@@ -299,13 +299,12 @@ and is available in both the template and in the error callback function.
 
 ## Good to know
 
-JavalinVue will also put path-parameters and query-parameters in the Vue instance,
+JavalinVue will also put path-parameters in the Vue instance,
 which you can access like this:
 
 ```html
 <template id="thread-view">
     {% raw %}<div>{{ $javalin.pathParams["user"] }}</div>{% endraw %}
-    {% raw %}<div>{{ $javalin.queryParams["query"][0] }}</div>{% endraw %}
 </template>
 <script>
     Vue.component("thread-view", {
