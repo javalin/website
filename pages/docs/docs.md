@@ -1651,9 +1651,9 @@ pass a `CompletableFuture` to `ctx.future()`:
 ```kotlin
 import io.javalin.Javalin
 
-fun main(args: Array<String>) {
+fun main() {
     val app = Javalin.create().start(7000)
-    app.get("/") { ctx -> ctx.result(getFuture()) }
+    app.get("/") { ctx -> ctx.future(getFuture()) }
 }
 
 // hopefully your future is less pointless than this:
