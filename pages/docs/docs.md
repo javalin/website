@@ -1863,6 +1863,31 @@ this is nothing to worry about. Typically, a browser will keep the HTTP connecti
 server terminates it. When this happens is decided by the server's `idleTimeout` setting,
 which is 30 seconds by default in Jetty/Javalin. This is not a bug.
 
+---
+
+### Minecraft
+<div class="comment">Keywords for ctrl+f: Bukkit, Spigot, BungeeCord, Bungee Cord</div>
+A lot of people use Javalin for Minecraft servers, and they often have issues with Jetty and WebSockets.
+
+#### Relocation
+It's very common to have to [relocate](https://imperceptiblethoughts.com/shadow/configuration/relocation/)
+Jetty in order to use Javalin with different Minecraft servers.
+
+#### Custom classloader
+```java
+ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+Thread.currentThread().setContextClassLoader(RemoteAPI.class.getClassLoader());
+Javalin app = Javalin.create().start(PORT);
+Thread.currentThread().setContextClassLoader(classLoader);
+```
+
+#### Relevant issues
+* [https://github.com/tipsy/javalin/issues/358](https://github.com/tipsy/javalin/issues/358) (with solution)
+* [https://github.com/tipsy/javalin/issues/232](https://github.com/tipsy/javalin/issues/232)
+* [https://github.com/tipsy/javalin/issues/1462](https://github.com/tipsy/javalin/issues/1462)
+
+---
+
 ### Documentation for previous versions
 Docs for 3.13.X (last 3.X version) can be found [here](/archive/docs/v3.13.X.html).\\
 Docs for 2.8.0 (last 2.X version) can be found [here](/archive/docs/v2.8.0.html).\\
