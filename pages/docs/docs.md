@@ -1828,8 +1828,8 @@ This requires you to make a layout template, `src/main/resources/vue/layout.html
 When you put `.vue` files in `src/main/resources/vue`, Javalin will scan
 the folder and register the components in your `<head>` tag.
 
-Javalin will also put path-parameters and query-parameters in the Vue instance,
-which you can access:
+Javalin will also put path-parameters in the Vue instance,
+which you can access like this:
 
 ```markup
 <template id="thread-view">
