@@ -1253,7 +1253,7 @@ private fun fileSessionHandler() = SessionHandler().apply {
 ```
 
 Read more about how to configure sessions in our
-[session tutorial](https://javalin.io/tutorials/jetty-session-handling-kotlin).
+[session tutorial](/tutorials/jetty-session-handling).
 
 #### Custom jetty handlers
 You can configure your embedded jetty-server with a handler-chain
