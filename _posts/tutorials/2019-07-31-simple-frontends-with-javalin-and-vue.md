@@ -71,7 +71,7 @@ We'll also add Vue (view library) for our frontend:
 <div class="comment" markdown="1">
 You can add all frontend dependencies as [Webjars](https://www.webjars.org/), which can be built directly from NPM.
 If something is available on NPM, it's also available as a Webjar, but as a prebuilt dist version (it has no dependencies).
-To view the full POM, please go to [GitHub](https://github.com/tipsy/javalinvue-example/blob/master/pom.xml).
+To view the full POM, please go to [GitHub](https://github.com/tipsy/javalinvue-example/blob/master/javalinvue2-example/pom.xml).
 </div>
 
 Now that we have all our dependencies in order, we need to configure our web server.\\
