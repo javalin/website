@@ -142,15 +142,14 @@ In the unit tests (in the previous section), we mocked the `Context` object and 
 to ensure that `ctx.status(201)` was called inside the `UserController.create(ctx)` `Handler`.
 In functional tests, we just verify that we get the expected output for the provided input.
 The easiest way of writing this type of test in Javalin is to use
-a HTTP library and asserting on the response. We'll use
-[Unirest](https://kong.github.io/unirest-java/)
+the `javalin-testtools` module
 and [AssertJ](https://joel-costigliola.github.io/assertj/):
 
 ```xml
 <dependency>
-    <groupId>com.konghq</groupId>
-    <artifactId>unirest-java</artifactId>
-    <version>3.4.00</version>
+    <groupId>io.javalin</groupId>
+    <artifactId>javalin-testtools</artifactId>
+    <version>{{site.javalinVersion}}</version>
     <scope>test</scope>
 </dependency>
 <dependency>
@@ -164,16 +163,15 @@ and [AssertJ](https://joel-costigliola.github.io/assertj/):
 {% capture java %}
 public class FunctionalTest {
 
-    private JavalinApp app = new JavalinApp(); // inject any dependencies you might have
-    private String usersJson = JavalinJson.toJson(UserController.users);
+    Javalin app = new Application("someDependency").javalinApp(); // inject any dependencies you might have
+    private String usersJson = new JavalinJackson().toJsonString(UserController.users);
 
     @Test
     public void GET_to_fetch_users_returns_list_of_users() {
-        app.start(1234);
-        HttpResponse response = Unirest.get("http://localhost:1234/users").asString();
-        assertThat(response.getStatus()).isEqualTo(200);
-        assertThat(response.getBody()).isEqualTo(usersJson);
-        app.stop();
+        TestUtil.test(app, (server, client) -> {
+            assertThat(client.get("/users").code()).isEqualTo(200);
+            assertThat(client.get("/users").body().string()).isEqualTo(usersJson);
+        });
     }
 
 }
@@ -181,16 +179,13 @@ public class FunctionalTest {
 {% capture kotlin %}
 class FunctionalTest {
 
-    private val app = JavalinApp() // inject any dependencies you might have
-    private val usersJson = JavalinJson.toJson(UserController.users)
+    private val app = Application("someDependency").app // inject any dependencies you might have
+    private val usersJson = JavalinJackson().toJsonString(UserController.users)
 
     @Test
-    fun `GET to fetch users returns list of users`() {
-        app.start(1234)
-        val response: HttpResponse<String> = Unirest.get("http://localhost:1234/users").asString()
-        assertThat(response.status).isEqualTo(200)
-        assertThat(response.body).isEqualTo(usersJson)
-        app.stop()
+    fun `GET to fetch users returns list of users`() = TestUtil.test(app) { server, client ->
+        assertThat(client.get("/users").code).isEqualTo(200)
+        assertThat(client.get("/users").body?.string()).isEqualTo(usersJson)
     }
 
 }
