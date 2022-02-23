@@ -149,7 +149,7 @@ and [AssertJ](https://joel-costigliola.github.io/assertj/):
 <dependency>
     <groupId>io.javalin</groupId>
     <artifactId>javalin-testtools</artifactId>
-    <version>{{site.javalinVersion}}</version>
+    <version>{{site.javalinversion}}</version>
     <scope>test</scope>
 </dependency>
 <dependency>
