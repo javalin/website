@@ -281,6 +281,9 @@ Javalin.create(config -> {
     config.contextResolvers(resolvers -> {
         resolvers.ip = ctx -> "custom ip";     // called by Context#ip()
         resolvers.host = ctx -> "custom host"; // called by Context#host()
+        resolvers.scheme = ctx -> "custom scheme"; // called by Context#scheme()
+        resolvers.url = ctx -> "custom url"; // called by Context#url()
+        resolvers.fullUrl = ctx -> "custom fullUrl"; // called by Context#fullUrl()
     });
 });
 {% endcapture %}
@@ -289,6 +292,9 @@ Javalin.create { config ->
     config.contextResolvers { resolvers ->
         resolvers.ip = { ctx -> "custom ip" }     // called by Context#ip()
         resolvers.host = { ctx -> "custom host" } // called by Context#host()
+        resolvers.scheme = { ctx -> "custom scheme" } // called by Context#scheme()
+        resolvers.url = { ctx -> "custom url" } // called by Context#url()
+        resolvers.fullUrl { = ctx -> "custom fullUrl" } // called by Context#fullUrl()
     }
 }
 {% endcapture %}
