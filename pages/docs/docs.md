@@ -743,7 +743,7 @@ Below is an example implementation:
 // Set the access-manager that Javalin should use
 config.accessManager((handler, ctx, routeRoles) -> {
     MyRole userRole = getUserRole(ctx);
-    if (permittedRoles.contains(userRole)) {
+    if (routeRoles.contains(userRole)) {
         handler.handle(ctx);
     } else {
         ctx.status(401).result("Unauthorized");
@@ -766,7 +766,7 @@ app.get("/secured",      ctx -> ctx.result("Hello"),   Role.ROLE_ONE);
 // Set the access-manager that Javalin should use
 config.accessManager { handler, ctx, routeRoles ->
     val userRole = getUserRole(ctx) // determine user role based on request
-    if (permittedRoles.contains(userRole)) {
+    if (routeRoles.contains(userRole)) {
         handler.handle(ctx)
     } else {
         ctx.status(401).result("Unauthorized")

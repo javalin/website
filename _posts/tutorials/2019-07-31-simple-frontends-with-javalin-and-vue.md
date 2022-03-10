@@ -391,10 +391,10 @@ fun main() {
 
     val app = Javalin.create { config ->
         config.enableWebjars()
-        config.accessManager { handler, ctx, permittedRoles ->
+        config.accessManager { handler, ctx, routeRoles ->
             when {
-                AppRole.ANYONE in permittedRoles -> handler.handle(ctx)
-                AppRole.LOGGED_IN in permittedRoles && anyUsernameProvided(ctx) -> handler.handle(ctx)
+                AppRole.ANYONE in routeRoles -> handler.handle(ctx)
+                AppRole.LOGGED_IN in routeRoles && anyUsernameProvided(ctx) -> handler.handle(ctx)
                 else -> ctx.status(401).header(Header.WWW_AUTHENTICATE, "Basic")
             }
         }
