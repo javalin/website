@@ -15,7 +15,7 @@ language: ["java", "groovy"]
 In this tutorial we will serve protobuf to an application over HTTP (or HTTP2 for performance). \\
 
 Our goal will be to take sensor data from a specific type of machine, serialize that data with protobuf, and then hand that
-off to our frontend via HTTP.
+off to our frontend via a REST API. <i>Disclaimer: protobuf is usually used as part of a gRPC API.</i>
 
 ## What Is Protobuf?
 Protobuf is shorthand for Protocol Buffers. Protocol Buffers are a typed system for serializing data, similar to XML or JSON. 
@@ -39,12 +39,14 @@ dependencies {
 
 ## Other Setup
 This tutorial assumes you will be using the Gradle build tool in order to build your project. Without Gradle you can alternatively
-use the build scripts provided in the sample repository to automate some of the build process.
+use the build scripts provided in the sample repository to automate some of the build process, however these tools aren't
+as feature rich or robust as the Gradle plugin covered here. The Gradle plugin is built and maintained by Google.
 
 To see all of this code in action and skip the tutorial, you can alternatively clone the repository 
 [here.](https://github.com/The-Funk/serving-protobuf-with-javalin)
 
 ## Application Structure
+
 The Javalin application is fairly simple however we will both generate and utilize Protobuf within the same scope of work.
 Some best practices recommend creating a separate directory structure for generated files, in our case we'll keep things 
 simple and store our generated Java classes in a folder under our src directory.    
@@ -104,9 +106,38 @@ In the pojo directory go ahead and create a SensorData class like so...
 Perfect! Now we have a model to represent our SensorData. In this case, we also implemented the Serializable interface
 as a good practice to ensure compatibility with whatever JSON serializer we choose to use in the future. If we were simply 
 sending and retrieving this data, we would have no need to create this intermediary POJO, however for most business use cases, 
-you'll want to create this object despite its redundancy (more on that later).
+you'll want to create this object despite its redundancy. In short, your generated classes will be for sending and receiving
+data only, as extending them can lead to complications when your proto schemas need recompiled.
 
-Now let's add a quick fake DAO object so that we can 
+Now let's pop on over to our DAO directory and add a quick FakeDAO class so that we can emulate data coming from a database
+in the form of a POJO. This is typically how data would come out of a database so it makes sense to represent that here.
+
+{% capture java %}
+
+    package app.model.dao;
+    
+    import app.model.objects.pojo.SensorData;
+    
+    import java.sql.Timestamp;
+    import java.util.List;
+    
+    public class FakeDao {
+    
+        public FakeDao(){}
+    
+        public SensorData getSensorDataFromVehicleDB(){
+            SensorData data = new SensorData();
+            data.setMakeAndModel("DMC, DeLorean");
+            data.setDestinationYear(2035);
+            data.setFluxCapacitorReadings(List.of(37456.3245, 3453.3454, 348765.2343));
+            data.setLastCheckIn(new Timestamp(System.currentTimeMillis()));
+            data.setSafetyBeltsOn(true);
+            return data;
+        }
+    
+    }
+
+{% endcapture %}
 
 ## The .proto File
 
@@ -114,8 +145,7 @@ Now that we have a POJO representation of our SensorData, let's go ahead and cre
 to describe a protocol buffer. After we write our .proto file, we will use it to generate corresponding Java code. Note that you
 could use this same .proto file in your frontend to generate JavaScript or Dart code, etc.
 
-{% capture proto3 %}
-
+```
     syntax = "proto3";
     // The package directive (when generating Java src files) tells protoc where to store the generated Java files
     package app.model.objects.generated;
@@ -126,14 +156,13 @@ could use this same .proto file in your frontend to generate JavaScript or Dart 
     // except enum values (not covered here) which should be SCREAMING_SNAKE_CASE
     
     message SensorData {
-    optional string make_and_model = 1;
-    int32 destination_year = 2;
-    repeated double flux_capacitor_readings = 3;
-    optional google.protobuf.Timestamp last_check_in = 4;
-    bool safety_belts_on = 5;
+        optional string make_and_model = 1;
+        int32 destination_year = 2;
+        repeated double flux_capacitor_readings = 3;
+        optional google.protobuf.Timestamp last_check_in = 4;
+        bool safety_belts_on = 5;
     }
-
-{% endcapture %}
+```
 
 ## Anatomy of a .proto File
 
@@ -241,17 +270,175 @@ serializing and representing an existing class.
 ## Understanding Our First Generated Class
 
 With our build.gradle prepared and our .proto file in place, if we do a build on our project now, we should see a 
-SensorDataOuterClass.java file generated within our generated directory. Congratulations, you've compiled your first protobuf 
-class.
+SensorDataOuterClass.java file generated within our generated directory. Congratulations, you've compiled your first
+Java class from a protobuf definition.
 
 The Java code generated here has a few features we will be utilizing. The first is an inner Builder class, which allows us 
 to build a protobuf object based around our proto schema. The second is a method which in Java is named ```toByteArray()```.
+In other languages (Dart for instance) this same method would be named something like ```toBuffer()```.
 
 We will use the Builder class to build our SensorData object and then use ```toByteArray()``` to prepare our object for 
 transmission using our HTTP API.
 
-## Generating our Sample Data
+## Mapping Our Data
 
+Great! Now all that's left is to create our mapping classes and our Javalin app.
+
+Let's start by creating two mapping classes in the mappers directory. We'll use one for mapping primitive or very basic 
+types that we'll need to reuse frequently, and we'll use one to map the return data for some of our REST endpoints. You
+can make your own pattern for this if you like. For our example, we'll only be returning a single protobuf object, but
+in an actual API you might be returning a multitude of objects and you may need to generate a payload proto and map to
+it accordingly.
+
+Here's our BaseMapper. Note the only utility we've defined is a means to convert a nullable Timestamp from Java format
+to Protobuf format.
+
+{% capture java %}
+
+    package app.model.mappers;
+    
+    import com.google.protobuf.Timestamp;
+    
+    import java.time.Instant;
+    import java.util.Optional;
+    
+    //Class for mapping standard library types, enums, etc to protobuf
+    public class BaseMapper {
+    
+        public static Optional<Timestamp> sqltimeToProtoTime(java.sql.Timestamp sqltime){
+            if(sqltime != null){
+                Instant instant = sqltime.toInstant();
+                return Optional.of(Timestamp.newBuilder().setSeconds(instant.getEpochSecond()).setNanos(instant.getNano()).build());
+            }
+            return Optional.empty();
+        }
+    
+        public static java.sql.Timestamp protoTimetoSQLTime(Timestamp tstamp){
+            return java.sql.Timestamp.from(Instant.ofEpochSecond(tstamp.getSeconds(), tstamp.getNanos()));
+        }
+    
+    }
+
+{% endcapture %}
+
+Great! Now that we have everything we need, let's hop back over to our SensorData.java class for just a moment and add a
+method to convert the POJO into its PROTO equivalent. Take note that we must consider null safety because some of our PROTO
+fields can have null values.
+
+Go ahead and add the following code to the end of the POJO. You'll receive a warning that you need to import your generated
+Java class. Make sure you do that!
+
+{% capture java %}
+
+    public SensorDataOuterClass.SensorData toBuffer() {
+        SensorDataOuterClass.SensorData.Builder builder = SensorDataOuterClass.SensorData.newBuilder();
+
+        // Set all non-nullable values first
+        builder.addAllFluxCapacitorReadings(fluxCapacitorReadings)
+                .setDestinationYear(destinationYear)
+                .setSafetyBeltsOn(safetyBeltsOn);
+
+        // Demonstrates using Java Optional for proto optionals, in this case lastCheckIn is optional in our proto
+        // therefore we should check that lastCheckIn is not null prior to setting the lastCheckIn value on our proto object
+        sqltimeToProtoTime(lastCheckIn).ifPresent(builder::setLastCheckIn);
+
+        // Demonstrates null string check for proto optionals, in this case make and model can be null in our proto
+        // so it can be assumed it could also be null in our datastore, thus we should check before setting it with our builder.
+        if(makeAndModel != null){ builder.setMakeAndModel(makeAndModel); }
+
+        return builder.build();
+    }
+
+{% endcapture %}
+
+In the sample code on GitHub, this toBuffer() method also includes
+
+And here is our RouteMapper, which will handle providing the return data for a GET endpoint in our Javalin app.
+
+{% capture java %}
+
+    package app.model.mappers;
+
+
+    import app.model.objects.pojo.SensorData;
+
+    public class RouteMapper {
+        
+        public static byte[] getSensorDataResponse(SensorData data){
+            return data.toBuffer().toByteArray();
+        }
+
+    }
+
+{% endcapture %}
+
+
+## Create the Javalin App and Endpoints
+
+Lastly, we'll create two endpoints, one which will serve our FakeDao data over protobuf and one that will serve the same
+data over JSON.
+
+We'll call this class MyJavalinRunner and put it in the app directory.
+
+{% capture java %}
+
+    package app;
+    
+    import app.model.dao.FakeDao;
+    import app.model.objects.pojo.SensorData;
+    import io.javalin.Javalin;
+    import io.javalin.core.JavalinConfig;
+    import io.javalin.http.Handler;
+    
+    import static app.model.mappers.RouteMapper.getSensorDataResponse;
+    
+    public class MyJavalinRunner {
+    
+        public static void main(String[] args) {
+    
+            Javalin app = Javalin.create(JavalinConfig::enableCorsForAllOrigins).start();
+    
+            app.get("/pbuf", handleServeProtobuf);
+            app.get("/json", handleServeJSON);
+    
+        }
+    
+        public static Handler handleServeProtobuf = ctx -> {
+            try {
+                // Here's where you'd get your SensorData from your DB or device, etc.
+                FakeDao dao = new FakeDao();
+                SensorData sData = dao.getSensorDataFromVehicleDB();
+    
+                ctx.status(200);
+                ctx.contentType("application/x-protobuf");
+                ctx.result(getSensorDataResponse(sData));
+            }
+            catch(Exception e){
+                e.printStackTrace();
+                ctx.status(500);
+            }
+        };
+    
+        public static Handler handleServeJSON = ctx -> {
+            try {
+                // Here's where you'd get your SensorData from your DB or device, etc.
+                FakeDao dao = new FakeDao();
+                SensorData sData = dao.getSensorDataFromVehicleDB();
+    
+                ctx.status(200);
+                ctx.json(sData);
+            }
+            catch(Exception e){
+                e.printStackTrace();
+                ctx.status(500);
+            }
+        };
+    
+    }
+
+{% endcapture %}
+
+That should done it, go ahead and click RUN!
 
 ## Comparing the JSON and Protobuf Responses
 
@@ -296,3 +483,9 @@ The <i>disadvantages</i> of protobuf are that the data payload is binary and the
 based on schema files (our .proto file in this tutorial), both of which make supporting and debugging code a little harder. 
 Additionally, there are no widely used automatic serialization and deserialization tools for protobuf like there are with JSON. 
 This sort of code must be written manually.
+
+## Thanks for reading!
+
+If you need any additional information or explanations, feel free to reach out on the Javalin Community Discord! \\
+
+Once more, the full source code for this tutorial can be found [on Github.](https://github.com/The-Funk/serving-protobuf-with-javalin)
