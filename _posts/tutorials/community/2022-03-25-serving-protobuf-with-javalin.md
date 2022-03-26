@@ -420,7 +420,7 @@ That's it, you now have a basic understanding of protobuf and how it can be used
 ## Further Exploration
 We now know protobuf is capable of providing a much smaller footprint than regular JSON but here's where things get complicated.
 What if our JSON payloads were compressed? With modern compression like Brotli, it's possible that we could shrink our JSON
-string-based payloads simply and efficiently. \\
+string-based payloads simply and efficiently.
 
 Examining how compression affects response times and payload sizes is outside
 the scope of this tutorial but could be useful in making a decision about how to serialize data in your applications.
