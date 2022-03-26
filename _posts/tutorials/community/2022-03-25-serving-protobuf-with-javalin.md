@@ -30,7 +30,7 @@ We will be using Javalin for our web-server, slf4j for logging, and protobuf for
 ```groovy
 dependencies {
     implementation 'org.slf4j:slf4j-simple:1.8.0-beta4'
-    implementation 'io.javalin:javalin:4.4.0'
+    implementation 'io.javalin:javalin:{{site.javalinversion}}'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2'
     implementation 'com.google.protobuf:protobuf-java:3.19.4'
 }
@@ -62,37 +62,35 @@ represent our sensor data that we wish to read from either a database or the mac
 In the objects directory go ahead and create a SensorData class like so...
 
 ```java
+package app.model.objects;
+ 
+import java.sql.Timestamp;
+import java.util.List;
+ 
+public class SensorData implements Serializable {
 
-    package app.model.objects;
-     
-    import java.sql.Timestamp;
-    import java.util.List;
-     
-    public class SensorData implements Serializable {
-    
-        private String makeAndModel;
-        private int destinationYear;
-        private List<Double> fluxCapacitorReadings;
-        private Timestamp lastCheckIn;
-        private boolean safetyBeltsOn;
-    
-        public String getMakeAndModel() { return makeAndModel; }
-        public void setMakeAndModel(String makeAndModel) { this.makeAndModel = makeAndModel; }
-    
-        public List<Double> getFluxCapacitorReadings() { return fluxCapacitorReadings; }
-        public void setFluxCapacitorReadings(List<Double> fluxCapacitorReadings) { this.fluxCapacitorReadings = fluxCapacitorReadings; }
-    
-        public int getDestinationYear() { return destinationYear; }
-        public void setDestinationYear(int destinationYear) { this.destinationYear = destinationYear; }
-    
-        public Timestamp getLastCheckIn() { return lastCheckIn; }
-        public void setLastCheckIn(Timestamp lastCheckIn) { this.lastCheckIn = lastCheckIn; }
-    
-        public boolean isSafetyBeltsOn() { return safetyBeltsOn; }
-        public void setSafetyBeltsOn(boolean safetyBeltsOn) { this.safetyBeltsOn = safetyBeltsOn; }
-    
-    }
+    private String makeAndModel;
+    private int destinationYear;
+    private List<Double> fluxCapacitorReadings;
+    private Timestamp lastCheckIn;
+    private boolean safetyBeltsOn;
 
+    public String getMakeAndModel() { return makeAndModel; }
+    public void setMakeAndModel(String makeAndModel) { this.makeAndModel = makeAndModel; }
+
+    public List<Double> getFluxCapacitorReadings() { return fluxCapacitorReadings; }
+    public void setFluxCapacitorReadings(List<Double> fluxCapacitorReadings) { this.fluxCapacitorReadings = fluxCapacitorReadings; }
+
+    public int getDestinationYear() { return destinationYear; }
+    public void setDestinationYear(int destinationYear) { this.destinationYear = destinationYear; }
+
+    public Timestamp getLastCheckIn() { return lastCheckIn; }
+    public void setLastCheckIn(Timestamp lastCheckIn) { this.lastCheckIn = lastCheckIn; }
+
+    public boolean isSafetyBeltsOn() { return safetyBeltsOn; }
+    public void setSafetyBeltsOn(boolean safetyBeltsOn) { this.safetyBeltsOn = safetyBeltsOn; }
+
+}
 ```
 
 Perfect! Now we have a model to represent our SensorData. In this case, we also implemented the Serializable interface
@@ -102,54 +100,52 @@ Now let's pop on over to our DAO directory and add a quick FakeDAO class so that
 in the form of a POJO. This is typically how data would be mapped from a database, so we'll represent that here.
 
 ```java
+package app.model.dao;
 
-    package app.model.dao;
-    
-    import app.model.objects.SensorData;
-    
-    import java.sql.Timestamp;
-    import java.util.List;
-    
-    public class FakeDao {
-    
-        public FakeDao(){}
-    
-        public SensorData getSensorDataFromVehicleDB(){
-            SensorData data = new SensorData();
-            data.setMakeAndModel("DMC, DeLorean");
-            data.setDestinationYear(2035);
-            data.setFluxCapacitorReadings(List.of(37456.3245, 3453.3454, 348765.2343));
-            data.setLastCheckIn(new Timestamp(System.currentTimeMillis()));
-            data.setSafetyBeltsOn(true);
-            return data;
-        }
-    
+import app.model.objects.SensorData;
+
+import java.sql.Timestamp;
+import java.util.List;
+
+public class FakeDao {
+
+    public FakeDao(){}
+
+    public SensorData getSensorDataFromVehicleDB(){
+        SensorData data = new SensorData();
+        data.setMakeAndModel("DMC, DeLorean");
+        data.setDestinationYear(2035);
+        data.setFluxCapacitorReadings(List.of(37456.3245, 3453.3454, 348765.2343));
+        data.setLastCheckIn(new Timestamp(System.currentTimeMillis()));
+        data.setSafetyBeltsOn(true);
+        return data;
     }
 
+}
 ```
 
 ## The .proto File
 Now that we have a POJO representation of our SensorData, let's go ahead and create our first .proto file. Proto files are used
 to describe a protocol buffer. After we write our .proto file, we will use it to generate corresponding Java code. Note that you
-could use this same .proto file in your frontend to generate JavaScript or Dart code, etc.
+could use this same .proto file in your frontend to generate [JavaScript or Dart code, etc.](https://developers.google.com/protocol-buffers/docs/tutorials)
 
-```
-    syntax = "proto3";
-    // The package directive (when generating Java src files) tells protoc where to store the generated Java files
-    package protos;
-    
-    import "google/protobuf/timestamp.proto";
-    
-    // proto standard says field names should be lower_snake_case
-    // except enum values (not covered here) which should be SCREAMING_SNAKE_CASE
-    
-    message SensorData {
-        optional string make_and_model = 1;
-        int32 destination_year = 2;
-        repeated double flux_capacitor_readings = 3;
-        optional google.protobuf.Timestamp last_check_in = 4;
-        bool safety_belts_on = 5;
-    }
+```protobuf
+syntax = "proto3";
+// The package directive (when generating Java src files) tells protoc where to store the generated Java files
+package protos;
+
+import "google/protobuf/timestamp.proto";
+
+// proto standard says field names should be lower_snake_case
+// except enum values (not covered here) which should be SCREAMING_SNAKE_CASE
+
+message SensorData {
+    optional string make_and_model = 1;
+    int32 destination_year = 2;
+    repeated double flux_capacitor_readings = 3;
+    optional google.protobuf.Timestamp last_check_in = 4;
+    bool safety_belts_on = 5;
+}
 ```
 
 ## Anatomy of a .proto File
@@ -196,7 +192,7 @@ repositories {
 
 dependencies {
     implementation 'org.slf4j:slf4j-simple:1.8.0-beta4'
-    implementation 'io.javalin:javalin:4.3.0'
+    implementation 'io.javalin:javalin:{{site.javalinversion}}'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2'
     implementation 'com.google.protobuf:protobuf-java:3.19.4'
 }
@@ -266,31 +262,29 @@ Here's our BaseMapper. Note the only utility we've defined is a means to convert
 to Protobuf format. Alternatively we could extend java.sql.Timestamp and provide a ```toByteArray()``` method of our own.
 
 ```java
+package app.model.mappers;
 
-    package app.model.mappers;
-    
-    import com.google.protobuf.Timestamp;
-    
-    import java.time.Instant;
-    import java.util.Optional;
-    
-    //Class for mapping standard library types, enums, etc to protobuf
-    public class BaseMapper {
-    
-        public static Optional<Timestamp> sqltimeToProtoTime(java.sql.Timestamp sqltime){
-            if(sqltime != null){
-                Instant instant = sqltime.toInstant();
-                return Optional.of(Timestamp.newBuilder().setSeconds(instant.getEpochSecond()).setNanos(instant.getNano()).build());
-            }
-            return Optional.empty();
+import com.google.protobuf.Timestamp;
+
+import java.time.Instant;
+import java.util.Optional;
+
+//Class for mapping standard library types, enums, etc to protobuf
+public class BaseMapper {
+
+    public static Optional<Timestamp> sqltimeToProtoTime(java.sql.Timestamp sqltime){
+        if(sqltime != null){
+            Instant instant = sqltime.toInstant();
+            return Optional.of(Timestamp.newBuilder().setSeconds(instant.getEpochSecond()).setNanos(instant.getNano()).build());
         }
-    
-        public static java.sql.Timestamp protoTimetoSQLTime(Timestamp tstamp){
-            return java.sql.Timestamp.from(Instant.ofEpochSecond(tstamp.getSeconds(), tstamp.getNanos()));
-        }
-    
+        return Optional.empty();
     }
 
+    public static java.sql.Timestamp protoTimetoSQLTime(Timestamp tstamp){
+        return java.sql.Timestamp.from(Instant.ofEpochSecond(tstamp.getSeconds(), tstamp.getNanos()));
+    }
+
+}
 ```
 
 Great! Now that we have everything we need, let's hop back over to our SensorData.java class for just a moment and add a
@@ -301,26 +295,24 @@ Go ahead and add the following code to the end of the POJO. You'll receive a war
 Java class and the SQL timestamp method we just defined. Make sure you do that!
 
 ```java
+public SensorDataOuterClass.SensorData toBuffer() {
+    SensorDataOuterClass.SensorData.Builder builder = SensorDataOuterClass.SensorData.newBuilder();
 
-    public SensorDataOuterClass.SensorData toBuffer() {
-        SensorDataOuterClass.SensorData.Builder builder = SensorDataOuterClass.SensorData.newBuilder();
+    // Set all non-nullable values first
+    builder.addAllFluxCapacitorReadings(fluxCapacitorReadings)
+            .setDestinationYear(destinationYear)
+            .setSafetyBeltsOn(safetyBeltsOn);
 
-        // Set all non-nullable values first
-        builder.addAllFluxCapacitorReadings(fluxCapacitorReadings)
-                .setDestinationYear(destinationYear)
-                .setSafetyBeltsOn(safetyBeltsOn);
+    // Demonstrates using Java Optional for proto optionals, in this case lastCheckIn is optional in our proto
+    // therefore we should check that lastCheckIn is not null prior to setting the lastCheckIn value on our proto object
+    sqltimeToProtoTime(lastCheckIn).ifPresent(builder::setLastCheckIn);
 
-        // Demonstrates using Java Optional for proto optionals, in this case lastCheckIn is optional in our proto
-        // therefore we should check that lastCheckIn is not null prior to setting the lastCheckIn value on our proto object
-        sqltimeToProtoTime(lastCheckIn).ifPresent(builder::setLastCheckIn);
+    // Demonstrates null string check for proto optionals, in this case make and model can be null in our proto
+    // so it can be assumed it could also be null in our datastore, thus we should check before setting it with our builder.
+    if(makeAndModel != null){ builder.setMakeAndModel(makeAndModel); }
 
-        // Demonstrates null string check for proto optionals, in this case make and model can be null in our proto
-        // so it can be assumed it could also be null in our datastore, thus we should check before setting it with our builder.
-        if(makeAndModel != null){ builder.setMakeAndModel(makeAndModel); }
-
-        return builder.build();
-    }
-
+    return builder.build();
+}
 ```
 
 Note: In the sample code on GitHub, this toBuffer() method is declared in an interface and all of our POJO's implement this interface.
@@ -328,20 +320,18 @@ Note: In the sample code on GitHub, this toBuffer() method is declared in an int
 And here is our RouteMapper, which will handle providing the return data for a GET endpoint in our Javalin app.
 
 ```java
+package app.model.mappers;
 
-    package app.model.mappers;
 
+import app.model.objects.SensorData;
 
-    import app.model.objects.SensorData;
-
-    public class RouteMapper {
-        
-        public static byte[] getSensorDataResponse(SensorData data){
-            return data.toBuffer().toByteArray();
-        }
-
+public class RouteMapper {
+    
+    public static byte[] getSensorDataResponse(SensorData data){
+        return data.toBuffer().toByteArray();
     }
 
+}
 ```
 
 
@@ -352,54 +342,52 @@ data over JSON.
 We'll call this class MyJavalinRunner and put it in the app directory.
 
 ```java
+package app;
 
-    package app;
-    
-    import app.model.dao.FakeDao;
-    import app.model.objects.SensorData;
-    import io.javalin.Javalin;
-    import io.javalin.core.JavalinConfig;
-    import io.javalin.http.Handler;
-    
-    import static app.model.mappers.RouteMapper.getSensorDataResponse;
+import app.model.dao.FakeDao;
+import app.model.objects.SensorData;
+import io.javalin.Javalin;
+import io.javalin.core.JavalinConfig;
+import io.javalin.http.Handler;
 
-    public class MyJavalinRunner {
-    
-        public static void main(String[] args) {
-    
-            Javalin app = Javalin.create(JavalinConfig::enableCorsForAllOrigins).start();
-    
-            app.get("/pbuf", handleServeProtobuf);
-            app.get("/json", handleServeJSON);
-    
-            app.exception(Exception.class, (e, ctx) -> {
-                e.printStackTrace();
-                ctx.status(500);
-            });
-    
-        }
-    
-        public static Handler handleServeProtobuf = ctx -> {
-            // Here's where you'd get your SensorData from your DB or device, etc.
-            FakeDao dao = new FakeDao();
-            SensorData sData = dao.getSensorDataFromVehicleDB();
-    
-            ctx.status(200);
-            ctx.contentType("application/x-protobuf");
-            ctx.result(getSensorDataResponse(sData));
-        };
-    
-        public static Handler handleServeJSON = ctx -> {
-            // Here's where you'd get your SensorData from your DB or device, etc.
-            FakeDao dao = new FakeDao();
-            SensorData sData = dao.getSensorDataFromVehicleDB();
-    
-            ctx.status(200);
-            ctx.json(sData);
-        };
-    
+import static app.model.mappers.RouteMapper.getSensorDataResponse;
+
+public class MyJavalinRunner {
+
+    public static void main(String[] args) {
+
+        Javalin app = Javalin.create(JavalinConfig::enableCorsForAllOrigins).start();
+
+        app.get("/pbuf", handleServeProtobuf);
+        app.get("/json", handleServeJSON);
+
+        app.exception(Exception.class, (e, ctx) -> {
+            e.printStackTrace();
+            ctx.status(500);
+        });
+
     }
 
+    public static Handler handleServeProtobuf = ctx -> {
+        // Here's where you'd get your SensorData from your DB or device, etc.
+        FakeDao dao = new FakeDao();
+        SensorData sData = dao.getSensorDataFromVehicleDB();
+
+        ctx.status(200);
+        ctx.contentType("application/x-protobuf");
+        ctx.result(getSensorDataResponse(sData));
+    };
+
+    public static Handler handleServeJSON = ctx -> {
+        // Here's where you'd get your SensorData from your DB or device, etc.
+        FakeDao dao = new FakeDao();
+        SensorData sData = dao.getSensorDataFromVehicleDB();
+
+        ctx.status(200);
+        ctx.json(sData);
+    };
+
+}
 ```
 
 That should do it, go ahead and click RUN!
