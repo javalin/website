@@ -31,8 +31,8 @@ We will be using Javalin for our web-server, slf4j for logging, and protobuf for
 ```groovy
 dependencies {
     implementation 'org.slf4j:slf4j-simple:1.8.0-beta4'
-    implementation 'io.javalin:javalin:4.3.0'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
+    implementation 'io.javalin:javalin:4.4.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2'
     implementation 'com.google.protobuf:protobuf-java:3.19.4'
 }
 ```
@@ -48,34 +48,29 @@ To see all of this code in action and skip the tutorial, you can alternatively c
 ## Application Structure
 
 The Javalin application is fairly simple however we will both generate and utilize Protobuf within the same scope of work.
-Some best practices recommend creating a separate directory structure for generated files, in our case we'll keep things 
-simple and store our generated Java classes in a folder under our src directory.    
+Some best practices recommend creating a separate directory structure for generated files. When working in my IDE I noticed
+that by keeping the files separate, I could mark the "gen" folder as a "generated sources root", which prompts the IDE
+to warn you if you are editing a file that could be potentially regenerated at a later time.
 
 Let's start by building our project structure. Here's a quick directory tree. Go ahead and add these directories under 'src'
 in your project.
 
 ![directory tree](../../../img/posts/protobufExample/directory-tree.png)
 
-Take note that the "model" subdirectory contains the majority of the files used in this example. This is because this 
-tutorial focuses on the model portion of the MVC design pattern, specifically we want to serialize data with protobuf. 
-How you choose to implement your control and view code is entirely up to you.
-
 ## The Data
 
 Now that we have our directory structure, let's dive right in and create our first plain ole' Java object (POJO). This will
 represent our sensor data that we wish to read from either a database or the machinery itself.
 
-In the pojo directory go ahead and create a SensorData class like so...
+In the objects directory go ahead and create a SensorData class like so...
 
 {% capture java %}
 
-    package app.model.objects.pojo;
+    package app.model.objects;
      
     import java.sql.Timestamp;
     import java.util.List;
-    
-    import static app.model.mappers.BaseMapper.sqltimeToProtoTime;
-    
+     
     public class SensorData implements Serializable {
     
         private String makeAndModel;
