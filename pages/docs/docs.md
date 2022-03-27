@@ -1872,20 +1872,37 @@ which is 30 seconds by default in Jetty/Javalin. This is not a bug.
 ---
 
 ### Minecraft
-<div class="comment">Keywords for ctrl+f: Bukkit, Spigot, BungeeCord, Bungee Cord</div>
+<div class="comment">Keywords for ctrl+f: Bukkit, Spigot, BungeeCord, Bungee Cord, WaterFall, Water Fall</div>
+
 A lot of people use Javalin for Minecraft servers, and they often have issues with Jetty and WebSockets.
 
 #### Relocation
-It's very common to have to [relocate](https://imperceptiblethoughts.com/shadow/configuration/relocation/)
-Jetty in order to use Javalin with different Minecraft servers.
+Use [relocate](https://imperceptiblethoughts.com/shadow/configuration/relocation/) is not required, but it can easily conflict with other plugin dependencies. 
+If this is a publicly released plugin, this step is recommended to make Javalin work on a different Minecraft Server.
+
+Usually jetty causes the conflict, you can add gradle script to `build.gradle` following after adding the `shadow-jar` gradle plugin:
+
+```groovy
+shadowJar {
+    relocate 'org.eclipse.jetty', 'shadow.org.eclipse.jetty'
+}
+```
 
 #### Custom classloader
+If you encounter some dependency missing errors such as `java.lang.NoClassDefFoundError` and `java.lang.ClassNotFoundException`, try to solve it by:
+
 ```java
 ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 Thread.currentThread().setContextClassLoader(RemoteAPI.class.getClassLoader());
 Javalin app = Javalin.create().start(PORT);
 Thread.currentThread().setContextClassLoader(classLoader);
 ```
+
+RemoteAPI can usually use the class loader of the main class of the plugin.
+On Bukkit and Spigot it is a class extends `org.bukkit.plugin.java#JavaPlugin`, on BungeeCord and WaterFall it is a class extends `net.md_5.bungee.api.plugin#Plugin`.
+Get it via `{your plugin's main class}.class.getClassLoader()` .
+
+After switching the class loader, you may still receive a missing dependency error from Javalin. You only need to add the corresponding dependency as prompted in the Javalin log.
 
 #### Relevant issues
 * [https://github.com/tipsy/javalin/issues/358](https://github.com/tipsy/javalin/issues/358) (with solution)
