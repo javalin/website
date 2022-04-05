@@ -3,24 +3,24 @@ layout: tutorial
 official: false
 title: Javalin in Minecraft
 permalink: /tutorials/javalin-in-minecraft
-summarytitle: Use Javalin in Bukkit Spigot Paper Bungeecord and Waterfall !
-summary: Learn how to make Javalin work in bukkit / spigot / paper  / bungeecord waterfall.
+summarytitle: Using Javalin with Bukkit, Spigot, Paper, BungeeCord, or Waterfall !
+summary: Learn how to make Javalin work with most modern Minecraft servers.
 date: 2022-04-01
 author: <a href="https://github.com/hanbings" target="_blank">hanbings</a>
 language: ["java"]
-github: https://github.com/hanbings/javalin-in-minecraft-example
+github: https://github.com/javalin/javalin-in-minecraft-example
 ---
 
-## Here
+## Introduction
 
 Libraries like Javalin do not work properly due to the interference of custom class loaders of plugins or mods. This tutorial will provide a solution for switching class loaders and using Spigot's dependency manager or Gradle Shadow's dependency packaging plan.
 
 The tutorial assumes you will create a basic Gradle and have some understanding of creating a Bukkit and Bungeecord plugin. If you don't know, you can click the link to see [Gradle](https://gradle.org/), [Spigot](https://www.spigotmc.org/wiki/spigot-plugin-development/), [Bungeecord](https://www.spigotmc.org/wiki/bungeecord-plugin-development/).
 
-Someone else had provided the same solution before this tutorial, but it was not organized into a tutorial, this tutorial refers to their article, thank them!
+Someone else had provided the same solution before this tutorial, but it was not organized into a tutorial, this tutorial refers to their article, thank them !
 
 Here are the relevant links:
-[Using Javalin in a Spigot or Bungeecord Plugin](https://gist.github.com/RezzedUp/d7957af10bfbfc6837ae1a4b55975f40)
+[Using Javalin in a Spigot or Bungeecord Plugin](https://gist.github.com/tipsy/5f793c8ce76272fa3630ba71f2001fab)
 
 ## Bukkit / Spigot / Paper
 
@@ -121,11 +121,11 @@ public class JavalinPlugin extends JavaPlugin {
 
 After instantiating Javalin, use `setContextClassLoader(classLoader)` to reset the context class loader to the default class loader.
 
-Wait, don't go! One more step to finish ! :D
+Wait, don't go ! One more step to finish ! :D
 
 ## Use Gradle Shadow for packaging.
 
-You also need to package Javalin into the plugin and handle possible dependency conflicts, this method **works for all versions of Bukk it and BungeeCord**.
+You also need to package Javalin into the plugin and handle possible dependency conflicts, this method **works for all versions of Bukkit and BungeeCord**.
 
 Add the statement to the Gradle configuration file build.gradle.
 
@@ -154,7 +154,7 @@ For more information on the Gradle Shadow plugin see https://imperceptiblethough
 
 **This method only works with Spigot / Paper plugins higher than 1.17.**
 
-**No need** to change buuld.gradle , just add in plugin description file plugin.yml .
+**No need** to change build.gradle , just add in plugin description file plugin.yml .
 
 ```yaml
 libraries:
