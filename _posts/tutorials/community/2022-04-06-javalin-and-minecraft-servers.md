@@ -5,7 +5,7 @@ title: Javalin and Minecraft Servers
 permalink: /tutorials/javalin-and-minecraft-servers
 summarytitle: Using Javalin with Bukkit, Spigot, Paper, BungeeCord, or Waterfall!
 summary: Learn how to make Javalin work with most modern Minecraft servers.
-date: 2022-04-01
+date: 2022-04-06
 author: <a href="https://github.com/hanbings" target="_blank">hanbings</a>
 language: ["java"]
 github: https://github.com/javalin/javalin-in-minecraft-example
