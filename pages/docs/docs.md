@@ -1872,12 +1872,14 @@ which is 30 seconds by default in Jetty/Javalin. This is not a bug.
 ---
 
 ### Minecraft
-<div class="comment">Keywords for ctrl+f: Bukkit, Spigot, BungeeCord, Bungee Cord, WaterFall, Water Fall</div>
+<div class="comment">Keywords for ctrl+f: Bukkit, Spigot, BungeeCord, Bungee Cord, WaterFall, Water Fall, Paper</div>
 
 A lot of people use Javalin for Minecraft servers, and they often have issues with Jetty and WebSockets.
 
+Please consider consulting our [Minecraft tutorial](/tutorials/javalin-and-minecraft-servers) if you're working with Javalin and a Minecraft server.
+
 #### Relocation
-Use [relocate](https://imperceptiblethoughts.com/shadow/configuration/relocation/) is not required, but it can easily conflict with other plugin dependencies. 
+Use [relocate](https://imperceptiblethoughts.com/shadow/configuration/relocation/) is not required, but it can easily conflict with other plugin dependencies.
 If this is a publicly released plugin, this step is recommended to make Javalin work on a different Minecraft Server.
 
 Usually jetty causes the conflict, you can add gradle script to `build.gradle` following after adding the `shadow-jar` gradle plugin:
