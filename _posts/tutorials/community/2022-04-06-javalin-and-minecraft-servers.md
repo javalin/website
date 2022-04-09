@@ -142,8 +142,8 @@ for getting context, keep it for switching after load.
 
 `Thread.currentThread().setContextClassLoader(this.getClassLoader())` is to switch the class loader to the
 class loader of the current plugin. **In other classes**, you can use
-`{{your main class}}.class.getClassLoader()` or
-`{{your main class}}.getClass().getClassLoader()` replace `this.getClassLoader()`
+`YourMainClass.class.getClassLoader()` or
+`YourMainClass.getClass().getClassLoader()` replace `this.getClassLoader()`
 
 After instantiating Javalin, use `setContextClassLoader(classLoader)`
 to reset the context class loader to the default class loader.
