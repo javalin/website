@@ -31,6 +31,10 @@ By default Jetty will store all its session information in a `HashMap`, which is
 When the Jetty server restarts all of the sessions are cleared. Restarts can happen for example if you're
 making changes on localhost, or if you're deploying a new version of your app to your cloud provider.
 
+**Please note:** In order for Jetty to successfully persist your sessions,
+all objects in your session attributes must implement the `Serializable` interface.
+This is usually as simple as adding `implements Serializable` to your classes.
+
 ### Persisting to the file system
 The simplest way to persist a `Session` is to store the `Session`s as files on the file system.
 This can be done using a `FileSessionDataStore`.
