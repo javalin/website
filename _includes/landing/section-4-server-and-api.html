@@ -1,0 +1,53 @@
+<div class="landing bluepart">
+{{ include.title }}
+{% capture java %}
+import io.javalin.Javalin;
+import static io.javalin.apibuilder.ApiBuilder.*;
+
+Javalin app = Javalin.create(config -> {
+    config.enableCorsForAllOrigins();
+    config.asyncRequestTimeout = 10_000L;
+    config.enforceSsl = true;
+}).routes(() -> {
+    path("users", () -> {
+        get(UserController::getAll);
+        post(UserController::create);
+        path("{userId}", () -> {
+            get(UserController::getOne);
+            patch(UserController::update);
+            delete(UserController::delete);
+        });
+        ws("events", userController::webSocketEvents);
+    });
+}).start(port);
+{% endcapture %}
+{% capture kotlin %}
+import io.javalin.Javalin;
+import io.javalin.apibuilder.ApiBuilder.*;
+
+val app = Javalin.create { config ->
+    config.enableCorsForAllOrigins()
+    config.asyncRequestTimeout = 10_000L
+    config.enforceSsl = true
+}.routes {
+    path("users") {
+        get(UserController::getAll)
+        post(UserController::create)
+        path("{userId}") {
+            get(UserController::getOne)
+            patch(UserController::update)
+            delete(UserController::delete)
+        }
+        ws("events", userController::webSocketEvents)
+    }
+}.start(port)
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+<p style="margin: 40px 0">{{ include.brag }}</p>
+
+<div class="center">
+    <a class="landing-btn" href="/tutorials">{{include.tutorials}}</a>
+    <a class="landing-btn" href="/documentation">{{include.docs}}</a>
+</div>
+</div>

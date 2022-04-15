@@ -1,0 +1,25 @@
+{% comment %}
+    Liquid only allows passing strings - splitting on "---" gives us an array of reasons
+    Splitting on -- gives title/paragraph pairs
+{% endcomment %}
+<div class="landing whitepart">
+    {{ include.title }}
+    <div class="boxes">
+        {% assign reasons = include.reasonRow1 | split: "---" %}
+        {% for reason in reasons %}
+            <div class="box">
+                <h2>{{ reason | split: "--" | first }}</h2>
+                <p>{{ reason | split: "--" | last }}</p>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="boxes">
+        {% assign reasons = include.reasonRow2 | split: "---" %}
+        {% for reason in reasons %}
+        <div class="box">
+            <h2>{{ reason | split: "--" | first }}</h2>
+            <p>{{ reason | split: "--" | last }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
