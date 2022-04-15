@@ -26,8 +26,8 @@ repositories {
 }
 
 dependencies {
-    compile 'io.javalin:javalin:{{site.javalinversion}}'
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    implementation 'io.javalin:javalin:{{site.javalinversion}}'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
 ~~~
 
@@ -39,7 +39,7 @@ dependencies {
 * Check `Use auto-import`, click `Next`
 
 Open the newly generated `build.gradle` file and add the gradle-dependency \\
-`compile 'io.javalin:javalin:{{site.javalinversion}}'` to the `dependencies {}` scope.
+`implementation 'io.javalin:javalin:{{site.javalinversion}}'` to the `dependencies {}` scope.
 See the full `build.gradle` example above if you're not sure where to put it.
 
 Finally, create a file `src/main/java/HelloWorld.java` or `src/main/kotlin/HelloWorld.kt`\\
