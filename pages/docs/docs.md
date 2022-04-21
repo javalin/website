@@ -267,11 +267,33 @@ render("/template.tmpl", model)         // calls html(renderedTemplate)
 
 // Other methods
 handlerType()                           // handler type of the current handler (BEFORE, AFTER, GET, etc)
-appAttribute("name")                    // get an attribute on the Javalin instance
+appAttribute("name")                    // get an attribute on the Javalin instance. see app attributes section below
 matchedPath()                           // get the path that was used to match this request (ex, "/hello/{name}")
 endpointHandlerPath()                   // get the path of the endpoint handler that was used to match this request
 cookieStore                             // see cookie store section below
 ```
+	
+#### App Attributes
+	
+App Attributes can be registered on the Javalin instance, then accessed through the `appAttribute(...)` method in `Context`:
+
+{% capture java %}
+app.attribute("myValue", "foo");
+        
+app.get("/attribute", ctx -> {
+    String myValue = ctx.attribute("myValue");
+    ctx.result(myValue); // -> foo
+});
+{% endcapture %}
+{% capture kotlin %}
+app.attribute("myValue", "foo")
+        
+app.get("/attribute") { ctx ->
+    val myValue: String = ctx.appAttribute("myValue")
+    ctx.result(myValue) // -> foo
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 #### ContextResolvers
 Some of the methods in `Context` can be configured through the `ContextResolvers` configuration class:
