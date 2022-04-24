@@ -235,8 +235,9 @@ scheme()                                // request scheme
 sessionAttribute("name", value)         // set a session attribute
 sessionAttribute("name")                // get a session attribute
 consumeSessionAttribute("name")         // get a session attribute, and set value to null
-cachedSessionAttribute("name", value)   // get a session attribute, and cache the value as a request attribute
-cachedSessionAttribute("name")          // set a session attribute, and cache the value as a request attribute
+cachedSessionAttribute("name", value)   // set a session attribute, and cache the value as a request attribute
+cachedSessionAttribute("name")          // get a session attribute, and cache the value as a request attribute
+cachedSessionAttributeOrCompute(...)    // same as above, but compute and set if value is absent
 sessionAttributeMap()                   // map of all session attributes
 url()                                   // request url
 fullUrl()                               // request url + query string
@@ -272,14 +273,14 @@ matchedPath()                           // get the path that was used to match t
 endpointHandlerPath()                   // get the path of the endpoint handler that was used to match this request
 cookieStore                             // see cookie store section below
 ```
-	
+
 #### App Attributes
-	
+
 App Attributes can be registered on the Javalin instance, then accessed through the `appAttribute(...)` method in `Context`:
 
 {% capture java %}
 app.attribute("myValue", "foo");
-        
+
 app.get("/attribute", ctx -> {
     String myValue = ctx.attribute("myValue");
     ctx.result(myValue); // -> foo
@@ -287,7 +288,7 @@ app.get("/attribute", ctx -> {
 {% endcapture %}
 {% capture kotlin %}
 app.attribute("myValue", "foo")
-        
+
 app.get("/attribute") { ctx ->
     val myValue: String = ctx.appAttribute("myValue")
     ctx.result(myValue) // -> foo
