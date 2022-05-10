@@ -635,8 +635,9 @@ You can also create your own validator manually through
 ```java
 allowNullable()                     // turn the Validator into a NullableValidator (must be called first)
 check(predicate, "error")           // add a check with a ValidationError("error") to the Validator
-check(predicate: validationError)   // add a check with a ValidationError to the Validator (can have args for localization)
+check(predicate, validationError)   // add a check with a ValidationError to the Validator (can have args for localization)
 get()                               // return the validated value as the specified type, or throw ValidationException
+getOrThrow(exceptionFunction)       // return the validated value as the specified type, or throw custom exception
 getOrDefault()                      // return default-value if value is null, else call get()
 errors()                            // get all the errors of the Validator (as map("fieldName", List<ValidationError>))
 ```
@@ -982,12 +983,14 @@ You call `app.sse()`, which gives you access to the connected `SseClient`:
 app.sse("/sse", client ->
     client.sendEvent("connected", "Hello, SSE");
     client.onClose(() -> System.out.println("Client disconnected"));
+    client.close(); // close the client
 });
 {% endcapture %}
 {% capture kotlin %}
 app.sse("/sse") { client ->
     client.sendEvent("connected", "Hello, SSE")
     client.onClose { println("Client disconnected") }
+    client.close() // close the client
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
