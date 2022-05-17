@@ -76,4 +76,16 @@
             display: block;
         }
     }
+
+    @media (max-width: 480px) {
+        .star-us {
+            flex-direction: column;
+        }
+        .star-us * + * {
+            margin-top: 12px;
+        }
+        .star-us #starUsShort {
+            font-size: 20px;
+        }
+    }
 </style>

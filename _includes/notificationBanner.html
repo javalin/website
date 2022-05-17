@@ -1,6 +1,6 @@
 <script>
     const notificationId = "javalin-4-released";
-    const hasBeenDismissed = localStorage.getItem(notificationId + "-dismissed") === "true";
+    const hasBeenDismissed = true; // localStorage.getItem(notificationId + "-dismissed") === "true";
     const pageLoadCount = parseInt(localStorage.getItem(notificationId + "-count") || 0);
     localStorage.setItem(notificationId + "-count", (pageLoadCount + 1).toString());
     if (!hasBeenDismissed && pageLoadCount >= 0) {
