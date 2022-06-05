@@ -1062,7 +1062,7 @@ showJavalinBanner = true;                       // show the glorious Javalin ban
 ```
 
 ### Static Files
-You can enabled static file serving by doing `config.addStaticFiles("/directory", location)`.
+You can enable static file serving by doing `config.addStaticFiles("/directory", location)`.
 Static resource handling is done **after** endpoint matching, meaning your own
 GET endpoints have higher priority. The process looks like this:
 
