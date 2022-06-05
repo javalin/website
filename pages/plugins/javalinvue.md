@@ -281,17 +281,27 @@ to your backend, it can be used like this:
 
 The class automatically caches the request in `localStorage`,
 so subsequent requests will appear to load instantly.
-All configuration options and methods (there's just one) are included below:
+All configuration options and methods are shown below:
 
 ```javascript
 const useCache = true/false;
 const errorCallback = error => alert(`An error occurred! Code: ${error.code}, text: ${error.text}`);
 
-// Create a new instance
+// Create a new instance with config options
 const loadableData = new LoadableData("/api/books", useCache, errorCallback);
+```
 
+```javascript
 // Refresh data (can use cache to avoid flickering)
 loadableData.refresh(useCache, errorCallback);
+
+// Refresh data for other instances which uses the same endpoint
+let users = new LoadableData("/users");
+let sameUsers = new LoadableData("/users"); // this variable could be in a different component
+users.refreshAll(); // sameUsers will also be refreshed, since they share the same URL
+
+// Refresh data via static method
+LoadableData.refreshAll("/users"); // all instances with this URL will refresh themselves
 ```
 
 The `loadError` object contains the HTTP status and error message,
