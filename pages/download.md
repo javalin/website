@@ -35,4 +35,4 @@ the artifact id:
 
 ### Manual downloads
 You can get the prebuilt jar from [Maven Central](https://repo1.maven.org/maven2/io/javalin/javalin/).\\
-You can get the source on [GitHub](https://github.com/tipsy/javalin), or [download it as a zip](https://github.com/tipsy/javalin/archive/master.zip).
+You can get the source on [GitHub](https://github.com/javalin/javalin), or [download it as a zip](https://github.com/javalin/javalin/archive/master.zip).

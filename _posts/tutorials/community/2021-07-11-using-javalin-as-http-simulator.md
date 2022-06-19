@@ -185,7 +185,7 @@ fun `posts a user profile`() = testProfileGateway { server, profileGateway ->
 Another benefit of this approach is that we hide some low-level details like startup of the fake server and its base URL
 and port. We focus our test on what really matters.
 
-ℹ️ This approach in inspired by [javalin-testtools](https://github.com/tipsy/javalin/tree/master/javalin-testtools),
+ℹ️ This approach in inspired by [javalin-testtools](https://github.com/javalin/javalin/tree/master/javalin-testtools),
 which will be available in Javalin 4.
 
 ## Alternative approaches

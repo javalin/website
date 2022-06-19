@@ -907,7 +907,7 @@ Read more about how to configure sessions in
 
 #### Custom jetty handlers
 You can configure your embedded jetty-server with a handler-chain
-([example](https://github.com/tipsy/javalin/blob/master/src/test/java/io/javalin/TestCustomJetty.kt#L46-L64)),
+([example](https://github.com/javalin/javalin/blob/master/src/test/java/io/javalin/TestCustomJetty.kt#L46-L64)),
 and Javalin will attach it's own handlers to the end of this chain.
 {% capture java %}
 StatisticsHandler statisticsHandler = new StatisticsHandler();
@@ -937,7 +937,7 @@ Javalin.create().apply {
 
 To configure SSL or HTTP2 you need to use a custom server (see previous section).\\
 An example of a custom server with SSL can be found in the examples,
-[HelloWorldSecure](https://github.com/tipsy/javalin/blob/master/src/test/java/io/javalin/examples/HelloWorldSecure.java#L24-L32).
+[HelloWorldSecure](https://github.com/javalin/javalin/blob/master/src/test/java/io/javalin/examples/HelloWorldSecure.java#L24-L32).
 
 A custom HTTP2 server is a bit more work to set up, but we have a repo with a
 fully functioning example server in both Kotlin and Java: [javalin-http2-example](https://github.com/tipsy/javalin-http2-example)
@@ -1106,7 +1106,7 @@ the future has been resolved or rejected.
 #### Async timeout settings
 Jetty has a default timeout of 30 seconds for async requests (this is not related to the `idleTimeout` of a connector).
 If you wait for processes that run for longer than this, you can configure the async request manually by calling `ctx.req.startAsync()`.
-For more information, see [issue 448](https://github.com/tipsy/javalin/issues/448).
+For more information, see [issue 448](https://github.com/javalin/javalin/issues/448).
 
 ### Configuring the JSON mapper
 
@@ -1131,7 +1131,7 @@ Note that these are global settings, and can't be configured per instance of Jav
 Javalin is designed to work with other `Servlet` and `Filter` instances running on the Jetty Server.
 Filters are pretty straighforward to add, since they don't finish the request. If you need to add a serlvet
 there's an example in the repo:
-[/src/test/java/io/javalin/examples/HelloWorldServlet.java#L19-L27](https://github.com/tipsy/javalin/blob/master/src/test/java/io/javalin/examples/HelloWorldServlet.java#L19-L27)
+[/src/test/java/io/javalin/examples/HelloWorldServlet.java#L19-L27](https://github.com/javalin/javalin/blob/master/src/test/java/io/javalin/examples/HelloWorldServlet.java#L19-L27)
 
 ### Views and Templates
 Javalin looks for templates/markdown files in `src/resources`,
