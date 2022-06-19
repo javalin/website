@@ -6,18 +6,22 @@ permalink: /plugins/openapi
 ---
 
 <div id="spy-nav" class="right-menu" markdown="1">
-* [Getting Started](#getting-started)
-* [OpenApiOptions](#openapioptions)
-* [Handler](#documenting-handler)
-  * [DSL](#dsl)
-  * [Annotations](#annotations)
-  * [Server-sent events](#server-sent-events)
-* [CrudHandler](#documenting-crudhandler)
-  * [DSL](#dsl-1)
-  * [Annotations](#annotations-1)
-* [Rendering](#rendering-docs)
-  * [Swagger UI](#swagger-ui)
-  * [ReDoc](#redoc)
+- [Getting Started](#getting-started)
+- [OpenApiOptions](#openapioptions)
+- [Documenting Handler](#documenting-handler)
+  - [DSL](#dsl)
+  - [Annotations](#annotations)
+    - [Java quirks](#java-quirks)
+      - [OpenAPI metadata matching ambiguities](#openapi-metadata-matching-ambiguities)
+      - [OpenAPI metadata on field references to external classes implementing Handler](#openapi-metadata-on-field-references-to-external-classes-implementing-handler)
+      - [OpenAPI metadata on static Java methods](#openapi-metadata-on-static-java-methods)
+  - [Server-sent events](#server-sent-events)
+- [Documenting CrudHandler](#documenting-crudhandler)
+  - [DSL](#dsl-1)
+  - [Annotations](#annotations-1)
+- [Rendering docs](#rendering-docs)
+  - [ReDoc](#redoc)
+    - [Acknowledgements](#acknowledgements)
 </div>
 
 <h1 class="no-margin-top">OpenAPI Plugin</h1>
@@ -765,12 +769,12 @@ You can have both ReDoc and Swagger UI enabled at the same time.
 #### Acknowledgements
 
 The original version of this plugin and its documentation was written almost
-entirely by [Tobias Walle](https://github.com/tipsy/javalin/pulls?q=is%3Apr+author%3ATobiasWalle) ([LinkedIn](https://www.linkedin.com/in/tobias-walle/)).
+entirely by [Tobias Walle](https://github.com/javalin/javalin/pulls?q=is%3Apr+author%3ATobiasWalle) ([LinkedIn](https://www.linkedin.com/in/tobias-walle/)).
 
 It has later been improved upon by many contributors, most notably:
 
-* [maxemann96](https://github.com/tipsy/javalin/pulls?q=is%3Apr+author%3Amaxemann96)
-* [sealedtx](https://github.com/tipsy/javalin/pulls?q=is%3Apr+author%3Asealedtx)
-* [28Smiles](https://github.com/tipsy/javalin/pulls?q=is%3Apr+author%3A28Smiles)
-* [chsfleury](https://github.com/tipsy/javalin/pulls?q=is%3Apr+author%3Achsfleury)
-* [RalphSteinhagen](https://github.com/tipsy/javalin/pulls?q=is%3Apr+author%3ARalphSteinhagen)
+* [maxemann96](https://github.com/javalin/javalin/pulls?q=is%3Apr+author%3Amaxemann96)
+* [sealedtx](https://github.com/javalin/javalin/pulls?q=is%3Apr+author%3Asealedtx)
+* [28Smiles](https://github.com/javalin/javalin/pulls?q=is%3Apr+author%3A28Smiles)
+* [chsfleury](https://github.com/javalin/javalin/pulls?q=is%3Apr+author%3Achsfleury)
+* [RalphSteinhagen](https://github.com/javalin/javalin/pulls?q=is%3Apr+author%3ARalphSteinhagen)
