@@ -39,4 +39,4 @@ When moving a Javalin project from Java to Kotlin, you shouldn’t need to learn
 To maintain this consistent API for both languages is an important goal of the project.
 
 ## Contact
-If you want to get in touch, please create an issue on our [GitHub tracker](https://github.com/tipsy/javalin/issues).
+If you want to get in touch, please create an issue on our [GitHub tracker](https://github.com/javalin/javalin/issues).

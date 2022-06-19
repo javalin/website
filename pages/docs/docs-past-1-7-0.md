@@ -6,27 +6,44 @@ permalink: /archive/docs/v1.7.0.html
 ---
 
 <div id="spy-nav" class="right-menu" markdown="1">
-* [Handlers](#handlers)
-* * [Before](#before-handlers)
-* * [Endpoint](#endpoint-handlers)
-* * [After](#after-handlers)
-* [Handler groups](#handler-groups)
-* [Context (ctx)](#context)
-* * [Cookie Store](#cookie-store)
-* * [Extensions](#context-extensions)
-* [Access manager](#access-manager)
-* [Exception Mapping](#exception-mapping)
-* [Error Mapping](#error-mapping)
-* [WebSockets](#websockets)
-* [Lifecycle events](#lifecycle-events)
-* [Server setup](#server-setup)
-* * [Start/stop](#starting-and-stopping)
-* * [Configuration](#configuration)
-* * [Custom server](#custom-server)
-* * [SSL/HTTP2](#sslhttp2)
-* * [Static Files](#static-files)
-* * [Jetty WebSockets](#jetty-websockets)
-* [FAQ](#faq)
+- [Handlers](#handlers)
+  - [Before handlers](#before-handlers)
+  - [Endpoint handlers](#endpoint-handlers)
+  - [After handlers](#after-handlers)
+  - [Reverse path lookup](#reverse-path-lookup)
+- [Handler groups](#handler-groups)
+- [Context](#context)
+  - [Cookie Store](#cookie-store)
+  - [Example:](#example)
+  - [Context extensions](#context-extensions)
+- [Access manager](#access-manager)
+- [Exception Mapping](#exception-mapping)
+  - [HaltException](#haltexception)
+- [Error Mapping](#error-mapping)
+- [WebSockets](#websockets)
+  - [WsSession](#wssession)
+- [Lifecycle events](#lifecycle-events)
+- [Server setup](#server-setup)
+  - [Starting and stopping](#starting-and-stopping)
+    - [Quick-start](#quick-start)
+  - [Configuration](#configuration)
+  - [Custom server](#custom-server)
+    - [Custom jetty handlers](#custom-jetty-handlers)
+  - [SSL/HTTP2](#sslhttp2)
+  - [Static Files](#static-files)
+    - [Caching](#caching)
+  - [Jetty WebSockets](#jetty-websockets)
+  - [Annotated class](#annotated-class)
+  - [WebSocket object](#websocket-object)
+- [FAQ](#faq)
+  - [Javadoc](#javadoc)
+  - [Deploying](#deploying)
+  - [Uploads](#uploads)
+  - [Asynchronous requests](#asynchronous-requests)
+  - [Configuring the JSON mapper](#configuring-the-json-mapper)
+    - [Configuring Jackson](#configuring-jackson)
+  - [Views and Templates](#views-and-templates)
+  - [TimeoutExceptions and ClosedChannelExceptions](#timeoutexceptions-and-closedchannelexceptions)
 </div>
 
 <h1 class="no-margin-top">Documentation - Javalin 1.X</h1>
@@ -626,7 +643,7 @@ app.embeddedServer(EmbeddedJettyFactory({
 
 #### Custom jetty handlers
 You can configure your embedded jetty-server with a handler-chain
-([example](https://github.com/tipsy/javalin/blob/master/src/test/java/io/javalin/TestCustomJetty.java#L66-L82)),
+([example](https://github.com/javalin/javalin/blob/master/src/test/java/io/javalin/TestCustomJetty.java#L66-L82)),
 and Javalin will attach it's own handlers to the end of this chain.
 {% capture java %}
 StatisticsHandler statisticsHandler = new StatisticsHandler();
@@ -656,7 +673,7 @@ Javalin.create().apply {
 
 To configure SSL or HTTP2 you need to use a custom server (see previous section).\\
 An example of a custom server with SSL can be found in the examples,
-[HelloWorldSecure](https://github.com/tipsy/javalin/blob/master/src/test/java/io/javalin/examples/HelloWorldSecure.java#L24-L32).
+[HelloWorldSecure](https://github.com/javalin/javalin/blob/master/src/test/java/io/javalin/examples/HelloWorldSecure.java#L24-L32).
 
 A custom HTTP2 server is a bit more work to set up, but we have a repo with a
 fully functioning example server in both Kotlin and Java: [javalin-http2-example](https://github.com/tipsy/javalin-http2-example)
