@@ -1,0 +1,81 @@
+<div class="landing bluepart blackpart sponsors-part">
+    <div class="sponsors">
+        {{include.title}}
+        <div class="sponsor">
+            <img src="/img/sponsors/feature-upvote.png" alt="Feature Upvote">
+            <a href="https://featureupvote.com">https://featureupvote.com</a>
+        </div>
+        <div class="sponsor cta">
+            <div class="dashing-border">
+                {{include.cta}}
+                <br>
+                {% include macros/sponsor-button.html %}
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .bluepart.blackpart.sponsors-part {
+        padding: 40px 20px;
+    }
+
+    .sponsors {
+        display: flex;
+        flex-wrap: wrap;
+        max-width: 1140px;
+        margin: 0 auto;
+        align-items: center;
+        justify-content: space-around;
+    }
+
+    .sponsor {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        width: 280px;
+        height: 180px;
+        padding: 20px;
+        margin: 20px;
+        border-radius: 5px;
+        background: #fff;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .sponsor:not(.cta) a {
+        color: #333;
+        font-size: 14px;
+        text-decoration: underline;
+    }
+
+    .sponsor img {
+        display: block;
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    .sponsor.cta {
+        padding: 12px;
+        text-align: center;
+        font-size: 20px;
+        font-weight: 500;
+        font-family: "Encode Sans", sans-serif;
+    }
+
+    .sponsor.cta .sponsor-button {
+        font-size: 18px;
+    }
+
+    .dashing-border {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-around;
+        height: 100%;
+        width: 100%;
+        border: 1px dashed #777;
+        border-radius: 5px;
+        padding: 24px 8px;
+        background: #f9f9f9;
+    }
+</style>

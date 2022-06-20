@@ -1933,9 +1933,9 @@ Get it via `{your plugin's main class}.class.getClassLoader()` .
 After switching the class loader, you may still receive a missing dependency error from Javalin. You only need to add the corresponding dependency as prompted in the Javalin log.
 
 #### Relevant issues
-* [https://github.com/tipsy/javalin/issues/358](https://github.com/tipsy/javalin/issues/358) (with solution)
-* [https://github.com/tipsy/javalin/issues/232](https://github.com/tipsy/javalin/issues/232)
-* [https://github.com/tipsy/javalin/issues/1462](https://github.com/tipsy/javalin/issues/1462)
+* [https://github.com/javalin/javalin/issues/358](https://github.com/javalin/javalin/issues/358) (with solution)
+* [https://github.com/javalin/javalin/issues/232](https://github.com/javalin/javalin/issues/232)
+* [https://github.com/javalin/javalin/issues/1462](https://github.com/javalin/javalin/issues/1462)
 
 ---
 
