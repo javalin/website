@@ -134,8 +134,8 @@ nav ul li a:hover {
 }
 
 .landing-btn {
-    margin: 0 8px;
-    padding: 12px 20px;
+    margin: 8px 8px 0 8px;
+    padding: 12px 28px;
     text-align: center;
     display: inline-block;
     background: rgba(255, 255, 255, 0.15);
@@ -143,12 +143,12 @@ nav ul li a:hover {
     color: white;
     cursor: pointer;
     border-radius: 50px;
+    font-size: 18px;
     font-family: 'Roboto Slab', arial, sans-serif;
     font-weight: 500;
 }
 
 .blackpart .landing-btn {
-    border-bottom: 3px solid rgba(0, 0, 0, 0.3);
     border-bottom: 3px solid rgba(0, 0, 0, 0.7);
 }
 

@@ -8,8 +8,7 @@ permalink: /
 
 {% include landing/section-1-title-and-get-started.html
     title="<h1>A simple web framework<br>for Java and Kotlin</h1>"
-    tutorials="Show me tutorials"
-    docs="Show me the docs"
+    docs="View documentation&nbsp;&nbsp;🡲"
 %}
 
 {% include landing/section-2-small-used-by.html %}
