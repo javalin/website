@@ -39,7 +39,7 @@ permalink: /documentation
 
 <h1 class="no-margin-top">Documentation</h1>
 
-The documentation on this page is always for the latest version of Javalin, currently `{{site.javalinversion}}`.
+The documentation is for the latest version of Javalin, currently `{{site.javalinversion}}`.
 Javalin follows [semantic versioning](http://semver.org/), meaning there are no breaking
 changes unless the major (leftmost) digit changes, for example `4.X.X` to `5.X.X`.
 
