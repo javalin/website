@@ -7,7 +7,7 @@ permalink: /
 <style>{% include landing.css %}</style>
 
 {% include landing/section-1-title-and-get-started.html
-    title="<h1>A simple web framework</h1>"
+    title="<h1>A simple web framework<br>for Java and Kotlin</h1>"
     docs="View documentation"
 %}
 
