@@ -5,16 +5,3 @@ for (let i = 0; i < document.links.length; i++) {
         document.links[i].rel = "noopener";
     }
 }
-
-if (document.location.pathname.includes("/documentation")) {
-    // "Added in" labels
-    let addedTags = {
-        // "heading-id": "version",
-    };
-    Object.keys(addedTags).forEach(key => {
-        document.getElementById(key).classList.add("added-parent");
-        document.getElementById(key).insertAdjacentHTML("beforeend",
-            `<span class="added-in">Added in v${addedTags[key]}</span>`
-        )
-    });
-}

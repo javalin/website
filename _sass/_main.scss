@@ -179,45 +179,6 @@ pre { // scrollbar in code examples
   font-style: italic;
 }
 
-.added-parent {
-  display: flex;
-  align-items: center;
-}
-
-.added-parent .added-in {
-  margin-left: 12px;
-}
-
-.added-in {
-  border-left: 3px solid #27b53f;
-  background: rgba(0, 0, 0, 0.07);
-  height: 20px;
-  width: auto;
-  display: inline-block;
-  padding: 2px 0 2px 8px;
-  margin: auto;
-  position: relative;
-  color: #333;
-  font-size: 12px;
-  font-weight: 400;
-  letter-spacing: 0;
-
-  &:after {
-    content: "";
-    border: 10px solid rgba(0, 0, 0, 0.07);
-    border-right-color: transparent;
-    position: absolute;
-    top: 0;
-    right: -20px;
-  }
-}
-
-@media (max-width: 480px) {
-  .added-in {
-    display: none;
-  }
-}
-
 .post-content p {
   line-height: 1.6;
 }

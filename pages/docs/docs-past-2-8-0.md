@@ -1172,24 +1172,3 @@ If you encounter `TimeoutExceptions` and `ClosedChannelExceptions` in your DEBUG
 this is nothing to worry about. Typically, a browser will keep the HTTP connection open until the
 server terminates it. When this happens is decided by the server's `idleTimeout` setting,
 which is 30 seconds by default in Jetty/Javalin. This is not a bug.
-
-<script>
-// "Added in" labels
-let addedTags = {
-    "custom-sessionhandler": "2.1.0",
-    "conflictresponse": "2.1.0",
-    "goneresponse": "2.1.0",
-    "badgatewayresponse": "2.1.0",
-    "serviceunavailableresponse": "2.1.0",
-    "validation": "2.2.0",
-    "using-javalin-without-jetty": "2.4.0",
-    "websocket-logging": "2.4.0",
-    "server-sent-events": "2.6.0",
-};
-Object.keys(addedTags).forEach(key => {
-    document.getElementById(key).classList.add("added-parent");
-    document.getElementById(key).insertAdjacentHTML("beforeend",
-        `<span class="added-in">Added in v${addedTags[key]}</span>`
-    )
-});
-</script>
