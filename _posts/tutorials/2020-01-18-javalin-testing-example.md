@@ -168,7 +168,7 @@ public class FunctionalTest {
 
     @Test
     public void GET_to_fetch_users_returns_list_of_users() {
-        TestUtil.test(app, (server, client) -> {
+        JavalinTest.test(app, (server, client) -> {
             assertThat(client.get("/users").code()).isEqualTo(200);
             assertThat(client.get("/users").body().string()).isEqualTo(usersJson);
         });
@@ -183,7 +183,7 @@ class FunctionalTest {
     private val usersJson = JavalinJackson().toJsonString(UserController.users)
 
     @Test
-    fun `GET to fetch users returns list of users`() = TestUtil.test(app) { server, client ->
+    fun `GET to fetch users returns list of users`() = JavalinTest.test(app) { server, client ->
         assertThat(client.get("/users").code).isEqualTo(200)
         assertThat(client.get("/users").body?.string()).isEqualTo(usersJson)
     }
@@ -228,7 +228,7 @@ public class EndToEndTest {
 
     @Test
     public void UI_contains_correct_heading() {
-        TestUtil.test(app, (server, client) -> {
+        JavalinTest.test(app, (server, client) -> {
             WebDriverManager.chromedriver().setup();
             ChromeOptions options = new ChromeOptions();
             options.addArguments("--headless");
@@ -248,7 +248,7 @@ class EndToEndTest {
     private val app = Application("someDependency").app // inject any dependencies you might have
 
     @Test
-    fun `UI contains correct heading`() = TestUtil.test(app) { server, client ->
+    fun `UI contains correct heading`() = JavalinTest.test(app) { server, client ->
         WebDriverManager.chromedriver().setup()
         val driver: WebDriver = ChromeDriver(ChromeOptions().apply {
             addArguments("--headless")
