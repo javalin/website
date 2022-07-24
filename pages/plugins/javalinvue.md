@@ -189,7 +189,7 @@ JavalinVue.vueVersion { it.vue3("VueAppName") }
 If you want to share state from your server with Vue, you can provide JavalinVue with a state function:
 
 {% capture java %}
-JavalinVue.stateFunction = ctx -> mapOf("user" to getUser(ctx));
+JavalinVue.stateFunction = ctx -> Map.of("user", getUser(ctx));
 {% endcapture %}
 {% capture kotlin %}
 JavalinVue.stateFunction = { mapOf("user" to getUser(it)) }
