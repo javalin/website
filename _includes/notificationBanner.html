@@ -1,14 +1,14 @@
 <script>
-    const notificationId = "javalin-4-released";
-    const hasBeenDismissed = true; // localStorage.getItem(notificationId + "-dismissed") === "true";
+    const notificationId = "javalin-5-released";
+    const hasBeenDismissed = localStorage.getItem(notificationId + "-dismissed") === "true";
     const pageLoadCount = parseInt(localStorage.getItem(notificationId + "-count") || 0);
     localStorage.setItem(notificationId + "-count", (pageLoadCount + 1).toString());
     if (!hasBeenDismissed && pageLoadCount >= 0) {
         document.write(`
             <div id="notification-banner">
-                <h1>Javalin 4 released!</h1>
-                Javalin 4 stable is finally here!
-                Read more in the <a href="/news/javalin-4.0.0-stable.html">release post</a>.
+                <h1>What? Javalin 5?</h1>
+                Javalin 5 stable is finally here!
+                Read more in the <a href="/news/javalin-5.0.0-stable.html">release post</a>.
             </div>
         `);
         if (pageLoadCount >= 0) {
