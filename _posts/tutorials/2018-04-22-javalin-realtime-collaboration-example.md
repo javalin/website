@@ -5,7 +5,7 @@ title: "Creating a Google Docs clone with WebSockets"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2018-04-22
 permalink: /tutorials/realtime-collaboration-example
-github: https://github.com/tipsy/javalin-realtime-collaboration-example
+github: https://github.com/javalin/javalin-samples/tree/main/javalin5/javalin-realtime-collaboration-example
 summarytitle: WebSockets Google Docs clone
 summary: Learn how to create a very basic clone of Google Docs with WebSockets in Javalin
 language: ["java", "kotlin"]
@@ -21,19 +21,14 @@ A WebSocket connection stays open, greatly reducing latency (and complexity).
 ## Dependencies
 
 First we create a Maven project with our dependencies [(→ Tutorial)](/tutorials/maven-setup).\\
-We will be using Javalin for our web-server and WebSockets, and slf4j for logging:
+We will be using Javalin for our web-server and WebSockets:
 
 ```xml
 <dependencies>
     <dependency>
         <groupId>io.javalin</groupId>
-        <artifactId>javalin</artifactId>
+        <artifactId>javalin-bundle</artifactId>
         <version>{{site.javalinversion}}</version>
-    </dependency>
-    <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-simple</artifactId>
-        <version>{{site.slf4jversion}}</version>
     </dependency>
 </dependencies>
 ```
@@ -49,18 +44,19 @@ We can get the entire server done in about 30-40 lines:
 
 {% capture java %}
 import io.javalin.Javalin;
+import io.javalin.http.staticfiles.Location;
 import io.javalin.websocket.WsContext;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class Main {
+public class JavalinRealtimeCollaborationExampleApp {
 
-    private static Map<String, Collab> collabs = new ConcurrentHashMap<>();
+    private static final Map<String, Collab> collabs = new ConcurrentHashMap<>();
 
     public static void main(String[] args) {
 
         Javalin.create(config -> {
-            config.addStaticFiles("/public", Location.CLASSPATH);
+            config.staticFiles.add("/public", Location.CLASSPATH);
         }).ws("/docs/{doc-id}", ws -> {
             ws.onConnect(ctx -> {
                 if (getCollab(ctx) == null) {
@@ -94,6 +90,7 @@ public class Main {
 {% endcapture %}
 {% capture kotlin %}
 import io.javalin.Javalin
+import io.javalin.http.staticfiles.Location
 import io.javalin.websocket.WsContext
 import java.util.concurrent.ConcurrentHashMap
 
@@ -102,7 +99,7 @@ fun main() {
     val collaborations = ConcurrentHashMap<String, Collaboration>()
 
     Javalin.create {
-        it.addStaticFiles("/public", Location.CLASSPATH)
+        it.staticFiles.add("/public", Location.CLASSPATH)
     }.apply {
         ws("/docs/{doc-id}") { ws ->
             ws.onConnect { ctx ->
@@ -148,10 +145,7 @@ public class Collab {
 }
 {% endcapture %}
 {% capture kotlin %}
-data class Collaboration(
-    var doc: String = "",
-    val clients: MutableSet<WsContext> = ConcurrentHashMap.newKeySet()
-)
+data class Collaboration(var doc: String = "", val clients: MutableSet<WsContext> = ConcurrentHashMap.newKeySet())
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
