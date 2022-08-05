@@ -5,7 +5,7 @@ title: "Using Javalin with Kotlin to create a simple CRUD REST API"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2017-05-25
 permalink: /tutorials/simple-kotlin-example
-github: https://github.com/tipsy/javalin-kotlin-example
+github: https://github.com/javalin/javalin-samples/tree/main/javalin5/javalin-kotlin-example
 summarytitle: Kotlin CRUD REST API
 summary: Use Kotlin with Javalin to create a simple CRUD REST API.
 language: kotlin
@@ -15,7 +15,7 @@ language: kotlin
 
 * Setting up Kotlin with Maven
 * Creating a Javalin/Kotlin CRUD REST API (no database)
-* Some neat Kotlin features
+* Some neat Kotlin features (from a Java developer's perspective)
 
 The instructions for this tutorial will focus on IntelliJ IDEA,
 as it's made by JetBrains, the same people who make Kotlin.
@@ -33,10 +33,11 @@ for Kotlin. To use it, do as follows:
  * Follow the instructions and pick a project name
  * Create `src/main/kotlin/app/Main.kt`
 
- There is no `public static void main(String[] args)` in Kotlin, instead you have a `fun main(args: Array<String>)`.
+There is no `public static void main(String[] args)` in Kotlin,
+instead you have a `fun main(args: Array<String>)`.
 
 ~~~kotlin
-fun main(args: Array<String>) {
+fun main() { // can omit args
     println("Hello, world!")
 }
 ~~~
@@ -58,8 +59,8 @@ And paste the "Hello world" example:
 ~~~kotlin
 import io.javalin.Javalin
 
-fun main(args: Array<String>) {
-    val app = Javalin.create().start(7000)
+fun main() {
+    val app = Javalin.create().start(7070)
     app.get("/") { ctx -> ctx.result("Hello World") }
 }
 ~~~
@@ -104,7 +105,7 @@ println("$name's new email is $email") // prints "Alice's new email is alice@bob
 Let's initialize our fake user-database with four users:
 
 ~~~kotlin
-val users = hashMapOf(
+val users = mapOf(
     0 to User(name = "Alice", email = "alice@alice.kt", id = 0),
     1 to User(name = "Bob", email = "bob@bob.kt", id = 1),
     2 to User(name = "Carol", email = "carol@carol.kt", id = 2),
@@ -113,27 +114,31 @@ val users = hashMapOf(
 ~~~
 
 Kotlin has type inference and named parameters (we could have written our arguments in any order).
-It also has a nice standard library providing map-literal-like functions (so you won't have to include guava in every project).
+It also has a nice standard library providing map-literal-like functions.
 
 ### Creating a data access object
 We need to be able to read out data somehow, so let's set up some
 basic CRUD functionality, with one added function for finding user by email:
 
 ~~~kotlin
+import java.util.concurrent.atomic.AtomicInteger
+
 class UserDao {
 
+    // "Initialize" with a few users
+    // This demonstrates type inference, map-literals and named parameters
     val users = hashMapOf(
-        0 to User(name = "Alice", email = "alice@alice.kt", id = 0),
-        1 to User(name = "Bob", email = "bob@bob.kt", id = 1),
-        2 to User(name = "Carol", email = "carol@carol.kt", id = 2),
-        3 to User(name = "Dave", email = "dave@dave.kt", id = 3)
+            0 to User(name = "Alice", email = "alice@alice.kt", id = 0),
+            1 to User(name = "Bob", email = "bob@bob.kt", id = 1),
+            2 to User(name = "Carol", email = "carol@carol.kt", id = 2),
+            3 to User(name = "Dave", email = "dave@dave.kt", id = 3)
     )
 
     var lastId: AtomicInteger = AtomicInteger(users.size - 1)
 
     fun save(name: String, email: String) {
         val id = lastId.incrementAndGet()
-        users.put(id, User(name = name, email = email, id = id))
+        users[id] = User(name = name, email = email, id = id)
     }
 
     fun findById(id: Int): User? {
@@ -141,11 +146,11 @@ class UserDao {
     }
 
     fun findByEmail(email: String): User? {
-        return users.values.find { it.email == email }
+        return users.values.find { it.email == email } // == is equivalent to java .equals() (referential equality is checked by ===)
     }
 
     fun update(id: Int, user: User) {
-        users.put(id, User(name = user.name, email = user.email, id = id))
+        users[id] = User(name = user.name, email = user.email, id = id)
     }
 
     fun delete(id: Int) {
@@ -184,25 +189,28 @@ public User findByEmail(String email) {
 ### Creating the REST API
 
 Kotlin and Javalin play very well together (in fact, Kotlin seems to play well with all Java dependencies).
-We can use `with` ([docs](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/with.html))
-and trailing closures to create very clean api declarations:
 
 ~~~kotlin
 import app.user.User
 import app.user.UserDao
 import io.javalin.apibuilder.ApiBuilder.*
 import io.javalin.Javalin
+import io.javalin.http.HttpStatus
+import io.javalin.http.bodyAsClass
 
-fun main(args: Array<String>) {
+fun main() {
 
     val userDao = UserDao()
 
     val app = Javalin.create().apply {
         exception(Exception::class.java) { e, ctx -> e.printStackTrace() }
-        error(404) { ctx -> ctx.json("not found") }
-    }.start(7000)
+        error(HttpStatus.NOT_FOUND) { ctx -> ctx.json("not found") }
+    }.start(7070)
 
     app.routes {
+
+        // this redirect shouldn't be here, but readers have complained about the 404 for the root path
+        get("/") { it.redirect("/users") }
 
         get("/users") { ctx ->
             ctx.json(userDao.users)
@@ -212,7 +220,7 @@ fun main(args: Array<String>) {
             ctx.json(userDao.findById(ctx.pathParam("user-id").toInt())!!)
         }
 
-        get("/users/email/:email") { ctx ->
+        get("/users/email/{email}") { ctx ->
             ctx.json(userDao.findByEmail(ctx.pathParam("email"))!!)
         }
 
