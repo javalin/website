@@ -8,7 +8,7 @@ summary: Learn how to run different kinds of tests in Javalin. Unit tests, funct
 date: 2020-01-18
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 language: ["java", "kotlin"]
-github: https://github.com/tipsy/javalin-testing-example
+github: https://github.com/javalin/javalin-samples/tree/main/javalin5/javalin-testing-example
 ---
 
 ## Introduction
@@ -16,7 +16,22 @@ Since Javalin is a library, there are no requirements for how tests must be writ
 This guide will outline a few common approaches. None of the approaches are better
 than the others, you just have to find something that works for you.
 
-To begin, you'll need to have a Maven project configured [(→ Tutorial)](/tutorials/maven-setup).
+To begin, you'll need to have a Maven project configured [(→ Tutorial)](/tutorials/maven-setup)
+with Javalin and [AssertJ](https://joel-costigliola.github.io/assertj/):
+
+```markup
+<dependency>
+    <groupId>io.javalin</groupId>
+    <artifactId>javalin-bundle</artifactId>
+    <version>{{site.javalinversion}}</version>
+</dependency>
+<dependency>
+    <groupId>org.assertj</groupId>
+    <artifactId>assertj-core</artifactId>
+    <version>3.11.1</version>
+    <scope>test</scope>
+</dependency>
+```
 
 ## Unit tests
 Unit tests are tests for the smallest and most isolated part of an application.
@@ -30,7 +45,7 @@ For Java the most popular choice is [Mockito](https://site.mockito.org/):
 <dependency>
     <groupId>org.mockito</groupId>
     <artifactId>mockito-core</artifactId>
-    <version>3.2.4</version>
+    <version>4.6.1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -40,7 +55,7 @@ For Kotlin, the most poplar choice is [MockK](https://mockk.io/):
 <dependency>
     <groupId>io.mockk</groupId>
     <artifactId>mockk</artifactId>
-    <version>1.9.3</version>
+    <version>1.12.5</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -51,9 +66,16 @@ We're using a static/singleton controller in this example for simplicity, but
 how you structure that code is entirely up to yourself.
 
 {% capture java %}
+import io.javalin.http.BadRequestResponse;
+import io.javalin.http.Context;
+import org.junit.Test;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+
 public class UnitTest {
 
-    private Context ctx = mock(Context.class); // javalin 2.1.0 or before: "mock-maker-inline" must be enabled
+    private final Context ctx = mock(Context.class);
 
     @Test
     public void POST_to_create_users_gives_201_for_valid_username() {
@@ -69,9 +91,15 @@ public class UnitTest {
     }
 
 }
-
 {% endcapture %}
 {% capture kotlin %}
+import io.javalin.http.BadRequestResponse
+import io.javalin.http.Context
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
+import org.junit.Test
+
 class UnitTest {
 
     private val ctx = mockk<Context>(relaxed = true)
@@ -90,14 +118,9 @@ class UnitTest {
     }
 
 }
+
 {% endcapture %}
 {% include macros/docsSnippetKotlinFirst.html java=java kotlin=kotlin %}
-
-<div class="comment" markdown="1">
-When using javalin 2.1.0 or before in Java, in order to mock **Context** using Mockito, **mock-maker-inline** must be enabled.
-This is done by adding a file **/resources/mockito-extensions/org.mockito.plugins.MockMaker**
-with the content **mock-maker-inline**. [Read more](https://stackoverflow.com/a/40018295/7916291).
-</div>
 
 In the first test, we instruct the `Context` mock to return `"Roland"` when
 `queryParam("username")` is called. After that, we call the `Handler` (`UserController.create(ctx)`), and then we verify
@@ -142,29 +165,20 @@ In the unit tests (in the previous section), we mocked the `Context` object and 
 to ensure that `ctx.status(201)` was called inside the `UserController.create(ctx)` `Handler`.
 In functional tests, we just verify that we get the expected output for the provided input.
 The easiest way of writing this type of test in Javalin is to use
-the `javalin-testtools` module
-and [AssertJ](https://joel-costigliola.github.io/assertj/):
-
-```xml
-<dependency>
-    <groupId>io.javalin</groupId>
-    <artifactId>javalin-testtools</artifactId>
-    <version>{{site.javalinversion}}</version>
-    <scope>test</scope>
-</dependency>
-<dependency>
-    <groupId>org.assertj</groupId>
-    <artifactId>assertj-core</artifactId>
-    <version>3.11.1</version>
-    <scope>test</scope>
-</dependency>
-```
+the `javalin-testtools`, which comes included in the `javalin-bundle`:
 
 {% capture java %}
+import io.javalin.Javalin;
+import io.javalin.plugin.json.JavalinJackson;
+import io.javalin.testtools.JavalinTest;
+import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class FunctionalTest {
 
-    Javalin app = new Application("someDependency").javalinApp(); // inject any dependencies you might have
-    private String usersJson = new JavalinJackson().toJsonString(UserController.users);
+    Javalin app = new JavalinTestingExampleApp("someDependency").javalinApp(); // inject any dependencies you might have
+    private final String usersJson = new JavalinJackson().toJsonString(UserController.users);
 
     @Test
     public void GET_to_fetch_users_returns_list_of_users() {
@@ -177,9 +191,14 @@ public class FunctionalTest {
 }
 {% endcapture %}
 {% capture kotlin %}
+import io.javalin.plugin.json.JavalinJackson
+import io.javalin.testtools.JavalinTest
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.Test
+
 class FunctionalTest {
 
-    private val app = Application("someDependency").app // inject any dependencies you might have
+    private val app = JavalinTestingExampleApp("someDependency").app // inject any dependencies you might have
     private val usersJson = JavalinJackson().toJsonString(UserController.users)
 
     @Test
@@ -195,7 +214,7 @@ class FunctionalTest {
 In Javalin's test suite, almost all of the tests are written like this.
 I personally prefer this approach for tests, as each test touches the whole system, and you don't
 risk making mistakes while manually specifying expected behavior (mocking). Javalin's test
-suite starts and stops more than 400 Javalin instances, and running all the tests takes about ten seconds total
+suite starts and stops more than 500 Javalin instances, and running all the tests takes about ten seconds total
 (most of those ten seconds is spent waiting for a WebSocket test and starting Chrome for browser tests).
 
 ## End-to-end/UI/scenario tests
@@ -210,21 +229,31 @@ install that browser on demand. We'll need to add two dependencies:
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>selenium-chrome-driver</artifactId>
-    <version>3.141.59</version>
+    <version>4.3.0</version>
     <scope>test</scope>
 </dependency>
 <dependency>
     <groupId>io.github.bonigarcia</groupId>
     <artifactId>webdrivermanager</artifactId>
-    <version>3.6.2</version>
+    <version>5.2.3</version>
     <scope>test</scope>
 </dependency>
 ```
 
 {% capture java %}
+import io.github.bonigarcia.wdm.WebDriverManager;
+import io.javalin.Javalin;
+import io.javalin.testtools.JavalinTest;
+import org.junit.Test;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class EndToEndTest {
 
-    Javalin app = new Application("someDependency").javalinApp(); // inject any dependencies you might have
+    Javalin app = new JavalinTestingExampleApp("someDependency").javalinApp(); // inject any dependencies you might have
 
     @Test
     public void UI_contains_correct_heading() {
@@ -243,9 +272,17 @@ public class EndToEndTest {
 }
 {% endcapture %}
 {% capture kotlin %}
+import io.github.bonigarcia.wdm.WebDriverManager
+import io.javalin.testtools.JavalinTest
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.Test
+import org.openqa.selenium.WebDriver
+import org.openqa.selenium.chrome.ChromeDriver
+import org.openqa.selenium.chrome.ChromeOptions
+
 class EndToEndTest {
 
-    private val app = Application("someDependency").app // inject any dependencies you might have
+    private val app = JavalinTestingExampleApp("someDependency").app // inject any dependencies you might have
 
     @Test
     fun `UI contains correct heading`() = JavalinTest.test(app) { server, client ->
@@ -273,7 +310,6 @@ how to re-use your driver between multiple tests.
 
 
 ## Conclusion
-
 Hopefully this brief guide has given you some ideas on how to test your Javalin application.
 Since Javalin is just a library, you're more or less free to test however you like;
 there is no "Javalin way" of testing.

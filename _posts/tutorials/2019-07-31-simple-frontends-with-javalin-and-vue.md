@@ -5,7 +5,7 @@ title: Clean Vue frontends without the hassle
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2019-07-31
 permalink: /tutorials/simple-frontends-with-javalin-and-vue
-github: https://github.com/tipsy/javalinvue-example
+github: https://github.com/javalin/javalin-samples/tree/main/javalin5/javalinvue-example/javalinvue3-example
 summarytitle: Simple frontends with Javalin and Vue
 summary: The tutorial shows how to use the JavalinVue plugin for simplified frontend development
 language: kotlin
