@@ -21,7 +21,6 @@ used in the tutorial, but if you're just here to learn how to write simple front
 you can skip ahead to [setup](#setup) section.
 
 ## Background
-
 I've been doing web development for roughly ten years. For server side rendering,
 I started with pure HTML (framesets!), then PHP, JSP, JSTL, Twirl (Scala) and finally, Velocity templates (Java).
 On the frontend I've used jQuery/Zepto, then Knockout, Angular, Meteor, and finally, Vue.
@@ -42,69 +41,61 @@ Just business logic.
 
 ## Setup
 Our backend will be Kotlin, and we'll be using Maven to build.
-We need to bring in Javalin (web library), Jackson (JSON serializer), and slf4j-simple (logger).\\
+We need to bring in Javalin (web server framework).\\
 We'll also add Vue (view library) for our frontend:
 
 ```markup
 <dependency>
     <groupId>io.javalin</groupId>
-    <artifactId>javalin</artifactId>
+    <artifactId>javalin-bundle</artifactId>
     <version>{{site.javalinversion}}</version>
-</dependency>
-<dependency>
-    <groupId>com.fasterxml.jackson.module</groupId>
-    <artifactId>jackson-module-kotlin</artifactId>
-    <version>2.9.9</version>
-</dependency>
-<dependency>
-    <groupId>org.slf4j</groupId>
-    <artifactId>slf4j-simple</artifactId>
-    <version>{{site.slf4jversion}}</version>
 </dependency>
 <dependency>
     <groupId>org.webjars.npm</groupId>
     <artifactId>vue</artifactId>
-    <version>2.6.10</version>
+    <version>3.2.37</version>
 </dependency>
 ```
 
 <div class="comment" markdown="1">
 You can add all frontend dependencies as [Webjars](https://www.webjars.org/), which can be built directly from NPM.
 If something is available on NPM, it's also available as a Webjar, but as a prebuilt dist version (it has no dependencies).
-To view the full POM, please go to [GitHub](https://github.com/tipsy/javalinvue-example/blob/master/javalinvue2-example/pom.xml).
 </div>
 
 Now that we have all our dependencies in order, we need to configure our web server.\\
-Let's create `/src/main/kotlin/javalinvue/Main.kt`:
+Let's create `/src/main/kotlin/javalinvue/JavalinVueExampleApp.kt`:
 
 ```kotlin
 import io.javalin.Javalin
 
 fun main() {
     Javalin.create { config ->
-        config.enableWebjars()
-    }.start(7000)
+        config.staticFiles.enableWebjars()
+    }.start(7070)
 }
 ```
 
-We also need an HTML file to load our frontend dependencies and to initialize Vue. \\
+We also need an HTML file to load our frontend dependencies and to initialize Vue.\\
 Let's create `/src/main/resources/vue/layout.html`:
 
 ```markup
 <html>
-    <head>
-        <meta charset="utf8">
-        <script src="/webjars/vue/2.6.10/dist/vue.min.js"></script>
-        @componentRegistration
-    </head>
-    <body>
-        <main id="main-vue" v-cloak>
-            @routeComponent
-        </main>
-        <script>
-            new Vue({el: "#main-vue"});
-        </script>
-    </body>
+  <head>
+    <meta charset="utf8">
+    <script src="/webjars/vue/3.2.37/dist/vue.global.prod.js"></script>
+    <script>
+      const app = Vue.createApp({});
+    </script>
+    @componentRegistration
+  </head>
+  <body>
+  <main id="main-vue" v-cloak>
+    @routeComponent
+  </main>
+  <script>
+    app.mount("#main-vue");
+  </script>
+  </body>
 </html>
 ```
 
@@ -115,20 +106,19 @@ Javalin will also let you choose one component to mount based on the current URL
 this is the `@routeComponent`.
 
 ## Hello World
-
 Now that we have a layout file, let's create `/resources/vue/views/hello-world.vue`:
 
 {% raw %}```html
 <template id="hello-world">
-    <h1 class="hello-world">Hello, World!</h1>
+  <h1 class="hello-world">Hello, World!</h1>
 </template>
 <script>
-    Vue.component("hello-world", {template: "#hello-world"});
+  app.component("hello-world", {template: "#hello-world"});
 </script>
 <style>
-    .hello-world {
-        color: goldenrod;
-    }
+  .hello-world {
+    color: goldenrod;
+  }
 </style>
 ```{% endraw %}
 
@@ -140,13 +130,13 @@ To display our component to the user, we need to tell Javalin when to show it. L
 
 ```kotlin
 import io.javalin.Javalin
-import io.javalin.plugin.rendering.vue.VueComponent
+import io.javalin.vue.VueComponent
 
 fun main() {
 
-    val app = Javalin.create { config ->
-        config.enableWebjars()
-    }.start(7000)
+    Javalin.create { config ->
+        config.staticFiles.enableWebjars()
+    }.start(7070)
 
     app.get("/", VueComponent("hello-world"))
 }
@@ -155,7 +145,7 @@ fun main() {
 The `@routeComponent` that we added in `layout.html` earlier will be replaced by the String inside of `VueComponent`.
 This means a call to `/` will load the layout and display our `<hello-world></hello-world>` component.
 
-Restart the server, go to `http://localhost:7000/`, and you'll see `Hello, World!` in a nice goldenrod color.
+Restart the server, go to `http://localhost:7070/`, and you'll see `Hello, World!` in a nice goldenrod color.
 
 <div class="comment" markdown="1">
 Note that you don't have to restart the server when making changes to `.vue` files,
@@ -164,18 +154,17 @@ The reason we needed to restart now was because we added a new route in the `mai
 </div>
 
 ## Routing and error handling
-
 Now that we know how to create components, let's look at a very common scenario:
 creating an admin interface. Our admin interface should be able to display an overview
 of users, and also additional details for one specific user.
-This will require two views, and we should probably also include a 404 page.
+This will require two views, and we should probably also include a "Page not found" (404) page.
 
 Let's change the server by adding the following lines:
 
 ```kotlin
 app.get("/users", VueComponent("user-overview"))
 app.get("/users/{user-id}", VueComponent("user-profile"))
-app.error(404, "html", VueComponent("not-found"))
+app.error(HttpStatus.NOT_FOUND, "html", VueComponent("not-found"))
 
 app.get("/api/users", UserController::getAll)
 app.get("/api/users/{user-id}", UserController::getOne)
@@ -191,7 +180,7 @@ import io.javalin.http.NotFoundResponse
 data class User(val id: String, val name: String, val email: String, val userDetails: UserDetails?)
 data class UserDetails(val dateOfBirth: String, val salary: String)
 
-val users = setOf<User>(
+val users = setOf(
     User(id = "1", name = "John", email = "john@fake.co", userDetails = UserDetails("21.02.1964", "2773 JB")),
     User(id = "2", name = "Mary", email = "mary@fake.co", userDetails = UserDetails("12.05.1994", "1222 JB")),
     User(id = "3", name = "Dave", email = "dave@fake.co", userDetails = UserDetails("01.05.1984", "1833 JB")),
@@ -222,41 +211,41 @@ Let's create `/src/main/resources/vue/views/user-overview.vue` first:
 
 {% raw %}```html
 <template id="user-overview">
-    <div>
-        <ul class="user-overview-list">
-            <li v-for="user in users">
-                <a :href="`/users/${user.id}`">{{user.name}} ({{user.email}})</a>
-            </li>
-        </ul>
-    </div>
+  <div>
+    <ul class="user-overview-list">
+      <li v-for="user in users">
+        <a :href="`/users/${user.id}`">{{user.name}} ({{user.email}})</a>
+      </li>
+    </ul>
+  </div>
 </template>
 <script>
-    Vue.component("user-overview", {
-        template: "#user-overview",
-        data: () => ({
-            users: [],
-        }),
-        created() {
-            fetch("/api/users")
-                .then(res => res.json())
-                .then(res => this.users = res)
-                .catch(() => alert("Error while fetching users"));
-        }
-    });
+  app.component("user-overview", {
+    template: "#user-overview",
+    data: () => ({
+      users: [],
+    }),
+    created() {
+      fetch("/api/users")
+        .then(res => res.json())
+        .then(res => this.users = res)
+        .catch(() => alert("Error while fetching users"));
+    }
+  });
 </script>
 <style>
-    ul.user-overview-list {
-        padding: 0;
-        list-style: none;
-    }
-    ul.user-overview-list a {
-        display: block;
-        padding: 16px;
-        border-bottom: 1px solid #ddd;
-    }
-    ul.user-overview-list a:hover {
-        background: #00000010;
-    }
+  ul.user-overview-list {
+    padding: 0;
+    list-style: none;
+  }
+  ul.user-overview-list a {
+    display: block;
+    padding: 16px;
+    border-bottom: 1px solid #ddd;
+  }
+  ul.user-overview-list a:hover {
+    background: #00000010;
+  }
 </style>
 ```{% endraw %}
 
@@ -264,40 +253,40 @@ It's a simple component which performs one GET request to the server to fetch th
 then sets the component state. Vue loops through the users and creates a list of links that we can
 click to view additional information for one user. We've also included a few CSS rules to pretty things up.
 
-Open `http://localhost:7000/users/` to view the list of users. If you click on one, a blank page will show.\\
+Open `http://localhost:7070/users/` to view the list of users. If you click on one, a blank page will show.\\
 Let's fix this by creating `/src/main/resources/vue/views/user-profile.vue`:
 
 {% raw %}```html
 <template id="user-profile">
-    <div>
-        <dl v-if="user">
-            <dt>User ID</dt>
-            <dd>{{user.id}}</dd>
-            <dt>Name</dt>
-            <dd>{{user.name}}</dd>
-            <dt>Email</dt>
-            <dd>{{user.email}}</dd>
-            <dt>Birthday</dt>
-            <dd>{{user.userDetails.dateOfBirth}}</dd>
-            <dt>Salary</dt>
-            <dd>{{user.userDetails.salary}}</dd>
-        </ul>
-    </div>
+  <div>
+    <dl v-if="user">
+      <dt>User ID</dt>
+      <dd>{{user.id}}</dd>
+      <dt>Name</dt>
+      <dd>{{user.name}}</dd>
+      <dt>Email</dt>
+      <dd>{{user.email}}</dd>
+      <dt>Birthday</dt>
+      <dd>{{user.userDetails.dateOfBirth}}</dd>
+      <dt>Salary</dt>
+      <dd>{{user.userDetails.salary}}</dd>
+    </ul>
+  </div>
 </template>
 <script>
-    Vue.component("user-profile", {
-        template: "#user-profile",
-        data: () => ({
-            user: null,
-        }),
-        created() {
-            const userId = this.$javalin.pathParams["user-id"];
-            fetch(`/api/users/${userId}`)
-                .then(res => res.json())
-                .then(res => this.user = res)
-                .catch(() => alert("Error while fetching user"));
-        }
-    });
+  app.component("user-profile", {
+    template: "#user-profile",
+    data: () => ({
+      user: null,
+    }),
+    created() {
+      const userId = this.$javalin.pathParams["user-id"];
+      fetch(`/api/users/${userId}`)
+        .then(res => res.json())
+        .then(res => this.user = res)
+        .catch(() => alert("Error while fetching user"));
+    }
+  });
 </script>
 ```{% endraw %}
 
@@ -310,10 +299,10 @@ Let's finish up our views with `/src/main/resources/vue/views/not-found.vue`:
 
 {% raw %}```html
 <template id="not-found">
-    <h1>Page not found (error 404)</h1>
+  <h1>Page not found (error 404)</h1>
 </template>
 <script>
-    Vue.component("not-found", {template: "#not-found"});
+  app.component("not-found", {template: "#not-found"});
 </script>
 ```{% endraw %}
 
@@ -322,25 +311,25 @@ While not strictly related to JavalinVue, let's add `/src/main/resources/vue/com
 
 {% raw %}```html
 <template id="app-frame">
-    <div class="app-frame">
-        <header>
-            <span>JavalinVue demo app</span>
-        </header>
-        <slot></slot>
-    </div>
+  <div class="app-frame">
+    <header>
+      <span>JavalinVue demo app</span>
+    </header>
+    <slot></slot>
+  </div>
 </template>
 <script>
-    Vue.component("app-frame", {template: "#app-frame"});
+  app.component("app-frame", {template: "#app-frame"});
 </script>
 <style>
-    .app-frame > header {
-        padding: 20px;
-        background: #b6e2ff;
-        font-size: 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+  .app-frame > header {
+    padding: 20px;
+    background: #b6e2ff;
+    font-size: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 </style>
 ```{% endraw %}
 
@@ -350,12 +339,12 @@ Here is an example showing the 404 page using the app-frame:
 
 {% raw %}```html
 <template id="not-found">
-    <app-frame>
-        <h1>Page not found (error 404)</h1>
-    </app-frame>
+  <app-frame>
+    <h1>Page not found (error 404)</h1>
+  </app-frame>
 </template>
 <script>
-    Vue.component("not-found", {template: "#not-found"});
+  app.component("not-found", {template: "#not-found"});
 </script>
 ```{% endraw %}
 
@@ -378,40 +367,40 @@ Two roles should be enough: `ANYONE` and `LOGGED_IN`. We add those roles to the 
 
 ```kotlin
 import io.javalin.Javalin
-import io.javalin.core.security.Role
-import io.javalin.core.security.SecurityUtil.roles
-import io.javalin.core.util.Header
+import io.javalin.security.RouteRole
+import io.javalin.http.Header
 import io.javalin.http.Context
-import io.javalin.plugin.rendering.vue.JavalinVue
-import io.javalin.plugin.rendering.vue.VueComponent
+import io.javalin.http.HttpStatus
+import io.javalin.http.staticfiles.Location
+import io.javalin.vue.JavalinVue
+import io.javalin.vue.VueComponent
 
 enum class Role : RouteRole { ANYONE, LOGGED_IN }
 
 fun main() {
 
     val app = Javalin.create { config ->
-        config.enableWebjars()
-        config.accessManager { handler, ctx, routeRoles ->
+        config.staticFiles.enableWebjars()
+        config.core.accessManager { handler, ctx, permittedRoles ->
             when {
-                AppRole.ANYONE in routeRoles -> handler.handle(ctx)
-                AppRole.LOGGED_IN in routeRoles && anyUsernameProvided(ctx) -> handler.handle(ctx)
+                Role.ANYONE in permittedRoles -> handler.handle(ctx)
+                Role.LOGGED_IN in permittedRoles && currentUser(ctx) != null -> handler.handle(ctx)
                 else -> ctx.status(401).header(Header.WWW_AUTHENTICATE, "Basic")
             }
         }
-    }.start(7000)
+    }.start(7070)
 
     app.get("/", VueComponent("hello-world"), Role.ANYONE)
     app.get("/users", VueComponent("user-overview"), Role.ANYONE)
     app.get("/users/{user-id}", VueComponent("user-profile"), Role.LOGGED_IN)
+    app.error(HttpStatus.NOT_FOUND, "html", VueComponent("not-found"))
 
     app.get("/api/users", UserController::getAll, Role.ANYONE)
     app.get("/api/users/{user-id}", UserController::getOne, Role.LOGGED_IN)
 
-    app.error(404, "html", VueComponent("not-found"))
-
 }
 
-fun anyUsernameProvided(ctx: Context) = ctx.basicAuthCredentials()?.username?.isNotBlank() == true
+private fun currentUser(ctx: Context) = ctx.basicAuthCredentials()?.username
 ```
 
 This is just an example, our authentication isn't exactly secure. As long as the user enters
@@ -423,29 +412,29 @@ Our server knows, so we need to transfer this knowledge somehow.
 This can be solved by setting a JavalinVue state function:
 
 ```kotlin
-JavalinVue.stateFunction = { ctx -> mapOf("currentUser" to ctx.basicAuthCredentials()?.username) }
+JavalinVue.stateFunction = { ctx -> mapOf("currentUser" to currentUser(ctx)) }
 ```
 
 This line of code sets a function that will run for every `VueComponent`, so all components will now
 have access to the current user (if there is one). Since basic-auth works per directory, the frame will only
-show the current user for `http://localhost:7000/users/` (the user-overview) and its subpaths (the individual profiles).
+show the current user for `http://localhost:7070/users/` (the user-overview) and its subpaths (the individual profiles).
 Let's add it to `app-frame.vue`:
 
 {% raw %}```html
 <template id="app-frame">
-    <div class="app-frame">
-        <header>
-            <span>JavalinVue demo app</span>
-            <span v-if="$javalin.state.currentUser">Current user: '{{$javalin.state.currentUser}}'</span>
-        </header>
-        <slot></slot>
-    </div>
+  <div class="app-frame">
+    <header>
+      <span>JavalinVue demo app</span>
+      <span v-if="$javalin.state.currentUser">Current user: '{{$javalin.state.currentUser}}'</span>
+    </header>
+    <slot></slot>
+  </div>
 </template>
 ```{% endraw %}
 
 ## Conclusion
 We've created a fully working (but pretty limited) admin interface with only a few files.
-* `Main.kt` contains the server config (routes, error handlers, access management)
+* `JavalinVueExampleApp.kt` contains the server config (routes, error handlers, access management)
 * `UserController.kt` contains the list of fake users, and methods to get them (getAll, getOne)
 * `layout.html` loads the frontend dependencies and initializes Vue
 * `app-frame.vue` has a header and some global styling which is included in all components
@@ -494,14 +483,14 @@ We're missing out on a few nice things. We can't hot reload the content of a com
 have to manually refresh the page to see changes. Changes are picked up instantly though, so a refresh typically takes ~10ms.
 
 I'm running a couple of apps with this setup in production. The biggest one is a
-partner-portal with 30 components and 25 views (pages), and the total weight of all the
+customer-portal with 30 components and 25 views (pages), and the total weight of all the
 components is only 20kb (100kb before GZIP). It's been running for a year, and I've been
 waiting for issues and flaws to present themselves, but I haven't seen any yet.
 
 <div class="comment" markdown="1" style="margin-top:16px;font-size:14px;">
-Update, October 2020: The app has been running for over two years without
-any issues. It's now using the new `JavalinVue.optimizeDependencies` config option, which brings the
-average request size down to about 8kb gzipped.
+Update, October 2022: The app has been running for four years without
+any issues. It's now using the `JavalinVue.optimizeDependencies` config option, which
+is enabled by default for Javalin 4+. This brings the average request size down to about 8kb gzipped.
 </div>
 
 Performance is pretty good. The app loads fast and never flickers. Below you see the
