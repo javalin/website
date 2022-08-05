@@ -5,7 +5,7 @@ title: "Jetty session handling - Persisting, caching and clustering"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2018-09-02
 permalink: /tutorials/jetty-session-handling
-github: https://github.com/tipsy/javalin-jetty-sessions-example
+github: https://github.com/javalin/javalin-samples/tree/main/javalin5/javalin-jetty-sessions-example
 summarytitle: Jetty session handling
 summary: The tutorial includes persisting sessions locally and in a database, as well as caching and clustering
 language: ["java", "kotlin"]
@@ -43,7 +43,7 @@ This approach is well suited for a dev environment, since it's easy to set up an
 You need to create a `SessionHandler` with a `SessionCache`, and attach a `FileSessionDataStore`:
 
 {% capture java %}
-SessionHandler fileSessionHandler() {
+public static SessionHandler fileSessionHandler() {
     SessionHandler sessionHandler = new SessionHandler();
     SessionCache sessionCache = new DefaultSessionCache(sessionHandler);
     sessionCache.setSessionDataStore(fileSessionDataStore());
@@ -53,7 +53,7 @@ SessionHandler fileSessionHandler() {
     return sessionHandler;
 }
 
-FileSessionDataStore fileSessionDataStore() {
+private static FileSessionDataStore fileSessionDataStore() {
     FileSessionDataStore fileSessionDataStore = new FileSessionDataStore();
     File baseDir = new File(System.getProperty("java.io.tmpdir"));
     File storeDir = new File(baseDir, "javalin-session-store");
@@ -63,9 +63,9 @@ FileSessionDataStore fileSessionDataStore() {
 }
 {% endcapture %}
 {% capture kotlin %}
-fun fileSessionHandler() = SessionHandler().apply { // create the session handler
-    sessionCache = DefaultSessionCache(this).apply { // attach a cache to the handler
-        sessionDataStore = FileSessionDataStore().apply { // attach a store to the cache
+fun fileSessionHandler() = SessionHandler().apply {
+    sessionCache = DefaultSessionCache(this).apply {
+        sessionDataStore = FileSessionDataStore().apply {
             val baseDir = File(System.getProperty("java.io.tmpdir"))
             this.storeDir = File(baseDir, "javalin-session-store").apply { mkdir() }
         }
@@ -81,13 +81,12 @@ you redeploy your service, so be careful. File IO can also be slow, depending on
 If you want your sessions to be a bit more persistent, and faster, you can use a database.
 
 ### Persisting to a database
-
 Programmatically, persisting to a database is not very different from persisting to the file system.
 You need to create a `SessionHandler` with a `SessionCache`, but instead of using a `FileSessionDataStore` you
 need to use a datastore specific for your database. Here is an example using JDBC:
 
 {% capture java %}
-SessionHandler sqlSessionHandler(String driver, String url) {
+public static SessionHandler sqlSessionHandler(String driver, String url) {
     SessionHandler sessionHandler = new SessionHandler();
     SessionCache sessionCache = new DefaultSessionCache(sessionHandler);
     sessionCache.setSessionDataStore(
@@ -99,7 +98,7 @@ SessionHandler sqlSessionHandler(String driver, String url) {
     return sessionHandler;
 }
 
-JDBCSessionDataStoreFactory jdbcDataStoreFactory(String driver, String url) {
+private static JDBCSessionDataStoreFactory jdbcDataStoreFactory(String driver, String url) {
     DatabaseAdaptor databaseAdaptor = new DatabaseAdaptor();
     databaseAdaptor.setDriverInfo(driver, url);
     // databaseAdaptor.setDatasource(myDataSource); // you can set data source here (for connection pooling, etc)
@@ -127,7 +126,7 @@ fun sqlSessionHandler(driver: String, url: String) = SessionHandler().apply {
 If you want to use MongoDB you can just switch the data store:
 
 {% capture java %}
-MongoSessionDataStoreFactory mongoDataStoreFactory(String url, String dbName, String collectionName) {
+private static MongoSessionDataStoreFactory mongoDataStoreFactory(String url, String dbName, String collectionName) {
     MongoSessionDataStoreFactory mongoSessionDataStoreFactory = new MongoSessionDataStoreFactory();
     mongoSessionDataStoreFactory.setConnectionString(url);
     mongoSessionDataStoreFactory.setDbName(dbName);
@@ -209,21 +208,19 @@ to set the `SameSite=strict` cookie flag. This is particularly recommended if th
 directly or indirectly for authentication purposes.
 
 {% capture java %}
-private static Supplier<SessionHandler> customSessionHandlerSupplier() {
-final SessionHandler sessionHandler = new SessionHandler();
-// [..] add persistence DB etc. management here [..]
-sessionHandler.getSessionCookieConfig().setHttpOnly(true);
-sessionHandler.getSessionCookieConfig().setSecure(true);
-sessionHandler.getSessionCookieConfig().setComment("__SAME_SITE_STRICT__");
-return () -> sessionHandler;
+static SessionHandler customSessionHandler() {
+    final SessionHandler sessionHandler = new SessionHandler();
+    sessionHandler.setHttpOnly(true);
+    sessionHandler.setSecureRequestOnly(true);
+    sessionHandler.setSameSite(HttpCookie.SameSite.STRICT);
+    return sessionHandler;
 }
 {% endcapture %}
 {% capture kotlin %}
-private fun customSessionHandlerSupplier(): SessionHandler = SessionHandler().apply {
-// [..] add persistence DB etc. management here [..]
-sessionCookieConfig.isHttpOnly = true
-sessionCookieConfig.isSecure = true
-sessionCookieConfig.comment = "__SAME_SITE_STRICT__"
+fun customSessionHandler() = SessionHandler().apply {
+    httpOnly = true
+    isSecureRequestOnly = true
+    sameSite = HttpCookie.SameSite.STRICT
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -350,4 +347,4 @@ app.accessManager { handler, ctx, roles ->
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 The source code for these examples is available in the
-[tutorial repo](https://github.com/tipsy/javalin-jetty-sessions-example/blob/master/src/main/java/app/Main.java).
+[tutorial repo](https://github.com/javalin/javalin-samples/tree/main/javalin5/javalin-jetty-sessions-example).
