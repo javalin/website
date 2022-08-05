@@ -5,7 +5,7 @@ title: "Deploying Javalin on Heroku"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2017-05-25
 permalink: /tutorials/heroku
-github: https://github.com/tipsy/javalin-heroku-example
+github: https://github.com/javalin/javalin-samples/blob/main/javalin5/javalin-heroku-example
 summarytitle: Deploying to Heroku
 summary: Deploy a Javalin Hello World application on Heroku!
 language: java
@@ -47,10 +47,10 @@ following configuration (below your dependencies tag):
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
-            <version>2.3.2</version>
+            <version>3.10.1</version>
             <configuration>
-                <source>1.8</source>
-                <target>1.8</target>
+                <source>11</source>
+                <target>11</target>
             </configuration>
         </plugin>
         <plugin>
@@ -70,7 +70,8 @@ following configuration (below your dependencies tag):
                 </descriptorRefs>
                 <archive>
                     <manifest>
-                        <mainClass>Main</mainClass>
+                        <!-- package+name of your main class -->
+                        <mainClass>JavalinHerokuExampleApp</mainClass>
                     </manifest>
                 </archive>
             </configuration>
@@ -96,9 +97,9 @@ We specify the JDK version and the app-name, along with the launch config:
 <plugin>
     <groupId>com.heroku.sdk</groupId>
     <artifactId>heroku-maven-plugin</artifactId>
-    <version>1.1.3</version>
+    <version>3.0.3</version>
     <configuration>
-        <jdkVersion>1.8</jdkVersion>
+        <jdkVersion>11</jdkVersion>
         <appName>javalin-heroku-example</appName>
         <processTypes>
             <!-- Tell Heroku how to launch your application -->
@@ -108,7 +109,7 @@ We specify the JDK version and the app-name, along with the launch config:
 </plugin>
 ~~~
 When you've added the Heroku config to your pom,
-it should look like [this](https://github.com/tipsy/javalin-heroku-example/blob/master/pom.xml)
+it should look like [this](https://github.com/javalin/javalin-samples/blob/main/javalin5/javalin-heroku-example/pom.xml)
 
 ## Making Javalin Listen on the Correct Port
 The only thing left is making sure Javalin can handle your requests.

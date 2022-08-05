@@ -19,7 +19,7 @@ version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 11
 
 repositories {
     mavenCentral()
@@ -27,7 +27,6 @@ repositories {
 
 dependencies {
     implementation 'io.javalin:javalin:{{site.javalinversion}}'
-    testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
 ~~~
 
