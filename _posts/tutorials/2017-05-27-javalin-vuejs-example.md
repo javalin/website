@@ -5,7 +5,7 @@ title: "TODO MVC with Vue.js and Kotlin"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2017-05-27
 permalink: /tutorials/kotlin-vuejs-example
-github: https://github.com/tipsy/javalin-vuejs-example
+github: https://github.com/javalin/javalin-samples/tree/main/javalin5/javalin-vuejs-example
 summarytitle: Single-page app with Kotlin and Vue.js
 summary: Use Vue.js and Kotlin to create the famous TODO MVC app
 language: kotlin
@@ -22,41 +22,31 @@ follow the beginning of our [Kotlin CRUD REST API tutorial](/tutorials/simple-ko
 ~~~markup
 <dependency>
     <groupId>io.javalin</groupId>
-    <artifactId>javalin</artifactId>
+    <artifactId>javalin-bundle</artifactId>
     <version>{{site.javalinversion}}</version>
-</dependency>
-<dependency>
-    <groupId>org.slf4j</groupId>
-    <artifactId>slf4j-simple</artifactId>
-    <version>{{site.slf4jversion}}</version>
-</dependency>
-<dependency>
-    <groupId>com.fasterxml.jackson.module</groupId>
-    <artifactId>jackson-module-kotlin</artifactId>
-    <version>2.9.9</version>
 </dependency>
 ~~~
 
 ## Our main class
 
 ~~~kotlin
-fun main(args: Array<String>) {
+data class Todo(val id: Long, val title: String, val completed: Boolean)
+
+fun main() {
 
     var todos = arrayOf(Todo(123123123, "My very first todo", false))
 
     val app = Javalin.create {
-        it.addStaticFiles("/public")
-    }.start(7000)
-
-    app.routes {
-        get("/todos") { ctx ->
-            ctx.json(todos)
-        }
-        put("/todos") { ctx ->
-            todos = ctx.bodyAsClass<Array<Todo>>()
-            ctx.status(204)
-        }
+        it.staticFiles.add("/public", Location.CLASSPATH)
     }
+    app.get("/todos") { ctx ->
+        ctx.json(todos)
+    }
+    app.put("/todos") { ctx ->
+        todos = ctx.bodyAsClass()
+        ctx.status(204)
+    }
+    app.start(7070)
 
 }
 ~~~
