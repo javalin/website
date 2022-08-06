@@ -1,0 +1,133 @@
+<div class="plugin-box {{include.title | slugify}}">
+    <h2>
+        {{ include.title }}
+        <small>(created by <a href="https://github.com/{{ include.author }}">@{{ include.author }}</a> {{ include.created }})</small>
+    </h2>
+    <p>
+        {{ include.description }}
+    </p>
+    {% if include.bundled %}
+        <em class="is-bundled">This plugin comes bundled with all versions of Javalin.</em>
+    {% endif %}
+    <div class="plugin-box-footer">
+        <a class="reactions" href="{{ include.ratingIssueUrl }}"></a>
+        <a class="view-docs-btn" href="{{ include.docsUrl }}">
+            View documentation
+            <svg width="24" height="24" viewBox="0 0 24 24"><path d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z" /></svg>
+        </a>
+    </div>
+</div>
+<script>
+    (() => {
+        let pluginName = "{{include.title | slugify}}";
+        let issueUrl = "{{ include.ratingIssueUrl }}";
+        let apiUrl = issueUrl.replace(
+            "https://github.com/",
+            "https://api.github.com/repos/"
+        );
+        let cached = JSON.parse(sessionStorage.getItem(apiUrl));
+        if (cached?.reactions) {
+            setReactions(cached.reactions, cached.comments);
+        } else {
+            fetch(apiUrl)
+                .then(res => res.json())
+                .then(data => {
+                    if (!data?.reactions) return;
+                    setReactions(data.reactions, data.comments);
+                    sessionStorage.setItem(apiUrl, JSON.stringify(data));
+                });
+        }
+        function setReactions(data, comments) {
+            function rIcon(key, icon, className) {
+                return data[key] ? `<span class="r-icon ${className}">${reactionIcons[icon]} ${data[key]}</span>` : ""
+            }
+            document.querySelector(`.${pluginName} .reactions`).insertAdjacentHTML("beforeend", `
+                ${rIcon("+1", "thumbsUp", "good")}
+                ${rIcon("heart", "heart", "good")}
+                ${rIcon("hooray", "hooray", "good")}
+                ${rIcon("rocket", "rocket", "good")}
+                ${rIcon("-1", "thumbsDown", "bad")}
+                ${rIcon("confused", "confused", "bad")}
+                ${comments > 0 ? `<span class="r-icon review">Reviews: ${comments}</span>` : ''}
+            `)
+        }
+    })();
+</script>
+<style>
+.plugin-box {
+    position: relative;
+    color: #444;
+    display: block;
+    padding: 24px;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    margin-top: 24px;
+}
+.plugin-box h2 {
+    margin-top: 0;
+}
+.plugin-box h2 small {
+    font-size: 70%;
+    font-weight: 400;
+}
+.plugin-box .is-bundled {
+    font-size: 13px;
+}
+.plugin-box-footer {
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.plugin-box-footer .view-docs-btn {
+    background: #f5f5f5;
+    border-radius: 40px;
+    padding: 8px 16px;
+    display: inline-flex;
+    align-items: center;
+    color: black;
+}
+.plugin-box-footer .view-docs-btn svg {
+    margin-left: 4px;
+}
+.plugin-box-footer .reactions {
+    display: flex;
+}
+.plugin-box-footer .reactions .good,
+.plugin-box-footer .reactions .bad {
+    display: flex;
+}
+.plugin-box-footer .r-icon {
+    font-size: 16px;
+    font-weight: 500;
+    font-family: "Roboto Slab", sans-serif;
+    display: flex;
+    align-items: center;
+    background: 1px #f5f5f5;
+    padding: 4px 8px;
+    border-radius: 5px;
+}
+.plugin-box-footer .r-icon + .r-icon {
+    margin-left: 8px;
+}
+.plugin-box-footer .r-icon svg {
+    display: block;
+    height: 22px;
+    width: 22px;
+    margin-right: 4px;
+}
+.plugin-box-footer .reactions .good,
+.plugin-box-footer .reactions .good svg {
+    color: #1fa11f;
+    fill: #1fa11f;
+}
+.plugin-box-footer .reactions .bad,
+.plugin-box-footer .reactions .bad svg {
+    color: #c02c2c;
+    fill: #c02c2c;
+}
+.plugin-box-footer .review {
+    color: black;
+}
+</style>
