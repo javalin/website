@@ -31,7 +31,7 @@ and the rating is displayed at the bottom of each card.
     title="RouteOverview"
     description="
         The route overview provides you with a HTML and/or JSON overview of all the routes
-        registered on your Javalin application
+        registered on your Javalin application. Perfect for debugging!
     "
     bundled="true"
     author="tipsy"
