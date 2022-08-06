@@ -6,7 +6,7 @@
     <p>
         {{ include.description }}
     </p>
-    {% if include.bundled %}
+    {% if include.bundled == "true" %}
         <em class="is-bundled">This plugin comes bundled with all versions of Javalin.</em>
     {% endif %}
     <div class="plugin-box-footer">

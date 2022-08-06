@@ -26,3 +26,40 @@ and the rating is displayed at the bottom of each card.
     docsUrl="/plugins/javalinvue"
     ratingIssueUrl="https://github.com/javalin/javalin.github.io/issues/132"
 %}
+
+{% include pluginCard.html
+    title="RouteOverview"
+    description="
+        The route overview provides you with a HTML and/or JSON overview of all the routes
+        registered on your Javalin application
+    "
+    bundled="true"
+    author="tipsy"
+    created="Mar 23rd, 2018"
+    docsUrl="/plugins/routeoverview"
+    ratingIssueUrl="https://github.com/javalin/javalin.github.io/issues/135"
+%}
+
+{% include pluginCard.html
+    title="OpenAPI Annotation Processor"
+    description="
+        Fill this out
+    "
+    bundled="false"
+    author="dzikoysk"
+    created="Jun 23rd, 2021"
+    docsUrl="/plugins/openapi-annotation-processor"
+    ratingIssueUrl="https://github.com/javalin/javalin.github.io/issues/133"
+%}
+
+{% include pluginCard.html
+    title="SSL Helpers"
+    description="
+        Fill this out
+    "
+    bundled="false"
+    author="zugazagoitia"
+    created="Aug 12th, 2022"
+    docsUrl="/plugins/ssl-helpers"
+    ratingIssueUrl="https://github.com/javalin/javalin.github.io/issues/134"
+%}
