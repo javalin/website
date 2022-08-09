@@ -1,14 +1,18 @@
 <div class="plugin-box {{include.title | slugify}}">
-    <h2>
-        {{ include.title }}
-        <small>(created by <a href="https://github.com/{{ include.author }}">@{{ include.author }}</a> {{ include.created }})</small>
-    </h2>
+    <div class="plugin-box-header">
+        <h2>
+            {{ include.title }}
+            <small>(created by <a href="https://github.com/{{ include.author }}">@{{ include.author }}</a> {{ include.created }})</small>
+        </h2>
+        <span class="plugin-tags">
+             {% if include.bundled == "true" %}
+                <span class="plugin-tag">Bundled</span>
+             {% endif %}
+        </span>
+    </div>
     <p>
         {{ include.description }}
     </p>
-    {% if include.bundled == "true" %}
-        <em class="is-bundled">This plugin comes bundled with all versions of Javalin.</em>
-    {% endif %}
     <div class="plugin-box-footer">
         <a class="reactions" href="{{ include.ratingIssueUrl }}"></a>
         <a class="view-docs-btn" href="{{ include.docsUrl }}">
@@ -63,6 +67,19 @@
     border-radius: 5px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
     margin-top: 24px;
+}
+.plugin-box-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.plugin-box-header .plugin-tag {
+    text-transform: capitalize;
+    background: #f5f5f5;
+    border-radius: 5px;
+    padding: 2px 6px 1px;
+    display: inline-block;
+    font-size: 14px;
 }
 .plugin-box h2 {
     font-size: 22px;
