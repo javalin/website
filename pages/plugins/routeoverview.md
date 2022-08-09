@@ -11,7 +11,7 @@ The route-overview shows the verb, the path, the function/field/class handling t
 and any roles attached to the handler.
 If the clients accepts JSON, this is served as JSON. Otherwise it's served as HTML:
 
-<img src="/img/news/route-overview.png" alt="Route overview">
+<img src="/img/plugins/routeoverview.png" alt="Route overview">
 
 You can enable the route-overview either through the `config.plugins` or by registering it manually:
 
