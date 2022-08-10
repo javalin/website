@@ -12,9 +12,9 @@ language: java
 ---
 
 ## What You Will Learn
-In this tutorial we will learn how to create a simple RESTful API based on Javalin and the Java Platform Module System (JPMS or Jigsaw) with Gradle for build.
+In this tutorial we will learn how to create a simple RESTful API based on Javalin and the Java Platform Module System (JPMS or Jigsaw) with Gradle as build and dependency management tool.
 
-We will use the [Java Platform Module System](https://www.oracle.com/corporate/features/understanding-java-9-modules.html) which among other benefits greatly improves the ability to encapsulate implementation details in big Java projects. Moreover, we will utilize the built-in dependency constructor injection mechanisms which come with JPMS and Java's [ServiceLoader](https://docs.oracle.com/javase/9/docs/api/java/util/ServiceLoader.html). Also, we'll show how to use [Gradle](https://gradle.org) as the underlying build and dependency management tooling to showcase how neat Gradle and JPMS can work together.
+We will use the [Java Platform Module System](https://www.oracle.com/corporate/features/understanding-java-9-modules.html) which among other benefits greatly improves the ability to encapsulate implementation details in big Java projects. Moreover, we will utilize the built-in dependency loading / resolving mechanisms which come with JPMS and Java's [ServiceLoader](https://docs.oracle.com/javase/9/docs/api/java/util/ServiceLoader.html). Also, we'll show how to use [Gradle](https://gradle.org) as the underlying build and dependency management tooling to showcase how neat Gradle and JPMS can work together.
 
 
 ## Prerequisites
@@ -636,4 +636,187 @@ curl http://localhost:7312/persons
 [{"name":"Vincent Vega","age":73},{"name":"Jules Winnfield","age":12}]
 ```
 
-Congrats, Javalin's up and running in a modularized project which fully leverages JPMS and its baked in dependency injection mechanism through Java's `ServiceLoader` 🥳
+Congrats, Javalin's up and running in a modularized project which fully leverages JPMS and its baked in dependency loading / resolving mechanism through Java's `ServiceLoader` 🥳
+
+## One step further - add a constructor dependency to our InMemoryPersonReader
+
+Currently, our dependencies are as simple as they can get. So as one last challenge let's introduce a constructor dependendcy in our beloved `InMemoryPersonReader` implementation. For the sake of simplicity, let's introduce filtering as follows.
+
+Add a new interface `services/src/main/java/org/example/services/api/PersonFilter.java` with the following content:
+
+```java
+package org.example.services.api;
+
+import org.example.models.Person;
+
+public interface PersonFilter {
+    boolean filter(Person p);
+}
+```
+
+Let's create an implementation `services/src/main/java/org/example/services/filter/AtLeastEighteenFilter.java` which returns only true if the given person is at least 18 years old:
+
+```java
+package org.example.services.filter;
+
+import org.example.models.Person;
+import org.example.services.api.PersonFilter;
+
+public class AtLeastEighteenFilter implements PersonFilter {
+    @Override
+    public boolean filter(Person p) {
+        return p.getAge() >= 18;
+    }
+}
+```
+
+Now let's change our `InMemoryPersonReader` so that it gets injected a `PersonFilter` in its constructor which it applies in all methods. The changes are fairly simple since the `inMemoryPersonReader` only provides on `getAll()` method. Without a doubt there's better ways to architect this kind of solution, but for the sake of simplicity let's change the `InMemoryPersonReader` as follows:
+
+```java
+package org.example.services.inmemory;
+
+import org.example.models.Person;
+import org.example.services.api.PersonFilter;
+import org.example.services.api.PersonReader;
+
+import java.util.List;
+import java.util.ServiceLoader;
+
+public class InMemoryPersonReader implements PersonReader {
+
+    private PersonFilter filter;
+
+    // Note the injected filter in our constructor which is stored in our privat member
+    public InMemoryPersonReader(PersonFilter filter) {
+        this.filter = filter;
+    }
+
+    @Override
+    public List<Person> getAll() {
+        return List.of(
+            new Person("Vincent Vega", 73),
+            new Person("Jules Winnfield", 12)
+        );
+        ).stream().filter(this.filter::filter).toList(); // And here we apply the filter
+    }
+}
+```
+
+Let's now modify `/services/src/main/java/module-info.java` as follows:
+
+```java
+import org.example.services.api.PersonFilter;
+import org.example.services.api.PersonReader;
+import org.example.services.filter.AtLeastEighteenFilter;
+import org.example.services.inmemory.InMemoryPersonReader;
+
+module org.example.services {
+    exports org.example.services.api;
+
+    requires org.example.models;
+
+    provides PersonReader with InMemoryPersonReader;
+
+    // Let's register our implementation with the following line
+    provides PersonFilter with AtLeastEighteenFilter;
+
+    // And we also have to state that our services module uses a service of type PersonFilter. 
+    // You still have to do this even though the service itself is defined in our own module.
+    uses PersonFilter;
+}
+```
+
+If you were to run the api again via `./gradlew :api:run` (or `.\gradlew.bat :api:run` on Windows) you'd end up with the following exception:
+
+```bash
+> Task :api:run FAILED
+Exception in thread "main" java.util.ServiceConfigurationError: org.example.services.api.PersonReader: org.example.services.inmemory.InMemoryPersonReader Unable to get public no-arg constructor
+...
+```
+
+The `ServiceLoader` does not provide any kind of out-of-the-box constructor injection. As soon as your implementation class no longer provides a public constructor without formal parameters you have to define a public static method named "provider" with no formal parameters and a return type that is assignable to the service's interface or class. We'll add this provider method to our `InMemoryPersonReader` as follows:
+
+```java
+package org.example.services.inmemory;
+
+import org.example.models.Person;
+import org.example.services.api.PersonFilter;
+import org.example.services.api.PersonReader;
+
+import java.util.List;
+import java.util.ServiceLoader;
+
+public class InMemoryPersonReader implements PersonReader {
+
+    private PersonFilter filter;
+
+    public InMemoryPersonReader(PersonFilter filter) {
+        this.filter = filter;
+    }
+
+    @Override
+    public List<Person> getAll() {
+        return List.of(
+            new Person("Vincent Vega", 73),
+            new Person("Jules Winnfield", 12)
+        );
+        ).stream().filter(this.filter::filter).toList();
+    }
+
+    // See the provider method in action: static method named "provider" not having any formal parameters
+    public static PersonReader provider() {
+        return new InMemoryPersonReader(            // We need to instantiate the implementation ourselves                                     
+            ServiceLoader.load(PersonFilter.class)  // and we also have to resolve the dependencies ourselves via the ServiceLoader
+                .findFirst()
+                .get()                              // For the sake of completeness: in some real code cater for resolving errors :-)
+        );
+    }
+}
+```
+
+And now off you go - running the application again and curling the API should return only one person:
+
+```bash
+# Linux
+./gradlew :api:run
+
+# Windows
+.\gradlew.bat :api:run
+
+# Invoking the API in another window via
+curl http://localhost:7312/persons
+
+# should now print only one person which is at least 18 years old
+[{"name":"Vincent Vega","age":73}]
+```
+
+For the sake of completeness: the provider method does not necessarily have to reside in the same class that implements the service. You could for example create a dedicated provider class that only declares the provider method for the service provider like so:
+
+```java
+// Dedicated class only container the provider method
+public class PersonReaderProvider {
+    public static PersonReader provider() {
+        return new InMemoryPersonReader(
+                ServiceLoader.load(PersonFilter.class).findFirst().get()
+        );
+
+    }
+}
+```
+
+But then you need to change the `provides ... with ...` statement in the module descriptor as follows:
+
+```java
+module org.example.services {
+    ...
+
+    // Comment this one out since we have our dedicated provider now
+    // provides PersonReader with InMemoryPersonReader;
+
+    // And tell the module system to use our dedicated provider to get an instance of our service provider
+    provides PersonReader with PersonReaderProvider;
+
+    ...
+}
+```
+
