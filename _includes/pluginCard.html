@@ -2,7 +2,7 @@
     <div class="plugin-box-header">
         <h2>
             {{ include.title }}
-            <small>(created by <a href="https://github.com/{{ include.author }}">@{{ include.author }}</a> {{ include.created }})</small>
+            <small>(by <a href="https://github.com/{{ include.author }}">@{{ include.author }}</a>)</small>
         </h2>
         <span class="plugin-tags">
              {% if include.bundled == "true" %}
@@ -14,7 +14,7 @@
         {{ include.description }}
     </p>
     <div class="plugin-box-footer">
-        <a class="reactions" href="{{ include.ratingIssueUrl }}"></a>
+        <a class="reactions" href="https://github.com/javalin/javalin.github.io/issues/{{ include.ratingIssueNr }}"></a>
         <a class="view-docs-btn" href="{{ include.docsUrl }}">
             View documentation
             <svg width="24" height="24" viewBox="0 0 24 24"><path d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z" /></svg>
@@ -24,7 +24,7 @@
 <script>
     (() => {
         let pluginName = "{{include.title | slugify}}";
-        let issueUrl = "{{ include.ratingIssueUrl }}";
+        let issueUrl = "https://github.com/javalin/javalin.github.io/issues/{{ include.ratingIssueNr }}";
         let apiUrl = issueUrl.replace(
             "https://github.com/",
             "https://api.github.com/repos/"

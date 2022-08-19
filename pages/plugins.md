@@ -13,6 +13,17 @@ Each plugin can be rated and reviewed on GitHub (via reactions and comments),
 and the rating is displayed at the bottom of each card.
 
 {% include pluginCard.html
+    title="OpenAPI Annotation Processor"
+    description="
+        Fill this out
+    "
+    bundled="false"
+    author="dzikoysk"
+    docsUrl="/plugins/openapi-annotation-processor"
+    ratingIssueNr="133"
+%}
+
+{% include pluginCard.html
     title="JavalinVue"
     description="
         JavalinVue let's you create simple Vue frontends without having a frontend build pipeline.
@@ -22,9 +33,19 @@ and the rating is displayed at the bottom of each card.
     "
     bundled="true"
     author="tipsy"
-    created="May 9th, 2019"
     docsUrl="/plugins/javalinvue"
-    ratingIssueUrl="https://github.com/javalin/javalin.github.io/issues/132"
+    ratingIssueNr="132"
+%}
+
+{% include pluginCard.html
+    title="SSL Helpers"
+    description="
+        Fill this out
+    "
+    bundled="false"
+    author="zugazagoitia"
+    docsUrl="/plugins/ssl-helpers"
+    ratingIssueNr="134"
 %}
 
 {% include pluginCard.html
@@ -35,31 +56,19 @@ and the rating is displayed at the bottom of each card.
     "
     bundled="true"
     author="tipsy"
-    created="Mar 23rd, 2018"
     docsUrl="/plugins/routeoverview"
-    ratingIssueUrl="https://github.com/javalin/javalin.github.io/issues/135"
+    ratingIssueNr="135"
 %}
 
 {% include pluginCard.html
-    title="OpenAPI Annotation Processor"
+    title="DevLogging"
     description="
-        Fill this out
+        The development debugging logger catches most of the interesting stuff about requests
+        and responses, and logs it in an easy to read manner. It works both for
+        HTTP and WebSocket requests. Only intended for use during development and/or debugging.
     "
-    bundled="false"
-    author="dzikoysk"
-    created="Jun 23rd, 2021"
-    docsUrl="/plugins/openapi-annotation-processor"
-    ratingIssueUrl="https://github.com/javalin/javalin.github.io/issues/133"
-%}
-
-{% include pluginCard.html
-    title="SSL Helpers"
-    description="
-        Fill this out
-    "
-    bundled="false"
-    author="zugazagoitia"
-    created="Aug 12th, 2022"
-    docsUrl="/plugins/ssl-helpers"
-    ratingIssueUrl="https://github.com/javalin/javalin.github.io/issues/134"
+    bundled="true"
+    author="tipsy"
+    docsUrl="/plugins/devlogging"
+    ratingIssueNr="139"
 %}
