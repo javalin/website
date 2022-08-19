@@ -269,7 +269,7 @@ handlerType()                           // handler type of the current handler (
 appAttribute("name")                    // get an attribute on the Javalin instance. see app attributes section below
 matchedPath()                           // get the path that was used to match this request (ex, "/hello/{name}")
 endpointHandlerPath()                   // get the path of the endpoint handler that was used to match this request
-cookieStore                             // see cookie store section below
+cookieStore()                           // see cookie store section below
 ```
 
 #### App Attributes
@@ -294,40 +294,13 @@ app.get("/attribute") { ctx ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-#### ContextResolvers
-Some of the methods in `Context` can be configured through the `ContextResolvers` configuration class:
-
-{% capture java %}
-Javalin.create(config -> {
-    config.contextResolvers(resolvers -> {
-        resolvers.ip = ctx -> "custom ip";     // called by Context#ip()
-        resolvers.host = ctx -> "custom host"; // called by Context#host()
-        resolvers.scheme = ctx -> "custom scheme"; // called by Context#scheme()
-        resolvers.url = ctx -> "custom url"; // called by Context#url()
-        resolvers.fullUrl = ctx -> "custom fullUrl"; // called by Context#fullUrl()
-    });
-});
-{% endcapture %}
-{% capture kotlin %}
-Javalin.create { config ->
-    config.contextResolvers { resolvers ->
-        resolvers.ip = { ctx -> "custom ip" }     // called by Context#ip()
-        resolvers.host = { ctx -> "custom host" } // called by Context#host()
-        resolvers.scheme = { ctx -> "custom scheme" } // called by Context#scheme()
-        resolvers.url = { ctx -> "custom url" } // called by Context#url()
-        resolvers.fullUrl { = ctx -> "custom fullUrl" } // called by Context#fullUrl()
-    }
-}
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
 #### Cookie Store
 
-The `ctx.cookieStore()` functions provide a convenient way for sharing information between handlers, request, or even servers:
+The `CookieStore` class provides a convenient way for sharing information between handlers, request, or even servers:
 ```java
-ctx.cookieStore(key, value); // store any type of value
-ctx.cookieStore(key); // read any type of value
-ctx.clearCookieStore(); // clear the cookie-store
+ctx.cookieStore().set(key, value); // store any type of value
+ctx.cookieStore().get(key);        // read any type of value
+ctx.cookieStore().clear();         // clear the cookie-store
 ```
 The cookieStore works like this:
 1. The first handler that matches the incoming request will populate the cookie-store-map with the data currently stored in the cookie (if any).
@@ -338,26 +311,26 @@ The cookieStore works like this:
 ##### Example:
 {% capture java %}
 serverOneApp.post("/cookie-storer", ctx -> {
-    ctx.cookieStore("string", "Hello world!");
-    ctx.cookieStore("i", 42);
-    ctx.cookieStore("list", Arrays.asList("One", "Two", "Three"));
+    ctx.cookieStore().set("string", "Hello world!");
+    ctx.cookieStore().set("i", 42);
+    ctx.cookieStore().set("list", Arrays.asList("One", "Two", "Three"));
 });
 serverTwoApp.get("/cookie-reader", ctx -> { // runs on a different server than serverOneApp
-    String string = ctx.cookieStore("string")
-    int i = ctx.cookieStore("i")
-    List<String> list = ctx.cookieStore("list")
+    String string = ctx.cookieStore().get("string")
+    int i = ctx.cookieStore().get("i")
+    List<String> list = ctx.cookieStore().get("list")
 });
 {% endcapture %}
 {% capture kotlin %}
 serverOneApp.post("/cookie-storer") { ctx ->
-    ctx.cookieStore("string", "Hello world!")
-    ctx.cookieStore("i", 42)
-    ctx.cookieStore("list", listOf("One", "Two", "Three"))
+    ctx.cookieStore().set("string", "Hello world!")
+    ctx.cookieStore().set("i", 42)
+    ctx.cookieStore().set("list", listOf("One", "Two", "Three"))
 }
 serverTwoApp.get("/cookie-reader") { ctx -> // runs on a different server than serverOneApp
-    val string = ctx.cookieStore<String>("string")
-    val i = ctx.cookieStore<Int>("i")
-    val list = ctx.cookieStore<List<String>>("list")
+    val string = ctx.cookieStore().get("string")
+    val i = ctx.cookieStore().get("i")
+    val list = ctx.cookieStore().get("list")
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -1009,13 +982,13 @@ You can pass a config object when creating a new instance of Javalin.
 
 {% capture java %}
 Javalin.create(config -> {
-    config.addStaticFiles(...)
+    config.staticFiles.add(...)
     // your config here
 }).start()
 {% endcapture %}
 {% capture kotlin %}
 Javalin.create { config ->
-    config.addStaticFiles(...)
+    config.staticFiles.add(...)
     // your config here
 }.start()
 {% endcapture %}
@@ -1023,44 +996,53 @@ Javalin.create { config ->
 
 ### Available config options
 
-```java
-// HTTP
-autogenerateEtags = false;                      // generate etags for responses
-prefer405over404 = false;                       // return 405 instead of 404 if path is mapped to different HTTP method
-enforceSsl = false;                             // redirect all http requests to https
-defaultContentType = "text/plain";              // the default content type
-maxRequestSize = 1_000_000L;                    // either increase this or use inputstream to handle large requests
-asyncRequestTimeout = 0L;                       // timeout in milliseconds for async requests (0 means no timeout)
-addSinglePageRoot("/path", "/file")             // fancy 404 handler that returns the specified file for 404s on /path
-addSinglePageRoot("/path", "/file", location)   // fancy 404 handler that returns the specified file for 404s on /path
-addSinglePageHandler("/path", handler)          // fancy 404 handler that runs the specified Handler for 404s on /path
-addStaticFiles("/directory", location)          // add static files in directory at location (Location.CLASSPATH/Location.EXTERNAL)
-addStaticFiles(staticFileConfig)                // add static files by StaticFileConfig, see Static Files section
-enableWebjars()                                 // add static files though webjars
-enableCorsForAllOrigins()                       // enable CORS for all origins
-enableCorsForOrigin("origin1", "origin2", ...)  // enable CORS the specified origins
-enableDevLogging()                              // enable dev logging (extensive debug logging meant for development)
-registerPlugin(myPlugin)                        // register a plugin
-requestLogger((ctx, timeInMs) -> {})            // register a request logger
+#### Compression
 
-// WebSocket
-wsFactoryConfig((factory) -> {})                // configure the Jetty WebSocketServletFactory
-wsLogger((ws) -> {})                            // register a WebSocket logger
+{% capture java %}
+Javalin.create(config -> {
+    config.compression.custom(compressionStrategy);       // set a custom CompressionStrategy
+    config.compression.brotliAndGzip(gzipLvl, brotliLvl); // use both gzip and brotli (optional lvls)
+    config.compression.gzipOnly(gzipLvl);                 // use gzip only (optional lvl)
+    config.compression.brotliOnly(brotliLvl);             // use brotli only (optional lvl)
+    config.compression.none();                            // disable compression
+});
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { config ->
+    config.compression.custom(compressionStrategy)       // set a custom CompressionStrategy
+    config.compression.brotliAndGzip(gzipLvl, brotliLvl) // use both gzip and brotli (optional lvls)
+    config.compression.gzipOnly(gzipLvl)                 // use gzip only (optional lvl)
+    config.compression.brotliOnly(brotliLvl)             // use brotli only (optional lvl)
+    config.compression.none()                            // disable compression
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-// Server
-ignoreTrailingSlashes = true;                   // treat '/path' and '/path/' as the same path
-contextPath = "/";                              // the context path (ex '/blog' if you are hosting an app on a subpath, like 'mydomain.com/blog')
-server(() -> Server())                          // set the Jetty Server
-sessionHandler(() -> SessionHandler())          // set the Jetty SessionHandler
-configureServletContextHandler(handler -> {})   // configure the Jetty ServletContextHandler
-jsonMapper(jsonMapper)                          // configure Javalin's JsonMapper
+#### ContextResolvers
+Some of the methods in `Context` can be configured through the `ContextResolvers` configuration class:
 
-// Misc
-showJavalinBanner = true;                       // show the glorious Javalin banner on startup
-```
+{% capture java %}
+Javalin.create(config -> {
+    config.core.contextResolver.ip = ctx -> "custom ip";           // called by Context#ip()
+    config.core.contextResolver.host = ctx -> "custom host";       // called by Context#host()
+    config.core.contextResolver.scheme = ctx -> "custom scheme";   // called by Context#scheme()
+    config.core.contextResolver.url = ctx -> "custom url";         // called by Context#url()
+    config.core.contextResolver.fullUrl = ctx -> "custom fullUrl"; // called by Context#fullUrl()
+});
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { config ->
+    config.core.contextResolver.ip = { ctx -> "custom ip" }           // called by Context#ip()
+    config.core.contextResolver.host = { ctx -> "custom host" }       // called by Context#host()
+    config.core.contextResolver.scheme = { ctx -> "custom scheme" }   // called by Context#scheme()
+    config.core.contextResolver.url = { ctx -> "custom url" }         // called by Context#url()
+    config.core.contextResolver.fullUrl = { ctx -> "custom fullUrl" } // called by Context#fullUrl()
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ### Static Files
-You can enable static file serving by doing `config.addStaticFiles("/directory", location)`.
+You can enable static file serving by doing `config.staticFiles.add("/directory", location)`.
 Static resource handling is done **after** endpoint matching, meaning your own
 GET endpoints have higher priority. The process looks like this:
 
@@ -1081,7 +1063,7 @@ For more advanced use cases, Javalin has a `StaticFileConfig` class:
 
 {% capture java %}
 Javalin.create(config -> {
-  config.addStaticFiles(staticFiles -> {
+  config.staticFiles.add(staticFiles -> {
     staticFiles.hostedPath = "/";                   // change to host files on a subpath, like '/assets'
     staticFiles.directory = "/public";              // the directory where your files are located
     staticFiles.location = Location.CLASSPATH;      // Location.CLASSPATH (jar) or Location.EXTERNAL (file system)
@@ -1094,7 +1076,7 @@ Javalin.create(config -> {
 {% endcapture %}
 {% capture kotlin %}
 Javalin.create { config ->
-  config.addStaticFiles { staticFiles ->
+  config.staticFiles.add { staticFiles ->
     staticFiles.hostedPath = "/"                    // change to host files on a subpath, like '/assets'
     staticFiles.directory = "/public"               // the directory where your files are located
     staticFiles.location = Location.CLASSPATH       // Location.CLASSPATH (jar) or Location.EXTERNAL (file system)
@@ -1107,11 +1089,11 @@ Javalin.create { config ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-You can call `addStaticFiles` multiple times to set up multiple handlers.
+You can call `config.staticFiles.add(...)` multiple times to set up multiple handlers.
 No configuration is shared between handlers.
 
 #### WebJars
-WebJars can be enabled by calling `enableWebJars()`,
+WebJars can be enabled by calling `config.staticFiles.enableWebjars()`,
 they will be available at `/webjars/name/version/file.ext`.
 WebJars can be found on [https://www.webjars.org/](https://www.webjars.org/).
 Everything available through NPM is also available through WebJars.
@@ -1121,14 +1103,14 @@ Single page mode is similar to static file handling. It runs after endpoint matc
 It's basically a very fancy 404 mapper, which converts any 404's into a specified page.
 You can define multiple single page handlers for your application by specifying different root paths.
 
-You can enabled single page mode by doing `config.addSinglePageRoot("/root", "/path/to/file.html")`, and/or
-`config.addSinglePageRoot("/root", "/path/to/file.html", Location.EXTERNAL)`.
+You can enabled single page mode by doing `config.spaRoot.addFile("/root", "/path/to/file.html")`, and/or
+`config.spaRoot.addFile("/root", "/path/to/file.html", Location.EXTERNAL)`.
 
 #### Dynamic single page handler
 You can also use a `Handler` to serve your single page root (as opposed to a static file):
 
 ```java
-config.addSinglePageHandler("/root",  ctx -> {
+config.spaRoot.addHandler("/root",  ctx -> {
     ctx.html(...);
 });
 ```
