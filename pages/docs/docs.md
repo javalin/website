@@ -27,8 +27,6 @@ permalink: /documentation
 * [Error Mapping](#error-mapping)
 * [Server-sent Events](#server-sent-events)
 * [Configuration](#configuration)
-  * [Static Files](#static-files)
-  * [Single page mode](#single-page-mode)
   * [Logging](#logging)
   * [Server setup](#server-setup)
 * [Lifecycle events](#lifecycle-events)
@@ -979,24 +977,26 @@ ctx                                         // the Context from when the client 
 ## Configuration
 
 You can pass a config object when creating a new instance of Javalin.
+Javalin's configuration is grouped into multiple subconfigs:
 
-{% capture java %}
+```java
 Javalin.create(config -> {
-    config.staticFiles.add(...)
-    // your config here
-}).start()
-{% endcapture %}
-{% capture kotlin %}
-Javalin.create { config ->
-    config.staticFiles.add(...)
-    // your config here
-}.start()
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+    config.core          // access manager, json mapper, context resolvers, misc
+    config.http          // etags, request size, timeout, etc
+    config.routing       // context path, slash treatment
+    config.jetty         // jetty settings
+    config.staticFiles   // static files and webjars
+    config.spaRoot       // single page application roots
+    config.compression   // gzip, brotli, disable compression
+    config.requestLogger // http and websocket loggers
+    config.plugins       // enable bundled plugins or add custom ones
+    config.vue           // vue settings, see /plugins/vue
+});
+```
 
-### Available config options
+All available subconfigs are explained in the sections below.
 
-#### Compression
+### Compression
 
 {% capture java %}
 Javalin.create(config -> {
@@ -1018,7 +1018,7 @@ Javalin.create { config ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-#### ContextResolvers
+### ContextResolvers
 Some of the methods in `Context` can be configured through the `ContextResolvers` configuration class:
 
 {% capture java %}
@@ -1041,7 +1041,126 @@ Javalin.create { config ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-### Static Files
+### HttpConfig
+{% capture java %}
+Javalin.create(config -> {
+    config.http.generateEtags = booleanValue;     // if javalin should generate etags for dynamic responses (not static files)
+    config.http.prefer405over404 = booleanValue;  // return 405 instead of 404 if path is mapped to different HTTP method
+    config.http.maxRequestSize = longValue;       // the max size of request body that can be accessed without using using an InputStream
+    config.http.defaultContentType = stringValue; // the default content type
+    config.http.asyncTimeout = longValue;         // timeout in milliseconds for async requests (0 means no timeout)
+});
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { config ->
+    config.http.generateEtags = booleanValue     // if javalin should generate etags for dynamic responses (not static files)
+    config.http.prefer405over404 = booleanValue  // return 405 instead of 404 if path is mapped to different HTTP method
+    config.http.maxRequestSize = longValue       // the max size of request body that can be accessed without using using an InputStream
+    config.http.defaultContentType = stringValue //  the default content type
+    config.http.asyncTimeout = longValue         // timeout in milliseconds for async requests (0 means no timeout)
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+### JettyConfig
+{% capture java %}
+Javalin.create(config -> {
+    config.jetty.server(serverSupplier); // set the Jetty Server for Javalin to run on
+    config.jetty.sessionHandler(sessionHandlerSupplier); // set the SessionHandler that Jetty will use for sessions
+    config.jetty.contextHandlerConfig(contextHandlerConsumer); // configure the ServletContextHandler Jetty runs on
+    config.jetty.wsFactoryConfig(jettyWebSocketServletFactoryConsumer); // configure the JettyWebSocketServletFactory
+});
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { config ->
+    config.jetty.server(serverSupplier) // set the Jetty Server for Javalin to run on
+    config.jetty.sessionHandler(sessionHandlerSupplier) // set the SessionHandler that Jetty will use for sessions
+    config.jetty.contextHandlerConfig(contextHandlerConsumer) // configure the ServletContextHandler Jetty runs on
+    config.jetty.wsFactoryConfig(jettyWebSocketServletFactoryConsumer) // configure the JettyWebSocketServletFactory
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+### RequestLoggerConfig
+You can add a HTTP request logger by calling `config.requestLogger.http()`.
+The method takes a `Context` and the time in milliseconds it took to finish the request:
+
+{% capture java %}
+Javalin.create(config -> {
+    config.requestLogger.http((ctx, ms) -> {
+        // log things here
+    });
+});
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { config ->
+    config.requestLogger.http { ctx, ms ->
+        // log things here
+    }
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+You can add a WebSocket logger by calling `config.requestLogger.ws()`. The method takes a the same arguments as a normal `app.ws()` call,
+and can be used to log events of all types.
+The following example just shows `onMessage`, but `onConnect`, `onError` and `onClose` are all available:
+
+{% capture java %}
+app.create(config -> {
+    config.requestLogger.ws(ws -> {
+        ws.onMessage(ctx -> {
+            System.out.println("Received: " + ctx.message());
+        });
+    });
+});
+{% endcapture %}
+{% capture kotlin %}
+app.create { config ->
+    config.requestLogger.ws(ws -> {
+        ws.onMessage { ctx ->
+            println("Received: " + ctx.message());
+        }
+    }
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+The logger runs after the WebSocket handler for the endpoint.
+
+### RoutingConfig
+{% capture java %}
+Javalin.create(config -> {
+    config.routing.contextPath = stringValue; // the context path (ex '/blog' if you are hosting an app on a subpath, like 'mydomain.com/blog')
+    config.routing.ignoreTrailingSlashes = booleanValue; // treat '/path' and '/path/' as the same path
+    config.routing.treatMultipleSlashesAsSingleSlash = booleanValue; // treat '/path//subpath' and '/path/subpath' as the same path
+});
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { config ->
+    config.routing.contextPath = stringValue // the context path (ex '/blog' if you are hosting an app on a subpath, like 'mydomain.com/blog')
+    config.routing.ignoreTrailingSlashes = booleanValue // treat '/path' and '/path/' as the same path
+    config.routing.treatMultipleSlashesAsSingleSlash = booleanValue // treat '/path//subpath' and '/path/subpath' as the same path
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+### SpaRootConfig
+Single page application (SPA) mode is similar to static file handling. It runs after endpoint matching, and after static file handling.
+It's basically a very fancy 404 mapper, which converts any 404's into a specified page.
+You can define multiple single page handlers for your application by specifying different root paths.
+
+You can enabled single page mode by doing `config.spaRoot.addFile("/root", "/path/to/file.html")`, and/or
+`config.spaRoot.addFile("/root", "/path/to/file.html", Location.EXTERNAL)`.
+
+#### Dynamic single page handler
+You can also use a `Handler` to serve your single page root (as opposed to a static file):
+
+```java
+config.spaRoot.addHandler("/root",  ctx -> {
+    ctx.html(...);
+});
+```
+
+### StaticFileConfig
 You can enable static file serving by doing `config.staticFiles.add("/directory", location)`.
 Static resource handling is done **after** endpoint matching, meaning your own
 GET endpoints have higher priority. The process looks like this:
@@ -1058,7 +1177,6 @@ if no endpoint-handler found
 run after-handlers
 ```
 
-#### StaticFileConfig
 For more advanced use cases, Javalin has a `StaticFileConfig` class:
 
 {% capture java %}
@@ -1092,28 +1210,10 @@ Javalin.create { config ->
 You can call `config.staticFiles.add(...)` multiple times to set up multiple handlers.
 No configuration is shared between handlers.
 
-#### WebJars
 WebJars can be enabled by calling `config.staticFiles.enableWebjars()`,
 they will be available at `/webjars/name/version/file.ext`.
 WebJars can be found on [https://www.webjars.org/](https://www.webjars.org/).
 Everything available through NPM is also available through WebJars.
-
-### Single page mode
-Single page mode is similar to static file handling. It runs after endpoint matching, and after static file handling.
-It's basically a very fancy 404 mapper, which converts any 404's into a specified page.
-You can define multiple single page handlers for your application by specifying different root paths.
-
-You can enabled single page mode by doing `config.spaRoot.addFile("/root", "/path/to/file.html")`, and/or
-`config.spaRoot.addFile("/root", "/path/to/file.html", Location.EXTERNAL)`.
-
-#### Dynamic single page handler
-You can also use a `Handler` to serve your single page root (as opposed to a static file):
-
-```java
-config.spaRoot.addHandler("/root",  ctx -> {
-    ctx.html(...);
-});
-```
 
 ### Logging
 
@@ -1131,65 +1231,6 @@ dependency to your project:
     <version>{{site.slf4jversion}}</version>
 </dependency>
 ```
-
-#### Request logging
-You can add a HTTP request logger by calling `config.requestLogger()`.
-The method takes a `Context` and the time in milliseconds it took to finish the request:
-
-{% capture java %}
-Javalin.create(config -> {
-    config.requestLogger((ctx, ms) -> {
-        // log things here
-    });
-});
-{% endcapture %}
-{% capture kotlin %}
-Javalin.create { config ->
-    config.requestLogger { ctx, ms ->
-        // log things here
-    }
-}
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
-#### WebSocket logging
-You can add a WebSocket logger by calling `config.wsLogger()`. The method takes a `WsHandler`,
-(the same interface as a normal `app.ws()` call), and can be used to log events of all types.
-The following example just shows `onMessage`, but `onConnect`, `onError` and `onClose` are all available:
-
-{% capture java %}
-app.create(config -> {
-    config.wsLogger(ws -> {
-        ws.onMessage(ctx -> {
-            System.out.println("Received: " + ctx.message());
-        });
-    });
-});
-{% endcapture %}
-{% capture kotlin %}
-app.create { config ->
-    config.wsLogger(ws -> {
-        ws.onMessage { ctx ->
-            println("Received: " + ctx.message());
-        }
-    }
-}
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
-The logger runs after the WebSocket handler for the endpoint.
-
-#### Dev logging
-{% capture java %}
-app.create(config -> {
-    config.enableDevLogging(); // enable extensive development logging for http and websocket
-});
-{% endcapture %}
-{% capture kotlin %}
-app.create { config ->
-    config.enableDevLogging() // enable extensive development logging for http and websocket
-}
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ### Server setup
 
@@ -1247,25 +1288,7 @@ app.create { config ->
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 #### Custom SessionHandler
-
-You can configure the `SessionHandler` by calling the `sessionHandler(...)` method.
-
-If you want to persist sessions to the file system, you can use a `FileSessionDataStore`:
-
-```kotlin
-private fun fileSessionHandler() = SessionHandler().apply {
-    httpOnly = true
-    sessionCache = DefaultSessionCache(this).apply {
-        sessionDataStore = FileSessionDataStore().apply {
-            val baseDir = File(System.getProperty("java.io.tmpdir"))
-            storeDir = File(baseDir, "javalin-session-store").apply { mkdir() }
-        }
-    }
-}
-```
-
-Read more about how to configure sessions in our
-[session tutorial](/tutorials/jetty-session-handling).
+Read about how to configure sessions in our [session tutorial](/tutorials/jetty-session-handling).
 
 #### Custom jetty handlers
 You can configure your embedded jetty-server with a handler-chain
@@ -1280,7 +1303,7 @@ Javalin.create(config -> {
         server.setHandler(statisticsHandler);
         return server;
     })
-}).start();
+});
 {% endcapture %}
 {% capture kotlin %}
 val statisticsHandler = StatisticsHandler()
