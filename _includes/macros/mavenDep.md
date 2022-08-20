@@ -1,4 +1,3 @@
-
 <div class="multitab-code dependencies" data-tab="1">
 <ul>
     <li data-tab="1">Maven</li>
@@ -18,14 +17,14 @@
     <version>{{site.javalinversion}}</version>
 </dependency>
 ~~~
-[Not familiar with Maven? Click here for more detailed instructions.](/tutorials/maven-setup)
+Not familiar with Maven? Read our [Maven tutorial](/tutorials/maven-setup).
 </div>
 
 <div data-tab="2" markdown="1">
 ~~~java
 implementation group: 'io.javalin', name: 'javalin', version: '{{site.javalinversion}}'
 ~~~
-[Not familiar with Gradle? Click here for more detailed instructions.](/tutorials/gradle-setup)
+Not familiar with Gradle? Read our [Gradle tutorial](/tutorials/gradle-setup).
 </div>
 
 <div data-tab="3" markdown="1">
@@ -57,7 +56,15 @@ libraryDependencies += "io.javalin" % "javalin" % "{{site.javalinversion}}"
 <dependency org="io.javalin" name="javalin" rev="{{site.javalinversion}}" />
 ~~~
 </div>
-
 </div>
 
-
+<div markdown="1" class="bundle-hint">
+If you want Javalin with testing tools, Jackson and Logback,
+you can use the artifact id `javalin-bundle` instead of `javalin`.
+</div>
+<style>
+.bundle-hint p {
+    margin-top: 8px;
+    font-size: 14px;
+}
+</style>
