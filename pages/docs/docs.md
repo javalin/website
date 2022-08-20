@@ -1388,7 +1388,6 @@ add *their* handlers, so that each plugin has a complete overview of all handler
 
 See the [plugins](/plugins) page for more information about plugins.
 
-
 ## FAQ
 Frequently asked questions.
 
@@ -1573,14 +1572,14 @@ fun main() {
 
 // hopefully your future is less pointless than this:
 private fun getFuture() = CompletableFuture<String>().apply {
-    Executors.newSingleThreadScheduledExecutor().schedule({ this.complete("Hello World!") }, 1, TimeUnit.SECONDS)
+    Executors.newSingleThreadScheduledExecutor().schedule(
+        { this.complete("Hello World!") },
+        1,
+        TimeUnit.SECONDS
+    )
 }
 ```
 <div class="comment">Synonyms for ctrl+f: Async, CompletableFuture, Future, Concurrent, Concurrency</div>
-
-You can only set future results in endpoint handlers (get/post/put/etc).\\
-After-handlers, exception-handlers and error-handlers run like you'd expect them to after
-the future has been resolved or rejected.
 
 #### Async callbacks
 The `ctx.future()` method's full signature is this:
@@ -1678,19 +1677,23 @@ there's an example in the repo:
 ---
 
 ### Views and Templates
-Javalin looks for templates/markdown files in `src/resources`,
-and uses the correct rendering engine based on the extension of your template.
-Javalin currently supports six template engines (see below), as well as markdown.
+Javalin offers an artifact with several template engines, called `javalin-rendering`,
+which follows the same version as the `javalin` artifact.
+The template engines look for templates/markdown files in `src/resources`,
+and the correct rendering engine is chosen based on the extension of your template.
+Javalin currently supports several template engines (see below), as well as markdown.
 You can also register your own rendering engine.
+
+Rendering a template:
 {% capture java %}
-ctx.render("/templateFile.ext", model("firstName", "John", "lastName", "Doe"))
+ctx.render("/templateFile.ext", model("firstName", "John", "lastName", "Doe"));
 {% endcapture %}
 {% capture kotlin %}
 ctx.render("/templateFile.ext", mapOf("firstName" to "John", "lastName" to "Doe"))
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-Register:
+Registering a new engine:
 ```java
 JavalinRenderer.register(JavalinPebble.INSTANCE, ".peb", ".pebble");
 
@@ -1699,7 +1702,7 @@ JavalinRenderer.register((filePath, model) -> {
 }, ".ext");
 ```
 
-Configure:
+Configuring one of the existing engines:
 ```kotlin
 JavalinThymeleaf.configure(templateEngine)
 JavalinVelocity.configure(velocityEngine)
@@ -1717,7 +1720,7 @@ through Javalin.
 If you need to configure settings beyond what's available in `JavalinTemplateEngine.configure`, you
 have to write your own implementation and register it using `JavalinRenderer.register`.
 
-Note that these are global settings, and can't be configured per instance of Javalin.
+Note that these are global settings, and cannot be configured per instance of Javalin.
 
 ---
 
