@@ -18,7 +18,7 @@ permalink: /documentation
   * [Before](#wsbefore)
   * [Endpoint](#wsendpoint)
   * [After](#wsafter)
-  * [Context (ctx)](#wscontext)
+  * [WsContext (wsCtx)](#wscontext)
 * [Handler groups](#handler-groups)
 * [Validation](#validation)
 * [Access manager](#access-manager)
@@ -1386,104 +1386,8 @@ plugins.forEach(plugin -> plugin.apply(app));
 This is mainly so each plugin has a chance to add `handlerAdded` listeners before other plugins
 add *their* handlers, so that each plugin has a complete overview of all handlers.
 
-### Micrometer Plugin
+See the [plugins](/plugins) page for more information about plugins.
 
-You can enable the Micrometer plugin by registering it on the config:
-
-```java
-Javalin.create(config ->
-    config.registerPlugin(new MicrometerPlugin());
-)
-```
-
-Additional documentation for the plugin can be found [here](/plugins/micrometer).
-
-### OpenAPI Plugin
-
-Javalin has an OpenAPI (Swagger) plugin. Full documentation for the plugin can be found [here](/plugins/openapi),
-below are a few examples:
-
-#### OpenAPI DSL
-When using the OpenAPI DSL you define an `OpenApiDocumentation` object to pair with your `Handler`:
-
-```kotlin
-val addUserDocs = document()
-        .body<User>()
-        .result<Unit>("400")
-        .result<Unit>("204")
-
-fun addUserHandler(ctx: Context) {
-    val user = ctx.body<User>()
-    UserRepository.addUser(user)
-    ctx.status(204)
-}
-```
-
-You then combine these when you add your routes:
-
-```kotlin
-post("/users", documented(addUserDocs, ::addUserHandler))
-```
-
-#### OpenAPI annotations
-
-If you prefer to keep your documentation separate from your code, you can use annotations instead:
-
-```kotlin
-@OpenApi(
-    requestBody = OpenApiRequestBody(User::class),
-    responses = [
-        OpenApiResponse("400", Unit::class),
-        OpenApiResponse("201", Unit::class)
-    ]
-)
-fun createUser(ctx: Context) {
-    val user = ctx.body<User>()
-    UserRepository.createUser(user)
-    ctx.status(201)
-}
-```
-
-If you use the annotation API you don't need to connect the documentation and the handler manually,
-you just reference your handler as normal:
-
-```kotlin
-post("/users", ::addUserHandler)
-```
-
-Javalin will then extract the information from the annotation and build the documentation automatically.
-
-To enable hosted docs you have to specify some paths in your Javalin config:
-
-```kotlin
-val app = Javalin.create {
-    it.enableOpenApi(
-            OpenApiOptions(Info().version("1.0").description("My Application"))
-                    .path("/swagger-json")
-                    .swagger(SwaggerOptions("/swagger").title("My Swagger Documentation"))
-                    .reDoc(ReDocOptions("/redoc").title("My ReDoc Documentation"))
-    )
-}
-```
-
-Full documentation for the OpenAPI plugin can be found at [/plugins/openapi](/plugins/openapi).
-
-### GraphQL plugin
-Javalin has an GraphQL plugin. You can see its documentation at [/plugins/graphql](/plugins/graphql).
-
-### Redirect-to-lowercase-path plugin
-
-This plugin redirects requests with uppercase/mixcase paths to lowercase paths.
-For example, `/Users/John` redirects to `/users/John` (if endpoint is `/users/:userId`).
-It does not affect the casing of path-params and query-params, only static
-URL fragments (`Users` becomes `users` above, but `John` remains `John`).\\
-When using this plugin, you can only add paths with lowercase URL fragments.
-
-```java
-Javalin.create(config ->
-    config.registerPlugin(new RedirectToLowercasePathPlugin());
-)
-```
 
 ## FAQ
 Frequently asked questions.
