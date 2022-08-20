@@ -735,7 +735,7 @@ Below is an example implementation:
 
 {% capture java %}
 // Set the access-manager that Javalin should use
-config.core.accessManager((handler, ctx, routeRoles) -> {
+config.accessManager((handler, ctx, routeRoles) -> {
     MyRole userRole = getUserRole(ctx);
     if (routeRoles.contains(userRole)) {
         handler.handle(ctx);
@@ -758,7 +758,7 @@ app.get("/secured",      ctx -> ctx.result("Hello"),   Role.ROLE_ONE);
 {% endcapture %}
 {% capture kotlin %}
 // Set the access-manager that Javalin should use
-config.core.accessManager { handler, ctx, routeRoles ->
+config.accessManager { handler, ctx, routeRoles ->
     val userRole = getUserRole(ctx) // determine user role based on request
     if (routeRoles.contains(userRole)) {
         handler.handle(ctx)
@@ -1022,20 +1022,20 @@ Some of the methods in `Context` can be configured through the `ContextResolvers
 
 {% capture java %}
 Javalin.create(config -> {
-    config.core.contextResolver.ip = ctx -> "custom ip";           // called by Context#ip()
-    config.core.contextResolver.host = ctx -> "custom host";       // called by Context#host()
-    config.core.contextResolver.scheme = ctx -> "custom scheme";   // called by Context#scheme()
-    config.core.contextResolver.url = ctx -> "custom url";         // called by Context#url()
-    config.core.contextResolver.fullUrl = ctx -> "custom fullUrl"; // called by Context#fullUrl()
+    config.contextResolver.ip = ctx -> "custom ip";           // called by Context#ip()
+    config.contextResolver.host = ctx -> "custom host";       // called by Context#host()
+    config.contextResolver.scheme = ctx -> "custom scheme";   // called by Context#scheme()
+    config.contextResolver.url = ctx -> "custom url";         // called by Context#url()
+    config.contextResolver.fullUrl = ctx -> "custom fullUrl"; // called by Context#fullUrl()
 });
 {% endcapture %}
 {% capture kotlin %}
 Javalin.create { config ->
-    config.core.contextResolver.ip = { ctx -> "custom ip" }           // called by Context#ip()
-    config.core.contextResolver.host = { ctx -> "custom host" }       // called by Context#host()
-    config.core.contextResolver.scheme = { ctx -> "custom scheme" }   // called by Context#scheme()
-    config.core.contextResolver.url = { ctx -> "custom url" }         // called by Context#url()
-    config.core.contextResolver.fullUrl = { ctx -> "custom fullUrl" } // called by Context#fullUrl()
+    config.contextResolver.ip = { ctx -> "custom ip" }           // called by Context#ip()
+    config.contextResolver.host = { ctx -> "custom host" }       // called by Context#host()
+    config.contextResolver.scheme = { ctx -> "custom scheme" }   // called by Context#scheme()
+    config.contextResolver.url = { ctx -> "custom url" }         // called by Context#url()
+    config.contextResolver.fullUrl = { ctx -> "custom fullUrl" } // called by Context#fullUrl()
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
