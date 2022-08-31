@@ -244,11 +244,9 @@ req()                                 // get the underlying HttpServletRequest
 result("result")                      // set result stream to specified string (overwrites any previously set result)
 result(byteArray)                     // set result stream to specified byte array (overwrites any previously set result)
 result(inputStream)                   // set result stream to specified input stream (overwrites any previously set result)
-future(future, callback)              // set the result to be a future, see async section (overwrites any previously set result)
+future(futureSupplier)                // set the result to be a future, see async section (overwrites any previously set result)
 writeSeekableStream(inputStream)      // write content immediately as seekable stream (useful for audio and video)
-resultStream()                        // get current result stream
-resultString()                        // get current result stream as string (if possible), and reset result stream
-resultFuture()                        // get current result future
+result()                              // get current result stream as string (if possible), and reset result stream
 contentType("type")                   // set the response content type
 header("name", "value")               // set response header by name (can be used with Header.HEADERNAME)
 redirect("/path", code)               // redirect to the given path with the given status code
@@ -1558,16 +1556,23 @@ The corresponding HTML might look something like this:
 ---
 
 ### Asynchronous requests
+<div class="comment">Synonyms for ctrl+f: Async, CompletableFuture, Future, Concurrent, Concurrency</div>
 While the default ThreadPool (200 threads) is enough for most use cases,
 sometimes slow operations should be run asynchronously. Luckily it's very easy in Javalin, just
-pass a `CompletableFuture` to `ctx.future()`:
+pass a `Supplier<CompletableFuture>` to `ctx.future()`:
 
 ```kotlin
 import io.javalin.Javalin
 
 fun main() {
     val app = Javalin.create().start(7000)
-    app.get("/") { ctx -> ctx.future(getFuture()) }
+    app.get("/") { ctx ->
+        ctx.future {
+            getFuture()
+                .thenAccept(result -> ctx.result(result)
+                .exceptionally(error -> ctx.result("Error: " + error)
+        }
+    }
 }
 
 // hopefully your future is less pointless than this:
@@ -1578,44 +1583,6 @@ private fun getFuture() = CompletableFuture<String>().apply {
         TimeUnit.SECONDS
     )
 }
-```
-<div class="comment">Synonyms for ctrl+f: Async, CompletableFuture, Future, Concurrent, Concurrency</div>
-
-#### Async callbacks
-The `ctx.future()` method's full signature is this:
-
-```kotlin
-@JvmOverloads
-fun future(future: CompletableFuture<*>, callback: Consumer<Any?>? = null): Context {
-    if (!handlerType.isHttpMethod() || inExceptionHandler) {
-        throw IllegalStateException("You can only set CompletableFuture results in endpoint handlers.")
-    }
-    resultStream = null
-    resultFuture = future
-    futureConsumer = callback ?: Consumer { result ->
-        when (result) {
-            is InputStream -> result(result)
-            is String -> result(result)
-            is Any -> json(result)
-        }
-    }
-    return this
-}
-```
-The default behavior is to set the result of the future using `ctx.result()` if it's an `InputStream`
-or a `String`, but to use `ctx.json()` if it's any other Object.
-
-You can provide your own callback to replace the default behavior:
-
-```java
-ctx.future(myFuture, result -> {
-    if (result != null) {
-        ctx.status(200)
-        ctx.json(result)
-    } else {
-        ctx.status(404)
-    }
-});
 ```
 
 ---
