@@ -40,7 +40,7 @@ and the rating is displayed at the bottom of each card.
 {% include pluginCard.html
     title="SSL Helpers"
     description="
-        Fill this out
+        SSL configuration made easy. This plugin provides a simple way to configure SSL for Javalin, just the same way you would configure Javalin itself. Support for PEM, PKCS12, and JKS formats, as well as HTTP/2.
     "
     bundled="false"
     author="zugazagoitia"
