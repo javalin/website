@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 title: RouteOverview documentation
 rightmenu: false
 permalink: /plugins/routeoverview

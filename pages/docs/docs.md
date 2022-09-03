@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 title: Documentation
 rightmenu: true
 permalink: /documentation
@@ -8,30 +8,30 @@ permalink: /documentation
 {% include notificationBanner.html %}
 
 <div id="spy-nav" class="right-menu" markdown="1">
-* [Getting Started](#getting-started)
-* [HTTP Handlers](#handlers)
-  * [Before](#before-handlers)
-  * [Endpoint](#endpoint-handlers)
-  * [After](#after-handlers)
-  * [Context (ctx)](#context)
-* [WebSockets](#websockets)
-  * [Before](#wsbefore)
-  * [Endpoint](#wsendpoint)
-  * [After](#wsafter)
-  * [WsContext (wsCtx)](#wscontext)
-* [Handler groups](#handler-groups)
-* [Validation](#validation)
-* [Access manager](#access-manager)
-* [Default responses](#default-responses)
-* [Exception Mapping](#exception-mapping)
-* [Error Mapping](#error-mapping)
-* [Server-sent Events](#server-sent-events)
-* [Configuration](#configuration)
-  * [Logging](#logging)
-  * [Server setup](#server-setup)
-* [Lifecycle events](#lifecycle-events)
-* [Plugins](#plugins)
-* [FAQ](#faq)
+- [Getting Started](#getting-started)
+- [HTTP Handlers](#handlers)
+  - [Before](#before-handlers)
+  - [Endpoint](#endpoint-handlers)
+  - [After](#after-handlers)
+  - [Context (ctx)](#context)
+- [WebSockets](#websockets)
+  - [Before](#wsbefore)
+  - [Endpoint](#wsendpoint)
+  - [After](#wsafter)
+  - [WsContext (wsCtx)](#wscontext)
+- [Handler groups](#handler-groups)
+- [Validation](#validation)
+- [Access manager](#access-manager)
+- [Default responses](#default-responses)
+- [Exception Mapping](#exception-mapping)
+- [Error Mapping](#error-mapping)
+- [Server-sent Events](#server-sent-events)
+- [Configuration](#configuration)
+  - [Logging](#logging)
+  - [Server setup](#server-setup)
+- [Lifecycle events](#lifecycle-events)
+- [Plugins](#plugins)
+- [FAQ](#faq)
 </div>
 
 <h1 class="no-margin-top">Documentation</h1>

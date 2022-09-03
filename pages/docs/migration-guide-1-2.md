@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 title: Migration guide, v1 to v2
 rightmenu: false
 permalink: /migration-guide-javalin-1-to-2

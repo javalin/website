@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 title: Archive - v1 documentation
 rightmenu: true
 permalink: /archive/docs/v1.7.0.html

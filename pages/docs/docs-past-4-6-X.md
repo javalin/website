@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 title: Archive - v4 Documentation
 rightmenu: true
 permalink: /archive/docs/v4.6.X.html
@@ -8,33 +8,33 @@ permalink: /archive/docs/v4.6.X.html
 {% include notificationBanner.html %}
 
 <div id="spy-nav" class="right-menu" markdown="1">
-* [Getting Started](#getting-started)
-* [HTTP Handlers](#handlers)
-  * [Before](#before-handlers)
-  * [Endpoint](#endpoint-handlers)
-  * [After](#after-handlers)
-  * [Context (ctx)](#context)
-* [WebSockets](#websockets)
-  * [Before](#wsbefore)
-  * [Endpoint](#wsendpoint)
-  * [After](#wsafter)
-  * [Context (ctx)](#wscontext)
-* [Handler groups](#handler-groups)
-* [Validation](#validation)
-* [Access manager](#access-manager)
-* [Default responses](#default-responses)
-* [Exception Mapping](#exception-mapping)
-* [Error Mapping](#error-mapping)
-* [Server-sent Events](#server-sent-events)
-* [Configuration](#configuration)
-  * [Static Files](#static-files)
-  * [Single page mode](#single-page-mode)
-  * [Logging](#logging)
-  * [Server setup](#server-setup)
-* [Lifecycle events](#lifecycle-events)
-* [Plugins](#plugins)
-* [Modules](#different-javalin-modules)
-* [FAQ](#faq)
+- [Getting Started](#getting-started)
+- [HTTP Handlers](#handlers)
+  - [Before](#before-handlers)
+  - [Endpoint](#endpoint-handlers)
+  - [After](#after-handlers)
+  - [Context (ctx)](#context)
+- [WebSockets](#websockets)
+  - [Before](#wsbefore)
+  - [Endpoint](#wsendpoint)
+  - [After](#wsafter)
+  - [Context (ctx)](#wscontext)
+- [Handler groups](#handler-groups)
+- [Validation](#validation)
+- [Access manager](#access-manager)
+- [Default responses](#default-responses)
+- [Exception Mapping](#exception-mapping)
+- [Error Mapping](#error-mapping)
+- [Server-sent Events](#server-sent-events)
+- [Configuration](#configuration)
+  - [Static Files](#static-files)
+  - [Single page mode](#single-page-mode)
+  - [Logging](#logging)
+  - [Server setup](#server-setup)
+- [Lifecycle events](#lifecycle-events)
+- [Plugins](#plugins)
+- [Modules](#different-javalin-modules)
+- [FAQ](#faq)
 </div>
 
 <h1 class="no-margin-top">Documentation</h1>

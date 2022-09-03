@@ -1,16 +1,17 @@
 ---
-layout: default
+layout: docs
 title: GraphQL documentation
 rightmenu: true
 permalink: /plugins/graphql
 ---
 
 <div id="spy-nav" class="right-menu" markdown="1">
-* [Getting Started](#getting-started)
-* [Create Query](#create-query)
-* [Create Command](#create-command)
-* [Create Subscription](#create-subscription)
-* [Pass context](#pass-context)
+- [Getting Started](#getting-started)
+- [Create Query](#create-query)
+- [Create Command](#create-command)
+- [Create Subscription](#create-subscription)
+- [Pass context](#pass-context)
+  - [TODO](#todo)
 </div>
 
 <h1 class="no-margin-top">GraphQL Plugin</h1>
