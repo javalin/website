@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 title: Migration guide, v4 to v5
 rightmenu: false
 permalink: /migration-guide-javalin-4-to-5

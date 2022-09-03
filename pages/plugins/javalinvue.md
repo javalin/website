@@ -1,26 +1,28 @@
 ---
-layout: default
+layout: docs
 title: JavalinVue Plugin
 rightmenu: true
 permalink: /plugins/javalinvue
 ---
 
 <div id="spy-nav" class="right-menu" markdown="1">
-* [How does it work](#how-does-it-work)
-* [Getting Started](#getting-started)
-  * [Creating a layout](#creating-a-layout)
-  * [Creating a component](#creating-a-component)
-  * [Binding to a route](#binding-to-a-route)
-* [Configuration options](#configuration-options)
-  * [rootDirectory](#rootdirectory)
-  * [vueVersion](#vueversion)
-  * [stateFunction](#statefunction)
-  * [isDevFunction](#isdevfunction)
-  * [optimizeDependencies](#optimizedependencies)
-  * [cacheControl](#cachecontrol)
-* [Layout macros](#layout-macros)
-* [LoadableData](#loadabledata)
-* [Good to know](#good-to-know)
+- [How does it work?](#how-does-it-work)
+- [Getting Started](#getting-started)
+  - [Creating a layout](#creating-a-layout)
+  - [Creating a component](#creating-a-component)
+  - [Binding to a route](#binding-to-a-route)
+- [Configuration options](#configuration-options)
+  - [rootDirectory](#rootdirectory)
+  - [vueVersion](#vueversion)
+  - [stateFunction](#statefunction)
+  - [isDevFunction](#isdevfunction)
+  - [optimizeDependencies](#optimizedependencies)
+  - [cacheControl](#cachecontrol)
+- [Layout macros](#layout-macros)
+  - [@cdnWebjar](#cdnwebjar)
+- [LoadableData](#loadabledata)
+- [Good to know](#good-to-know)
+  - [Local state](#local-state)
 </div>
 
 <h1 class="no-margin-top">JavalinVue Plugin</h1>

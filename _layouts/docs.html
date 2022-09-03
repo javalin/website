@@ -19,7 +19,15 @@
     <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
     <link rel="shortcut icon" type="image/png" href="/img/favicon.png">
     <link rel="stylesheet" href="/css/main.css">
-    <style>{% include inlineCss.css %}</style>
+    <style>
+        {% include inlineCss.css %}
+        .anchorjs-link {
+            transition: all .25s linear;
+          }
+          *:hover > .anchorjs-link {
+            margin-left: -1.125em !important;
+          }
+    </style>
 </head>
 <body>
     {% include forkMe.html %}
@@ -50,5 +58,10 @@
     </footer>
     {% include starBegging.html %}
     <script src="/js/scripts.js"></script>
+    <script src="/js/anchor.min.js"></script>
+    <script>
+        anchors.options.placement = 'left';
+        anchors.add();
+    </script>
 </body>
 </html>

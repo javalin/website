@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 title: Documentation
 rightmenu: true
 permalink: /documentation
