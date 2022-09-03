@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 title: SSL Plugin
 rightmenu: true
 permalink: /plugins/ssl-helpers
