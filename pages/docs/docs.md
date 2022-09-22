@@ -20,18 +20,51 @@ permalink: /documentation
   - [After](#wsafter)
   - [WsContext (wsCtx)](#wscontext)
 - [Handler groups](#handler-groups)
+  - [CrudHandler](#crudhandler)
 - [Validation](#validation)
+  - [Validator API](#validator-api)
+  - [Validation examples](#validation-examples)
+  - [Collecting multiple errors](#collecting-multiple-errors)
+  - [ValidationException](#validationexception)
+  - [Custom converters](#custom-converters)
 - [Access manager](#access-manager)
 - [Default responses](#default-responses)
 - [Exception Mapping](#exception-mapping)
+- [WebSocket Exception Mapping](#websocket-exception-mapping)
 - [Error Mapping](#error-mapping)
 - [Server-sent Events](#server-sent-events)
+  - [SseClient API](#sseclient-api)
 - [Configuration](#configuration)
+  - [Compression](#compression)
+  - [ContextResolvers](#contextresolvers)
+  - [HttpConfig](#httpconfig)
+  - [JettyConfig](#jettyconfig)
+  - [RequestLoggerConfig](#requestloggerconfig)
+  - [RoutingConfig](#routingconfig)
+  - [SpaRootConfig](#sparootconfig)
+  - [StaticFileConfig](#staticfileconfig)
   - [Logging](#logging)
   - [Server setup](#server-setup)
 - [Lifecycle events](#lifecycle-events)
 - [Plugins](#plugins)
 - [FAQ](#faq)
+  - [Request lifecycle](#request-lifecycle)
+  - [Rate limiting](#rate-limiting)
+  - [Android](#android)
+  - [Concurrency](#concurrency)
+  - [Testing](#testing)
+  - [Javadoc](#javadoc)
+  - [Deploying](#deploying)
+  - [Other web servers](#other-web-servers)
+  - [Uploads](#uploads)
+  - [Asynchronous requests](#asynchronous-requests)
+  - [Configuring the JSON mapper](#configuring-the-json-mapper)
+  - [Adding other Servlets and Filters to Javalin](#adding-other-servlets-and-filters-to-javalin)
+  - [Views and Templates](#views-and-templates)
+  - [Vue support (JavalinVue)](#vue-support-javalinvue)
+  - [TimeoutExceptions and ClosedChannelExceptions](#timeoutexceptions-and-closedchannelexceptions)
+  - [Minecraft](#minecraft)
+  - [Documentation for previous versions](#documentation-for-previous-versions)
 </div>
 
 <h1 class="no-margin-top">Documentation</h1>
@@ -42,7 +75,7 @@ changes unless the major (leftmost) digit changes, for example `4.X.X` to `5.X.X
 
 {% include sponsorOrStar.html %}
 
-## Getting started
+## Getting Started
 
 Add the dependency:
 {% include macros/mavenDep.md %}
@@ -441,7 +474,7 @@ app.wsAfter("/path/*") { ws ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-## WsContext
+### WsContext
 The `WsContext` object provides you with everything you need to handle a websocket-request.
 It contains the underlying websocket session and servlet-request, and convenience methods for sending
 messages to the client.
@@ -481,31 +514,31 @@ sessionAttribute("name")                // get a session attribute
 sessionAttributeMap()                   // map of all session attributes
 ```
 
-### WsMessageContext
+#### WsMessageContext
 ```java
 message()                               // receive a string message from the client
 messageAsClass(clazz)                   // deserialize message from client
 ```
 
-### WsBinaryMessageContext
+#### WsBinaryMessageContext
 ```java
 data()                                  // receive a byte array of data from the client
 offset()                                // the offset of the data
 length()                                // the length of the data
 ```
 
-### WsCloseContext
+#### WsCloseContext
 ```java
 status()                                // the int status for why connection was closed
 reason()                                // the string reason for why connection was closed
 ```
 
-### WsErrorContext
+#### WsErrorContext
 ```java
 error()                                 // the throwable error that occurred
 ```
 
-### WsConnectContext
+#### WsConnectContext
 The `WsConnectContext` class doesn't add anything to the base `WsContext`
 
 ## Handler groups
