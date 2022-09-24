@@ -72,3 +72,15 @@ and the rating is displayed at the bottom of each card.
     docsUrl="/plugins/devlogging"
     ratingIssueNr="139"
 %}
+
+{% include pluginCard.html
+    title="CORS"
+    description="
+        The CORS plugin bundles the functionality to set CORS headers for some or all origins 
+        as required.
+    "
+    bundled="true"
+    author="tipsy"
+    docsUrl="/plugins/cors"
+    ratingIssueNr="999"
+%}
