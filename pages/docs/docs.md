@@ -247,6 +247,7 @@ result(inputStream)                   // set result stream to specified input st
 future(futureSupplier)                // set the result to be a future, see async section (overwrites any previously set result)
 writeSeekableStream(inputStream)      // write content immediately as seekable stream (useful for audio and video)
 result()                              // get current result stream as string (if possible), and reset result stream
+resultInputStream()                   // get current result stream
 contentType("type")                   // set the response content type
 header("name", "value")               // set response header by name (can be used with Header.HEADERNAME)
 redirect("/path", code)               // redirect to the given path with the given status code
