@@ -34,9 +34,13 @@
     margin-top: 0;
 }
 
-.plugin-box h2 small {
+.plugin-box h2 .plugin-authors {
     font-size: 70%;
     font-weight: 400;
+}
+
+.plugin-authors a + a {
+    margin-left: 3px;
 }
 
 .plugin-box .is-bundled {
@@ -96,13 +100,13 @@
 
 .plugin-box-footer .reactions .good,
 .plugin-box-footer .reactions .good svg {
-    color: #1fa11f;
+    color: black;
     fill: #1fa11f;
 }
 
 .plugin-box-footer .reactions .bad,
 .plugin-box-footer .reactions .bad svg {
-    color: #c02c2c;
+    color: black;
     fill: #c02c2c;
 }
 

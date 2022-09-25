@@ -22,7 +22,7 @@ and the rating is displayed at the bottom of each card.
         It's ideal for rapid prototyping and creation of websites/web-portals.
     "
     bundled="true"
-    author="tipsy"
+    author="tipsy,TareqK"
     docsUrl="/plugins/javalinvue"
     ratingIssueNr="132"
 %}

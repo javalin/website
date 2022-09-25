@@ -2,7 +2,10 @@
     <div class="plugin-box-header">
         <h2>
             {{ include.title }}
-            <small>(by <a href="https://github.com/{{ include.author }}">@{{ include.author }}</a>)</small>
+            <small class="plugin-authors">
+                {% assign authors = include.author | split: "," %}
+                (by {% for author in authors %}<a href="https://github.com/{{ author }}">@{{ author }}</a>{% endfor %})
+            </small>
         </h2>
         <span class="plugin-tags">
              {% if include.bundled == "true" %}
@@ -40,4 +43,3 @@
         })();
     </script>
 </div>
-
