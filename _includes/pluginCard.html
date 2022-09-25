@@ -15,9 +15,14 @@
     </p>
     <div class="plugin-box-footer">
         <a class="reactions" href="https://github.com/javalin/javalin.github.io/issues/{{ include.ratingIssueNr }}"></a>
+        {% assign first = include.docsUrl | slice: 0 %}
         <a class="view-docs-btn" href="{{ include.docsUrl }}">
             View documentation
-            <svg width="24" height="24" viewBox="0 0 24 24"><path d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z" /></svg>
+            {% if first == "/" %}
+                <svg width="24" height="24" viewBox="0 0 24 24"><path d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z" /></svg>
+            {% else %}
+                <svg width="24" height="24" viewBox="0 0 24 24"><path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z" /></svg>
+            {% endif %}
         </a>
     </div>
 </div>

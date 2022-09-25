@@ -13,17 +13,6 @@ Each plugin can be rated and reviewed on GitHub (via reactions and comments),
 and the rating is displayed at the bottom of each card.
 
 {% include pluginCard.html
-    title="OpenAPI Annotation Processor"
-    description="
-        Fill this out
-    "
-    bundled="false"
-    author="dzikoysk"
-    docsUrl="/plugins/openapi-annotation-processor"
-    ratingIssueNr="133"
-%}
-
-{% include pluginCard.html
     title="JavalinVue"
     description="
         JavalinVue let's you create simple Vue frontends without having a frontend build pipeline.
@@ -35,6 +24,27 @@ and the rating is displayed at the bottom of each card.
     author="tipsy"
     docsUrl="/plugins/javalinvue"
     ratingIssueNr="132"
+%}
+
+{% include pluginCard.html
+    title="OpenAPI Annotation Processor"
+    description="
+        This OpenAPI plugin replaces the old DSL + annotation setup that was
+        available before Javalin 5.
+        Features:
+        <ul>
+            <li>Reflection free, does not perform any extra operations at runtime</li>
+            <li>Uses @OpenApi to simplify migration from bundled OpenApi implementation</li>
+            <li>Supports Java 8 and all further releases of Java and Kotlin (through Kapt)</li>
+            <li>Uses internal WebJar handler that works with /* route out of the box</li>
+            <li>Provides better projection of OpenAPI specification</li>
+            <li>Schema validation through Swagger core module</li>
+        </ul>
+    "
+    bundled="false"
+    author="dzikoysk"
+    docsUrl="https://github.com/javalin/javalin-openapi#readme"
+    ratingIssueNr="133"
 %}
 
 {% include pluginCard.html

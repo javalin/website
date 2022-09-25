@@ -50,7 +50,7 @@ new Javalin contributor, [@dzikoysk](https://github.com/dzikoysk), who is also t
 of Reposilite ([repo](https://github.com/dzikoysk/reposilite), [website](https://reposilite.com/)).
 Reposilite is currently running both
 Javalin v5 and Javalin OpenAPI v5 in production.
-This new project should have significantly fewer issues than the old module.
+This new OpenAPI plugin should have significantly fewer issues than the old module.
 
 ## Semi private fields renamed
 The `_conf.inner` field has been renamed to `cfg.pvt` (config private) to
