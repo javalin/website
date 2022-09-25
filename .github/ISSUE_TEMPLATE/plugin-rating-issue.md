@@ -1,21 +1,14 @@
 ---
-name: Plugin rating issue
-about: Use this issue to generate a rating-issue for a Javalin plugin
+name: Plugin reporting issue
+about: Use this template to generate a reporting-issue for a Javalin plugin
 title: "[PLUGIN RATING] - <plugin name>"
 labels: ''
 assignees: ''
 
 ---
 
-## !!! The reactions to this issue are reflected on https://javalin.io/plugins !!!
+## !!! The comments on this issue are reflected on https://javalin.io/plugins !!!
 
-If you like this plugin, react with one of the positive emojis:
-:+1: :heart: :tada: :rocket:
-
-If you dislike this plugin, react with one of the negative emojis:
-:-1: :confused:
-
-You can also use a neutral emoji:
-:eyes: :smile:
-
-If you have comments on this plugin, please enter them below. The plugin page will link to this issue, so it works sort of like a ratings/review page in an appstore.
+This is intended as safety mechanism to warn other users if a plugin is not behaving as it should.
+  
+Please be elaborate in your reports, and explain why there is a problem with the plugin.
