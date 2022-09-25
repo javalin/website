@@ -10,8 +10,8 @@ permalink: /plugins/
 
 <h1 class="no-margin-top">Plugins</h1>
 This page contains an overview of official and unofficial Javalin plugins.
-Each plugin can be rated and reviewed on GitHub (via reactions and comments),
-and the rating is displayed at the bottom of each card.
+If you find an issue with a plugin and the plugin owner refuses to address it,
+please report it on GitHub (link in plugin card).
 
 {% include pluginCard.html
     title="JavalinVue"
