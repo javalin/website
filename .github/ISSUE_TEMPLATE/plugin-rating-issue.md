@@ -1,7 +1,7 @@
 ---
 name: Plugin reporting issue
 about: Use this template to generate a reporting-issue for a Javalin plugin
-title: "[PLUGIN RATING] - <plugin name>"
+title: "[PLUGIN REPORTS] - <plugin name>"
 labels: ''
 assignees: ''
 
