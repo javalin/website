@@ -7,6 +7,8 @@
         <span class="plugin-tags">
              {% if include.bundled == "true" %}
                 <span class="plugin-tag">Bundled</span>
+             {% else %}
+                <span class="plugin-tag">Third party</span>
              {% endif %}
         </span>
     </div>
@@ -19,142 +21,23 @@
         <a class="view-docs-btn" href="{{ include.docsUrl }}">
             View documentation
             {% if first == "/" %}
-                <svg width="24" height="24" viewBox="0 0 24 24"><path d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z" /></svg>
+            <svg width="24" height="24" viewBox="0 0 24 24">
+                <path d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z"/>
+            </svg>
             {% else %}
-                <svg width="24" height="24" viewBox="0 0 24 24"><path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z" /></svg>
+            <svg width="24" height="24" viewBox="0 0 24 24">
+                <path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z"/>
+            </svg>
             {% endif %}
         </a>
     </div>
+    <script>
+        (() => {
+            let pluginName = "{{include.title | slugify}}";
+            let issueUrl = "https://github.com/javalin/javalin.github.io/issues/{{ include.ratingIssueNr }}";
+            let apiUrl = issueUrl.replace("https://github.com/", "https://api.github.com/repos/");
+            setPluginReactions(pluginName, apiUrl);
+        })();
+    </script>
 </div>
-<script>
-    (() => {
-        let pluginName = "{{include.title | slugify}}";
-        let issueUrl = "https://github.com/javalin/javalin.github.io/issues/{{ include.ratingIssueNr }}";
-        let apiUrl = issueUrl.replace(
-            "https://github.com/",
-            "https://api.github.com/repos/"
-        );
-        let cached = JSON.parse(sessionStorage.getItem(apiUrl));
-        if (cached?.reactions) {
-            setReactions(cached.reactions, cached.comments);
-        } else {
-            fetch(apiUrl)
-                .then(res => res.json())
-                .then(data => {
-                    if (!data?.reactions) return;
-                    setReactions(data.reactions, data.comments);
-                    sessionStorage.setItem(apiUrl, JSON.stringify(data));
-                });
-        }
-        function setReactions(data, comments) {
-            function rIcon(key, icon, className) {
-                return data[key] ? `<span class="r-icon ${className}">${reactionIcons[icon]} ${data[key]}</span>` : ""
-            }
-            document.querySelector(`.${pluginName} .reactions`).insertAdjacentHTML("beforeend", `
-                ${rIcon("+1", "thumbsUp", "good")}
-                ${rIcon("heart", "heart", "good")}
-                ${rIcon("hooray", "hooray", "good")}
-                ${rIcon("rocket", "rocket", "good")}
-                ${rIcon("-1", "thumbsDown", "bad")}
-                ${rIcon("confused", "confused", "bad")}
-                ${comments > 0 ? `<span class="r-icon review">Reviews: ${comments}</span>` : ''}
-            `)
-        }
-    })();
-</script>
-<style>
-.plugin-box {
-    position: relative;
-    color: #444;
-    display: block;
-    padding: 20px;
-    background: #fff;
-    border-radius: 5px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    margin-top: 24px;
-}
-.plugin-box-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-.plugin-box-header .plugin-tag {
-    text-transform: capitalize;
-    background: #f5f5f5;
-    border-radius: 5px;
-    padding: 2px 6px 1px;
-    display: inline-block;
-    font-size: 14px;
-}
-.plugin-box h2 {
-    font-size: 22px;
-    margin-top: 0;
-}
-.plugin-box p {
-    font-size: 15px;
-    margin-top: 0;
-}
-.plugin-box h2 small {
-    font-size: 70%;
-    font-weight: 400;
-}
-.plugin-box .is-bundled {
-    font-size: 13px;
-}
-.plugin-box-footer {
-    font-size: 15px;
-    margin-top: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.plugin-box-footer .view-docs-btn {
-    background: #f5f5f5;
-    border-radius: 40px;
-    padding: 8px 16px;
-    display: inline-flex;
-    align-items: center;
-    color: black;
-}
-.plugin-box-footer .view-docs-btn svg {
-    margin-left: 4px;
-}
-.plugin-box-footer .reactions {
-    display: flex;
-}
-.plugin-box-footer .reactions .good,
-.plugin-box-footer .reactions .bad {
-    display: flex;
-}
-.plugin-box-footer .r-icon {
-    font-weight: 500;
-    font-family: "Roboto Slab", sans-serif;
-    display: flex;
-    align-items: center;
-    background: 1px #f5f5f5;
-    padding: 4px 8px;
-    border-radius: 5px;
-}
-.plugin-box-footer .r-icon + .r-icon {
-    margin-left: 8px;
-}
-.plugin-box-footer .r-icon svg {
-    display: block;
-    height: 20px;
-    width: 20px;
-    margin-right: 4px;
-}
-.plugin-box-footer .reactions .good,
-.plugin-box-footer .reactions .good svg {
-    color: #1fa11f;
-    fill: #1fa11f;
-}
-.plugin-box-footer .reactions .bad,
-.plugin-box-footer .reactions .bad svg {
-    color: #c02c2c;
-    fill: #c02c2c;
-}
-.plugin-box-footer .review {
-    color: black;
-}
-</style>
+

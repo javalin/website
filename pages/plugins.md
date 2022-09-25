@@ -5,7 +5,8 @@ rightmenu: false
 permalink: /plugins/
 ---
 
-{% include pluginIcons.html %}
+<script>{% include pluginCard.js %}</script>
+<style>{% include pluginCard.css %}</style>
 
 <h1 class="no-margin-top">Plugins</h1>
 This page contains an overview of official and unofficial Javalin plugins.
