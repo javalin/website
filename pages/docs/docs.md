@@ -1570,8 +1570,8 @@ fun main() {
     app.get("/") { ctx ->
         ctx.future {
             getFuture()
-                .thenAccept(result -> ctx.result(result)
-                .exceptionally(error -> ctx.result("Error: " + error)
+                .thenAccept { ctx.result(it) }
+                .exceptionally { ctx.result("Error: " + it) }
         }
     }
 }

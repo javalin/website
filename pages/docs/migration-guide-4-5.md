@@ -19,6 +19,8 @@ Related to the Jetty 11 change, the `MicrometerPlugin` has been removed. This ha
 Micrometer does not support Jetty 11:
 [https://github.com/micrometer-metrics/micrometer/issues/3234](https://github.com/micrometer-metrics/micrometer/issues/3234)
 
+It will hopefully return soon!
+
 ## Package changes
 The `core` package has been removed, flattening the package structure of Javalin.
 Some other things have also been moved around.
@@ -50,7 +52,7 @@ new Javalin contributor, [@dzikoysk](https://github.com/dzikoysk), who is also t
 of Reposilite ([repo](https://github.com/dzikoysk/reposilite), [website](https://reposilite.com/)).
 Reposilite is currently running both
 Javalin v5 and Javalin OpenAPI v5 in production.
-This new OpenAPI plugin should have significantly fewer issues than the old module.
+This new OpenAPI plugin should have significantly fewer issues than the old module!
 
 ## Semi private fields renamed
 The `_conf.inner` field has been renamed to `cfg.pvt` (config private) to
@@ -59,9 +61,30 @@ further discourage use. It's still okay to use it (if you know what you are doin
 ## Context changes
 * `Context` is now an interface
 * `ctx.req` and `ctx.res` are now `ctx.req()` and `ctx.res()`
-* `ctx.cookieStore#` is now `ctx.cookieStore().#`
+* `ctx.cookieStore#` is now `ctx.cookieStore()#`
 * `ctx.seekableStream` is now `ctx.writeSeekableStream`
 * The reified `xyzAsClass` functions now have to be imported (since `Context` is now an interface)
+
+## Template engines
+All template engines have been moved to a separate `javalin-rendering` artifact.
+To use template engines in Javalin 5 you have to add this dependency, and call `MyTemplateEngine.init()`,
+which will make the template engine register itself on `JavalinRenderer` with the proper extension.
+You could also call `JavalinRender.register(engine, extension...)`.
+
+## Future rework
+In Javalin 4 we had `Context#future(future, callback)`,
+which has been changed to `Context#future(futureSupplier)`. The recommended
+way to use futures in Javalin 5 is to lean on the `CompletableFuture` API and
+call Javalin's `Context` methods in those callbacks:
+
+```java
+app.get("/", ctx ->
+    ctx.future(() => myFuture
+        .thenAccept(result -> ctx.result(result))
+        .exceptionally(error -> ctx.result("Error: " + error))
+    );
+});
+```
 
 ## JavalinVue
 The `JavalinVue` singleton has been removed. Instead of `JavalinVue.configOption = ...`,
