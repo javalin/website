@@ -38,7 +38,7 @@ permalink: /
         (including Swagger UI and ReDoc). Learn more at the <a href='/plugins/openapi'>OpenAPI plugin page</a>.
         ---
         Jetty -- Javalin runs on top of Jetty, one of the most used and stable web-servers on the JVM.
-        You can configure the Jetty server fully, including SSL and HTTP2 and everything else
+        You can configure the Jetty server fully, including SSL and HTTP3 and everything else
         that Jetty offers.
     "
 %}
