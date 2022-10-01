@@ -51,7 +51,7 @@ please report it on GitHub (link in plugin card).
 {% include pluginCard.html
     title="SSL Helpers"
     description="
-        Fill this out
+        SSL configuration made easy. This plugin provides a simple way to configure SSL for Javalin, just the same way you would configure Javalin itself. Support for PEM, PKCS12, and JKS formats, as well as HTTP/2.
     "
     bundled="false"
     author="zugazagoitia"
