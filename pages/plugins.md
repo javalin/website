@@ -60,6 +60,31 @@ please report it on GitHub (link in plugin card).
 %}
 
 {% include pluginCard.html
+    title="CORS"
+    description="
+        The CORS plugin bundles the functionality to set CORS headers for some or all origins
+        as required.
+    "
+    bundled="true"
+    author="Playacem"
+    docsUrl="/plugins/cors"
+    ratingIssueNr="147"
+%}
+
+{% include pluginCard.html
+    title="GraphQL"
+    description="
+        This plugin allows implementing the
+        <a href='https://graphql.org/'>GraphQL</a>
+        specification with a few easy steps.
+    "
+    bundled="false"
+    author="7agustibm"
+    docsUrl="https://github.com/javalin/javalin-graphql"
+    ratingIssueNr="150"
+%}
+
+{% include pluginCard.html
     title="RouteOverview"
     description="
         The route overview provides you with a HTML and/or JSON overview of all the routes
@@ -82,16 +107,4 @@ please report it on GitHub (link in plugin card).
     author="tipsy"
     docsUrl="/plugins/devlogging"
     ratingIssueNr="139"
-%}
-
-{% include pluginCard.html
-    title="CORS"
-    description="
-        The CORS plugin bundles the functionality to set CORS headers for some or all origins
-        as required.
-    "
-    bundled="true"
-    author="Playacem"
-    docsUrl="/plugins/cors"
-    ratingIssueNr="147"
 %}
