@@ -60,8 +60,8 @@ Add the dependency:
 <div data-tab="1" markdown="1">
 ~~~markup
 <dependency>
-    <groupId>io.javalin</groupId>
-    <artifactId>javalin-ssl</artifactId>
+    <groupId>io.javalin.community</groupId>
+    <artifactId>javalin-ssl-plugin</artifactId>
     <version>{{site.javalinversion}}</version>
 </dependency>
 ~~~
@@ -70,7 +70,7 @@ Not familiar with Maven? Read our [Maven tutorial](/tutorials/maven-setup).
 
 <div data-tab="2" markdown="1">
 ~~~java
-implementation group: 'io.javalin', name: 'javalin-ssl', version: '{{site.javalinversion}}'
+implementation group: 'io.javalin.community', name: 'javalin-ssl-plugin', version: '{{site.javalinversion}}'
 ~~~
 Not familiar with Gradle? Read our [Gradle tutorial](/tutorials/gradle-setup).
 </div>
