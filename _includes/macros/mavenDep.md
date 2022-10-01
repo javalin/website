@@ -22,7 +22,7 @@ Not familiar with Maven? Read our [Maven tutorial](/tutorials/maven-setup).
 
 <div data-tab="2" markdown="1">
 ~~~java
-implementation group: 'io.javalin', name: 'javalin', version: '{{site.javalinversion}}'
+implementation("io.javalin:javalin:{{site.javalinversion}}")
 ~~~
 Not familiar with Gradle? Read our [Gradle tutorial](/tutorials/gradle-setup).
 </div>
