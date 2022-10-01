@@ -85,6 +85,19 @@ please report it on GitHub (link in plugin card).
 %}
 
 {% include pluginCard.html
+    title="JavalinMithril"
+    description="
+        This is a <a href='https://mithril.js.org/'>Mithril.js</a> plugin.
+        It allows you to use Mithril.js and Server Side Routing and State Injection to create multi-page applications
+        with Javalin. It is heavily inspired by the JavalinVue plugin.
+    "
+    bundled="false"
+    author="TareqK"
+    docsUrl="https://github.com/javalin/javalin-mithril"
+    ratingIssueNr="151"
+%}
+
+{% include pluginCard.html
     title="RouteOverview"
     description="
         The route overview provides you with a HTML and/or JSON overview of all the routes
