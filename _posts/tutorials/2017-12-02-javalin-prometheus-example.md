@@ -5,7 +5,7 @@ title: "Setting up monitoring in Javalin with Prometheus (and grafana)"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2017-12-02
 permalink: /tutorials/prometheus-example
-github: https://github.com/tipsy/javalin-prometheus-example
+github: https://github.com/javalin/javalin-samples/tree/main/javalin5/javalin-prometheus-example
 summarytitle: Creating monitoring dashboards
 summary: Learn how to setup monitoring using Prometheus (and Grafana)
 language: ["java", "kotlin"]
@@ -15,30 +15,25 @@ language: ["java", "kotlin"]
 
 First, we need to create a Maven project with some dependencies: [(→ Tutorial)](/tutorials/maven-setup)
 
-We need Javalin for our server, slf4j for logging, and Prometheus for monitoring.\\
+We need Javalin for our server and Prometheus for monitoring.\\
 We'll also add unirest for simulating traffic:
 
 ```xml
 <dependencies>
     <dependency>
         <groupId>io.javalin</groupId>
-        <artifactId>javalin</artifactId>
+        <artifactId>javalin-bundle</artifactId>
         <version>{{site.javalinversion}}</version>
-    </dependency>
-    <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-simple</artifactId>
-        <version>{{site.slf4jversion}}</version>
     </dependency>
     <dependency>
         <groupId>io.prometheus</groupId>
         <artifactId>simpleclient_httpserver</artifactId>
-        <version>0.1.0</version>
+        <version>0.16.0</version>
     </dependency>
     <dependency>
-        <groupId>com.mashape.unirest</groupId>
+        <groupId>com.konghq</groupId>
         <artifactId>unirest-java</artifactId>
-        <version>1.4.9</version>
+        <version>3.13.10</version>
     </dependency>
 </dependencies>
 ```
@@ -53,44 +48,45 @@ public static void main(String[] args) throws Exception {
 
     StatisticsHandler statisticsHandler = new StatisticsHandler();
     QueuedThreadPool queuedThreadPool = new QueuedThreadPool(200, 8, 60_000);
-    initializePrometheus(statisticsHandler, queuedThreadPool);
 
-    Javalin app = Javalin.create(config -> {
-        config.server(() -> {
+    Javalin app = Javalin.create(config ->
+        config.jetty.server(() -> {
             Server server = new Server(queuedThreadPool);
             server.setHandler(statisticsHandler);
             return server;
         })
-    }).start(7070);
+    ).start(7070);
 
 }
 
 private static void initializePrometheus(StatisticsHandler statisticsHandler, QueuedThreadPool queuedThreadPool) throws IOException {
-    StatisticsHandlerCollector.initialize(statisticsHandler); // collector is included in source code
-    QueuedThreadPoolCollector.initialize(queuedThreadPool); // collector is included in source code
+    StatisticsHandlerCollector.initialize(statisticsHandler);
+    QueuedThreadPoolCollector.initialize(queuedThreadPool);
     HTTPServer prometheusServer = new HTTPServer(7080);
+    LoggerFactory.getLogger("JavalinPrometheusExampleApp").info("Prometheus is listening on: http://localhost:7080");
 }
 {% endcapture %}
 {% capture kotlin %}
-fun main(args: Array<String>) {
+fun main() {
 
     val statisticsHandler = StatisticsHandler()
     val queuedThreadPool = QueuedThreadPool(200, 8, 60_000)
-    initializePrometheus(statisticsHandler, queuedThreadPool)
 
     val app = Javalin.create {
-        it.server {
+        it.jetty.server {
             Server(queuedThreadPool).apply {
                 handler = statisticsHandler
             }
         }
     }.start(7070)
+
 }
 
 private fun initializePrometheus(statisticsHandler: StatisticsHandler, queuedThreadPool: QueuedThreadPool) {
     StatisticsHandlerCollector.initialize(statisticsHandler)
     QueuedThreadPoolCollector.initialize(queuedThreadPool)
     val prometheusServer = HTTPServer(7080)
+    LoggerFactory.getLogger("JavalinPrometheusExampleApp").info("Prometheus is listening on: http://localhost:7080")
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -149,18 +145,14 @@ while (true) {
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-
 `spawnRandomRequests()` doesn't exist yet, so we need to create that too:
 
 {% capture java %}
 private static void spawnRandomRequests() throws InterruptedException {
     new Thread(() -> {
-        try {
-            for (int i = 0; i < new Random().nextInt(50); i++) {
-                Unirest.get("http://localhost:7070/1").asString(); // we want a lot more "200 - OK" traffic
-                Unirest.get("http://localhost:7070/" + (1 + new Random().nextInt(5))).asString(); // hit a random (1-5) endpoint
-            }
-        } catch (UnirestException ignored) {
+        for (int i = 0; i < new Random().nextInt(50); i++) {
+            Unirest.get("http://localhost:7070/1").asString(); // we want a lot more "200 - OK" traffic
+            Unirest.get("http://localhost:7070/" + (1 + new Random().nextInt(5))).asString(); // hit a random (1-5) endpoint
         }
     }).start();
     Thread.sleep((int) (Math.random() * 250));

@@ -1,0 +1,48 @@
+<div class="plugin-box {{include.title | slugify}}">
+    <div class="plugin-box-header">
+        <h2>
+            {{ include.title }}
+            <small class="plugin-authors">
+                {% assign authors = include.author | split: "," %}
+                (by {% for author in authors %}<a href="https://github.com/{{ author }}">@{{ author }}</a>{% endfor %})
+            </small>
+        </h2>
+        <span class="plugin-tags">
+             {% if include.bundled == "true" %}
+                <span class="plugin-tag">Bundled</span>
+             {% else %}
+                <span class="plugin-tag">Third party</span>
+             {% endif %}
+        </span>
+    </div>
+    <p>
+        {{ include.description }}
+    </p>
+    <div class="plugin-box-footer">
+        <div class="plugin-reports">
+            <a class="view-reports" href="https://github.com/javalin/javalin.github.io/issues/{{ include.ratingIssueNr }}">View reports</a>
+            <a class="make-report" href="https://github.com/javalin/javalin.github.io/issues/{{ include.ratingIssueNr }}">Report plugin</a>
+        </div>
+        {% assign first = include.docsUrl | slice: 0 %}
+        <a class="view-docs-btn" href="{{ include.docsUrl }}">
+            View documentation
+            {% if first == "/" %}
+            <svg width="24" height="24" viewBox="0 0 24 24">
+                <path d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z"/>
+            </svg>
+            {% else %}
+            <svg width="24" height="24" viewBox="0 0 24 24">
+                <path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z"/>
+            </svg>
+            {% endif %}
+        </a>
+    </div>
+    <script>
+        (() => {
+            let pluginName = "{{include.title | slugify}}";
+            let issueUrl = "https://github.com/javalin/javalin.github.io/issues/{{ include.ratingIssueNr }}";
+            let apiUrl = issueUrl.replace("https://github.com/", "https://api.github.com/repos/");
+            setPluginReports(pluginName, apiUrl);
+        })();
+    </script>
+</div>

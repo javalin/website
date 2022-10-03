@@ -8,7 +8,7 @@ summary: Learn how to document endpoints using OpenAPI 3, and how to render inte
 date: 2020-01-03
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 language: ["java", "kotlin"]
-github: https://github.com/tipsy/javalin-openapi-example
+github: https://github.com/javalin/javalin-samples/tree/main/javalin5/javalin-openapi-example
 ---
 
 ## What you will learn
@@ -38,7 +38,7 @@ First, we need to create a Maven project with our dependencies: [(→ Tutorial)]
 </dependencies>
 ~~~
 
-The `javalin-bundle` dependency includes Javalin, OpenAPI, Jackson and a logger.
+The `javalin-bundle` dependency includes Javalin, Jackson and a logger.
 
 You can view the full [POM](https://github.com/tipsy/javalin-openapi-example/blob/master/pom.xml) on GitHub.
 

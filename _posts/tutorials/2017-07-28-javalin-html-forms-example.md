@@ -5,7 +5,7 @@ title: "Working with HTML forms and a Javalin backend"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2017-07-28
 permalink: /tutorials/html-forms-example
-github: https://github.com/tipsy/javalin-html-forms-example
+github: https://github.com/javalin/javalin-samples/tree/main/javalin5/javalin-html-forms-example
 summarytitle: HTML forms & Javalin backend
 summary: Learn how to get/post HTML forms to a Javalin backend
 language: ["java", "kotlin"]
@@ -19,30 +19,26 @@ First, we need to create a project with these dependencies: [(→ Tutorial)](/tu
 <dependencies>
     <dependency>
         <groupId>io.javalin</groupId>
-        <artifactId>javalin</artifactId>
+        <artifactId>javalin-bundle</artifactId>
         <version>{{site.javalinversion}}</version>
-    </dependency>
-    <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-simple</artifactId>
-        <version>{{site.slf4jversion}}</version>
     </dependency>
 </dependencies>
 ~~~
 
 ## Setting up the backend
 
-Create a Main class with the following code:
+Create a class with the following code:
 
 {% capture java %}{% raw %}
+import io.javalin.Javalin;
+import io.javalin.http.staticfiles.Location;
+import io.javalin.util.FileUtil;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.javalin.Javalin;
+public class JavalinHtmlFormsExampleApp {
 
-public class Main {
-
-    static Map<String, String> reservations = new HashMap<String, String>() {{
+    private static final Map<String, String> reservations = new HashMap<>() {{
         put("saturday", "No reservation");
         put("sunday", "No reservation");
     }};
@@ -50,8 +46,8 @@ public class Main {
     public static void main(String[] args) {
 
         Javalin app = Javalin.create(config -> {
-            config.addStaticFiles("/public", Location.CLASSPATH);
-        }).start(7777);
+            config.staticFiles.add("/public", Location.CLASSPATH);
+        }).start(7070);
 
         app.post("/make-reservation", ctx -> {
             reservations.put(ctx.formParam("day"), ctx.formParam("time"));
@@ -68,17 +64,19 @@ public class Main {
 {% endraw %}{% endcapture %}
 {% capture kotlin %}
 import io.javalin.Javalin
+import io.javalin.http.staticfiles.Location
+import io.javalin.util.FileUtil
 
-val reservations = mutableMapOf<String?, String?>(
-        "saturday" to "No reservation",
-        "sunday" to "No reservation"
+private val reservations = mutableMapOf<String?, String?>(
+    "saturday" to "No reservation",
+    "sunday" to "No reservation"
 )
 
-fun main(args: Array<String>) {
+fun main() {
 
     val app = Javalin.create {
-        it.addStaticFiles("/public", Location.CLASSPATH)
-    }.start(7777)
+        it.staticFiles.add("/public", Location.CLASSPATH)
+    }.start(7070)
 
     app.post("/make-reservation") { ctx ->
         reservations[ctx.formParam("day")] = ctx.formParam("time")
@@ -93,7 +91,7 @@ fun main(args: Array<String>) {
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-This will create an app which listens on port `7777`,
+This will create an app which listens on port `7070`,
 and looks for static files in your `/src/resources/public` folder.
 We have two endpoints mapped, one `post`, which will make a reservation,
 and one `get`, which will check your reservation.
@@ -171,15 +169,15 @@ app.post("/upload-example", ctx -> {
     ctx.uploadedFiles("files").forEach(file -> {
         FileUtil.streamToFile(file.getContent(), "upload/" + file.getFilename());
     });
-    ctx.html("Upload complete");
+    ctx.html("Upload successful");
 });
 {% endcapture %}
 {% capture kotlin %}
 app.post("/upload-example") { ctx ->
     ctx.uploadedFiles("files").forEach {
-        FileUtil.streamToFile(it.content, File("upload/" + ${it.filename}))
+        FileUtil.streamToFile(it.content, "upload/${it.filename}")
     }
-    ctx.html("Upload complete")
+    ctx.html("Upload successful")
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}

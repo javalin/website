@@ -3,8 +3,9 @@ import io.javalin.Javalin;
 
 public class HelloWorld {
     public static void main(String[] args) {
-        Javalin app = Javalin.create().start(7070);
-        app.get("/", ctx -> ctx.result("Hello World"));
+        var app = Javalin.create(/*config*/)
+            .get("/", ctx -> ctx.result("Hello World"))
+            .start(7070);
     }
 }
 {% endcapture %}
@@ -13,8 +14,9 @@ public class HelloWorld {
 import io.javalin.Javalin
 
 fun main() {
-    val app = Javalin.create().start(7070)
-    app.get("/") { ctx -> ctx.result("Hello World") }
+    val app = Javalin.create(/*config*/)
+        .get("/") { ctx -> ctx.result("Hello World") }
+        .start(7070)
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}

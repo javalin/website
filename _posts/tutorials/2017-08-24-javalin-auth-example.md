@@ -5,42 +5,45 @@ title: "Creating a secure REST API in Javalin"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2017-08-24
 permalink: /tutorials/auth-example
-github: https://github.com/tipsy/javalin-auth-example
+github: https://github.com/javalin/javalin-samples/tree/main/javalin5/javalin-auth-example
 summarytitle: Secure your endpoints!
-summary: Learn how to secure your endpoints using Javalin's built-in AccessManager
+summary: Learn how to secure your endpoints using Javalin's AccessManager interface
 language: kotlin
 ---
 
 ## Dependencies
 
-First, create a new Gradle project with the following dependencies: [(→ Tutorial)](/tutorials/gradle-setup)
+First, we need to create a Maven project with some dependencies: [(→ Tutorial)](/tutorials/maven-setup)
 
-~~~java
-dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
-    compile "io.javalin:javalin:{{site.javalinversion}}"
-    compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.9"
-    compile "org.slf4j:slf4j-simple:{{site.slf4jversion}}"
-}
+~~~markup
+<dependencies>
+    <dependency>
+        <groupId>io.javalin</groupId>
+        <artifactId>javalin-bundle</artifactId>
+        <version>{{site.javalinversion}}</version>
+    </dependency>
+</dependencies>
 ~~~
 
 ## Creating controllers
 We need something worth protecting.
 Let's pretend we have a very important API for manipulating a user database.
 We make a controller-object with some dummy data and CRUD operations:
+
 ```kotlin
 import io.javalin.http.Context
+import io.javalin.http.bodyAsClass
 import java.util.*
 
 object UserController {
 
-    private data class User(val name: String, val email: String)
+    private data class User(val name: String = "", val email: String = "")
 
     private val users = hashMapOf(
-            randomId() to User(name = "Alice", email = "alice@alice.kt"),
-            randomId() to User(name = "Bob", email = "bob@bob.kt"),
-            randomId() to User(name = "Carol", email = "carol@carol.kt"),
-            randomId() to User(name = "Dave", email = "dave@dave.kt")
+        randomId() to User(name = "Alice", email = "alice@alice.kt"),
+        randomId() to User(name = "Bob", email = "bob@bob.kt"),
+        randomId() to User(name = "Carol", email = "carol@carol.kt"),
+        randomId() to User(name = "Dave", email = "dave@dave.kt")
     )
 
     fun getAllUserIds(ctx: Context) {
@@ -48,19 +51,19 @@ object UserController {
     }
 
     fun createUser(ctx: Context) {
-        users[randomId()] = ctx.bodyAsClass<User>()
+        users[randomId()] = ctx.bodyAsClass()
     }
 
     fun getUser(ctx: Context) {
-        ctx.json(users[ctx.pathParam("{user-id}")]!!)
+        ctx.json(users[ctx.pathParam("userId")]!!)
     }
 
     fun updateUser(ctx: Context) {
-        users[ctx.pathParam("{user-id}")!!] = ctx.bodyAsClass<User>()
+        users[ctx.pathParam("userId")] = ctx.bodyAsClass()
     }
 
     fun deleteUser(ctx: Context) {
-        users.remove(ctx.pathParam("{user-id}"))
+        users.remove(ctx.pathParam("userId"))
     }
 
     private fun randomId() = UUID.randomUUID().toString()
@@ -88,25 +91,23 @@ Now that we have roles, we can implement our endpoints:
 ```kotlin
 import io.javalin.apibuilder.ApiBuilder.*
 import io.javalin.Javalin
-import io.javalin.core.security.Role.roles
 
-fun main(vararg args: String) {
+fun main() {
 
-    val app = Javalin.create {
-        it.accessManager(Auth::accessManager)
-    }.start()
-
-    app.routes {
+    Javalin.create{
+        it.core.accessManager(Auth::accessManager)
+    }.routes {
+        get("/", { ctx -> ctx.redirect("/users") }, Role.ANYONE)
         path("users") {
             get(UserController::getAllUserIds, Role.ANYONE)
             post(UserController::createUser, Role.USER_WRITE)
-            path("{user-id}") {
+            path("{userId}") {
                 get(UserController::getUser, Role.USER_READ)
                 patch(UserController::updateUser, Role.USER_WRITE)
                 delete(UserController::deleteUser, Role.USER_WRITE)
             }
         }
-    }
+    }.start(7070)
 
 }
 ```
@@ -132,11 +133,14 @@ The rules for our access manager are also simple:
 
 This translates nicely into Kotlin:
 ```kotlin
-fun accessManager(handler: Handler, ctx: Context, permittedRoles: Set<Role>) {
+fun accessManager(handler: Handler, ctx: Context, permittedRoles: Set<RouteRole>) {
     when {
-        permittedRoles.contains(ApiRole.ANYONE) -> handler.handle(ctx)
+        permittedRoles.contains(Role.ANYONE) -> handler.handle(ctx)
         ctx.userRoles.any { it in permittedRoles } -> handler.handle(ctx)
-        else -> ctx.status(401).json("Unauthorized")
+        else -> {
+            ctx.header(Header.WWW_AUTHENTICATE, "Basic")
+            throw UnauthorizedResponse();
+        }
     }
 }
 ```
@@ -147,9 +151,9 @@ First we need a user-table. We'll create a `map(Pair<String, String>, Set<Role>)
 username+password in cleartext (please don't do this for a real service), and values are user-roles:
 
 ```kotlin
-private val userRoleMap = hashMapOf(
-        Pair("alice", "weak-password") to setOf(Role.USER_READ),
-        Pair("bob", "better-password") to setOf(Role.USER_READ, Role.USER_WRITE)
+private val userRolesMap = mapOf(
+    Pair("alice", "weak-1234") to listOf(Role.USER_READ),
+    Pair("bob", "weak-123456") to listOf(Role.USER_READ, Role.USER_WRITE)
 )
 ```
 
@@ -158,10 +162,10 @@ We do this by getting the username+password from the [Basic-auth-header](https:/
 and using them as keys for the `userRoleMap`:
 
 ```kotlin
-private val Context.userRoles: Set<ApiRole>
+private val Context.userRoles: List<Role>
     get() = this.basicAuthCredentials()?.let { (username, password) ->
-        userRoleMap[Pair(username, password)] ?: setOf()
-    } ?: setOf()
+        userRolesMap[Pair(username, password)] ?: listOf()
+    } ?: listOf()
 ```
 
 <small><em>

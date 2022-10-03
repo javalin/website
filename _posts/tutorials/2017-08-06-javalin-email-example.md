@@ -5,7 +5,7 @@ title: "Creating a 'Contact us' form that sends emails (via gmail)"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2017-08-06
 permalink: /tutorials/email-sending-example
-github: https://github.com/tipsy/javalin-email-example
+github: https://github.com/javalin/javalin-samples/tree/main/javalin5/javalin-email-example
 summarytitle: Sending emails from a Javalin backend
 summary: Create a 'Contact us' form with email sending (gmail) with a Javalin backend
 language: ["java", "kotlin"]
@@ -19,23 +19,18 @@ First, we need to create a Maven project with some dependencies: [(→ Tutorial)
 <dependencies>
     <dependency>
         <groupId>io.javalin</groupId>
-        <artifactId>javalin</artifactId> <!-- For handling http-requests -->
+        <artifactId>javalin-bundle</artifactId> <!-- For handling http-requests -->
         <version>{{site.javalinversion}}</version>
     </dependency>
     <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-email</artifactId> <!-- For sending emails -->
-        <version>1.4</version>
+        <version>1.5</version>
     </dependency>
     <dependency>
         <groupId>com.j2html</groupId>
         <artifactId>j2html</artifactId> <!-- For creating HTML form -->
-        <version>1.0.0</version>
-    </dependency>
-    <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-simple</artifactId> <!-- For logging -->
-        <version>{{site.slf4jversion}}</version>
+        <version>1.6.0</version>
     </dependency>
 </dependencies>
 ```
@@ -44,53 +39,60 @@ First, we need to create a Maven project with some dependencies: [(→ Tutorial)
 We need three endpoints: `GET '/'`, `POST '/contact-us'` and `GET '/contact-us/success'`:
 
 {% capture java %}
-import org.apache.commons.mail.*;
 import io.javalin.Javalin;
-import static j2html.TagCreator.*;
+import org.apache.commons.mail.DefaultAuthenticator;
+import org.apache.commons.mail.Email;
+import org.apache.commons.mail.SimpleEmail;
+import static io.javalin.apibuilder.ApiBuilder.get;
+import static io.javalin.apibuilder.ApiBuilder.post;
+import static j2html.TagCreator.br;
+import static j2html.TagCreator.button;
+import static j2html.TagCreator.form;
+import static j2html.TagCreator.input;
+import static j2html.TagCreator.textarea;
 
-public class Main {
+public class JavalinEmailExampleApp {
 
     public static void main(String[] args) {
 
-        Javalin app = Javalin.create().start(7000)
-
-        app.get("/", ctx -> ctx.html(
-            form().withAction("/contact-us").withMethod("post").with(
-                input().withName("subject").withPlaceholder("Subject"),
-                br(),
-                textarea().withName("message").withPlaceholder("Your message ..."),
-                br(),
-                button("Submit")
-            ).render()
-        ));
-
-        app.post("/contact-us", ctx -> {
-            Email email = new SimpleEmail();
-            email.setHostName("smtp.googlemail.com");
-            email.setSmtpPort(465);
-            email.setAuthenticator(new DefaultAuthenticator("YOUR_EMAIL", "YOUR_PASSWORD"));
-            email.setSSLOnConnect(true);
-            email.setFrom("YOUR_EMAIL");
-            email.setSubject(ctx.formParam("subject")); // subject from HTML-form
-            email.setMsg(ctx.formParam("message")); // message from HTML-form
-            email.addTo("RECEIVING_ADDRESS");
-            email.send(); // will throw email-exception if something is wrong
-            ctx.redirect("/contact-us/success");
-        });
-
-        app.get("/contact-us/success", ctx -> ctx.html("Your message was sent"));
-
+        Javalin.create()
+            .routes(() -> {
+                get("/", ctx -> ctx.html(
+                    form().withAction("/contact-us").withMethod("post").with(
+                        input().withName("subject").withPlaceholder("Subject"),
+                        br(),
+                        textarea().withName("message").withPlaceholder("Your message ..."),
+                        br(),
+                        button("Submit")
+                    ).render()
+                ));
+                post("/contact-us", ctx -> {
+                    Email email = new SimpleEmail();
+                    email.setHostName("smtp.googlemail.com");
+                    email.setSmtpPort(465);
+                    email.setAuthenticator(new DefaultAuthenticator("YOUR_EMAIL", "YOUR_PASSWORD"));
+                    email.setSSLOnConnect(true);
+                    email.setFrom("YOUR_EMAIL");
+                    email.setSubject(ctx.formParam("subject"));
+                    email.setMsg(ctx.formParam("message"));
+                    email.addTo("RECEIVING_EMAIL");
+                    email.send(); // will throw email-exception if something is wrong
+                    ctx.redirect("/contact-us/success");
+                });
+                get("/contact-us/success", ctx -> ctx.html("Your message was sent"));
+            }).start(7070);
     }
 
 }
 {% endcapture %}
 {% capture kotlin %}
 import io.javalin.Javalin
-import org.apache.commons.mail.*
+import org.apache.commons.mail.DefaultAuthenticator
+import org.apache.commons.mail.SimpleEmail
 
-fun main(args: Array<String>) {
+fun main() {
 
-    val app = Javalin.create().start(7000)
+    val app = Javalin.create().start(7070)
 
     app.get("/") { ctx ->
         ctx.html("""
@@ -113,7 +115,7 @@ fun main(args: Array<String>) {
             setFrom("YOUR_EMAIL")
             setSubject(ctx.formParam("subject"))
             setMsg(ctx.formParam("message"))
-            addTo("RECEIVING_ADDRESS")
+            addTo("RECEIVING_EMAIL")
         }.send() // will throw email-exception if something is wrong
         ctx.redirect("/contact-us/success")
     }

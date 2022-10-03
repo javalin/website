@@ -5,7 +5,7 @@ title: "Creating a simple chat-app with WebSockets"
 author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Åse</a>
 date: 2017-09-22
 permalink: /tutorials/websocket-example
-github: https://github.com/tipsy/javalin-websocket-example
+github: https://github.com/javalin/javalin-samples/tree/main/javalin5/javalin-websocket-example
 summarytitle: WebSockets chat application
 summary: Learn how to create a simple chat-app with WebSockets in Javalin
 language: ["java", "kotlin"]
@@ -30,23 +30,13 @@ First, we need to create a Maven project with some dependencies: [(→ Tutorial)
 <dependencies>
     <dependency>
         <groupId>io.javalin</groupId>
-        <artifactId>javalin</artifactId>
+        <artifactId>javalin-bundle</artifactId>
         <version>{{site.javalinversion}}</version>
-    </dependency>
-    <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-simple</artifactId>
-        <version>{{site.slf4jversion}}</version>
-    </dependency>
-    <dependency>
-        <groupId>org.json</groupId>
-        <artifactId>json</artifactId>
-        <version>20160810</version>
     </dependency>
     <dependency>
         <groupId>com.j2html</groupId>
         <artifactId>j2html</artifactId>
-        <version>1.4.0</version>
+        <version>1.6.0</version>
     </dependency>
 </dependencies>
 ~~~
@@ -61,15 +51,28 @@ We need:
  * a method for creating the message in HTML (or JSON if you prefer)
 
 {% capture java %}
-public class Chat {
+import io.javalin.Javalin;
+import io.javalin.http.staticfiles.Location;
+import io.javalin.websocket.WsContext;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import static j2html.TagCreator.article;
+import static j2html.TagCreator.attrs;
+import static j2html.TagCreator.b;
+import static j2html.TagCreator.p;
+import static j2html.TagCreator.span;
 
-    private static Map<WsContext, String> userUsernameMap = new ConcurrentHashMap<>();
+public class JavalinWebsocketExampleApp {
+
+    private static final Map<WsContext, String> userUsernameMap = new ConcurrentHashMap<>();
     private static int nextUserNumber = 1; // Assign to username for next connecting user
 
     public static void main(String[] args) {
         Javalin app = Javalin.create(config -> {
-            config.addStaticFiles("/public",  Location.CLASSPATH);
-        }).start(HerokuUtil.getHerokuAssignedPort());
+            config.staticFiles.add("/public", Location.CLASSPATH);
+        }).start(7070);
 
         app.ws("/chat", ws -> {
             ws.onConnect(ctx -> {
@@ -92,9 +95,10 @@ public class Chat {
     private static void broadcastMessage(String sender, String message) {
         userUsernameMap.keySet().stream().filter(ctx -> ctx.session.isOpen()).forEach(session -> {
             session.send(
-                new JSONObject()
-                    .put("userMessage", createHtmlMessageFromSender(sender, message))
-                    .put("userlist", userUsernameMap.values()).toString()
+                Map.of(
+                    "userMessage", createHtmlMessageFromSender(sender, message),
+                    "userlist", userUsernameMap.values()
+                )
             );
         });
     }
@@ -111,12 +115,20 @@ public class Chat {
 }
 {% endcapture %}
 {% capture kotlin %}
+import io.javalin.Javalin
+import io.javalin.http.staticfiles.Location
+import io.javalin.websocket.WsContext
+import j2html.TagCreator.*
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.ConcurrentHashMap
+
 private val userUsernameMap = ConcurrentHashMap<WsContext, String>()
 private var nextUserNumber = 1 // Assign to username for next connecting user
 
-fun main(args: Array<String>) {
+fun main() {
     Javalin.create {
-        it.addStaticFiles("/public",  Location.CLASSPATH)
+        it.staticFiles.add("/public", Location.CLASSPATH)
     }.apply {
         ws("/chat") { ws ->
             ws.onConnect { ctx ->
@@ -140,9 +152,10 @@ fun main(args: Array<String>) {
 fun broadcastMessage(sender: String, message: String) {
     userUsernameMap.keys.filter { it.session.isOpen }.forEach { session ->
         session.send(
-                JSONObject()
-                        .put("userMessage", createHtmlMessageFromSender(sender, message))
-                        .put("userlist", userUsernameMap.values).toString()
+            mapOf(
+                "userMessage" to createHtmlMessageFromSender(sender, message),
+                "userlist" to userUsernameMap.values
+            )
         )
     }
 }
@@ -150,9 +163,9 @@ fun broadcastMessage(sender: String, message: String) {
 // Builds a HTML element with a sender-name, a message, and a timestamp,
 private fun createHtmlMessageFromSender(sender: String, message: String): String {
     return article(
-            b("$sender says:"),
-            span(attrs(".timestamp"), SimpleDateFormat("HH:mm:ss").format(Date())),
-            p(message)
+        b("$sender says:"),
+        span(attrs(".timestamp"), SimpleDateFormat("HH:mm:ss").format(Date())),
+        p(message)
     ).render()
 }
 {% endcapture %}
@@ -182,9 +195,6 @@ First we create our index.html:
 </body>
 </html>
 ```
-
-As you can see, we reference a stylesheet called style.css, which can be found on
-[GitHub](https://github.com/tipsy/javalin-websocket-example/blob/master/src/main/resources/public/style.css).
 
 The final step needed for completing our chat application is creating `websocketDemo.js`:
 

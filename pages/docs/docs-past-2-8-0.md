@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 title: Archive - v2 documentation
 rightmenu: true
 permalink: /archive/docs/v2.8.0.html
@@ -8,29 +8,29 @@ permalink: /archive/docs/v2.8.0.html
 {% include notificationBanner.html %}
 
 <div id="spy-nav" class="right-menu" markdown="1">
-* [Handlers](#handlers)
-* * [Before](#before-handlers)
-* * [Endpoint](#endpoint-handlers)
-* * [After](#after-handlers)
-* [Handler groups](#handler-groups)
-* [Context (ctx)](#context)
-* * [Cookie Store](#cookie-store)
-* * [Extensions](#context-extensions)
-* [Validation](#validation)
-* [Access manager](#access-manager)
-* [Default responses](#default-responses)
-* [Exception Mapping](#exception-mapping)
-* [Error Mapping](#error-mapping)
-* [WebSockets](#websockets)
-* [Server-sent Events](#server-sent-events)
-* [Lifecycle events](#lifecycle-events)
-* [Server setup](#server-setup)
-* * [Start/stop](#starting-and-stopping)
-* * [Configuration](#configuration)
-* * [Custom server](#custom-server)
-* * [SSL/HTTP2](#sslhttp2)
-* * [Static Files](#static-files)
-* [FAQ](#faq)
+- [Handlers](#handlers)
+  - [Before](#before-handlers)
+  - [Endpoint](#endpoint-handlers)
+  - [After](#after-handlers)
+- [Handler groups](#handler-groups)
+- [Context (ctx)](#context)
+  - [Cookie Store](#cookie-store)
+  - [Extensions](#context-extensions)
+- [Validation](#validation)
+- [Access manager](#access-manager)
+- [Default responses](#default-responses)
+- [Exception Mapping](#exception-mapping)
+- [Error Mapping](#error-mapping)
+- [WebSockets](#websockets)
+- [Server-sent Events](#server-sent-events)
+- [Lifecycle events](#lifecycle-events)
+- [Server setup](#server-setup)
+  - [Start/stop](#starting-and-stopping)
+  - [Configuration](#configuration)
+  - [Custom server](#custom-server)
+  - [SSL/HTTP2](#sslhttp2)
+  - [Static Files](#static-files)
+- [FAQ](#faq)
 </div>
 
 <h1 class="no-margin-top">Documentation - Javalin 2.X</h1>

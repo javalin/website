@@ -1,14 +1,14 @@
 ---
-layout: default
+layout: docs
 title: Micrometer documentation
 rightmenu: true
 permalink: /plugins/micrometer
 ---
 
 <div id="spy-nav" class="right-menu" markdown="1">
-* [Getting Started](#getting-started)
-* [Provided Metrics](#provided-metrics)
-* [Custom Meters](#custom-meters)
+- [Getting Started](#getting-started)
+- [Provided Metrics](#provided-metrics)
+- [Custom Meters](#custom-meters)
 </div>
 
 <h1 class="no-margin-top">Micrometer Plugin</h1>

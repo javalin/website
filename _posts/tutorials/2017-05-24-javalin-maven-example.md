@@ -68,7 +68,7 @@ Finally, paste the Javalin "Hello World" snippet into a new file, `HelloWorld.ja
 
 {% include macros/gettingStarted.md %}
 
-Depending on your setup, you might need to explicitly set the language level to Java 8.
+Depending on your setup, you might need to explicitly set the language level to Java 11.
 This can be done in the in the `pom.xml`. Add the following snippet:
 
 ~~~markup
@@ -77,10 +77,10 @@ This can be done in the in the `pom.xml`. Add the following snippet:
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
-            <version>2.3.2</version>
+            <version>3.10.1</version>
             <configuration>
-                <source>1.8</source>
-                <target>1.8</target>
+                <source>11</source>
+                <target>11</target>
             </configuration>
         </plugin>
     </plugins>
@@ -88,11 +88,6 @@ This can be done in the in the `pom.xml`. Add the following snippet:
 ~~~
 
 Now everything should be ready for you to run your application. Enjoy!
-
-<small markdown="1">
-*If IntelliJ says `Method references are not supported at this language level`, press `alt + enter`*\\
-and choose `Set language level to 8 - Lambdas, type annotations, etc`.*
-</small>
 
 <h2 id="eclipse">Instructions for Eclipse</h2>
 
@@ -125,10 +120,10 @@ This can be done in the in the `pom.xml`. Add the following snippet:
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
-            <version>2.3.2</version>
+            <version>3.10.1</version>
             <configuration>
-                <source>1.8</source>
-                <target>1.8</target>
+                <source>11</source>
+                <target>11</target>
             </configuration>
         </plugin>
     </plugins>
