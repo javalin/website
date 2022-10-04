@@ -68,7 +68,7 @@ permalink: /
 
 {% include landing/section-6-whos-using-javalin.html
     title="<h1 id='whos-using-javalin'>Who's using Javalin?</h1>"
-    paragraph="Are you using Javalin? <a href='https://github.com/javalin/javalin.github.io/issues/18'>Let us know</a>!"
+    paragraph="Are you using Javalin? <a href='https://github.com/javalin/javalin/issues/1676'>Let us know</a>!"
 %}
 
 {% include landing/section-7-survey.html
