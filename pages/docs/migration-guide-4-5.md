@@ -114,6 +114,42 @@ It will hopefully return (to the core) soon!
 The `JavalinVue` singleton has been removed. Instead of `JavalinVue.configOption = ...`,
 you can now configure Vue through `Javalin.create { config.vue.configOption = ... }`.
 
+## CORS plugin
+
+The CORS plugin has been completely rewritten to be more flexible. Instead of the two methods 
+`enableCorsForAllOrigins()` and `enableCorsForOrigin(@NotNull String... origins)` on the config object you now pass a 
+lambda to `config.enableCors()` to configure CORS.
+
+{% capture java %}
+Javalin.create(config -> {
+config.enableCors(cors -> {
+    cors.add(corsConfig -> {
+        // replacement for enableCorsForOrigin(@NotNull String... origins)
+        corsConfig.allowHost(/* add your origins here */);
+        //replacement for enableCorsForAllOrigins()
+        corsConfig.anyHost();
+    });
+});
+
+}).start();
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { config -> 
+config.enableCors { cors ->
+    cors.add { corsConfig ->
+        //replacement for enableCorsForOrigin(@NotNull String... origins)
+        corsConfig.allowHost(/* add your origins here */)
+        //replacement for enableCorsForAllOrigins()
+        corsConfig.anyHost()
+    }
+}
+}.start()
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+Check out the [CORS plugin page](/plugins/cors) for more details on the rewritten CORS plugin and its capabilities.
+
+
 ## Additional changes
 It's hard to keep track of everything, but you can look at the
 [full commit log](https://github.com/javalin/javalin/compare/de573edb60927b21e4e54831a465202e764cf925...49aa806af8199bc4c1ef01dee927f8268226ea1e)
