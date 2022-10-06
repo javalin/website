@@ -949,7 +949,7 @@ Server-sent events (often also called event source) are very simple in Javalin.
 You call `app.sse()`, which gives you access to the connected `SseClient`:
 
 {% capture java %}
-app.sse("/sse", client ->
+app.sse("/sse", client -> {
     client.sendEvent("connected", "Hello, SSE");
     client.onClose(() -> System.out.println("Client disconnected"));
     client.close(); // close the client
