@@ -103,7 +103,7 @@ nav {
   overflow-y: scroll;
 
   ul {
-    margin: 0;
+    margin: 0 0 120px;
     list-style: none;
     padding: 0;
 
@@ -123,6 +123,7 @@ nav {
     ul {
       font-size: 90%;
       padding-left: 15px;
+      margin: 0;
 
       a {
         padding: 1px 0;
