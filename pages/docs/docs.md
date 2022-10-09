@@ -201,8 +201,7 @@ formParamMap()                        // map of all form parameters
 pathParam("name")                     // path parameter by name as string
 pathParamAsClass("name", clazz)       // path parameter as validator typed as specified class
 pathParamMap()                        // map of all path parameters
-basicAuthCredentialsExist()           // true if request has basic auth credentials
-basicAuthCredentials()                // basic auth credentials (if set)
+basicAuthCredentials()                // basic auth credentials (or null if not set)
 attribute("name", value)              // set an attribute on the request
 attribute("name")                     // get an attribute on the request
 attributeMap()                        // map of all attributes on the request
