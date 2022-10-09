@@ -262,6 +262,7 @@ render("/template.tmpl", model)       // calls html(renderedTemplate)
 res()                                 // get the underlying HttpServletResponse
 
 // Other methods
+async(supplier)                       // switch into async mode
 handlerType()                         // handler type of the current handler (BEFORE, AFTER, GET, etc)
 appAttribute("name")                  // get an attribute on the Javalin instance. see app attributes section below
 matchedPath()                         // get the path that was used to match this request (ex, "/hello/{name}")
