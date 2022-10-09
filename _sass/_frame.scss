@@ -100,6 +100,7 @@ nav {
   top: 120px;
   z-index: 999999;
   width: 200px;
+  height: 100%;
   overflow-y: scroll;
 
   ul {
@@ -184,7 +185,6 @@ nav {
     right: 0;
     left: auto;
     margin-left: 0;
-    height: 100%;
     border-left: 1px solid #e0e0e0;
     background: linear-gradient(to right, #f9f9f9, white);
     padding: 40px 15px 0 15px;
