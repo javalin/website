@@ -1596,10 +1596,10 @@ to `config.jsonMapper()`.
 The `JsonMapper` interface has four optional methods:
 
 ```java
-String toJsonString(Object obj) { // basic method for mapping to json
-InputStream toJsonStream(Object obj) { // memory efficient method for mapping to json
-<T> T fromJsonString(String json, Class<T> targetClass) { // basic method for mapping from json
-<T> T fromJsonStream(InputStream json, Class<T> targetClass) { // memory efficient method for mapping from json
+String toJsonString(Object obj, Type type) { // basic method for mapping to json
+InputStream toJsonStream(Object obj, Type type) { // memory efficient method for mapping to json
+<T> T fromJsonString(String json, Type targetType) { // basic method for mapping from json
+<T> T fromJsonStream(InputStream json, Type targetType) { // memory efficient method for mapping from json
 ```
 
 #### GSON example
@@ -1608,12 +1608,13 @@ InputStream toJsonStream(Object obj) { // memory efficient method for mapping to
 Gson gson = new GsonBuilder().create();
 JsonMapper gsonMapper = new JsonMapper() {
     @Override
-    public String toJsonString(@NotNull Object obj) {
-        return gson.toJson(obj);
+    public String toJsonString(@NotNull Object obj, @NotNull Type type) {
+        return gson.toJson(obj, type);
     }
+
     @Override
-    public <T> T fromJsonString(@NotNull String json, @NotNull Class<T> targetClass) {
-        return gson.fromJson(json, targetClass);
+    public <T> T fromJsonString(@NotNull String json, @NotNull Type targetType) {
+        return gson.fromJson(json, targetType);
     }
 };
 Javalin app = Javalin.create(config -> config.jsonMapper(gsonMapper)).start(7070);
@@ -1622,12 +1623,13 @@ Javalin app = Javalin.create(config -> config.jsonMapper(gsonMapper)).start(7070
 val gson = GsonBuilder().create()
 
 val gsonMapper = object : JsonMapper {
-    override fun <T> fromJsonString(json: String, targetClass: Class<T>): T {
-        return gson.fromJson(json, targetClass)
-    }
-    override fun toJsonString(obj: Any): String {
-        return gson.toJson(obj)
-    }
+
+    override fun <T : Any> fromJsonString(json: String, targetType: Type): T =
+        gson.fromJson(json, targetType)
+
+    override fun toJsonString(obj: Any, type: Type) =
+        gson.toJson(obj)
+        
 }
 
 val app = Javalin.create { it.jsonMapper(gsonMapper) }.start(7070)
