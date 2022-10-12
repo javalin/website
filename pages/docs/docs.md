@@ -1675,11 +1675,22 @@ JavalinCommonmark.init() // ".md", ".markdown"
 ```
 
 Registering a new engine:
-```java
-JavalinRenderer.register((filePath, model) -> {
-    return MyRenderer.render(filePath, model);
+{% capture java %}
+JavalinRenderer.register(new JavalinPebble(), ".peb", ".pebble");
+
+JavalinRenderer.register((filePath, model, ctx) -> {
+    return MyRenderer.render(filePath, model, ctx);
 }, ".ext");
-```
+{% endcapture %}
+
+{% capture kotlin %}
+JavalinRenderer.register(JavalinPebble(), ".peb", ".pebble")
+
+JavalinRenderer.register({ filePath, model, ctx ->
+    MyRenderer.render(filePath, model, ctx)
+}, ".ext")
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 If you wish to configure a template engine (for example, to set a root directory for your template files),
 all `JavalinTemplateEngine.init` methods receive optional parameters with their template engine
