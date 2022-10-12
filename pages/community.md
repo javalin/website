@@ -9,7 +9,7 @@ permalink: /community
 
 <h1 class="no-margin-top">Community</h1>
 
-This page lists all of the places to ask for help or discuss Javalin, in no particular order.
+This page lists all of the places to ask for help or discuss Javalin, in order of relevance.
 
 <div class="community-boxes">
   <div class="community-box">
@@ -17,7 +17,8 @@ This page lists all of the places to ask for help or discuss Javalin, in no part
     <p>
       The GitHub repo (<a href="https://github.com/tipsy/javalin">https://github.com/tipsy/javalin</a>)
       is where most of the action happens.
-      You can create issues to make feature request, to report bugs, or to ask questions.
+      You can create issues to make feature request, to report bugs, or even to ask questions.
+      We're not too strict.
     </p>
   </div>
   <div class="community-box">
@@ -28,17 +29,17 @@ This page lists all of the places to ask for help or discuss Javalin, in no part
     </p>
   </div>
   <div class="community-box">
+    <h2>Slack</h2>
+    <p>
+      It's not as lively as Discord, but it is a lot more corporate:
+      <a href="https://join.slack.com/t/javalin-io/shared_invite/zt-1hwdevskx-ftMobDhGxhW0I268B7Ub~w">https://javalin-io.slack.com/</a>
+    </p>
+  </div>
+  <div class="community-box">
     <h2>Twitter</h2>
     <p>
       Javalin doesn't tweet a lot, but it does retweet and like Javalin related things:
       <a href="https://twitter.com/javalin_io">https://twitter.com/javalin_io</a>
-    </p>
-  </div>
-  <div class="community-box">
-    <h2>Gitter</h2>
-    <p>
-      The gitter chat server isn't very active, but it does have a lot of idling members:
-      <a href="https://gitter.im/javalin-io/general">https://gitter.im/javalin-io/general</a>
     </p>
   </div>
   <div class="community-box">
