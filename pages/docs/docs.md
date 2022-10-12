@@ -1663,32 +1663,55 @@ ctx.render("/templateFile.ext", mapOf("firstName" to "John", "lastName" to "Doe"
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-Registering a new engine:
-```java
-JavalinRenderer.register(JavalinPebble.INSTANCE, ".peb", ".pebble");
-
-JavalinRenderer.register((filePath, model) -> {
-    return MyRenderer.render(filePath, model);
-}, ".ext");
-```
-
-Configuring one of the existing engines:
+Registering one of the existing engines using default configuration and extensions:
 ```kotlin
-JavalinThymeleaf.configure(templateEngine)
-JavalinVelocity.configure(velocityEngine)
-JavalinFreemarker.configure(configuration)
-JavalinMustache.configure(mustacheFactory)
-JavalinJtwig.configure(configuration)
-JavalinPebble.configure(configuration)
-JavalinCommonmark.configure(htmlRenderer, markdownParser)
+JavalinFreemarker.init() // ".ftl"
+JavalinJte.init() // ".jte", ".kte"
+JavalinMustache.init() // ".mustache"
+JavalinPebble.init() // ".peb", ".pebble"
+JavalinThymeleaf.init() // ".html", ".tl", ".thyme", ".thymeleaf"
+JavalinVelocity.init() // ".vm", ".vtl"
+JavalinCommonmark.init() // ".md", ".markdown"
 ```
 
-If you wish to configure a template engine (for example, to set a root directory for your template files)
-please consult the documentation for that particular template engine. These kinds of settings are not handled
-through Javalin.
+Registering a new engine:
+{% capture java %}
+JavalinRenderer.register(new JavalinPebble(), ".peb", ".pebble");
 
-If you need to configure settings beyond what's available in `JavalinTemplateEngine.configure`, you
-have to write your own implementation and register it using `JavalinRenderer.register`.
+JavalinRenderer.register((filePath, model, ctx) -> {
+    return MyRenderer.render(filePath, model, ctx);
+}, ".ext");
+{% endcapture %}
+
+{% capture kotlin %}
+JavalinRenderer.register(JavalinPebble(), ".peb", ".pebble")
+
+JavalinRenderer.register({ filePath, model, ctx ->
+    MyRenderer.render(filePath, model, ctx)
+}, ".ext")
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+If you wish to configure a template engine (for example, to set a root directory for your template files),
+all `JavalinTemplateEngine.init` methods receive optional parameters with their template engine
+configurations:
+
+```kotlin
+JavalinFreemarker.init(configuration: Configuration?)
+JavalinJte.init(templateEngine: TemplateEngine?, isDevFunction: ((Context) -> Boolean)?)
+JavalinMustache.init(mustacheFactory: MustacheFactory?)
+JavalinPebble.init(pebbleEngine: PebbleEngine?)
+JavalinThymeleaf.init(templateEngine: TemplateEngine?)
+JavalinVelocity.init(velocityEngine: VelocityEngine?)
+JavalinCommonmark.init(htmlRenderer: HtmlRenderer?, parser: Parser?)
+```
+
+Please consult the documentation for that particular template engine to learn how to use
+them, these kinds of settings are not handled through Javalin.
+
+If you need to configure settings beyond what's available in `JavalinTemplateEngine.init` (for example,
+to set a custom file extension), you have to write your own implementation and register it using
+`JavalinRenderer.register`.
 
 Note that these are global settings, and cannot be configured per instance of Javalin.
 
