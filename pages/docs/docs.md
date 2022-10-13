@@ -1592,9 +1592,30 @@ While the default ThreadPool (200 threads) is enough for most use cases,
 sometimes slow operations should be run asynchronously. Luckily it's very easy in Javalin, just
 pass a `Supplier<CompletableFuture>` to `ctx.future()`:
 
-```kotlin
-import io.javalin.Javalin
+{% capture java %}
+public static void main(String[] args) {
+    Javalin app = Javalin.create().start(7000);
+    app.get("/", ctx -> {
+        ctx.future(() -> 
+            getFuture()
+                .thenAccept(ctx::result)
+                .exceptionally(e -> {
+                    ctx.result("Error: " + e.getMessage());
+                    return null;
+                })
+        );
+    });
+}
 
+private static CompletableFuture<String> getFuture() {
+    CompletableFuture<String> future = new CompletableFuture<>();
+    Executors.newSingleThreadScheduledExecutor().schedule(() -> future.complete("Hello World!"),
+        1,
+        TimeUnit.SECONDS);
+    return future;
+}
+{% endcapture %}
+{% capture kotlin %}
 fun main() {
     val app = Javalin.create().start(7000)
     app.get("/") { ctx ->
@@ -1614,7 +1635,8 @@ private fun getFuture() = CompletableFuture<String>().apply {
         TimeUnit.SECONDS
     )
 }
-```
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ---
 
