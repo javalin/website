@@ -37,11 +37,10 @@ permalink: /archive/docs/v4.6.X.html
 - [FAQ](#faq)
 </div>
 
-<h1 class="no-margin-top">Documentation</h1>
+<h1 class="no-margin-top">Documentation - Javalin 4.X</h1>
 
-The documentation is for the latest version of Javalin, currently `{{site.javalinversion}}`.
-Javalin follows [semantic versioning](http://semver.org/), meaning there are no breaking
-changes unless the major (leftmost) digit changes, for example `4.X.X` to `5.X.X`.
+This page contains documentation for an older version of Javalin.
+Go to [javalin.io/documentation](/documentation) to view documentation for the newest version.
 
 {% include sponsorOrStar.html %}
 
