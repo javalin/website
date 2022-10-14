@@ -30,7 +30,6 @@ permalink: /documentation
 - [Access manager](#access-manager)
 - [Default responses](#default-responses)
 - [Exception Mapping](#exception-mapping)
-- [WebSocket Exception Mapping](#websocket-exception-mapping)
 - [Error Mapping](#error-mapping)
 - [Server-sent Events](#server-sent-events)
   - [SseClient API](#sseclient-api)
