@@ -95,11 +95,14 @@ nav {
   position: fixed;
   left: 50%;
   list-style: none;
-  padding: 0;
   margin-left: 506px;
   top: 120px;
   z-index: 999999;
-  width: 200px;
+  width: 180px;
+  max-height: calc(100% - 120px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 0 32px;
 
   ul {
     margin: 0;
@@ -154,26 +157,24 @@ nav {
     text-align: center;
     cursor: pointer;
   }
-}
 
-@media (max-height: 820px) {
-  .right-menu {
-    font-size: 14px;
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
   }
-}
 
-@media (max-height: 720px) {
-  .right-menu {
-    font-size: 12px;
-    ul a {
-      margin: 0;
-    }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.35);
+    border-radius: 6px;
   }
-}
 
-@media (max-height: 650px) {
-  .right-menu {
-    font-size: 11px;
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 6px;
   }
 }
 
@@ -199,9 +200,10 @@ nav {
     left: auto;
     margin-left: 0;
     height: 100%;
+    max-height: calc(100% - 80px);
     border-left: 1px solid #e0e0e0;
     background: linear-gradient(to right, #f9f9f9, white);
-    padding: 40px 15px 0 15px;
+    padding: 40px 15px 15px 15px;
     z-index: 0;
   }
 }

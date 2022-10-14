@@ -847,10 +847,11 @@ Returns a [503 Service Unavailable](https://developer.mozilla.org/en-US/docs/Web
 Returns a [504 Gateway Timeout](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/504) response with the default title `Gateway timeout`.
 
 ## Exception Mapping
-All handlers (before, endpoint, after) can throw `Exception`
-(and any subclass of `Exception`)
-The `app.exception()` method gives you a way of handling these exceptions:
+All handlers (before, endpoint, after, ws) can throw `Exception`
+(and any subclass of `Exception`).
+The `app.exception()` and `app.wsException()` methods gives you a way of handling these exceptions:
 {% capture java %}
+// HTTP exceptions
 app.exception(NullPointerException.class, (e, ctx) -> {
     // handle nullpointers here
 });
@@ -859,22 +860,8 @@ app.exception(Exception.class, (e, ctx) -> {
     // handle general exceptions here
     // will not trigger if more specific exception-mapper found
 });
-{% endcapture %}
-{% capture kotlin %}
-app.exception(NullPointerException::class.java) { e, ctx ->
-    // handle nullpointers here
-}
 
-app.exception(Exception::class.java) { e, ctx ->
-    // handle general exceptions here
-    // will not trigger if more specific exception-mapper found
-}
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
-## WebSocket Exception Mapping
-The different WebSocket handlers throw exceptions. The `app.wsException()` method gives you a way of handling these exceptions:
-{% capture java %}
+// WebSocket exceptions
 app.wsException(NullPointerException.class, (e, ctx) -> {
     // handle nullpointers here
 });
@@ -885,6 +872,17 @@ app.wsException(Exception.class, (e, ctx) -> {
 });
 {% endcapture %}
 {% capture kotlin %}
+// HTTP exceptions
+app.exception(NullPointerException::class.java) { e, ctx ->
+    // handle nullpointers here
+}
+
+app.exception(Exception::class.java) { e, ctx ->
+    // handle general exceptions here
+    // will not trigger if more specific exception-mapper found
+}
+
+// WebSocket exceptions
 app.wsException(NullPointerException::class.java) { e, ctx ->
     // handle nullpointers here
 }
