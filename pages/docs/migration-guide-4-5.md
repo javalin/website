@@ -1,5 +1,5 @@
 ---
-layout: docs
+layout: default
 title: Migration guide, v4 to v5
 rightmenu: false
 permalink: /migration-guide-javalin-4-to-5
@@ -116,8 +116,8 @@ you can now configure Vue through `Javalin.create { config.vue.configOption = ..
 
 ## CORS plugin
 
-The CORS plugin has been completely rewritten to be more flexible. Instead of the two methods 
-`enableCorsForAllOrigins()` and `enableCorsForOrigin(@NotNull String... origins)` on the config object you now pass a 
+The CORS plugin has been completely rewritten to be more flexible. Instead of the two methods
+`enableCorsForAllOrigins()` and `enableCorsForOrigin(@NotNull String... origins)` on the config object you now pass a
 lambda to `config.enableCors()` to configure CORS.
 
 {% capture java %}
@@ -134,7 +134,7 @@ config.enableCors(cors -> {
 }).start();
 {% endcapture %}
 {% capture kotlin %}
-Javalin.create { config -> 
+Javalin.create { config ->
 config.enableCors { cors ->
     cors.add { corsConfig ->
         //replacement for enableCorsForOrigin(@NotNull String... origins)

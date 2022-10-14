@@ -1,5 +1,5 @@
 ---
-layout: docs
+layout: default
 title: Documentation
 rightmenu: true
 permalink: /documentation
@@ -1629,7 +1629,7 @@ val gsonMapper = object : JsonMapper {
 
     override fun toJsonString(obj: Any, type: Type) =
         gson.toJson(obj)
-        
+
 }
 
 val app = Javalin.create { it.jsonMapper(gsonMapper) }.start(7070)

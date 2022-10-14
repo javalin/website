@@ -1,5 +1,5 @@
 ---
-layout: docs
+layout: default
 title: SSL Plugin
 rightmenu: true
 permalink: /plugins/ssl-helpers
@@ -44,7 +44,7 @@ Javalin.create { javalinConfig ->
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 By default two connectors are created, one for HTTP and one for HTTPS. The HTTP connector is **NOT** configured to redirect all requests to the HTTPS connector
-(this can be achieved using the bundled plugin: `javalinConfig.plugins.enableSslRedirects();`). 
+(this can be achieved using the bundled plugin: `javalinConfig.plugins.enableSslRedirects();`).
 The default port for HTTP is 80 and for HTTPS is 443.
 
 ## Getting Started
@@ -133,7 +133,7 @@ securePort = 443;                      // Port to use on the SSL (secure) connec
 
 sniHostCheck = true;                   // Enable SNI hostname verification.
 tlsConfig = TLSConfig.INTERMEDIATE;    // Set the TLS configuration.
-    
+
 ```
 The `TLSConfig` enum provides a set of predefined configurations for the TLS protocol. The default configuration is `TLSConfig.INTERMEDIATE`, which is based on the latest Mozilla's guidelines. The following configurations are available:
 
@@ -178,11 +178,11 @@ Once the plugin is configured, there is a `SSLPlugin#patch` method that can be u
 ## Good to know
 
  - This plugin can be used to enable HTTP/2 without the need to use a certificate. To do so, just set the `secure` option to `false` and the `http2` option to `true`.
-  
+
  - HTTP/3 is not supported yet, but it is planned to be added in the future. The IETF is still working on the final specification, so it is not prudent to implement it yet.
-  
+
  - Client certificates are not supported yet, and it is **not** planned to be added in the future. If you need this feature, please open an issue in the [GitHub repository](https://github.com/javalin/javalin-ssl)
-  
+
  - Jetty 11 ships with SNI verification enabled by default, if hostname spoofing is a not concern, you can disable it by setting the `sniHostCheck` option to `false`. This option is enabled by default for security reasons, but it can be disabled if you are using a reverse proxy that handles the hostname verification. Jetty might respond with an `HTTP ERROR 400 Invalid SNI` if the hostname verification fails.
-  
+
  - Live reload of certificates is not supported yet, and it **is** planned to be added in the future.

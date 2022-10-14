@@ -1,7 +1,7 @@
 ---
-layout: docs
+layout: default
 title: CORS plugin documentation
-rightmenu: false
+rightmenu: true
 permalink: /plugins/cors
 ---
 
@@ -33,7 +33,7 @@ Javalin.create(config -> {
 
 This example would allow the origins `https://example.com` and `https://javalin.io`.
 
-The default scheme can be changed by setting it: `defaultScheme = "http"`, but you can also just specify it with your 
+The default scheme can be changed by setting it: `defaultScheme = "http"`, but you can also just specify it with your
 `allowHost()` call: `allowHost("http://example.com")`
 
 ## Allowing any host
@@ -82,7 +82,7 @@ Javalin.create(config -> {
 
 ## Multiple CORS configurations
 
-It is also possible to have different cors configurations for different paths. 
+It is also possible to have different cors configurations for different paths.
 Take a look at the following example:
 
 ```java
@@ -104,7 +104,7 @@ Javalin.create(config -> {
 });
 ```
 
-Everything listed under `images` would be only accessible by the host `images.local` and everything under `videos` 
+Everything listed under `images` would be only accessible by the host `images.local` and everything under `videos`
 only to the host `videos.local`.
 
 ## allowCredentials and exposeHeader

@@ -1,5 +1,5 @@
 ---
-layout: docs
+layout: default
 title: DevLoggingPlugin documentation
 rightmenu: false
 permalink: /plugins/devlogging

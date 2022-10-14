@@ -50,5 +50,11 @@
     </footer>
     {% include starBegging.html %}
     <script src="/js/scripts.js"></script>
+    {% if page.rightmenu %}
+    <script>
+        anchors.options.placement = 'left';
+        anchors.add();
+    </script>
+    {% endif %}
 </body>
 </html>

@@ -1,5 +1,5 @@
 ---
-layout: docs
+layout: default
 title: Micrometer documentation
 rightmenu: true
 permalink: /plugins/micrometer
@@ -58,7 +58,7 @@ ingested by Prometheus.
 
 ## Provided Metrics
 
-The Micrometer library comes with a number of useful metrics provider, which can be 
+The Micrometer library comes with a number of useful metrics provider, which can be
 easily added:
 
 ```java
@@ -88,7 +88,7 @@ app.get("/prometheus", ctx -> ctx.contentType(TextFormat.CONTENT_TYPE_004).resul
 
 ## Custom Meters
 
-It's also easy to provide custom meters, reporting application-specific values, for 
+It's also easy to provide custom meters, reporting application-specific values, for
 example the length of a job-queue, the number of logged in users, or other values.
 In the following example, just a random number is returned:
 

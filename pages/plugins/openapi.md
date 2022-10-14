@@ -1,5 +1,5 @@
 ---
-layout: docs
+layout: default
 title: OpenAPI documentation
 rightmenu: false
 permalink: /plugins/openapi

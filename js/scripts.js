@@ -1,6 +1,7 @@
 ---
 ---
 
+{% include_relative _partials/vendor/anchor.min.js %}
 {% include_relative _partials/vendor/clipboard.min.js %}
 {% include_relative _partials/vendor/prism.min.js %}
 {% include_relative _partials/vendor/smoothscroll.min.js %}

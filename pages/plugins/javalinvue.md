@@ -1,5 +1,5 @@
 ---
-layout: docs
+layout: default
 title: JavalinVue Plugin
 rightmenu: true
 permalink: /plugins/javalinvue

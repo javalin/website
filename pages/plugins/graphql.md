@@ -1,5 +1,5 @@
 ---
-layout: docs
+layout: default
 title: GraphQL documentation
 rightmenu: true
 permalink: /plugins/graphql
