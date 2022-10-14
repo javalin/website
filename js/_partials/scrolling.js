@@ -3,7 +3,7 @@
     smoothScroll.init({ // https://github.com/cferdinandi/smooth-scroll
         selector: 'a[href^="#"]', // Selector for links (must be a class, ID, data attribute, or element tag)
         selectorHeader: fixedHeaderSelector, // Selector for fixed headers [optional]
-        speed: 300, // Integer. How fast to complete the scroll in milliseconds
+        speed: 200, // Integer. How fast to complete the scroll in milliseconds
         easing: 'easeInOutCubic', // Easing pattern to use
         offset: 24, // Integer. How far to offset the scrolling anchor location in pixels
         callback: function (anchor, toggle) {

@@ -61,7 +61,7 @@ permalink: /documentation
   - [Servlets and Filters](#adding-other-servlets-and-filters-to-javalin)
   - [Views and Templates](#views-and-templates)
   - [Vue support](#vue-support-javalinvue)
-  - [TimeoutExceptions and ClosedChannelExceptions](#timeoutexceptions-and-closedchannelexceptions)
+  - [Jetty debug logs](#jetty-debug-logs)
   - [Minecraft](#minecraft)
   - [Documentation for previous versions](#documentation-for-previous-versions)
 </div>
@@ -1798,7 +1798,7 @@ an in-depth tutorial at [/tutorials/simple-frontends-with-javalin-and-vue](/tuto
 
 ---
 
-### TimeoutExceptions and ClosedChannelExceptions
+### Jetty debug logs
 If you encounter `TimeoutExceptions` and `ClosedChannelExceptions` in your DEBUG logs,
 this is nothing to worry about. Typically, a browser will keep the HTTP connection open until the
 server terminates it. When this happens is decided by the server's `idleTimeout` setting,
