@@ -138,6 +138,22 @@ nav {
       margin: 2px 0;
     }
   }
+
+  .submenu-close {
+    border: 1px dashed $javalin-brand-primary;
+    background: #ffffff;
+    color: $javalin-brand-primary;
+    font-weight: 400;
+    line-height: 16px;
+    height: 18px;
+    width: 18px;
+    font-size: 18px;
+    border-radius: 3px;
+    margin-left: 6px;
+    display: inline-block;
+    text-align: center;
+    cursor: pointer;
+  }
 }
 
 @media (max-height: 820px) {

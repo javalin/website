@@ -20,6 +20,7 @@
         callback: function (nav) {
             try {
                 window.history.replaceState({}, "", location.pathname + "#" + nav.target.id);
+                document.dispatchEvent(new CustomEvent("menu-scroll-enter", {detail: nav}));
             } catch (e) { /* Doesn't matter */
             }
         }
