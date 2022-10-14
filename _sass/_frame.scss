@@ -223,23 +223,26 @@ nav {
 }
 
 @media (max-width: 600px) {
+  header {
+    height: 110px;
+  }
+  nav {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  nav #logo img {
+    height: 32px;
+    margin: 16px 0;
+  }
   nav ul li a {
     font-size: 16px;
     padding: 8px;
-  }
-  a[href="/news"] {
-    display: none;
   }
 }
 
 @media (max-width: 480px) {
-  nav #logo img {
-    height: 32px;
-    margin-right: 8px;
-  }
   nav ul li a {
-    font-size: 16px;
-    padding: 8px;
     margin: 0;
     letter-spacing: -0.5px;
   }

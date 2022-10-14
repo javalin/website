@@ -19,6 +19,11 @@ header {
     position: absolute;
     border: 0;
     background: radial-gradient(#1a1a1a, #212121);
+    height: 80px;
+}
+
+header #logo img {
+    height: 40px;
 }
 
 nav ul li + li {
