@@ -1,20 +1,21 @@
 name: PR Preview
-run-name: Preview of pr ${{ github.event.pull_request.number }} by ${{ github.event.pull_request. }}
+run-name: Preview of pr ${{ github.event.pull_request.number }} by ${{ github.event.pull_request.user.login }}
 
 on:
   pull_request_target:
-    types: [opened, reopened, synchronize]
+    types: [opened, reopened, synchronize, closed]
 
 permissions:
-  pull-requests: read
-  contents: read
-
+  pull-requests: write # Required to add a comment to the PR
+  contents: read # Required to checkout the PR branch
 
 jobs:
-  Build:
+  Deploy:
     runs-on: ubuntu-latest
-    steps:
-      - uses: marocchino/sticky-pull-request-comment@v2
+    if: ${{ github.event.action != 'closed' }}
+    steps: 
+      - name: Create the comment to be updated
+        uses: marocchino/sticky-pull-request-comment@v2
         with:
           message: |
             ### 👷 Deploy Preview for javalin.io processing.
@@ -22,28 +23,26 @@ jobs:
             |-|-|
             | 🔨 Latest commit | ${{ github.event.pull_request.head.sha }} |
             | 🔍 Latest deploy log | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |
-          GITHUB_TOKEN: ${{ secrets.BOT }}
 
-      - uses: actions/checkout@v3
+      - name: Checkout the PR branch
+        uses: actions/checkout@v3
         with:
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
 
-      - if: ${{ github.event.action == 'opened'}}
-        run: gh repo create javalin-bot/${{ github.event.pull_request.number }} --public
-        env:
-          GITHUB_TOKEN: ${{ secrets.BOT }}
+       
+      - name: Build the jekyll site 
+        uses: helaili/jekyll-action@2.4.0 
+        with: 
+          build_only: true 
+          build_dir: ./_site 
 
-      - uses: peaceiris/actions-gh-pages@v3
-        with:
-          personal_token: ${{ secrets.BOT }}
-          enable_jekyll: true
-          external_repository: javalin-bot/${{ github.event.pull_request.number }}
+      - name: Install surge
+        run: npm install -g surge
+    
+      - name: Deploy to surge
+        run: surge --project ./_site --token ${{ secrets.SURGE_TOKEN }} --domain javalin-pr-${{ github.event.pull_request.number }}-preview.surge.sh
 
-      - name: Sleep to make sure page gets updated
-        run: sleep 1m
-        shell: bash
-
-      - name: comment Preview Ready
+      - name: Update comment to Preview Ready
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           message: |
@@ -52,10 +51,11 @@ jobs:
             |-|-|
             | 🔨 Latest commit | ${{ github.event.pull_request.head.sha }} |
             | 🔍 Latest deploy log | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |
-            | 😎 Deploy Preview | https://javalin-bot.github.io/${{ github.event.pull_request.number }} |
-          GITHUB_TOKEN: ${{ secrets.BOT }}
+            | 🌐 Preview | https://javalin-pr-${{ github.event.pull_request.number }}-preview.surge.sh |
+  
 
       - if: ${{ failure() }}
+        name: Update comment to Preview Failed
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           message: |
@@ -64,4 +64,36 @@ jobs:
             |-|-|
             | 🔨 Latest commit | ${{ github.event.pull_request.head.sha }} |
             | 🔍 Latest deploy log | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |
-          GITHUB_TOKEN: ${{ secrets.BOT }}    
+
+  Teardown:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.action == 'closed' }}
+    steps:
+      - name: Install surge
+        run: npm install -g surge
+
+      - name: Tear down surge
+        run: surge teardown javalin-pr-${{ github.event.pull_request.number }}-preview.surge.sh --token ${{ secrets.SURGE_TOKEN }}
+
+      - name: Update comment to Preview Deleted
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          message: |
+            ### 🗑 Deploy Preview for javalin.io deleted.
+            | Name | Link |
+            |-|-|
+            | 🔨 Latest commit | ${{ github.event.pull_request.head.sha }} |
+            | 🔍 Latest deploy log | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |
+      
+      - if: ${{ failure() }}
+        name: Update comment to Preview Delete Failed
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          message: |
+            ### ❌ Delete Preview for javalin.io failed.
+            | Name | Link |
+            |-|-|
+            | 🔨 Latest commit | ${{ github.event.pull_request.head.sha }} |
+            | 🔍 Latest deploy log | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |      
+
+
