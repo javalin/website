@@ -24,6 +24,7 @@ header {
 
 header #logo img {
     height: 40px;
+    margin: 0;
 }
 
 nav ul li + li {

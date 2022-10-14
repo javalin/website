@@ -69,11 +69,14 @@ nav {
     padding: 0;
     list-style: none;
     display: flex;
+
     li {
       margin: 0;
+
       + li {
         border-left: 1px solid $light-border;
       }
+
       a {
         margin: 0 6px;
         font-weight: 500;
@@ -83,6 +86,7 @@ nav {
         text-decoration: none;
         padding: 8px 16px;
         transition: color .1s ease-in-out;
+
         &:hover {
           color: $javalin-brand-primary;
         }
@@ -224,7 +228,7 @@ nav {
 
 @media (max-width: 600px) {
   header {
-    height: 110px;
+    height: 90px;
   }
   nav {
     display: flex;
@@ -232,35 +236,17 @@ nav {
     justify-content: space-between;
   }
   nav #logo img {
-    height: 32px;
-    margin: 16px 0;
+    height: 24px;
+    margin: 16px 0 4px 0;
   }
   nav ul li a {
     font-size: 16px;
-    padding: 8px;
-  }
-}
-
-@media (max-width: 480px) {
-  nav ul li a {
-    margin: 0;
-    letter-spacing: -0.5px;
-  }
-  a[href="/community"] {
-    letter-spacing: -1.5px;
-  }
-  footer {
-    display: none;
+    padding: 8px 4px;
   }
   nav ul li + li {
     border-left: none;
   }
-}
-
-@media (max-width: 400px) {
-  nav {
-    #logo img {
-      height: 26px;
-    }
+  footer {
+    display: none;
   }
 }
