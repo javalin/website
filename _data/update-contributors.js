@@ -1,3 +1,6 @@
+// run by doing `node update-contributors.js` in this dir
+// requires node18
+
 (async () => {
     const fileSystem = require("fs");
 
