@@ -4,15 +4,10 @@
 (async () => {
     const fileSystem = require("fs");
 
-    let repos = [
-        "javalin",
-        "javalin.github.io",
-        "javalin-openapi",
-        "javalin-rendering",
-        "javalin-ssl",
-        "javalin-graphql",
-        "javalin-samples",
-    ]
+    let repos = (await (await fetch("https://api.github.com/orgs/javalin/repos")).json())
+        .filter(it => it.fork !== true) // we only care about sources/transferred repos
+        .map(it => it.name)
+        .filter(it => it !== ".github"); // this one isn't all that interesting, it's just meta info for the org
 
     let contributions = new Map();
     let avatars = new Map();

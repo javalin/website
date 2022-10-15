@@ -1,23 +1,33 @@
 [
   {
     "username": "tipsy",
-    "contributions": 2069,
+    "contributions": 2090,
     "avatar": "https://avatars.githubusercontent.com/u/1521451?v=4"
   },
   {
     "username": "dzikoysk",
-    "contributions": 149,
+    "contributions": 150,
     "avatar": "https://avatars.githubusercontent.com/u/4235722?v=4"
   },
   {
     "username": "Playacem",
-    "contributions": 48,
+    "contributions": 50,
     "avatar": "https://avatars.githubusercontent.com/u/3692093?v=4"
   },
   {
     "username": "TobiasWalle",
     "contributions": 32,
     "avatar": "https://avatars.githubusercontent.com/u/9933601?v=4"
+  },
+  {
+    "username": "TareqK",
+    "contributions": 31,
+    "avatar": "https://avatars.githubusercontent.com/u/18736962?v=4"
+  },
+  {
+    "username": "vn7n24fzkq",
+    "contributions": 27,
+    "avatar": "https://avatars.githubusercontent.com/u/20241522?v=4"
   },
   {
     "username": "zugazagoitia",
@@ -28,6 +38,11 @@
     "username": "mpe85",
     "contributions": 15,
     "avatar": "https://avatars.githubusercontent.com/u/23398713?v=4"
+  },
+  {
+    "username": "oharaandrew314",
+    "contributions": 14,
+    "avatar": "https://avatars.githubusercontent.com/u/894152?v=4"
   },
   {
     "username": "ShikaSD",
@@ -45,6 +60,11 @@
     "avatar": "https://avatars.githubusercontent.com/u/8149332?v=4"
   },
   {
+    "username": "ClemensElflein",
+    "contributions": 12,
+    "avatar": "https://avatars.githubusercontent.com/u/2864655?v=4"
+  },
+  {
     "username": "maxemann96",
     "contributions": 9,
     "avatar": "https://avatars.githubusercontent.com/u/4399206?v=4"
@@ -53,25 +73,5 @@
     "username": "nixxcode",
     "contributions": 8,
     "avatar": "https://avatars.githubusercontent.com/u/46871088?v=4"
-  },
-  {
-    "username": "jorunfa",
-    "contributions": 8,
-    "avatar": "https://avatars.githubusercontent.com/u/1413275?v=4"
-  },
-  {
-    "username": "Gmugra",
-    "contributions": 7,
-    "avatar": "https://avatars.githubusercontent.com/u/3171372?v=4"
-  },
-  {
-    "username": "spinscale",
-    "contributions": 6,
-    "avatar": "https://avatars.githubusercontent.com/u/667544?v=4"
-  },
-  {
-    "username": "flyrev",
-    "contributions": 6,
-    "avatar": "https://avatars.githubusercontent.com/u/21454?v=4"
   }
 ]
