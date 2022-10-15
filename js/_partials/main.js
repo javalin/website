@@ -29,7 +29,7 @@ for (let i = 0; i < document.links.length; i++) {
     let openingDisabled = false;
     document.addEventListener("click", () => {
         openingDisabled = true;
-        setTimeout(() => openingDisabled = false, 200);
+        setTimeout(() => openingDisabled = false, 250); // scroll duration
     });
 
     // closing the menu

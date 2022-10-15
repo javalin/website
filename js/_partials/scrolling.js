@@ -3,7 +3,7 @@
     smoothScroll.init({ // https://github.com/cferdinandi/smooth-scroll
         selector: 'a[href^="#"]', // Selector for links (must be a class, ID, data attribute, or element tag)
         selectorHeader: fixedHeaderSelector, // Selector for fixed headers [optional]
-        speed: 200, // Integer. How fast to complete the scroll in milliseconds
+        speed: 250, // Integer. How fast to complete the scroll in milliseconds
         easing: 'easeInOutCubic', // Easing pattern to use
         offset: 24, // Integer. How far to offset the scrolling anchor location in pixels
         callback: function (anchor, toggle) {
@@ -19,6 +19,7 @@
         scrollDelay: false, // Wait until scrolling has stopped before updating the navigation
         callback: function (nav) {
             try {
+                document.querySelector(".right-menu .active").scrollIntoView({block: "start"});
                 window.history.replaceState({}, "", location.pathname + "#" + nav.target.id);
                 document.dispatchEvent(new CustomEvent("menu-scroll-enter", {detail: nav}));
             } catch (e) { /* Doesn't matter */
