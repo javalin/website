@@ -174,6 +174,12 @@ Each of these methods are mutually exclusive, so only one of them can be used at
 
 Once the plugin is configured, there is a `SSLPlugin#patch` method that can be used to patch the Jetty server. This method receives a `Server` as a parameter and adds the configured connectors to it. This method can be used to apply the SSL configuration to a server that is not created by Javalin.
 
+There are also a set of fields that can be used to further configure the plugin:
+
+```java
+configConnectors = null;                       // Consumer to configure the connectors.
+securityProvider = Conscrypt.newProvider();    // Set the security provider to use.
+```
 
 ## Good to know
 
