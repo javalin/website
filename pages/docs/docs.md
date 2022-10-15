@@ -1853,3 +1853,7 @@ Docs for 4.6.X (last 4.X version) can be found [here](/archive/docs/v4.6.X.html)
 Docs for 3.13.X (last 3.X version) can be found [here](/archive/docs/v3.13.X.html).\\
 Docs for 2.8.0 (last 2.X version) can be found [here](/archive/docs/v2.8.0.html).\\
 Docs for 1.7.0 (last 1.X version) can be found [here](/archive/docs/v1.7.0.html).
+
+---
+
+<div style="height:calc(100vh - 200px)">You've reached the end of the docs, congratulations.</div>
