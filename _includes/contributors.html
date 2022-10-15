@@ -1,11 +1,11 @@
 <h2>Top 15 contributors <small class="total-contributors">(of 161)</small></h2>
 <div class="contributors">
-    {% for user in site.data.contributors %}
-    <a href="https://github.com/{{ user.login }}" class="contributor">
-        <img src="{{ user.avatar_url }}" alt="User avatar">
+    {% for c in site.data.contributors %}
+    <a href="https://github.com/{{ c.username }}" class="contributor">
+        <img src="{{ c.avatar }}" alt="User avatar">
         <div class="name-and-commit">
-            <h4>{{ user.login }}</h4>
-            <div class="commits">{{ user.contributions }} commits</div>
+            <h4>{{ c.username }}</h4>
+            <div class="commits">{{ c.contributions }} commits</div>
         </div>
     </a>
     {% endfor %}
