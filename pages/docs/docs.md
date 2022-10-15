@@ -186,7 +186,7 @@ app.get("/path/*") { ctx -> // will match anything starting with /path/
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 However, you cannot extract the value of a wildcard.
-Use a slash accepting path-parameter (`<param-name>`) if you need this behavior.
+Use a slash accepting path-parameter (`<param-name>` instead of `{param-name}`) if you need this behavior.
 
 ### After handlers
 After-handlers run after every request (even if an exception occurred)
