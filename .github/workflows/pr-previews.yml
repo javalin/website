@@ -29,12 +29,26 @@ jobs:
         with:
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
 
-       
-      - name: Build the jekyll site 
-        uses: helaili/jekyll-action@2.4.0 
-        with: 
-          build_only: true 
-          build_dir: ./_site 
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3.5.1
+        with:
+          node-version: 18
+        
+      - name: Setup Ruby and Gems
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.3.1
+          bundler-cache: true   
+
+      - name: Update contributor list
+        run: |
+          echo "Generating contributor list"
+          cd _data
+          node update-contributors.js
+          cd ..    
+
+      - name: Build jekyll site
+        run: bundle exec jekyll build
 
       - name: Install surge
         run: npm install -g surge
