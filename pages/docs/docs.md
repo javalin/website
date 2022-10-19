@@ -1554,7 +1554,7 @@ There is also a tutorial on [deploying Javalin to Heroku](/tutorials/heroku).
 <div class="comment"><strong>Ctrl+f</strong>: "without jetty", "tomcat", "standalone", "servlet container", "war".</div>
 
 Javalin is primarily meant to be used with the embedded Jetty server, but if you want to run Javalin
-on another web server (such as Tomcat), you can use the `javalin-without-jetty` artifact.
+on another web server (such as Tomcat), you can use Maven or Gradle to exclude Jetty, and attach Javalin as a servlet.
 
 ---
 
