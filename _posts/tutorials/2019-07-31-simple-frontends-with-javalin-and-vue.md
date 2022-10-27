@@ -69,8 +69,9 @@ Let's create `/src/main/kotlin/javalinvue/JavalinVueExampleApp.kt`:
 import io.javalin.Javalin
 
 fun main() {
-    Javalin.create { config ->
+    val app = Javalin.create { config ->
         config.staticFiles.enableWebjars()
+        config.vue.vueAppName = "app" // only required for Vue 3, is defined in layout.html
     }.start(7070)
 }
 ```
@@ -134,8 +135,9 @@ import io.javalin.vue.VueComponent
 
 fun main() {
 
-    Javalin.create { config ->
+    val app = Javalin.create { config ->
         config.staticFiles.enableWebjars()
+        config.vue.vueAppName = "app"
     }.start(7070)
 
     app.get("/", VueComponent("hello-world"))
