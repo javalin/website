@@ -88,13 +88,13 @@ Configure the plugin:
 
 {% capture java %}
 SSLPlugin plugin = new SSLPlugin(conf -> {
-    conf.loadPemFromPath("/path/to/cert.pem", "/path/to/key.pem");
+    conf.pemFromPath("/path/to/cert.pem", "/path/to/key.pem");
     // additional configuration options
 });
 {% endcapture %}
 {% capture kotlin %}
 val plugin = SSLPlugin { conf ->
-    conf.loadPemFromPath("/path/to/cert.pem", "/path/to/key.pem")
+    conf.pemFromPath("/path/to/cert.pem", "/path/to/key.pem")
     // additional configuration options
 }
 {% endcapture %}
