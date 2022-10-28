@@ -1599,7 +1599,7 @@ Let's look at a real world example, imagine we have an api that we want to call 
 We'll start by creating a simple method to call the api and return the result wrapped in a `CompletableFuture`:
     
 {% capture java %}
-private static CompletableFuture<HttpResponse<String>> getFuture() {
+private static CompletableFuture<HttpResponse<String>> getRandomCatFactFuture() {
     HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://catfact.ninja/fact"))
                 .build();
@@ -1607,7 +1607,7 @@ private static CompletableFuture<HttpResponse<String>> getFuture() {
 }
 {% endcapture %}
 {% capture kotlin %}
-private fun getFuture() = httpClient.sendAsync(
+private fun getRandomCatFactFuture() = httpClient.sendAsync(
     HttpRequest.newBuilder()
         .uri(URI.create("https://catfact.ninja/fact"))
         .build(),
@@ -1623,8 +1623,11 @@ public static void main(String[] args) {
     Javalin app = Javalin.create().start(7070);
     
     app.get("/catFacts", ctx -> {
-        ctx.future(() -> getFuture().thenAccept(response -> {
+        ctx.future(() -> getRandomCatFactFuture().thenAccept(response -> {
             ctx.html(response.body()).status(response.statusCode());
+        }).exceptionally(throwable -> {
+            ctx.status(500).result("Could not get cat facts" + throwable.getMessage());
+            return null;
         }));
     });
 }
@@ -1635,8 +1638,11 @@ fun main() {
     
     app.get("/catFacts") { ctx ->
         ctx.future {
-            getFuture().thenAccept { response ->
+            getRandomCatFactFuture().thenAccept { response ->
                 ctx.html(response.body()).status(response.statusCode())
+            }.exceptionally { throwable ->
+                ctx.status(500).result("Could not get cat facts: ${throwable.message}")
+                null
             }
         }
     }
