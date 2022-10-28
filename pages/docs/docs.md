@@ -1587,53 +1587,110 @@ The corresponding HTML might look something like this:
 ---
 
 ### Asynchronous requests
+
 <div class="comment">Synonyms for ctrl+f: Async, CompletableFuture, Future, Concurrent, Concurrency</div>
 While the default ThreadPool (200 threads) is enough for most use cases,
 sometimes slow operations should be run asynchronously. Luckily it's very easy in Javalin, just
-pass a `Supplier<CompletableFuture>` to `ctx.future()`:
+pass a `Supplier<CompletableFuture>` to `ctx.future()`. Javalin will automatically switch between sync and async modes to handle the different tasks.
+
+#### Using Futures
+
+Let's look at a real world example, imagine we have an api that we want to call asynchronously and return the result to the client.
+We'll start by creating a simple method to call the api and return the result wrapped in a `CompletableFuture`:
+    
+{% capture java %}
+private static CompletableFuture<HttpResponse<String>> getFuture() {
+    HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://catfact.ninja/fact"))
+                .build();
+    return httpClient.sendAsync(request, ofString());
+}
+{% endcapture %}
+{% capture kotlin %}
+private fun getFuture() = httpClient.sendAsync(
+    HttpRequest.newBuilder()
+        .uri(URI.create("https://catfact.ninja/fact"))
+        .build(),
+    ofString()
+)
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+Now we can use this method in our Javalin app to return cat facts to the client asynchronously:
 
 {% capture java %}
 public static void main(String[] args) {
-    Javalin app = Javalin.create().start(7000);
-    app.get("/", ctx -> {
-        ctx.future(() -> 
-            getFuture()
-                .thenAccept(ctx::result)
-                .exceptionally(e -> {
-                    ctx.result("Error: " + e.getMessage());
-                    return null;
-                })
-        );
+    Javalin app = Javalin.create().start(7070);
+    
+    app.get("/catFacts", ctx -> {
+        ctx.future(() -> getFuture().thenAccept(response -> {
+            ctx.html(response.body()).status(response.statusCode());
+        }));
     });
-}
-
-private static CompletableFuture<String> getFuture() {
-    CompletableFuture<String> future = new CompletableFuture<>();
-    Executors.newSingleThreadScheduledExecutor().schedule(() -> future.complete("Hello World!"),
-        1,
-        TimeUnit.SECONDS);
-    return future;
 }
 {% endcapture %}
 {% capture kotlin %}
 fun main() {
-    val app = Javalin.create().start(7000)
-    app.get("/") { ctx ->
+    val app = Javalin.create().start(7070)
+    
+    app.get("/catFacts") { ctx ->
         ctx.future {
-            getFuture()
-                .thenAccept { ctx.result(it) }
-                .exceptionally { ctx.result("Error: " + it) }
+            getFuture().thenAccept { response ->
+                ctx.html(response.body()).status(response.statusCode())
+            }
         }
     }
 }
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-// hopefully your future is less pointless than this:
-private fun getFuture() = CompletableFuture<String>().apply {
-    Executors.newSingleThreadScheduledExecutor().schedule(
-        { this.complete("Hello World!") },
-        1,
-        TimeUnit.SECONDS
-    )
+The only drawback to this future approach is that we need to handle the execution of the task ourselves.
+
+#### Executing async tasks
+
+If you want to execute a task asynchronously, but do not want to handle the execution yourself, you can use `ctx.async()`:
+
+{% capture java %}
+app.get("/async", ctx -> {
+    ctx.async(() -> {
+        // do something asynchronously
+        ctx.result("done");
+    });
+});
+{% endcapture %}
+{% capture kotlin %}
+app.get("/async") { ctx ->
+    ctx.async {
+        // do something asynchronously
+        ctx.result("done")
+    }
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+Javalin will run the task on a dedicated executor service, and return the result to the client when it's done.
+
+The `ctx.async()` method also takes a timeout parameter, which will cancel the task if it takes longer than the timeout:
+
+{% capture java %}
+app.get("/async", ctx -> {
+    ctx.async(1000, () -> {
+        ctx.result("Timeout after 1 second");
+    }, () -> {
+        //Some long task
+        ctx.result("Completed before timeout");
+    });
+});
+{% endcapture %}
+{% capture kotlin %}
+
+app.get("/async") { ctx ->
+    ctx.async(1000, {
+        ctx.result("Timeout after 1 second")
+    }, {
+        //Some long task
+        ctx.result("Completed before timeout")
+    })
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
