@@ -25,7 +25,7 @@ The plugin provides a `SslConfig` class that can be used to configure this plugi
 
 {% capture java %}
 SSLPlugin plugin = new SSLPlugin(conf -> {
-    conf.loadPemFromPath("certs/cert.pem", "certs/key.pem");
+    conf.pemFromPath("certs/cert.pem", "certs/key.pem");
 });
 
 Javalin.create(javalinConfig -> {
@@ -34,7 +34,7 @@ Javalin.create(javalinConfig -> {
 {% endcapture %}
 {% capture kotlin %}
 val plugin = SSLPlugin { conf ->
-    conf.loadPemFromPath("/path/to/cert.pem", "/path/to/key.pem")
+    conf.pemFromPath("/path/to/cert.pem", "/path/to/key.pem")
 }
 
 Javalin.create { javalinConfig ->
