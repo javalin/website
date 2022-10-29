@@ -32,7 +32,7 @@ dependencies {
     implementation 'org.slf4j:slf4j-simple:1.8.0-beta4'
     implementation 'io.javalin:javalin:{{site.javalinversion}}'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2'
-    implementation 'com.google.protobuf:protobuf-java:3.19.4'
+    implementation 'com.google.protobuf:protobuf-java:3.19.6'
 }
 ```
 
@@ -194,7 +194,7 @@ dependencies {
     implementation 'org.slf4j:slf4j-simple:1.8.0-beta4'
     implementation 'io.javalin:javalin:{{site.javalinversion}}'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2'
-    implementation 'com.google.protobuf:protobuf-java:3.19.4'
+    implementation 'com.google.protobuf:protobuf-java:3.19.6'
 }
 
 sourceSets {
@@ -220,7 +220,7 @@ protobuf {
     // Configure the protoc executable
     protoc {
         // Download from repositories
-        artifact = 'com.google.protobuf:protoc:3.19.4'
+        artifact = 'com.google.protobuf:protoc:3.19.6'
     }
 
     generateProtoTasks.generatedFilesBaseDir = 'gen'
