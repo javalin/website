@@ -719,7 +719,7 @@ val ageValidator = ctx.queryParamAsClass<Int>("age")
 val errors = ageValidator.errors()
 
 // Merges all errors from all validators in the list. Empty map if no errors exist.
-val manyErrors = listOf(ageValidator, otherValidator, ...)
+val manyErrors = listOf(ageValidator, otherValidator, ...).collectErrors()
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
