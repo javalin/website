@@ -15,7 +15,7 @@ This page lists all of the places to ask for help or discuss Javalin, in order o
   <div class="community-box">
     <h2>GitHub</h2>
     <p>
-      The GitHub repo (<a href="https://github.com/tipsy/javalin">https://github.com/tipsy/javalin</a>)
+      The GitHub repo (<a href="https://github.com/javalin/javalin">https://github.com/javalin/javalin</a>)
       is where most of the action happens.
       You can create issues to make feature request, to report bugs, or even to ask questions.
       We're not too strict.
