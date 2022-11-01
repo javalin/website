@@ -3,6 +3,7 @@ layout: tutorial
 official: true
 title: "Setting up Javalin with Docker"
 author: <a href="https://www.linkedin.com/in/zugazagoitia" target="_blank">Alberto Zugazagoitia</a>
+github: https://github.com/javalin/javalin-samples/tree/main/javalin5/javalin-docker-example
 date: 2022-10-30
 permalink: /tutorials/docker
 summarytitle: Docker setup
@@ -77,7 +78,7 @@ Now, you can run the following command to create the shaded JAR:
 mvn clean package
 ~~~
 
-> The result of this command should be a file called `app.jar` in the `target` folder.
+<div class="comment"> The result of this command should be a file called `app.jar` in the `target` folder. </div>
 
 ### 2. Create a Dockerfile and build the image
 
@@ -93,15 +94,15 @@ EXPOSE 7000
 ENTRYPOINT ["java", "-jar", "/app.jar"]
 ~~~
 
-> Replace the port number with the port that your application listens on, this is usually the port that you pass to the `Javalin.create().start()` method.
+<div class="comment"> Replace the port number with the port that your application listens on, this is usually the port that you pass to the `Javalin.create().start()` method. </div>
 
-Once you have created the Dockerfile in the root of your project, you can build the image by running the following command:
+Once you have created the file named `Dockerfile` in the root of your project, you can build the image by running the following command:
 
 ~~~bash
 docker build -t javalin-app .
 ~~~
 
-> The `-t` flag is used to specify the name of the image. In this case, the image will be called `javalin-app`. Tagging an image is a good practice, and it will make it easier to reference the image in the future, especially if you are going to push it to a registry.
+<div class="comment"> The `-t` flag is used to specify the name of the image. In this case, the image will be called `javalin-app`. Tagging an image is a good practice, and it will make it easier to reference the image in the future, especially if you are going to push it to a registry. </div>
 
 ### 3. Run the image
 
@@ -111,7 +112,7 @@ Once the image is built, you can run it by executing the following command:
 docker run -p 7000:7000 javalin-app
 ~~~
 
-> The `-p` flag is used to map the port of the container to the port of the host machine. In this case, we are mapping the port 7000 of the container to the port 7000 of the host machine. 
+<div class="comment"> The `-p` flag is used to map the port of the container to the port of the host machine. In this case, we are mapping the port 7000 of the container to the port 7000 of the host machine. </div>
 
 Since the image is running, you can access your application by navigating to `http://localhost:7000` in your browser.
 
@@ -122,7 +123,3 @@ In this tutorial, we have learned how to create a Docker image from a Javalin ap
 This image can be used in a CI/CD pipeline, or it can be pushed to a registry and deployed to a remote server. You can also use this image to run your application locally, and it will be very easy to set up and run.
 
 If you want to learn more about Docker, you can check out the [official documentation](https://docs.docker.com/).
-
-As always, you can find the source code of this tutorial [here](https://github.com/javalin/javalin-samples/tree/main/javalin5/javalin-docker-example)
-
-
