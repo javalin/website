@@ -118,11 +118,11 @@ you can now configure Vue through `Javalin.create { config.vue.configOption = ..
 
 The CORS plugin has been completely rewritten to be more flexible. Instead of the two methods
 `enableCorsForAllOrigins()` and `enableCorsForOrigin(@NotNull String... origins)` on the config object you now pass a
-lambda to `config.enableCors()` to configure CORS.
+lambda to `config.plugins.enableCors()` to configure CORS.
 
 {% capture java %}
 Javalin.create(config -> {
-config.enableCors(cors -> {
+config.plugins.enableCors(cors -> {
     cors.add(corsConfig -> {
         // replacement for enableCorsForOrigin(@NotNull String... origins)
         corsConfig.allowHost(/* add your origins here */);
@@ -135,7 +135,7 @@ config.enableCors(cors -> {
 {% endcapture %}
 {% capture kotlin %}
 Javalin.create { config ->
-config.enableCors { cors ->
+config.plugins.enableCors { cors ->
     cors.add { corsConfig ->
         //replacement for enableCorsForOrigin(@NotNull String... origins)
         corsConfig.allowHost(/* add your origins here */)
