@@ -77,7 +77,7 @@ app.get("/") { ctx ->
 
 ## SSE changes
 In Javalin 4, connections to SSE clients needed to be closed manually, this resulted in SSE client leaking when clients were not properly closed.
-But in Javalin 5 we're no longer blocking connections by default for SSE clients, so you have to explicitly enable it using `SseClient#keepAlive()`.
+But in Javalin 5 we're no longer blocking connections by default for SSE clients, so you have to explicitly enable it using `SseClient#keepAlive()` if you want to restore old behavior.
 
 {% capture java %}
 ArrayList<SseClient> clients = new ArrayList<>();

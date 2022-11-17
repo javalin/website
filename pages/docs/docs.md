@@ -1031,7 +1031,7 @@ app.sse("/sse") { client ->
 Clients are automatically closed when leaving the handler, if you need to use the client outside the handler, you can use `client.keepAlive()`:
 
 {% capture java %}
-ArrayList<SseClient> clients = new ArrayList<>();
+Queue<SseClient> clients = new ConcurrentLinkedQueue<SseClient>();
 
 app.sse("/sse", client -> {
     clients.add(client);
@@ -1039,7 +1039,7 @@ app.sse("/sse", client -> {
 });
 {% endcapture %}
 {% capture kotlin %}
-val clients = mutableListOf<SseClient>() 
+val clients = ConcurrentLinkedQueue<SseClient>()
 
 app.sse("/sse") { client -> 
     clients.add(client) 
