@@ -9,26 +9,46 @@ permalink: /documentation
 
 <div id="spy-nav" class="right-menu" markdown="1">
 - [Getting Started](#getting-started)
-- [HTTP Handlers](#handlers)
-  - [Before](#before-handlers)
-  - [Endpoint](#endpoint-handlers)
-  - [After](#after-handlers)
-  - [Context (ctx)](#context)
+- [Handlers](#handlers)
+  - [Before handlers](#before-handlers)
+  - [Endpoint handlers](#endpoint-handlers)
+  - [After handlers](#after-handlers)
+  - [Context](#context)
+    - [App Attributes](#app-attributes)
+    - [Cookie Store](#cookie-store)
+      - [Example:](#example)
 - [WebSockets](#websockets)
-  - [Before](#wsbefore)
-  - [Endpoint](#wsendpoint)
-  - [After](#wsafter)
-  - [WsContext (wsCtx)](#wscontext)
+  - [WsBefore](#wsbefore)
+  - [WsEndpoint](#wsendpoint)
+  - [WsAfter](#wsafter)
+  - [WsContext](#wscontext)
+    - [WsMessageContext](#wsmessagecontext)
+    - [WsBinaryMessageContext](#wsbinarymessagecontext)
+    - [WsCloseContext](#wsclosecontext)
+    - [WsErrorContext](#wserrorcontext)
+    - [WsConnectContext](#wsconnectcontext)
 - [Handler groups](#handler-groups)
   - [CrudHandler](#crudhandler)
 - [Validation](#validation)
   - [Validator API](#validator-api)
   - [Validation examples](#validation-examples)
-  - [Collecting errors](#collecting-multiple-errors)
+  - [Collecting multiple errors](#collecting-multiple-errors)
   - [ValidationException](#validationexception)
   - [Custom converters](#custom-converters)
 - [Access manager](#access-manager)
 - [Default responses](#default-responses)
+  - [RedirectResponse](#redirectresponse)
+  - [BadRequestResponse](#badrequestresponse)
+  - [UnauthorizedResponse](#unauthorizedresponse)
+  - [ForbiddenResponse](#forbiddenresponse)
+  - [NotFoundResponse](#notfoundresponse)
+  - [MethodNotAllowedResponse](#methodnotallowedresponse)
+  - [ConflictResponse](#conflictresponse)
+  - [GoneResponse](#goneresponse)
+  - [InternalServerErrorResponse](#internalservererrorresponse)
+  - [BadGatewayResponse](#badgatewayresponse)
+  - [ServiceUnavailableResponse](#serviceunavailableresponse)
+  - [GatewayTimeoutResponse](#gatewaytimeoutresponse)
 - [Exception Mapping](#exception-mapping)
 - [Error Mapping](#error-mapping)
 - [Server-sent Events](#server-sent-events)
@@ -41,9 +61,16 @@ permalink: /documentation
   - [RequestLoggerConfig](#requestloggerconfig)
   - [RoutingConfig](#routingconfig)
   - [SpaRootConfig](#sparootconfig)
+    - [Dynamic single page handler](#dynamic-single-page-handler)
   - [StaticFileConfig](#staticfileconfig)
   - [Logging](#logging)
+    - [Adding a logger](#adding-a-logger)
   - [Server setup](#server-setup)
+    - [Setting the Host](#setting-the-host)
+    - [Custom server](#custom-server)
+    - [Custom SessionHandler](#custom-sessionhandler)
+    - [Custom jetty handlers](#custom-jetty-handlers)
+    - [SSL/HTTP2](#sslhttp2)
 - [Lifecycle events](#lifecycle-events)
 - [Plugins](#plugins)
 - [FAQ](#faq)
@@ -51,18 +78,25 @@ permalink: /documentation
   - [Rate limiting](#rate-limiting)
   - [Android](#android)
   - [Concurrency](#concurrency)
+    - [WebSocket Message Ordering](#websocket-message-ordering)
   - [Testing](#testing)
   - [Javadoc](#javadoc)
   - [Deploying](#deploying)
   - [Other web servers](#other-web-servers)
   - [Uploads](#uploads)
-  - [Async requests](#asynchronous-requests)
-  - [JSON mapper](#configuring-the-json-mapper)
-  - [Servlets and Filters](#adding-other-servlets-and-filters-to-javalin)
+  - [Asynchronous requests](#asynchronous-requests)
+    - [Using Futures](#using-futures)
+    - [Executing async tasks](#executing-async-tasks)
+  - [Configuring the JSON mapper](#configuring-the-json-mapper)
+    - [GSON example](#gson-example)
+  - [Adding other Servlets and Filters to Javalin](#adding-other-servlets-and-filters-to-javalin)
   - [Views and Templates](#views-and-templates)
-  - [Vue support](#vue-support-javalinvue)
+  - [Vue support (JavalinVue)](#vue-support-javalinvue)
   - [Jetty debug logs](#jetty-debug-logs)
   - [Minecraft](#minecraft)
+    - [Relocation](#relocation)
+    - [Custom classloader](#custom-classloader)
+    - [Relevant issues](#relevant-issues)
   - [Documentation for previous versions](#documentation-for-previous-versions)
 </div>
 
@@ -994,6 +1028,26 @@ app.sse("/sse") { client ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
+Clients are automatically closed when leaving the handler, if you need to use the client outside the handler, you can use `client.keepAlive()`:
+
+{% capture java %}
+ArrayList<SseClient> clients = new ArrayList<>();
+
+app.sse("/sse", client -> {
+    clients.add(client);
+    client.keepAlive();
+});
+{% endcapture %}
+{% capture kotlin %}
+val clients = mutableListOf<SseClient>() 
+
+app.sse("/sse") { client -> 
+    clients.add(client) 
+    client.keepAlive() 
+} 
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
 ### SseClient API
 
 ```java
@@ -1001,6 +1055,7 @@ sendEvent("myMessage")                      // calls emit("message", "myMessage"
 sendEvent("eventName", "myMessage")         // calls emit("eventName", "myMessage", noId)
 sendEvent("eventName", "myMessage", "id")   // calls emit("eventName", "myMessage", "id")
 onClose(runnable)                           // callback which runs when a client closes its connection
+keepAlive()                                 // keeps the connection alive outside of the handler (to notify it from other sources)
 ctx                                         // the Context from when the client connected (to fetch query-params, etc)
 ```
 

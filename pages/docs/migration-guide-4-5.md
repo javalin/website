@@ -75,6 +75,28 @@ app.get("/") { ctx ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
+## SSE changes
+In Javalin 4, connections to SSE clients needed to be closed manually, this resulted in SSE client leaking when clients were not properly closed.
+But in Javalin 5 we're no longer blocking connections by default for SSE clients, so you have to explicitly enable it using `SseClient#keepAlive()`.
+
+{% capture java %}
+ArrayList<SseClient> clients = new ArrayList<>();
+
+app.sse("/sse", client -> {
+    clients.add(client);
+    client.keepAlive();
+});
+{% endcapture %}
+{% capture kotlin %}
+val clients = mutableListOf<SseClient>() 
+
+app.sse("/sse") { client -> 
+    clients.add(client) 
+    client.keepAlive() 
+} 
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
 ## Semi private fields renamed
 The `_conf.inner` field has been renamed to `cfg.pvt` (config private) to
 further discourage use. It's still okay to use it (if you know what you are doing).
