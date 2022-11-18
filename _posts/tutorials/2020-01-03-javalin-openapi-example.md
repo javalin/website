@@ -55,7 +55,34 @@ First, we need to create a Maven project with our dependencies: [(→ Tutorial)]
 
 The `javalin-bundle` dependency includes Javalin, Jackson and a logger.
 
-You can view the full POM on GitHub.
+We also need to add a build section for the Open API annotations:
+
+~~~xml
+<build>
+    <sourceDirectory>src/main/kotlin</sourceDirectory>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.10.1</version>
+            <configuration>
+                <source>11</source>
+                <target>11</target>
+                <annotationProcessorPaths>
+                    <annotationProcessorPath>
+                        <groupId>io.javalin.community.openapi</groupId>
+                        <artifactId>openapi-annotation-processor</artifactId>
+                        <version>${javalin.version}</version>
+                    </annotationProcessorPath>
+                </annotationProcessorPaths>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+~~~
+
+You can view the full POM on
+[GitHub](https://github.com/javalin/javalin-samples/tree/main/javalin5/javalin-openapi-example).
 
 ## Building the API
 
