@@ -1000,18 +1000,19 @@ Clients are automatically closed when leaving the handler, if you need to use th
 Queue<SseClient> clients = new ConcurrentLinkedQueue<SseClient>();
 
 app.sse("/sse", client -> {
-    clients.add(client);
     client.keepAlive();
     client.onClose(() - > clients.remove(client));
+    clients.add(client);
 });
 {% endcapture %}
 {% capture kotlin %}
 val clients = ConcurrentLinkedQueue<SseClient>()
 
 app.sse("/sse") { client ->
-    clients.add(client)
     client.keepAlive()
     client.onClose { clients.remove(client) }
+    clients.add(client)
+
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}

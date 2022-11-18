@@ -83,19 +83,19 @@ But in Javalin 5 we're no longer blocking connections by default for SSE clients
 ArrayList<SseClient> clients = new ArrayList<>();
 
 app.sse("/sse", client -> {
-    clients.add(client);
     client.keepAlive();
     client.onClose(() - > clients.remove(client));
+    clients.add(client);
 });
 {% endcapture %}
 {% capture kotlin %}
 val clients = mutableListOf<SseClient>()
 
 app.sse("/sse") { client ->
-    clients.add(client)
     client.keepAlive()
     client.onClose { clients.remove(client) }
-} 
+    clients.add(client)
+}
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
