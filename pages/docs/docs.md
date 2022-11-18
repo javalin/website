@@ -1002,15 +1002,17 @@ Queue<SseClient> clients = new ConcurrentLinkedQueue<SseClient>();
 app.sse("/sse", client -> {
     clients.add(client);
     client.keepAlive();
+    client.onClose(() - > clients.remove(client));
 });
 {% endcapture %}
 {% capture kotlin %}
 val clients = ConcurrentLinkedQueue<SseClient>()
 
-app.sse("/sse") { client -> 
-    clients.add(client) 
-    client.keepAlive() 
-} 
+app.sse("/sse") { client ->
+    clients.add(client)
+    client.keepAlive()
+    client.onClose { clients.remove(client) }
+}
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
@@ -1022,6 +1024,8 @@ sendEvent("eventName", "myMessage")         // calls emit("eventName", "myMessag
 sendEvent("eventName", "myMessage", "id")   // calls emit("eventName", "myMessage", "id")
 onClose(runnable)                           // callback which runs when a client closes its connection
 keepAlive()                                 // keeps the connection alive outside of the handler (to notify it from other sources)
+close()                                     // closes the connection
+terminated()                                // returns true if the connection has been closed
 ctx                                         // the Context from when the client connected (to fetch query-params, etc)
 ```
 

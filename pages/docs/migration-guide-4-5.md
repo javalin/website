@@ -85,14 +85,16 @@ ArrayList<SseClient> clients = new ArrayList<>();
 app.sse("/sse", client -> {
     clients.add(client);
     client.keepAlive();
+    client.onClose(() - > clients.remove(client));
 });
 {% endcapture %}
 {% capture kotlin %}
-val clients = mutableListOf<SseClient>() 
+val clients = mutableListOf<SseClient>()
 
-app.sse("/sse") { client -> 
-    clients.add(client) 
-    client.keepAlive() 
+app.sse("/sse") { client ->
+    clients.add(client)
+    client.keepAlive()
+    client.onClose { clients.remove(client) }
 } 
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
