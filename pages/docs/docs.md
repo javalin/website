@@ -994,13 +994,39 @@ app.sse("/sse") { client ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
+Clients are automatically closed when leaving the handler, if you need to use the client outside the handler, you can use `client.keepAlive()`:
+
+{% capture java %}
+Queue<SseClient> clients = new ConcurrentLinkedQueue<SseClient>();
+
+app.sse("/sse", client -> {
+    client.keepAlive();
+    client.onClose(() - > clients.remove(client));
+    clients.add(client);
+});
+{% endcapture %}
+{% capture kotlin %}
+val clients = ConcurrentLinkedQueue<SseClient>()
+
+app.sse("/sse") { client ->
+    client.keepAlive()
+    client.onClose { clients.remove(client) }
+    clients.add(client)
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
 ### SseClient API
 
 ```java
 sendEvent("myMessage")                      // calls emit("message", "myMessage", noId)
 sendEvent("eventName", "myMessage")         // calls emit("eventName", "myMessage", noId)
 sendEvent("eventName", "myMessage", "id")   // calls emit("eventName", "myMessage", "id")
+sendComment("myComment")                    // calls emit("myComment")
 onClose(runnable)                           // callback which runs when a client closes its connection
+keepAlive()                                 // keeps the connection alive. useful if you want to keep a list of clients to broadcast to.
+close()                                     // closes the connection
+terminated()                                // returns true if the connection has been closed
 ctx                                         // the Context from when the client connected (to fetch query-params, etc)
 ```
 
