@@ -1024,7 +1024,7 @@ sendEvent("eventName", "myMessage")         // calls emit("eventName", "myMessag
 sendEvent("eventName", "myMessage", "id")   // calls emit("eventName", "myMessage", "id")
 sendComment("myComment")                    // calls emit("myComment")
 onClose(runnable)                           // callback which runs when a client closes its connection
-keepAlive()                                 // keeps the connection alive outside of the handler (to notify it from other sources)
+keepAlive()                                 // keeps the connection alive. useful if you want to keep a list of clients to broadcast to.
 close()                                     // closes the connection
 terminated()                                // returns true if the connection has been closed
 ctx                                         // the Context from when the client connected (to fetch query-params, etc)
