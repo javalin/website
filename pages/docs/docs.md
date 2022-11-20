@@ -1022,7 +1022,7 @@ app.sse("/sse") { client ->
 sendEvent("myMessage")                      // calls emit("message", "myMessage", noId)
 sendEvent("eventName", "myMessage")         // calls emit("eventName", "myMessage", noId)
 sendEvent("eventName", "myMessage", "id")   // calls emit("eventName", "myMessage", "id")
-sendComment("myComment")                    // calls emit("comment")
+sendComment("myComment")                    // calls emit("myComment")
 onClose(runnable)                           // callback which runs when a client closes its connection
 keepAlive()                                 // keeps the connection alive outside of the handler (to notify it from other sources)
 close()                                     // closes the connection
