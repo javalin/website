@@ -23,15 +23,20 @@ To use jte, you need to add the library as dependency:
 <dependency>
     <groupId>gg.jte</groupId>
     <artifactId>jte</artifactId>
-    <version>1.0.0</version>
+    <version>2.2.1</version>
 </dependency>
 ```
 
-The Javalin jte extension comes with Javalin 3.10.0, so make sure to use the latest Javalin version:
+The Javalin jte extension was introduced in Javalin 3.10.0, so make sure to use the latest Javalin version:
 ```xml
 <dependency>
     <groupId>io.javalin</groupId>
     <artifactId>javalin</artifactId>
+    <version>{{site.javalinversion}}</version>
+</dependency>
+<dependency>
+    <groupId>io.javalin</groupId>
+    <artifactId>javalin-rendering</artifactId>
     <version>{{site.javalinversion}}</version>
 </dependency>
 ```
@@ -39,7 +44,7 @@ The Javalin jte extension comes with Javalin 3.10.0, so make sure to use the lat
 In case you use IntelliJ, I'd highly recommend to install the [jte plugin](https://plugins.jetbrains.com/plugin/14521-jte).
 It offers full auto-completion and refactoring support, and makes working with jte a lot of fun!
 
-<img alt="jte in IntelliJ" src="https://github.com/casid/jte/raw/master/jte-intellij.gif" width="696" /><br>
+<img alt="jte in IntelliJ" src="/img/posts/jteExample/jte-intellij.gif">
 
 Let's try to render our first template.
 Create the directory `src/main/jte` in your project.
@@ -54,6 +59,7 @@ package app;
 
 public class App {
     public static void main(String[] args) {
+        JavalinJte.init();
         Javalin app = Javalin.create().start(7000);
 
         app.get("/", ctx -> ctx.render("hello.jte"));
@@ -67,6 +73,7 @@ package app
 object TutorialKotlin {
     @JvmStatic
     fun main(args: Array<String>) {
+        JavalinJte.init();
         val app = Javalin.create().start(7000)
 
         app.get("/") { ctx -> ctx.render("hello.jte") }
