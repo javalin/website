@@ -181,6 +181,46 @@ configConnectors = null;                       // Consumer to configure the conn
 securityProvider = Conscrypt.newProvider();    // Set the security provider to use.
 ```
 
+### Hot reloading
+
+Certificate reloading is supported by default, if you want to replace the certificate you can simply call `SSLPlugin#reload` with the new certificate:
+
+{% capture java %}
+SSLPlugin sslPlugin = new SSLPlugin(ssl->{
+    ssl.loadPemFromPath("/path/to/cert.pem","/path/to/key.pem");
+});
+
+Javalin.create(config->{
+    ...  // your Javalin config here
+    config.plugins.register(sslPlugin);
+});
+
+// later on, when you want to replace the certificate
+sslPlugin.reload(ssl->{
+    //Any options other than loading certificates/keys will be ignored.
+    ssl.loadPemFromPath("/path/to/new/cert.pem","/path/to/new/key.pem");
+});
+{% endcapture %}
+{% capture kotlin %}
+
+val sslPlugin = SSLPlugin { ssl ->
+    ssl.loadPemFromPath("/path/to/cert.pem", "/path/to/key.pem")
+}
+
+Javalin.create { config ->
+    ...  // your Javalin config here
+    config.plugins.register(sslPlugin)
+}
+
+// later on, when you want to replace the certificate
+
+sslPlugin.reload { ssl ->
+    //Any options other than loading certificates/keys will be ignored.
+    ssl.loadPemFromPath("/path/to/new/cert.pem", "/path/to/new/key.pem")
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
 ## Good to know
 
  - This plugin can be used to enable HTTP/2 without the need to use a certificate. To do so, just set the `secure` option to `false` and the `http2` option to `true`.
@@ -190,5 +230,3 @@ securityProvider = Conscrypt.newProvider();    // Set the security provider to u
  - Client certificates are not supported yet, and it is **not** planned to be added in the future. If you need this feature, please open an issue in the [GitHub repository](https://github.com/javalin/javalin-ssl)
 
  - Jetty 11 ships with SNI verification enabled by default, if hostname spoofing is a not concern, you can disable it by setting the `sniHostCheck` option to `false`. This option is enabled by default for security reasons, but it can be disabled if you are using a reverse proxy that handles the hostname verification. Jetty might respond with an `HTTP ERROR 400 Invalid SNI` if the hostname verification fails.
-
- - Live reload of certificates is not supported yet, and it **is** planned to be added in the future.
