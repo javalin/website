@@ -89,6 +89,8 @@ This can be done in the in the `pom.xml`. Add the following snippet:
 
 Now everything should be ready for you to run your application. Enjoy!
 
+> ⚠ Note: Due to a bug in the IntelliJ integration with Maven there is a known issue where intelliJ will show an error in the code editor, if this happens, refreshing the project and running the goal `mvn clean package` should fix the issue.
+
 <h2 id="eclipse">Instructions for Eclipse</h2>
 
 * Click `File` and select `New` then `Other...`
