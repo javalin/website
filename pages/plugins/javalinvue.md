@@ -11,16 +11,19 @@ permalink: /plugins/javalinvue
   - [Creating a layout](#creating-a-layout)
   - [Creating a component](#creating-a-component)
   - [Binding to a route](#binding-to-a-route)
-- [Configuration options](#configuration-options)
+- [Configuration](#configuration)
   - [rootDirectory](#rootdirectory)
-  - [vueVersion](#vueversion)
-  - [stateFunction](#statefunction)
+  - [vueAppName](#vueappname)
   - [isDevFunction](#isdevfunction)
   - [optimizeDependencies](#optimizedependencies)
+  - [stateFunction](#statefunction)
   - [cacheControl](#cachecontrol)
+  - [enableCspAndNonces](#enablecspandnonces)
 - [Layout macros](#layout-macros)
   - [@cdnWebjar](#cdnwebjar)
 - [LoadableData](#loadabledata)
+- [FAQ](#faq)
+  - [File not found](#file-not-found)
 - [Good to know](#good-to-know)
   - [Local state](#local-state)
 </div>
@@ -29,7 +32,7 @@ permalink: /plugins/javalinvue
 
 The JavalinVue plugin provides a very clever integration with [Vue.js](https://vuejs.org/).
 As with most clever programming tricks, you will probably either love it or hate it.
-These docs are only valid for Javalin 4.X.
+These docs are only valid for Javalin 5.X.
 
 ## How does it work?
 The JavalinVue plugin is basically a very specialized templating engine.
@@ -146,10 +149,32 @@ This means that you can use the same `AccessManager` for frontend routes as you 
 app.get("/my-path", VueComponent("my-component"), roles(Role.LOGGED_IN))
 ```
 
-## Configuration options
+## Configuration
+{% capture java %}
+Javalin.create(config -> {
+    config.vue.rootDirectory        // where JavalinVue should look for files (default: decided based on isDevFunction)
+    config.vue.vueAppName           // the Vue 3 app name (default: null)
+    config.vue.isDevFunction        // a function to determine if request is on localhost (default: checks ctx.url())
+    config.vue.optimizeDependencies // only include required vue files (default: true)
+    config.vue.stateFunction        // a function which runs on every request for transferring state from server (default: null)
+    config.vue.cacheControl         // cache control header (default: "no-cache, no-store, must-revalidate")
+    config.vue.enableCspAndNonces   // will enable csp and tag each component with a nonce (default: false)
+});
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { config ->
+    config.vue.rootDirectory        // where JavalinVue should look for files (default: decided based on isDevFunction)
+    config.vue.vueAppName           // the Vue 3 app name (default: null)
+    config.vue.isDevFunction        // a function to determine if request is on localhost (default: checks ctx.url())
+    config.vue.optimizeDependencies // only include required vue files (default: true)
+    config.vue.stateFunction        // a function which runs on every request for transferring state from server (default: null)
+    config.vue.cacheControl         // cache control header (default: "no-cache, no-store, must-revalidate")
+    config.vue.enableCspAndNonces   // will enable csp and tag each component with a nonce (default: false)
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ### rootDirectory
-
 By default, JavalinVue will set the root directory based on the first request it serves.
 
 * When `isDev` is true, the root dir will be set to the `src/main/resources/vue` (external location)
@@ -159,42 +184,71 @@ This is done to make development fast locally, and requests fast in production.
 If you set the root dir explicitly, Javalin won't try to guess what to do:
 
 {% capture java %}
-JavalinVue.rootDirectory(c -> c.classpathPath("/path")); // use the path on the same classpath as Javalin
-JavalinVue.rootDirectory(c -> c.classpathPath("/path", MyClass.class)); // use the path on the classpath of provided Class
-JavalinVue.rootDirectory(c -> c.externalPath("/path")); // use an external path
-JavalinVue.rootDirectory(c -> c.explicitPath(path)); // use an explicit Path object
+rootDirectory(Path path) // set location with explicit Path object
+rootDirectory(String path) // set relative path (classpath by default)
+rootDirectory(String path, Location location) // location can be CLASSPATH or EXTERNAL
+rootDirectory(String path, Location location, Class resourcesJarClass) // add a class to specify which jar holds the resources
 {% endcapture %}
 {% capture kotlin %}
-JavalinVue.rootDirectory { it.classpathPath("/path") } // use the path on the same classpath as Javalin
-JavalinVue.rootDirectory { it.classpathPath("/path", MyClass.class) } // use the path on the classpath of provided Class
-JavalinVue.rootDirectory { it.externalPath("/path") } // use an external path
-JavalinVue.rootDirectory { it.explicitPath(path) } // use an explicit Path object
+rootDirectory(path: Path) // set location with explicit Path object
+rootDirectory(path: String) // set relative path (classpath by default)
+rootDirectory(path: String, location: Location) // location can be CLASSPATH or EXTERNAL
+rootDirectory(path: String, location: Location, resourcesJarClass: Class<*>) // add a class to specify which jar holds the resources
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-### vueVersion
+The `resourcesJarClass` becomes relevant if you are packing your application as multiple jars.
+If you are using a fat-jar/uber-jar, everything is flattened, and Javalin will find the resources automatically.
+If you are using something like [distTar](https://docs.gradle.org/current/userguide/distribution_plugin.html), you will need to
+point JavalinVue to the Jar which contains your resources. You can do this through `rootDirectory(path = "/path", resourcesJarClass = MyClass::class.java)`.
 
-By default, version is set to Vue 2. If you're using Vue 3 you can configure that:
+### vueAppName
+This setting is only required if you are using Vue 3:
 
 {% capture java %}
-JavalinVue.vueVersion(c -> c.vue2());
-JavalinVue.vueVersion(c -> c.vue3("VueAppName"));
+vueAppName = "MyAppName";
 {% endcapture %}
 {% capture kotlin %}
-JavalinVue.vueVersion { it.vue2() }
-JavalinVue.vueVersion { it.vue3("VueAppName") }
+vueAppName = "MyAppName"
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+This setting should match how you initialize your Vue instance: `const MyAppName = Vue.createApp({});`
+
+### isDevFunction
+By default, this `isDevFunction` is set to check if the request host is `"localhost"` or  `"127.0.0.1"`.
+This function is called once on the first request JavalinVue sees, and is used to set an `isDev` property,
+which is then used to make decisions on how to build the HTML for a request.
+
+{% capture java %}
+isDevFunction = ctx -> // your code here
+{% endcapture %}
+{% capture kotlin %}
+isDevFunction { /* Your code here */ }
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+### optimizeDependencies
+By default, this is set to `true`. If you set it to `false`, every `.vue`
+file that JavalinVue finds will be inlined in `@componentRegistration`.
+If you leave it as true, only required `.vue` files will be included.
+
+{% capture java %}
+optimizeDependencies = true/false;
+{% endcapture %}
+{% capture kotlin %}
+optimizeDependencies = true/false
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ### stateFunction
-
 If you want to share state from your server with Vue, you can provide JavalinVue with a state function:
 
 {% capture java %}
-JavalinVue.stateFunction = ctx -> Map.of("user", getUser(ctx));
+stateFunction = ctx -> Map.of("user", getUser(ctx));
 {% endcapture %}
 {% capture kotlin %}
-JavalinVue.stateFunction = { mapOf("user" to getUser(it)) }
+stateFunction = { mapOf("user" to getUser(it)) }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
@@ -209,41 +263,30 @@ This can then be accessed from the `state` variable:
 The function runs for every request, so the state is always up to
 date when the user navigates or refreshes the page.
 
-### isDevFunction
-
-By default, this `isDevFunction` is set to check if the request host is `"localhost"` or  `"127.0.0.1"`.
-This function is called once on the first request JavalinVue sees, and is used to set an `isDev` property,
-which is then used to make decisions on how to build the HTML for a request.
-
-{% capture java %}
-JavalinVue.isDevFunction = ctx -> // your code here
-{% endcapture %}
-{% capture kotlin %}
-JavalinVue.isDevFunction { /* Your code here */ }
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
-### optimizeDependencies
-
-By default, this is set to `true`. If you set it to `false`, every `.vue`
-file that JavalinVue finds will be inlined in `@componentRegistration`.
-If you leave it as true, only required `.vue` files will be included.
-
-```
-JavalinVue.optimizeDependencies = true/false;
-```
-
 ### cacheControl
-
 By default, JavalinVue sets the `"Cache-Control"` header to `"no-cache, no-store, must-revalidate"`.
 This can be configured:
 
-```java
-JavalinVue.cacheControl = "...";
-```
+{% capture java %}
+cacheControl = "cache header string";
+{% endcapture %}
+{% capture kotlin %}
+cacheControl = "cache header string"
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+### enableCspAndNonces
+This will make Javalin generate a nonce for every script tag in your app, as well as set the CSP header.
+
+{% capture java %}
+enableCspAndNonces = true/false;
+{% endcapture %}
+{% capture kotlin %}
+enableCspAndNonces = true/false
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ## Layout macros
-
 ```java
 @inlineFile("/path/to/file.ext")        // this file will always be inlined
 @inlineFileDev("/path/to/file.ext")     // this file will be inlined if JavalinVue.isDev is true
@@ -309,8 +352,16 @@ LoadableData.refreshAll("/users"); // all instances with this URL will refresh t
 The `loadError` object contains the HTTP status and error message,
 and is available in both the template and in the error callback function.
 
-## Good to know
+## FAQ
 
+### File not found
+* If you are using Vue3, it's important that you use the [#vueAppName](#vueappname) config.
+* If you are running from an IDE, and your project is not in the root directory,
+  you have to include the subdirectory when setting [#rootDirectory](#rootdirectory) (or JavalinVue won't know where to look for files)
+* If you are packaging your application with multiple jars, you have to tell JavalinVue
+  where your resources are located. You can to this through the [#rootDirectory](#rootdirectory) config option by including a class in your jar.
+
+## Good to know
 JavalinVue will also put path-parameters in the Vue instance,
 which you can access like this:
 
