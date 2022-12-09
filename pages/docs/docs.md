@@ -304,7 +304,8 @@ cookieStore()                         // see cookie store section below
 
 It is also possible to cast `Context` to an internal Javalin implementation.
 
-The following example accesses the `JavalinServletContext` task queue, and skips any remaining tasks for the request (access-manager, http-handlers, after-handlers, etc):
+The following example accesses the `JavalinServletContext` task queue, and skips
+any remaining tasks for the request (access-manager, http-handlers, after-handlers, etc):
 
 {% capture java %}
 app.before(ctx -> {
