@@ -302,6 +302,25 @@ endpointHandlerPath()                 // get the path of the endpoint handler th
 cookieStore()                         // see cookie store section below
 ```
 
+It is also possible to cast `Context` to an internal Javalin implementation.
+
+The following example accesses the `JavalinServletContext` task queue, and skips any remaining tasks for the request (access-manager, http-handlers, after-handlers, etc):
+
+{% capture java %}
+app.before(ctx -> {
+    ctx.result("My result here");
+    JavalinServletContext jsc = (JavalinServletContext) ctx;
+    jsc.getTasks().clear();
+})
+{% endcapture %}
+{% capture kotlin %}
+app.before { ctx ->
+    it.result("My result here")
+    (ctx as JavalinServletContext).tasks.clear()  
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
 #### App Attributes
 
 App Attributes can be registered on the Javalin instance, then accessed through the `appAttribute(...)` method in `Context`:
@@ -1623,7 +1642,7 @@ pass a `Supplier<CompletableFuture>` to `ctx.future()`. Javalin will automatical
 
 Let's look at a real world example, imagine we have an api that we want to call asynchronously and return the result to the client.
 We'll start by creating a simple method to call the api and return the result wrapped in a `CompletableFuture`:
-    
+
 {% capture java %}
 private static CompletableFuture<HttpResponse<String>> getRandomCatFactFuture() {
     HttpRequest request = HttpRequest.newBuilder()
@@ -1647,7 +1666,7 @@ Now we can use this method in our Javalin app to return cat facts to the client 
 {% capture java %}
 public static void main(String[] args) {
     Javalin app = Javalin.create().start(7070);
-    
+
     app.get("/catFacts", ctx -> {
         ctx.future(() -> getRandomCatFactFuture().thenAccept(response -> {
             ctx.html(response.body()).status(response.statusCode());
@@ -1661,7 +1680,7 @@ public static void main(String[] args) {
 {% capture kotlin %}
 fun main() {
     val app = Javalin.create().start(7070)
-    
+
     app.get("/catFacts") { ctx ->
         ctx.future {
             getRandomCatFactFuture().thenAccept { response ->
