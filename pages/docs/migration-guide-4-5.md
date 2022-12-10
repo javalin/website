@@ -108,8 +108,8 @@ The main `javalin/javalin` repo has been on a diet, and a lot of things have bee
 A few things have been removed altogether.
 
 ### New OpenAPI project
-The OpenAPI DSL and annotation processor (`javalin-openapi`) has been replaced by a
-[new project](https://github.com/javalin/javalin-openapi) by a very talented
+The OpenAPI DSL and reflection based annotation API (`javalin-openapi` module) has been replaced by a
+[new annotation processor based project](https://github.com/javalin/javalin-openapi) by a very talented
 new Javalin contributor, [@dzikoysk](https://github.com/dzikoysk), who is also the author
 of Reposilite ([repo](https://github.com/dzikoysk/reposilite), [website](https://reposilite.com/)).
 Reposilite is currently running both
