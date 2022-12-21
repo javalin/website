@@ -1287,10 +1287,10 @@ Javalin.create(config -> {
 {% endcapture %}
 {% capture kotlin %}
 Javalin.create { config ->
-  config.fileUpload.cacheDirectory("c:/temp"); //where to write files that exceed the in memory limit
-  config.fileUpload.maxFileSize(100,SizeUnit.MB); //the maximum individual file size allowed
-  config.fileUpload.maxInMemoryFileSize(10,SizeUnit.MB); //the maximum file size to handle in memory
-  config.fileUpload.maxTotalRequestSize(1,SizeUnit.GB); //the maximum size of the entire multipart request
+  config.fileUpload.cacheDirectory("c:/temp") //where to write files that exceed the in memory limit
+  config.fileUpload.maxFileSize(100,SizeUnit.MB) //the maximum individual file size allowed
+  config.fileUpload.maxInMemoryFileSize(10,SizeUnit.MB) //the maximum file size to handle in memory
+  config.fileUpload.maxTotalRequestSize(1,SizeUnit.GB) //the maximum size of the entire multipart request
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
