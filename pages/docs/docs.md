@@ -1044,7 +1044,7 @@ Javalin.create(config -> {
     config.spaRoot       // single page application roots
     config.compression   // gzip, brotli, disable compression
     config.requestLogger // http and websocket loggers
-    config.fileUpload    // maximum file size, cache directory, etc
+    config.fileUpload    // max file size, cache directory, etc
     config.plugins       // enable bundled plugins or add custom ones
     config.vue           // vue settings, see /plugins/vue
 });
