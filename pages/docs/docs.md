@@ -1846,10 +1846,10 @@ This method is called when you call `Context#render`.
 It can be configured through the config passed to `Javalin.create()`:
 
 {% capture java %}
-config.fileRenderer((filePath, model, context) -> "Rendered templated");
+config.fileRenderer((filePath, model, context) -> "Rendered template");
 {% endcapture %}
 {% capture kotlin %}
-config.fileRenderer { filePath, model, context -> "Rendered templated" }
+config.fileRenderer { filePath, model, context -> "Rendered template" }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
