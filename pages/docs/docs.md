@@ -226,6 +226,7 @@ bodyValidator(clazz)                  // request body as validator typed as spec
 uploadedFile("name")                  // uploaded file by name
 uploadedFiles("name")                 // all uploaded files by name
 uploadedFiles()                       // all uploaded files as list
+uploadedFileMap()                     // all uploaded files as a "names by files" map
 formParam("name")                     // form parameter by name, as string
 formParamAsClass("name", clazz)       // form parameter by name, as validator typed as specified class
 formParams("name")                    // list of form parameters by name
@@ -236,6 +237,7 @@ pathParamMap()                        // map of all path parameters
 basicAuthCredentials()                // basic auth credentials (or null if not set)
 attribute("name", value)              // set an attribute on the request
 attribute("name")                     // get an attribute on the request
+attributeOrCompute("name", ctx -> {}) // get an attribute or compute it based on the context if absent
 attributeMap()                        // map of all attributes on the request
 contentLength()                       // content length of the request body
 contentType()                         // request content type
@@ -317,7 +319,7 @@ app.before(ctx -> {
 {% capture kotlin %}
 app.before { ctx ->
     it.result("My result here")
-    (ctx as JavalinServletContext).tasks.clear()  
+    (ctx as JavalinServletContext).tasks.clear()
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -1064,6 +1066,7 @@ Javalin.create(config -> {
     config.spaRoot       // single page application roots
     config.compression   // gzip, brotli, disable compression
     config.requestLogger // http and websocket loggers
+    config.fileUpload    // max file size, cache directory, etc
     config.plugins       // enable bundled plugins or add custom ones
     config.vue           // vue settings, see /plugins/vue
 });
@@ -1288,6 +1291,31 @@ WebJars can be enabled by calling `config.staticFiles.enableWebjars()`,
 they will be available at `/webjars/name/version/file.ext`.
 WebJars can be found on [https://www.webjars.org/](https://www.webjars.org/).
 Everything available through NPM is also available through WebJars.
+
+### FileUploadConfig
+Javalin uses standard servlet file upload handling to deal with multipart requests.  This allows for configuring
+the maximum size for each individual file, the maximum size for the entire request, the maximum size of file to
+handle via in-memory upload and the cache directory to write uploaded files to if they exceed this limit.
+
+All of these values can be configured through the file upload config as follows
+
+{% capture java %}
+Javalin.create(config -> {
+  config.fileUpload.cacheDirectory("c:/temp"); //where to write files that exceed the in memory limit
+  config.fileUpload.maxFileSize(100, SizeUnit.MB); //the maximum individual file size allowed
+  config.fileUpload.maxInMemoryFileSize(10, SizeUnit.MB); //the maximum file size to handle in memory
+  config.fileUpload.maxTotalRequestSize(1, SizeUnit.GB); //the maximum size of the entire multipart request
+});
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { config ->
+  config.fileUpload.cacheDirectory("c:/temp") //where to write files that exceed the in memory limit
+  config.fileUpload.maxFileSize(100, SizeUnit.MB) //the maximum individual file size allowed
+  config.fileUpload.maxInMemoryFileSize(10, SizeUnit.MB) //the maximum file size to handle in memory
+  config.fileUpload.maxTotalRequestSize(1, SizeUnit.GB) //the maximum size of the entire multipart request
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ### Logging
 
@@ -1808,11 +1836,32 @@ there's an example in the repo:
 ---
 
 ### Views and Templates
+Each Javalin instance has a `FileRenderer` attached to it. The `FileRenderer` interface has one method:
+
+```java
+String render(String filePath, Map<String, Object> model, Context context)
+```
+
+This method is called when you call `Context#render`.
+It can be configured through the config passed to `Javalin.create()`:
+
+{% capture java %}
+config.fileRenderer((filePath, model, context) -> "Rendered template");
+{% endcapture %}
+{% capture kotlin %}
+config.fileRenderer { filePath, model, context -> "Rendered template" }
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+The default `FileRenderer` of Javalin is a singleton named `JavalinRenderer`, see
+the section below for more information.
+
+### Default implementations
 Javalin offers an artifact with several template engines, called `javalin-rendering`,
 which follows the same version as the `javalin` artifact.
 The template engines look for templates/markdown files in `src/resources`,
 and the correct rendering engine is chosen based on the extension of your template.
-Javalin currently supports several template engines (see below), as well as markdown.
+This artifact currently supports several template engines (see below), as well as markdown.
 You can also register your own rendering engine.
 
 Rendering a template:
@@ -1823,17 +1872,6 @@ ctx.render("/templateFile.ext", model("firstName", "John", "lastName", "Doe"));
 ctx.render("/templateFile.ext", mapOf("firstName" to "John", "lastName" to "Doe"))
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
-Registering one of the existing engines using default configuration and extensions:
-```kotlin
-JavalinFreemarker.init() // ".ftl"
-JavalinJte.init() // ".jte", ".kte"
-JavalinMustache.init() // ".mustache"
-JavalinPebble.init() // ".peb", ".pebble"
-JavalinThymeleaf.init() // ".html", ".tl", ".thyme", ".thymeleaf"
-JavalinVelocity.init() // ".vm", ".vtl"
-JavalinCommonmark.init() // ".md", ".markdown"
-```
 
 Registering a new engine:
 {% capture java %}
@@ -1874,7 +1912,8 @@ If you need to configure settings beyond what's available in `JavalinTemplateEng
 to set a custom file extension), you have to write your own implementation and register it using
 `JavalinRenderer.register`.
 
-Note that these are global settings, and cannot be configured per instance of Javalin.
+Note that if you're using `JavalinRenderer`, these are global settings,
+and cannot be configured per instance of Javalin.
 
 ---
 
