@@ -78,9 +78,11 @@ new UptimeMetrics().bindTo(registry);
 new ProcessorMetrics().bindTo(registry);
 new DiskSpaceMetrics(new File(System.getProperty("user.dir"))).bindTo(registry);
 
+MicrometerPlugin micrometerPlugin = MicrometerPlugin.Companion.create(micrometerConfig -> micrometerConfig.registry = registry);
+
 Javalin app = Javalin.create(config -> {
-    config.registerPlugin(new MicrometerPlugin(registry));
-}).start();
+    config.plugins.register(micrometerPlugin);
+}).start(8080);
 
 app.get("/prometheus", ctx -> ctx.contentType(TextFormat.CONTENT_TYPE_004).result(registry.scrape()));
 ```
