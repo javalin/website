@@ -129,7 +129,7 @@ please report it on GitHub (link in plugin card).
         It uses the <a href='https://micrometer.io/'>Micrometer</a> library to collect metrics.
     "
     bundled="false"
-    author="tipsy,zugazagoitia"
+    author="jkschneider"
     docsUrl="/plugins/micrometer"
     ratingIssueNr="137"
 %}
