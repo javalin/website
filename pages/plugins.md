@@ -121,3 +121,15 @@ please report it on GitHub (link in plugin card).
     docsUrl="/plugins/devlogging"
     ratingIssueNr="139"
 %}
+
+{% include pluginCard.html
+    title="Micrometer Plugin"
+    description="
+        The Micrometer plugin provides a simple way to add metrics to your Javalin application.
+        It uses the <a href='https://micrometer.io/'>Micrometer</a> library to collect metrics.
+    "
+    bundled="false"
+    author="jkschneider"
+    docsUrl="/plugins/micrometer"
+    ratingIssueNr="137"
+%}

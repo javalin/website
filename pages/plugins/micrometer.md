@@ -17,17 +17,15 @@ This plugin allows reporting metrics using [Micrometer](https://micrometer.io).
 
 ## Getting Started
 
-Although the Micrometer plugin is part of the regular Javalin library, it requires
-additional dependencies to Micrometer libraries. For one, the `micrometer-core` library
-is required, plus an additional library for reporting to a specific monitoring system.
+The Micrometer plugin is available on Maven Central as a separate artifact, but in order to use the plugin an additional library for reporting to a specific monitoring system is required.
 In the following description, an example is given to report to
 [Prometheus](https://prometheus.io). Thus, add the following dependencies:
 
-```
+```xml
 <dependency>
-    <groupId>io.micrometer</groupId>
-    <artifactId>micrometer-core</artifactId>
-    <version>${io.micrometer.version}</version>
+    <groupId>io.javalin</groupId>
+    <artifactId>javalin-micrometer</artifactId>
+    <version>{{site.javalinversion}}</version>
 </dependency>
 <dependency>
     <groupId>io.micrometer</groupId>
@@ -41,14 +39,15 @@ Create a registry, register the plugin, and provide a route:
 
 ```java
 public static void main(String[] args) {
+    PrometheusMeterRegistry registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
 
-	PrometheusMeterRegistry registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+    MicrometerPlugin micrometerPlugin = MicrometerPlugin.Companion.create(micrometerConfig -> micrometerConfig.registry = registry);
 
-	Javalin app = Javalin.create(config -> {
-		config.registerPlugin(new MicrometerPlugin(registry));
-	}).start();
+    Javalin app = Javalin.create(config -> {
+        config.plugins.register(micrometerPlugin);
+    }).start(8080);
 
-	app.get("/prometheus", ctx -> ctx.contentType(TextFormat.CONTENT_TYPE_004).result(registry.scrape()));
+    app.get("/prometheus", ctx -> ctx.contentType(TextFormat.CONTENT_TYPE_004).result(registry.scrape()));
 }
 ```
 
@@ -79,9 +78,11 @@ new UptimeMetrics().bindTo(registry);
 new ProcessorMetrics().bindTo(registry);
 new DiskSpaceMetrics(new File(System.getProperty("user.dir"))).bindTo(registry);
 
+MicrometerPlugin micrometerPlugin = MicrometerPlugin.Companion.create(micrometerConfig -> micrometerConfig.registry = registry);
+
 Javalin app = Javalin.create(config -> {
-    config.registerPlugin(new MicrometerPlugin(registry));
-}).start();
+    config.plugins.register(micrometerPlugin);
+}).start(8080);
 
 app.get("/prometheus", ctx -> ctx.contentType(TextFormat.CONTENT_TYPE_004).result(registry.scrape()));
 ```
