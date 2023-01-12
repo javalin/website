@@ -11,7 +11,7 @@ Creating an issue to ask a question is fine.
 
 Every PR will be considered.
 
-Steps:
+_Steps (for larger changes):_
 
 1. Create a GitHub fork of this repository (click on the Fork button in GitHub). This will create a forked copy of the repo in your personal account. You will use this fork to make contributions to the parent repository via pull requests (PRs).
 
@@ -24,6 +24,12 @@ Steps:
 5. Commit your changes and push them to your GitHib repository (your fork).
 
 6. Go to your GitHub repository. Create a GitHub pull request: click on Contribute > Open pull request.
+
+_Steps (for smaller changes):_
+
+You may not need to run the site locally to test smaller changes. You can preview your changes when you create a pull request:
+
+<img src="/img/pages/pull_req_site_preview.png" alt="Site preview via PR">
 
 ### How to increase the chance of having your PR merged
 
