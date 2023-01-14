@@ -1697,12 +1697,13 @@ public static void main(String[] args) {
     Javalin app = Javalin.create().start(7070);
 
     app.get("/catFacts", ctx -> {
-        ctx.future(() -> getRandomCatFactFuture().thenAccept(response -> {
-            ctx.html(response.body()).status(response.statusCode());
-        }).exceptionally(throwable -> {
-            ctx.status(500).result("Could not get cat facts" + throwable.getMessage());
-            return null;
-        }));
+        ctx.future(() -> 
+            getRandomCatFactFuture()
+                .thenAccept(response -> ctx.html(response.body()).status(response.statusCode()))
+                .exceptionally(throwable -> {
+                    ctx.status(500).result("Could not get cat facts" + throwable.getMessage());
+                    return null;
+                }));
     });
 }
 {% endcapture %}
@@ -1712,12 +1713,12 @@ fun main() {
 
     app.get("/catFacts") { ctx ->
         ctx.future {
-            getRandomCatFactFuture().thenAccept { response ->
-                ctx.html(response.body()).status(response.statusCode())
-            }.exceptionally { throwable ->
-                ctx.status(500).result("Could not get cat facts: ${throwable.message}")
-                null
-            }
+            getRandomCatFactFuture()
+                .thenAccept { response -> ctx.html(response.body()).status(response.statusCode()) }
+                .exceptionally { throwable ->
+                    ctx.status(500).result("Could not get cat facts: ${throwable.message}")
+                    null
+                }
         }
     }
 }
@@ -1774,6 +1775,8 @@ app.get("/async") { ctx ->
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+The difference between `ctx.future` & `ctx.async` is that the first one consumes `CompletableFuture` (that's why it's called future and it works like `ctx.result`/`ctx.json`/etc.) while the second one executes your `ThrowingRunnable` in another thread - by default it's executed by preconfigured cached thread-pool, but you can use a custom one by specifying it as parameter.
 
 ---
 
