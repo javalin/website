@@ -33,6 +33,8 @@ mTLS stands for **mutual TLS**. It is a method for mutual authentication between
 
 This is usually used to secure internal applications that are used by trusted clients. For example, you could use mTLS to secure an internal API that is used by your mobile application. Microservices and Kubernetes are also good candidates for mTLS.
 
+![mTLS](/img/posts/mtlsTutorial/mtls.png)
+
 More information about mTLS can be found in this excellent article: [What is Mutual TLS (mTLS)?](https://www.cloudflare.com/learning/access-management/what-is-mutual-tls/) by Cloudflare.
 
 ## What will we need?
