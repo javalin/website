@@ -11,7 +11,7 @@ permalink: /plugins/ssl-helpers
 - [Configuration options](#configuration-options)
   - [Connection options](#connection-options)
   - [Key loading options](#key-loading-options)
-- [Advanced configuration](#advanced-configuration)
+  - [Advanced configuration](#advanced-configuration)
 - [Good to know](#good-to-know)
 </div>
 
@@ -250,3 +250,5 @@ sslPlugin.reload(ssl->{
  - HTTP/3 is not supported yet, but it is planned to be added in the future. The IETF is still working on the final specification, so it is not prudent to implement it yet.
 
  - Jetty 11 ships with SNI verification enabled by default, if hostname spoofing is a not concern, you can disable it by setting the `sniHostCheck` option to `false`. This option is enabled by default for security reasons, but it can be disabled if you are using a reverse proxy that handles the hostname verification. Jetty might respond with an `HTTP ERROR 400 Invalid SNI` if the hostname verification fails.
+
+- mTLS (Mutual TLS) is supported, just add a `TrustConfig` to the `SSLPlugin` to enable client certificate verification. See the [Advanced Configuration](#advanced-configuration) section for more information.
