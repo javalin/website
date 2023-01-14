@@ -13,13 +13,16 @@ rightmenu: true
 #github: https://github.com/The-Funk/serving-protobuf-with-javalin 
 ---
 
+<!-- Nav menu from the titles -->
 <div id="spy-nav" class="right-menu" markdown="1">
 - [Introduction](#introduction)
-- [Securing Javalin](#securing-javalin-with-ssl)
-  - [1. Obtain a certificate](#1-obtain-a-certificate)
-    - [Making a self-signed cert](#generating-a-self-signed-certificate)
-  - [2. Add the dependency](#2-add-the-javalin-ssl-dependency)
-  - [3. Configure the plugin](#3-configure-the-javalin-ssl-plugin)
+- [What will we need?](#what-will-we-need)
+- [Securing with mTLS](#securing-javalin-with-mtls)
+  - [Obtain the certs](#1-obtain-the-certificates)
+  - [Add the dependency](#2-add-the-javalin-ssl-dependency)
+  - [Configure the plugin](#3-configure-the-javalin-ssl-plugin)
+  - [Testing the application](#4-testing-the-application)
+- [Conclusion](#conclusion)
 </div>
 
 ## Introduction
@@ -189,6 +192,8 @@ As easy as that! Now, our Javalin application is secured with mTLS on the defaul
 
 To test our application, a client that supports mTLS is required. We will use Insomnia, a REST client with a nice GUI.
 
+If we try to make a request to our application, we will get an error, because we are not sending any client certificate.
+
 To import a new certificate, click Document Settings or Collection Settings then the Client Certificates tab.
 Here we will first add the CA certificate, in the CA Certificate section.
 
@@ -200,12 +205,16 @@ Once you click New Certificate in the Client Certificates tab, you will be promp
 - **Passphrase**: the passphrase for the private key, if any
 
 It should look like this:
+
 ![Insomnia conf](/img/posts/mtlsTutorial/insomnia-conf.png)
 
-
-After you add the certificate, you will be able to use the client certificate in any request.
+After you add the certificate, you will be able to use the client certificate in any request as you would normally do.
 
 ![Insomnia client certificate](/img/posts/mtlsTutorial/insomnia.png)
 
+## Conclusion
+
+In this tutorial, we have learned how to secure a Javalin application with mTLS. We have seen where we can learn to generate a CA certificate, and how to sign client certificates with it. We have also seen how to configure the Javalin SSL plugin to use the certificates and private keys, and how to test the application with Insomnia.
 
 For further configuration options, and different certificate formats, please refer to the [Javalin SSL plugin documentation](/plugins/ssl-helpers).
+
