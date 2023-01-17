@@ -1776,7 +1776,7 @@ app.get("/async") { ctx ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-The difference between `ctx.future` & `ctx.async` is that the first one consumes `CompletableFuture` (that's why it's called future and it works like `ctx.result`/`ctx.json`/etc.) while the second one executes your `ThrowingRunnable` in another thread - by default it's executed by preconfigured cached thread-pool, but you can use a custom one by specifying it as parameter.
+The difference between `ctx.future` & `ctx.async` is that the first one consumes a `Supplier<CompletableFuture>` (that's why it's called future and it works similar to `ctx.result`/`ctx.json`/etc.) while the second one executes your `ThrowingRunnable` in another thread - by default it's executed by preconfigured cached thread-pool, but you can use a custom one by specifying it as parameter.
 
 ---
 
