@@ -1066,7 +1066,6 @@ Javalin.create(config -> {
     config.spaRoot       // single page application roots
     config.compression   // gzip, brotli, disable compression
     config.requestLogger // http and websocket loggers
-    config.fileUpload    // max file size, cache directory, etc
     config.plugins       // enable bundled plugins or add custom ones
     config.vue           // vue settings, see /plugins/vue
 });
@@ -1154,6 +1153,32 @@ Javalin.create { config ->
     config.jetty.sessionHandler(sessionHandlerSupplier) // set the SessionHandler that Jetty will use for sessions
     config.jetty.contextHandlerConfig(contextHandlerConsumer) // configure the ServletContextHandler Jetty runs on
     config.jetty.wsFactoryConfig(jettyWebSocketServletFactoryConsumer) // configure the JettyWebSocketServletFactory
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+	
+#### MultipartConfig
+<div class="comment">Keywords for ctrl+f: FileUploadConfig</div>
+Javalin uses standard servlet file upload handling to deal with multipart requests. This allows for configuring
+the maximum size for each individual file, the maximum size for the entire request, the maximum size of file to
+handle via in-memory upload and the cache directory to write uploaded files to if they exceed this limit.
+
+All of these values can be configured through the config as follows
+
+{% capture java %}
+Javalin.create(config -> {
+  config.jetty.multipartConfig.cacheDirectory("c:/temp"); //where to write files that exceed the in memory limit
+  config.jetty.multipartConfig.maxFileSize(100, SizeUnit.MB); //the maximum individual file size allowed
+  config.jetty.multipartConfig.maxInMemoryFileSize(10, SizeUnit.MB); //the maximum file size to handle in memory
+  config.jetty.multipartConfig.maxTotalRequestSize(1, SizeUnit.GB); //the maximum size of the entire multipart request
+});
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { config ->
+  config.jetty.multipartConfig.cacheDirectory("c:/temp") //where to write files that exceed the in memory limit
+  config.jetty.multipartConfig.maxFileSize(100, SizeUnit.MB) //the maximum individual file size allowed
+  config.jetty.multipartConfig.maxInMemoryFileSize(10, SizeUnit.MB) //the maximum file size to handle in memory
+  config.jetty.multipartConfig.maxTotalRequestSize(1, SizeUnit.GB) //the maximum size of the entire multipart request
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -1291,31 +1316,6 @@ WebJars can be enabled by calling `config.staticFiles.enableWebjars()`,
 they will be available at `/webjars/name/version/file.ext`.
 WebJars can be found on [https://www.webjars.org/](https://www.webjars.org/).
 Everything available through NPM is also available through WebJars.
-
-### FileUploadConfig
-Javalin uses standard servlet file upload handling to deal with multipart requests.  This allows for configuring
-the maximum size for each individual file, the maximum size for the entire request, the maximum size of file to
-handle via in-memory upload and the cache directory to write uploaded files to if they exceed this limit.
-
-All of these values can be configured through the file upload config as follows
-
-{% capture java %}
-Javalin.create(config -> {
-  config.fileUpload.cacheDirectory("c:/temp"); //where to write files that exceed the in memory limit
-  config.fileUpload.maxFileSize(100, SizeUnit.MB); //the maximum individual file size allowed
-  config.fileUpload.maxInMemoryFileSize(10, SizeUnit.MB); //the maximum file size to handle in memory
-  config.fileUpload.maxTotalRequestSize(1, SizeUnit.GB); //the maximum size of the entire multipart request
-});
-{% endcapture %}
-{% capture kotlin %}
-Javalin.create { config ->
-  config.fileUpload.cacheDirectory("c:/temp") //where to write files that exceed the in memory limit
-  config.fileUpload.maxFileSize(100, SizeUnit.MB) //the maximum individual file size allowed
-  config.fileUpload.maxInMemoryFileSize(10, SizeUnit.MB) //the maximum file size to handle in memory
-  config.fileUpload.maxTotalRequestSize(1, SizeUnit.GB) //the maximum size of the entire multipart request
-}
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ### Logging
 
