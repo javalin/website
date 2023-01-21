@@ -296,7 +296,7 @@ render("/template.tmpl", model)       // calls html(renderedTemplate)
 res()                                 // get the underlying HttpServletResponse
 
 // Other methods
-async(supplier)                       // switch into async mode
+async(runnable)                       // lifts request out of Jetty's ThreadPool, and moves it to Javalin's AsyncThreadPool
 handlerType()                         // handler type of the current handler (BEFORE, AFTER, GET, etc)
 appAttribute("name")                  // get an attribute on the Javalin instance. see app attributes section below
 matchedPath()                         // get the path that was used to match this request (ex, "/hello/{name}")
@@ -1156,7 +1156,7 @@ Javalin.create { config ->
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
-	
+
 #### MultipartConfig
 <div class="comment">Keywords for ctrl+f: FileUploadConfig</div>
 Javalin uses standard servlet file upload handling to deal with multipart requests. This allows for configuring
@@ -1668,24 +1668,24 @@ sometimes slow operations should be run asynchronously. Luckily it's very easy i
 pass a `Supplier<CompletableFuture>` to `ctx.future()`. Javalin will automatically switch between sync and async modes to handle the different tasks.
 
 #### Using Futures
-
-Let's look at a real world example, imagine we have an api that we want to call asynchronously and return the result to the client.
-We'll start by creating a simple method to call the api and return the result wrapped in a `CompletableFuture`:
+Let's look at a real world example. Imagine that we have a random cat fact API that we want to call on behalf of a client.
+We'll start by creating a simple method to call the API, which returns a `CompletableFuture<String>` which
+will resolve either to a cat fact or an error. This is possible by using Java's native `HttpClient`:
 
 {% capture java %}
 private static CompletableFuture<HttpResponse<String>> getRandomCatFactFuture() {
     HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://catfact.ninja/fact"))
-                .build();
+        .uri(URI.create("https://catfact.ninja/fact"))
+        .build();
     return httpClient.sendAsync(request, ofString());
 }
 {% endcapture %}
 {% capture kotlin %}
-private fun getRandomCatFactFuture() = httpClient.sendAsync(
-    HttpRequest.newBuilder()
+private fun getRandomCatFactFuture(): CompletableFuture<HttpResponse<String>> {
+    val request = HttpRequest.newBuilder()
         .uri(URI.create("https://catfact.ninja/fact"))
-        .build(),
-    ofString()
+        .build()
+    return httpClient.sendAsync(request, ofString())
 )
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -1693,90 +1693,75 @@ private fun getRandomCatFactFuture() = httpClient.sendAsync(
 Now we can use this method in our Javalin app to return cat facts to the client asynchronously:
 
 {% capture java %}
-public static void main(String[] args) {
-    Javalin app = Javalin.create().start(7070);
-
-    app.get("/catFacts", ctx -> {
-        ctx.future(() -> 
-            getRandomCatFactFuture()
-                .thenAccept(response -> ctx.html(response.body()).status(response.statusCode()))
-                .exceptionally(throwable -> {
-                    ctx.status(500).result("Could not get cat facts" + throwable.getMessage());
-                    return null;
-                }));
+app.get("/cat-facts", ctx -> {
+    ctx.future(() -> {
+        return getRandomCatFactFuture()
+            .thenAccept(response -> ctx.html(response.body()).status(response.statusCode()))
+            .exceptionally(throwable -> {
+                ctx.status(500).result("Could not get cat facts" + throwable.getMessage());
+                return null;
+            })
     });
-}
+});
 {% endcapture %}
 {% capture kotlin %}
-fun main() {
-    val app = Javalin.create().start(7070)
-
-    app.get("/catFacts") { ctx ->
-        ctx.future {
-            getRandomCatFactFuture()
-                .thenAccept { response -> ctx.html(response.body()).status(response.statusCode()) }
-                .exceptionally { throwable ->
-                    ctx.status(500).result("Could not get cat facts: ${throwable.message}")
-                    null
-                }
-        }
+app.get("/cat-facts") { ctx ->
+    ctx.future {
+        getRandomCatFactFuture()
+            .thenAccept { response -> ctx.html(response.body()).status(response.statusCode()) }
+            .exceptionally { throwable ->
+                ctx.status(500).result("Could not get cat facts: ${throwable.message}")
+                null
+            }
     }
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-The only drawback to this future approach is that we need to handle the execution of the task ourselves.
+By calling `ctx.future(supplier)` you are not putting Javalin in an async state. It's a simple setter method,
+which makes it possible for Javalin to call the given supplier and switch into async mode at an appropriate time.
 
-#### Executing async tasks
+The `ctx.future()` method works great if you are using a `CompletableFuture` based API, like Java's `HttpClient`, but
+if you have long running tasks which aren't `CompletableFuture` based,
+you might want to try the `ctx.async(runnable)` (see next section).
 
-If you want to execute a task asynchronously, but do not want to handle the execution yourself, you can use `ctx.async()`:
+#### Executing blocking tasks asynchronously
 
-{% capture java %}
-app.get("/async", ctx -> {
-    ctx.async(() -> {
-        // do something asynchronously
-        ctx.result("done");
-    });
-});
-{% endcapture %}
-{% capture kotlin %}
-app.get("/async") { ctx ->
-    ctx.async {
-        // do something asynchronously
-        ctx.result("done")
-    }
-}
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+If you want to execute a blocking task outside of the server ThreadPool, you can use `ctx.async()`.
+The snippet below shows the available overloads for the method:
 
-Javalin will run the task on a dedicated executor service, and return the result to the client when it's done.
+```
+async(runnableTask)                               // Javalin's default executor, no timeout or timeout callback
+async(timeout, onTimeout, runnableTask)           // Javalin's default executor, custom timeout handling
+async(executor, timeout, onTimeout, runnableTask) // custom everything!
+```
 
-The `ctx.async()` method also takes a timeout parameter, which will cancel the task if it takes longer than the timeout:
+Javalin will immediately start an async context and run the task on a dedicated executor service.
+It will resume the normal request flow (after-handlers, request-logging)
+once the task is done.
+
+The snippet belows shows a full example with a custom timeout, timeout handler, and a task:
 
 {% capture java %}
 app.get("/async", ctx -> {
-    ctx.async(1000, () -> {
-        ctx.result("Timeout after 1 second");
-    }, () -> {
-        //Some long task
-        ctx.result("Completed before timeout");
-    });
+    ctx.async(
+        1000,                                      // timeout in ms
+        () -> ctx.result("Request took too long"), // timeout callback
+        () -> ctx.result(someSlowResult)           // some long running task
+    );
 });
 {% endcapture %}
 {% capture kotlin %}
 
 app.get("/async") { ctx ->
-    ctx.async(1000, {
-        ctx.result("Timeout after 1 second")
-    }, {
-        //Some long task
-        ctx.result("Completed before timeout")
-    })
+    ctx.async(
+        1000,                                    // timeout in ms
+        { ctx.result("Request took too long") }, // timeout callback
+        { ctx.result(someSlowResult)             // some long running task
+    )
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
-The difference between `ctx.future` & `ctx.async` is that the first one consumes a `Supplier<CompletableFuture>` (that's why it's called future and it works similar to `ctx.result`/`ctx.json`/etc.) while the second one executes your `ThrowingRunnable` in another thread - by default it's executed by preconfigured cached thread-pool, but you can use a custom one by specifying it as parameter.
 
 ---
 
