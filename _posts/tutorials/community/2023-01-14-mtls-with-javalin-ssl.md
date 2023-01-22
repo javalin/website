@@ -41,7 +41,7 @@ More information about mTLS can be found in this excellent article: [What is Mut
 
 To follow this tutorial, you will need:
 
-- A Javalin application, if you don't have one yet, you can follow the [maven tutorial](/tutorials/maven-tutorial) or the [gradle tutorial](/tutorials/gradle-tutorial).
+- A Javalin application, if you don't have one yet, you can follow the [maven tutorial](/tutorials/maven-setup) or the [gradle tutorial](/tutorials/gradle-setup).
 - A private certificate authority (CA) that will issue the certificates for your applications. You can use any 3rd party software to generate the certificates, such as [OpenSSL](https://www.openssl.org/) or [Keytool](https://docs.oracle.com/en/java/javase/11/tools/keytool.html). We won't be covering this in this tutorial, but you can check [this tutorial](https://medium.com/weekly-webtips/how-to-generate-keys-for-mutual-tls-authentication-a90f53bcec64) for more information.
 Once you have it set up, you'll need:
   - A certificate for your application. This certificate will be used by the server to authenticate itself to the client.
