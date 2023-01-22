@@ -11,7 +11,7 @@ permalink: /plugins/ssl-helpers
 - [Configuration options](#configuration-options)
   - [Connection options](#connection-options)
   - [Key loading options](#key-loading-options)
-- [Advanced configuration](#advanced-configuration)
+  - [Advanced configuration](#advanced-configuration)
 - [Good to know](#good-to-know)
 </div>
 
@@ -120,13 +120,13 @@ As easy as that!
 
 ### Connection options
 
-Options such as the port and the host can be configured using the following variables:
+Options such as the port and the host can be configured using the following variables (shown with their default values)
 
 ```java
 host = null;                           // Host to bind to, by default it will bind to all interfaces.
 insecure = true;                       // Toggle the default http (insecure) connector.
 secure = true;                         // Toggle the default https (secure) connector.
-http2 = true;                          // Toggle HTTP/2 Support
+http2 = true;                          //   HTTP/2 Support
 
 insecurePort = 80;                     // Port to use on the http (insecure) connector.
 securePort = 443;                      // Port to use on the SSL (secure) connector.
@@ -170,24 +170,60 @@ keystoreFromInputStream(keystoreInputStream, "keystorePassword");       // load 
 
 Each of these methods are mutually exclusive, so only one of them can be used at a time.
 
-## Advanced configuration
+### Advanced configuration
 
 Once the plugin is configured, there is a `SSLPlugin#patch` method that can be used to patch the Jetty server. This method receives a `Server` as a parameter and adds the configured connectors to it. This method can be used to apply the SSL configuration to a server that is not created by Javalin.
 
 There are also a set of fields that can be used to further configure the plugin:
 
 ```java
-configConnectors = null;                       // Consumer to configure the connectors.
-securityProvider = Conscrypt.newProvider();    // Set the security provider to use.
+configConnectors(Consumer<ServerConnector>);   // Set a Consumer to configure the connectors
+securityProvider = null;                       // Use a custom security provider
+withTrustConfig(Consumer<TrustConfig>);        // Set the trust configuration, explained below. (by default all clients are trusted)
 ```
 
-### Hot reloading
+#### Trust Configuration
 
-Certificate reloading is supported by default, if you want to replace the certificate you can simply call `SSLPlugin#reload` with the new certificate:
+If you want to verify the client certificates (such as mTLS) you can set the trust configuration using the `TrustConfig` class.
+In contrast to the identity configuration, you can load multiple certificates from different sources.
 
-{% capture java %}
+By adding a `TrustConfig` to the `SSLPlugin` you will enable client certificate verification.
+```java
+new SSLPlugin(ssl->{
+    // Load our identity data
+    ssl.pemFromPath("/path/to/cert.pem","/path/to/key.pem"); 
+
+    // Load the client/CA certificate(s)
+    ssl.withTrustConfig(trust->{
+        trust.certificateFromPath("/path/to/clientCert.pem");
+        trust.certificateFromClasspath("rootCA.pem");
+    });
+});
+```
+
+```java
+// Certificate loading methods (PEM/DER/P7B)
+certificateFromPath("path/to/certificate.pem");            // load a PEM/DER/P7B cert from the given path
+certificateFromClasspath("certificateName.pem");           // load a PEM/DER/P7B cert from the given path in the classpath
+certificateFromInputStream(inputStream);                   // load a PEM/DER/P7B cert from the given input stream
+p7bCertificateFromString("p7b encoded certificate");       // load a P7B cert from the given string
+pemFromString("pem encoded certificate");                  // load a PEM cert from the given string
+
+// Trust store loading methods (JKS/PKCS12)
+trustStoreFromPath("path/to/truststore.jks", "password");  // load a trust store from the given path
+trustStoreFromClasspath("truststore.jks", "password");     // load a trust store from the given path in the classpath
+trustStoreFromInputStream(inputStream, "password");        // load a trust store from the given input stream
+```
+
+#### Hot reloading
+
+Certificate reloading is supported, if you want to replace the certificate you can simply call `SSLPlugin.reload()` with the new configuration.
+
+```java
+// Create the plugin outside the Javalin config to hold a reference to reload it
 SSLPlugin sslPlugin = new SSLPlugin(ssl->{
     ssl.loadPemFromPath("/path/to/cert.pem","/path/to/key.pem");
+    ssl.insecurePort = 8080; // any other config you want to change
 });
 
 Javalin.create(config->{
@@ -197,29 +233,15 @@ Javalin.create(config->{
 
 // later on, when you want to replace the certificate
 sslPlugin.reload(ssl->{
-    //Any options other than loading certificates/keys will be ignored.
+    // any options other than loading certificates/keys will be ignored.
     ssl.loadPemFromPath("/path/to/new/cert.pem","/path/to/new/key.pem");
+    
+    // you can also reload the trust configuration
+    ssl.withTrustConfig(trust->{
+        trust.certificateFromPath("/path/to/new/cert.pem");
+    });
 });
-{% endcapture %}
-{% capture kotlin %}
-
-val sslPlugin = SSLPlugin { ssl ->
-    ssl.loadPemFromPath("/path/to/cert.pem", "/path/to/key.pem")
-}
-
-Javalin.create { config ->
-    ...  // your Javalin config here
-    config.plugins.register(sslPlugin)
-}
-
-// later on, when you want to replace the certificate
-
-sslPlugin.reload { ssl ->
-    //Any options other than loading certificates/keys will be ignored.
-    ssl.loadPemFromPath("/path/to/new/cert.pem", "/path/to/new/key.pem")
-}
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+``` 
 
 ## Good to know
 
@@ -227,6 +249,6 @@ sslPlugin.reload { ssl ->
 
  - HTTP/3 is not supported yet, but it is planned to be added in the future. The IETF is still working on the final specification, so it is not prudent to implement it yet.
 
- - Client certificates are not supported yet, and it is **not** planned to be added in the future. If you need this feature, please open an issue in the [GitHub repository](https://github.com/javalin/javalin-ssl)
-
  - Jetty 11 ships with SNI verification enabled by default, if hostname spoofing is a not concern, you can disable it by setting the `sniHostCheck` option to `false`. This option is enabled by default for security reasons, but it can be disabled if you are using a reverse proxy that handles the hostname verification. Jetty might respond with an `HTTP ERROR 400 Invalid SNI` if the hostname verification fails.
+
+- mTLS (Mutual TLS) is supported, just add a `TrustConfig` to the `SSLPlugin` to enable client certificate verification. See the [Advanced Configuration](#advanced-configuration) section for more information.
