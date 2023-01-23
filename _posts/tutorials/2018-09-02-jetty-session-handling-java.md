@@ -292,13 +292,13 @@ app.get("/read") { ctx ->
 {% capture java %}
 app.get("/invalidate", ctx -> {
     // if you want to invalidate a session, jetty will clean everything up for you
-    ctx.req.getSession().invalidate();
+    ctx.req().getSession().invalidate();
 });
 {% endcapture %}
 {% capture kotlin %}
 app.get("/invalidate") { ctx ->
     // if you want to invalidate a session, jetty will clean everything up for you
-    ctx.req.session.invalidate()
+    ctx.req().session.invalidate()
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -307,13 +307,13 @@ app.get("/invalidate") { ctx ->
 {% capture java %}
 app.get("/change-id", ctx -> {
     // it could be wise to change the session id on login, to protect against session fixation attacks
-    ctx.req.changeSessionId();
+    ctx.req().changeSessionId();
 });
 {% endcapture %}
 {% capture kotlin %}
 app.get("/change-id") { ctx ->
     // it could be wise to change the session id on login, to protect against session fixation attacks
-    ctx.req.changeSessionId()
+    ctx.req().changeSessionId()
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
