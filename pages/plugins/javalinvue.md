@@ -139,15 +139,24 @@ or as a `@routeComponent`.
 ### Binding to a route
 Routing is done server side, so you bind a component to a route by declaring a GET endpoint in Javalin:
 
-```java
+{% capture java %}
+app.get("/my-path", new VueComponent("my-component"));
+{% endcapture %}
+{% capture kotlin %}
 app.get("/my-path", VueComponent("my-component"))
-```
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 This means that you can use the same `AccessManager` for frontend routes as you use for your API:
 
-```java
+{% capture java %}
+app.get("/my-path", new VueComponent("my-component"), roles(Role.LOGGED_IN));
+{% endcapture %}
+{% capture kotlin %}
 app.get("/my-path", VueComponent("my-component"), roles(Role.LOGGED_IN))
-```
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
 
 ## Configuration
 {% capture java %}
