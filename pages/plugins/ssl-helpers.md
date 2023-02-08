@@ -222,7 +222,7 @@ Certificate reloading is supported, if you want to replace the certificate you c
 ```java
 // Create the plugin outside the Javalin config to hold a reference to reload it
 SSLPlugin sslPlugin = new SSLPlugin(ssl->{
-    ssl.loadPemFromPath("/path/to/cert.pem","/path/to/key.pem");
+    ssl.pemFromPath("/path/to/cert.pem","/path/to/key.pem");
     ssl.insecurePort = 8080; // any other config you want to change
 });
 
@@ -234,7 +234,7 @@ Javalin.create(config->{
 // later on, when you want to replace the certificate
 sslPlugin.reload(ssl->{
     // any options other than loading certificates/keys will be ignored.
-    ssl.loadPemFromPath("/path/to/new/cert.pem","/path/to/new/key.pem");
+    ssl.pemFromPath("/path/to/new/cert.pem","/path/to/new/key.pem");
     
     // you can also reload the trust configuration
     ssl.withTrustConfig(trust->{
