@@ -219,10 +219,10 @@ and setters.
 // Request methods
 body()                                // request body as string
 bodyAsBytes()                         // request body as array of bytes
-bodyAsInputStream()                   // request body as input stream
 bodyAsClass(clazz)                    // request body as specified class (deserialized from JSON)
 bodyStreamAsClass(clazz)              // request body as specified class (memory optimized version of above)
 bodyValidator(clazz)                  // request body as validator typed as specified class
+bodyInputStream()                     // the underyling input stream of the request
 uploadedFile("name")                  // uploaded file by name
 uploadedFiles("name")                 // all uploaded files by name
 uploadedFiles()                       // all uploaded files as list
