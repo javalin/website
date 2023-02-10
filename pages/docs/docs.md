@@ -1817,9 +1817,25 @@ val app = Javalin.create { it.jsonMapper(gsonMapper) }.start(7070)
 
 ### Adding other Servlets and Filters to Javalin
 Javalin is designed to work with other `Servlet` and `Filter` instances running on the Jetty Server.
-Filters are pretty straighforward to add, since they don't finish the request. If you need to add a serlvet
-there's an example in the repo:
+Filters are pretty straighforward to add, since they don't finish the request. 
+If you need to add a serlvet there's an example in the repo:
 [/src/test/java/io/javalin/examples/HelloWorldServlet.java#L21-L29](https://github.com/javalin/javalin/blob/master/javalin/src/test/java/io/javalin/examples/HelloWorldServlet.java#L21-L29)
+
+You can also use it to build simple proxy using `AsyncProxyServlet` that is part of Jetty:
+
+```java
+// Add org.eclipse.jetty:jetty-proxy to maven/gradle dependencies (e.g Javalin 5.3.2 uses Jetty 11.0.13)
+Javalin.create(config -> {
+    config.jetty.contextHandlerConfig(sch -> {
+	ServletHolder proxyServlet = new ServletHolder(AsyncProxyServlet.Transparent.class);
+	proxyServlet.setInitParameter("proxyTo", "https://javalin.io/");
+	proxyServlet.setInitParameter("prefix", "/proxy");
+	sch.addServlet(proxyServlet, "/proxy/*");
+    });
+}).start(7000);
+```
+
+After opening `http://localhost:7000/proxy/` you will see Javalin site (but with broken styles because of file paths).
 
 ---
 
