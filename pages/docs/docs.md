@@ -1824,15 +1824,15 @@ If you need to add a serlvet there's an example in the repo:
 You can also use it to build simple proxy using `AsyncProxyServlet` that is part of Jetty:
 
 ```java
-    // Add org.eclipse.jetty:jetty-proxy to maven/gradle dependencies (e.g Javalin 5.3.2 uses Jetty 11.0.13)
-    Javalin.create(config -> {
-            config.jetty.contextHandlerConfig(sch -> {
-                ServletHolder proxyServlet = new ServletHolder(AsyncProxyServlet.Transparent.class);
-                proxyServlet.setInitParameter("proxyTo", "https://javalin.io/");
-                proxyServlet.setInitParameter("prefix", "/proxy");
-                sch.addServlet(proxyServlet, "/proxy/*");
-            });
-        }).start(7000);
+// Add org.eclipse.jetty:jetty-proxy to maven/gradle dependencies (e.g Javalin 5.3.2 uses Jetty 11.0.13)
+Javalin.create(config -> {
+    config.jetty.contextHandlerConfig(sch -> {
+	ServletHolder proxyServlet = new ServletHolder(AsyncProxyServlet.Transparent.class);
+	proxyServlet.setInitParameter("proxyTo", "https://javalin.io/");
+	proxyServlet.setInitParameter("prefix", "/proxy");
+	sch.addServlet(proxyServlet, "/proxy/*");
+    });
+}).start(7000);
 ```
 
 After opening `http://localhost:7000/proxy/` you will see Javalin site (but with broken styles because of file paths).
