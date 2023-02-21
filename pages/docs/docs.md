@@ -1543,35 +1543,8 @@ Different endpoints can have different rate limits. It works as follows:
 ---
 
 ### Android
-To use Javalin in an Android project, you will need to:
 
-*1: Target the Android SDK 26 and higher:*
-
-```
-defaultconfig {
-  minSdkVersion 26
-  targetSdkVersion 28
-}
-```
-
-*2: Target Java 8:*
-
-```
-compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_8
-    targetCompatibility JavaVersion.VERSION_1_8
-}
-```
-
-*3: Insert this in your build.gradle file:*
-
-```
-packagingOptions {
-  exclude 'org/eclipse/jetty/http/encoding.properties'
-}
-```
-
-*4: Specify `android.enableD8=true` in your `gradle.properties` file.*
+Due to some issues out of our control, Javalin 5 is not compatible with Android, but Javalin 4 is. You can find the docs for Javalin 4 [here](/archive/docs/v4.6.X.html).
 
 ---
 
