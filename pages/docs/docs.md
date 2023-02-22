@@ -1546,6 +1546,8 @@ Different endpoints can have different rate limits. It works as follows:
 
 Due to [Jetty 11 not working on Android](https://github.com/javalin/javalin.github.io/issues/211#issuecomment-1438319603), Javalin 5 is not compatible either, but Javalin 4 is. You can find the docs for Javalin 4 [here](/archive/docs/v4.6.X.html). 
 
+You can check the status of Jetty 11 on Android [here](https://github.com/eclipse/jetty.project/issues/8912#issuecomment-1439716937).
+
 ---
 
 ### Concurrency
