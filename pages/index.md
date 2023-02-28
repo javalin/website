@@ -61,7 +61,7 @@ permalink: /
         Javalin 1.0 was released in 2017, and has been in steady development since.<br><br>
         As of April 2022, the project consists of less than 7000 lines of code with more than 10 000 lines of tests.
         It has more than a hundred contributors, more than four hundred forks, and more than five thousand stars on GitHub.
-        The project has around 300 000 downloads per month, and has has been released 101 times in five years
+        The project has around 300 000 downloads per month, and has been released 101 times in five years
         (about two times per month).
     "
 %}
