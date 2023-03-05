@@ -1291,6 +1291,7 @@ Javalin.create(config -> {
     staticFiles.aliasCheck = null;                  // you can configure this to enable symlinks (= ContextHandler.ApproveAliases())
     staticFiles.headers = Map.of(...);              // headers that will be set for the files
     staticFiles.skipFileFunction = req -> false;    // you can use this to skip certain files in the dir, based on the HttpServletRequest
+    staticFiles.mimeTypes.add(mimeType, ext);       // you can add custom mimetypes for extensions
   });
 });
 {% endcapture %}
@@ -1304,6 +1305,7 @@ Javalin.create { config ->
     staticFiles.aliasCheck = null                   // you can configure this to enable symlinks (= ContextHandler.ApproveAliases())
     staticFiles.headers = mapOf(...)                // headers that will be set for the files
     staticFiles.skipFileFunction = { req -> false } // you can use this to skip certain files in the dir, based on the HttpServletRequest
+    staticFiles.mimeTypes.add(mimeType, ext)        // you can add custom mimetypes for extensions
   }
 }
 {% endcapture %}
@@ -1749,9 +1751,10 @@ The `JsonMapper` interface has four optional methods:
 
 ```java
 String toJsonString(Object obj, Type type) { // basic method for mapping to json
-InputStream toJsonStream(Object obj, Type type) { // memory efficient method for mapping to json
+InputStream toJsonStream(Object obj, Type type) { // more memory efficient method for mapping to json
+writeToOutputStream(Stream<*> stream, OutputStream outputStream) { // most memory efficient method for mapping to json    
 <T> T fromJsonString(String json, Type targetType) { // basic method for mapping from json
-<T> T fromJsonStream(InputStream json, Type targetType) { // memory efficient method for mapping from json
+<T> T fromJsonStream(InputStream json, Type targetType) { // more memory efficient method for mapping from json
 ```
 
 #### GSON example
