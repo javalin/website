@@ -130,6 +130,7 @@ http2 = true;                          //   HTTP/2 Support
 
 insecurePort = 80;                     // Port to use on the http (insecure) connector.
 securePort = 443;                      // Port to use on the SSL (secure) connector.
+redirect = false;                      // Redirect all http requests to https.
 
 sniHostCheck = true;                   // Enable SNI hostname verification.
 tlsConfig = TLSConfig.INTERMEDIATE;    // Set the TLS configuration.
