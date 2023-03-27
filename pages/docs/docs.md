@@ -1058,16 +1058,19 @@ Javalin's configuration is grouped into multiple subconfigs:
 
 ```java
 Javalin.create(config -> {
-    config.core          // access manager, json mapper, context resolvers, misc
-    config.http          // etags, request size, timeout, etc
-    config.routing       // context path, slash treatment
-    config.jetty         // jetty settings
-    config.staticFiles   // static files and webjars
-    config.spaRoot       // single page application roots
-    config.compression   // gzip, brotli, disable compression
-    config.requestLogger // http and websocket loggers
-    config.plugins       // enable bundled plugins or add custom ones
-    config.vue           // vue settings, see /plugins/vue
+    config.http             // etags, request size, timeout, etc
+    config.routing          // context path, slash treatment
+    config.jetty            // jetty settings
+    config.staticFiles      // static files and webjars
+    config.spaRoot          // single page application roots
+    config.compression      // gzip, brotli, disable compression
+    config.requestLogger    // http and websocket loggers
+    config.plugins          // enable bundled plugins or add custom ones
+    config.vue              // vue settings, see /plugins/vue
+    config.contextResolvers // change implementation for Context functions
+    config.accessManager()  // configure the access manager
+    config.jsonMapper()     // configure the json mapper
+    config.fileRenderer()   // configure the file renderer
 });
 ```
 

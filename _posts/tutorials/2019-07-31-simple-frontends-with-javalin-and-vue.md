@@ -383,7 +383,7 @@ fun main() {
 
     val app = Javalin.create { config ->
         config.staticFiles.enableWebjars()
-        config.core.accessManager { handler, ctx, permittedRoles ->
+        config.accessManager { handler, ctx, permittedRoles ->
             when {
                 Role.ANYONE in permittedRoles -> handler.handle(ctx)
                 Role.LOGGED_IN in permittedRoles && currentUser(ctx) != null -> handler.handle(ctx)
