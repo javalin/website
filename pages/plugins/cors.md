@@ -109,7 +109,7 @@ only to the host `videos.local`.
 
 ## allowCredentials and exposeHeader
 
-For those who need it you can also set the `ACCESS_CONTROL_ALLOW_CREDENTIALS` header by setting `allowCredentials = true`
+For those who need it you can also set the `Access-Control-Allow-Credentials` header by setting `allowCredentials = true`
 and expose headers to the website's JavaScript by using e.g. `exposeHeader("x-server")` to expose the `x-server` header.
 
 ```java
@@ -123,3 +123,41 @@ Javalin.create(config -> {
     });
 });
 ```
+
+Do note that you cannot use Javalin's `anyHost()` option together with `Access-Control-Allow-Credentials` as that is 
+[explicitly forbidden by all browsers.](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#sect2)
+
+### Passing credentials from the frontend to the backend
+
+Browsers do not automatically pass credentials to a backend which sets the `Access-Control-Allow-Credentials`.
+This must be done explicitly for JavaScript based requests. The following two examples demonstrate this for the browser
+native fetch and for the popular axios library.
+
+Minimal example using the `fetch` API:
+
+```javascript
+const data = {};
+fetch("https://example.com", {
+  method: "POST",
+  credentials: "include",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(data)
+});
+```
+
+Source: [Mozilla's MDN Using the fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#sending_a_request_with_credentials_included)
+
+Example using `axios`:
+
+```javascript
+import axios from "axios";
+
+const data = {};
+axios.post("https://example.com", data, {
+  withCredentials: true
+});
+```
+
+Source: [axios request config page](https://axios-http.com/docs/req_config)
