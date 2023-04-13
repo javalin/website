@@ -1426,8 +1426,12 @@ Javalin.create { config ->
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 #### SSL/HTTP2
+Javalin now has a SSL plugin: https://javalin.io/plugins/ssl-helpers. It's
+recommended to use this plugin for setting up SSL and HTTP2/3, 
+as it's a lot more user-friendly than configuring it manually in Jetty.
 
-To configure SSL or HTTP2 you need to use a custom server (see previous section).\\
+To configure SSL or HTTP2 manually in Jetty you need to use a custom server.
+
 An example of a custom server with SSL can be found in the examples,
 [HelloWorldSecure](https://github.com/javalin/javalin/blob/master/javalin/src/test/java/io/javalin/examples/HelloWorldSecure.java#L22-L30).
 
