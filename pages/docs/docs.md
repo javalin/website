@@ -1764,8 +1764,30 @@ writeToOutputStream(Stream<*> stream, OutputStream outputStream) { // most memor
 <T> T fromJsonStream(InputStream json, Type targetType) { // more memory efficient method for mapping from json
 ```
 
-#### GSON example
+#### The default JSON mapper (Jackson)
+Javalin uses Jackson as the default JSON mapper. It's a fast and feature-rich mapper, and 
+has the following modules enabled if they are available on the classpath:
 
+* `com.fasterxml.jackson.module.kotlin.KotlinModule` // Kotlin support
+* `com.fasterxml.jackson.datatype.jsr310.JavaTimeModule` // Java date/time support
+* `org.ktorm.jackson.KtormModule` // Ktorm support
+* `com.fasterxml.jackson.datatype.eclipsecollections.EclipseCollectionsModule` // Eclipse Collections support
+
+If you need further config, you can update the default settings like this: 
+
+{% capture java %}
+config.jsonMapper(new JavalinJackson().updateMapper(mapper -> {
+    mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+});
+{% endcapture %}
+{% capture kotlin %}
+config.jsonMapper(JavalinJackson().updateMapper { mapper ->
+    mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
+})
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+#### GSON example
 {% capture java %}
 Gson gson = new GsonBuilder().create();
 JsonMapper gsonMapper = new JsonMapper() {
