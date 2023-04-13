@@ -36,6 +36,9 @@ import io.javalin.plugin.rendering.vue -> import io.javalin.vue
 import io.javalin.plugin.json -> import io.javalin.json
 ```
 
+## Class renaming
+The `HttpCode` enum class has been renamed to `HttpStatus`.
+
 ## Configuration changes
 Configuration has been changed significantly. All config options used to be available
 directly on the config consumer in `Javalin.create { config }`, but in Javalin 5 most
@@ -139,7 +142,6 @@ The `JavalinVue` singleton has been removed. Instead of `JavalinVue.configOption
 you can now configure Vue through `Javalin.create { config.vue.configOption = ... }`.
 
 ## CORS plugin
-
 The CORS plugin has been completely rewritten to be more flexible. Instead of the two methods
 `enableCorsForAllOrigins()` and `enableCorsForOrigin(@NotNull String... origins)` on the config object you now pass a
 lambda to `config.plugins.enableCors()` to configure CORS.
@@ -172,7 +174,6 @@ config.plugins.enableCors { cors ->
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 Check out the [CORS plugin page](/plugins/cors) for more details on the rewritten CORS plugin and its capabilities.
-
 
 ## Additional changes
 It's hard to keep track of everything, but you can look at the
