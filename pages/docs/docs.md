@@ -1621,7 +1621,7 @@ Uploaded files are easily accessible via `ctx.uploadedFiles()`:
 {% capture java %}
 app.post("/upload", ctx -> {
     ctx.uploadedFiles("files").forEach(uploadedFile -> {
-        FileUtil.streamToFile(uploadedFile.getContent(), "upload/" + uploadedFile.getFilename())
+        FileUtil.streamToFile(uploadedFile.content(), "upload/" + uploadedFile.filename())
     });
 });
 {% endcapture %}
