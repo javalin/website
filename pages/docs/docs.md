@@ -1620,15 +1620,14 @@ on another web server (such as Tomcat), you can use Maven or Gradle to exclude J
 Uploaded files are easily accessible via `ctx.uploadedFiles()`:
 {% capture java %}
 app.post("/upload", ctx -> {
-    ctx.uploadedFiles("files").forEach(uploadedFile -> {
-        FileUtil.streamToFile(uploadedFile.getContent(), "upload/" + uploadedFile.getFilename())
-    });
+    ctx.uploadedFiles("files").forEach(uploadedFile ->
+        FileUtil.streamToFile(uploadedFile.content(), "upload/" + uploadedFile.filename()));
 });
 {% endcapture %}
 {% capture kotlin %}
 app.post("/upload") { ctx ->
     ctx.uploadedFiles("files").forEach { uploadedFile ->
-        FileUtil.streamToFile(uploadedFile.content, "upload/${uploadedFile.filename}")
+        FileUtil.streamToFile(uploadedFile.content(), "upload/${uploadedFile.filename()}")
     }
 }
 {% endcapture %}
