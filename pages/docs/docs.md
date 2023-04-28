@@ -1993,18 +1993,18 @@ The default error handler can be overridden using the private config:
 
 {% capture java %}
 Javalin.create( cfg -> {
-    cfg.pvt.javaLangErrorHandler = (res, throwable) -> {
+    cfg.pvt.javaLangErrorHandler = (res, error) -> {
         res.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.getCode());
-        JavalinLogger.error("Exception occurred while servicing http-request", throwable);
+        JavalinLogger.error("Exception occurred while servicing http-request", error);
         return null;
     });
 });
 {% endcapture %}
 {% capture kotlin %}
 Javalin.create { cfg ->
-    cfg.pvt.javaLangErrorHandler = { res, throwable ->
+    cfg.pvt.javaLangErrorHandler = { res, error ->
         res.status = HttpStatus.INTERNAL_SERVER_ERROR.code
-        JavalinLogger.error("Exception occurred while servicing http-request", throwable)
+        JavalinLogger.error("Exception occurred while servicing http-request", error)
     }
 }
 {% endcapture %}
