@@ -1986,6 +1986,31 @@ which is 30 seconds by default in Jetty/Javalin. This is not a bug.
 
 ---
 
+### Java Error class handling
+Javalin has a default error handler for `java.lang.Error` that will log the error and return a 500.
+The default error handler can be overridden using the private config:
+
+{% capture java %}
+Javalin.create( cfg -> {
+    cfg.pvt.javaLangErrorHandler = (res, throwable) -> {
+        res.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.getCode());
+        JavalinLogger.error("Exception occurred while servicing http-request", throwable);
+        return null;
+    });
+});
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { cfg ->
+    cfg.pvt.javaLangErrorHandler = { res, throwable ->
+        res.status = HttpStatus.INTERNAL_SERVER_ERROR.code
+        JavalinLogger.error("Exception occurred while servicing http-request", throwable)
+    }
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+---
+
 ### Minecraft
 <div class="comment">Keywords for ctrl+f: Bukkit, Spigot, BungeeCord, Bungee Cord, WaterFall, Water Fall, Paper</div>
 
