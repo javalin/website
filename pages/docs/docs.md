@@ -62,6 +62,7 @@ permalink: /documentation
   - [Views and Templates](#views-and-templates)
   - [Vue support](#vue-support-javalinvue)
   - [Jetty debug logs](#jetty-debug-logs)
+  - [Java lang Error handling](java-lang-error-handling)
   - [Minecraft](#minecraft)
   - [Documentation for previous versions](#documentation-for-previous-versions)
 </div>
@@ -1986,7 +1987,7 @@ which is 30 seconds by default in Jetty/Javalin. This is not a bug.
 
 ---
 
-### Java Error class handling
+### Java lang Error handling
 Javalin has a default error handler for `java.lang.Error` that will log the error and return a 500.
 The default error handler can be overridden using the private config:
 
