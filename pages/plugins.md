@@ -60,6 +60,20 @@ please report it on GitHub (link in plugin card).
 %}
 
 {% include pluginCard.html
+    title="Javalin Rendering"
+    description="
+        The javalin-rendering artifact is an optional module for the Javalin web framework that 
+        provides a simple way to render HTML using popular template engines. 
+        The javalin-rendering artifact includes default implementations for several template engines, 
+        including JTE, Mustache, Velocity, Pebble, Handlebars, and Thymeleaf.
+    "
+    bundled="false"
+    author="tipsy"
+    docsUrl="/plugins/rendering"
+    ratingIssueNr="228"
+%}
+
+{% include pluginCard.html
     title="CORS"
     description="
         The CORS plugin bundles the functionality to set CORS headers for some or all origins
