@@ -62,7 +62,7 @@ permalink: /documentation
   - [Views and Templates](#views-and-templates)
   - [Vue support](#vue-support-javalinvue)
   - [Jetty debug logs](#jetty-debug-logs)
-  - [Java lang Error handling](java-lang-error-handling)
+  - [Java lang Error handling](#java-lang-error-handling)
   - [Minecraft](#minecraft)
   - [Documentation for previous versions](#documentation-for-previous-versions)
 </div>
