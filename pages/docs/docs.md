@@ -62,6 +62,7 @@ permalink: /documentation
   - [Views and Templates](#views-and-templates)
   - [Vue support](#vue-support-javalinvue)
   - [Jetty debug logs](#jetty-debug-logs)
+  - [Java lang Error handling](#java-lang-error-handling)
   - [Minecraft](#minecraft)
   - [Documentation for previous versions](#documentation-for-previous-versions)
 </div>
@@ -1983,6 +1984,30 @@ If you encounter `TimeoutExceptions` and `ClosedChannelExceptions` in your DEBUG
 this is nothing to worry about. Typically, a browser will keep the HTTP connection open until the
 server terminates it. When this happens is decided by the server's `idleTimeout` setting,
 which is 30 seconds by default in Jetty/Javalin. This is not a bug.
+
+---
+
+### Java lang Error handling
+Javalin has a default error handler for `java.lang.Error` that will log the error and return a 500.
+The default error handler can be overridden using the private config:
+
+{% capture java %}
+Javalin.create( cfg -> {
+    cfg.pvt.javaLangErrorHandler((res, error) -> {
+        res.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.getCode());
+        JavalinLogger.error("Exception occurred while servicing http-request", error);
+    });
+});
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { cfg ->
+    cfg.pvt.javaLangErrorHandler { res, error ->
+        res.status = HttpStatus.INTERNAL_SERVER_ERROR.code
+        JavalinLogger.error("Exception occurred while servicing http-request", error)
+    }
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ---
 
