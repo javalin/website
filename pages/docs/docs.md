@@ -540,7 +540,7 @@ sessionAttributeMap()                   // map of all session attributes
 sendPing()                              // send a ping to the client
 sendPing(bytes)                         // send a ping with data to the client
 enableAutomaticPings()                  // enable automatic pinging to avoid timeouts
-enableAutomaticPings(1,timeunit,bytes)  // enable automatic pinging with custom interval and/or data
+enableAutomaticPings(1, HOURS, bytes)   // enable automatic pinging with custom interval and/or data
 disableAutomaticPings()                 // disable automatic pinging
 
 closeSession()                          // close the session
