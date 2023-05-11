@@ -507,6 +507,7 @@ messages to the client.
 send(obj)                               // serialize object to json string and send it to client
 send("message")                         // send string to client
 send(byteBuffer)                        // send bytes to client
+sendAsClass(obj, clazz)                 // serialize object to json string and send it to client
 
 // Upgrade Context methods (getters)
 matchedPath()                           // get the path that was used to match this request (ex, "/hello/{name}")
@@ -535,6 +536,16 @@ attributeMap()                          // map of all attributes on the request
 
 sessionAttribute("name")                // get a session attribute
 sessionAttributeMap()                   // map of all session attributes
+
+sendPing()                              // send a ping to the client
+sendPing(bytes)                         // send a ping with data to the client
+enableAutomaticPings()                  // enable automatic pinging to avoid timeouts
+enableAutomaticPings(1, HOURS, bytes)   // enable automatic pinging with custom interval and/or data
+disableAutomaticPings()                 // disable automatic pinging
+
+closeSession()                          // close the session
+closeSession(closeStatus)               // close the session with a CloseStatus
+closeSession(400, "reason")             // close the session with a status and reason
 ```
 
 #### WsMessageContext
