@@ -44,7 +44,7 @@ implementation("io.javalin:javalin-rendering:{{site.javalinversion}}")
 
 ## Using the plugin
 
-All the template engines look for templates/markdown files in `src/resources`,
+All the template engines look for templates/markdown files in `src/resources/templates`,
 and the correct rendering engine is chosen based on the extension of your template.
 Javalin will automatically initialize the template engine of an included dependency 
 for you, but you can also initialize it yourself (if you want to configure it).
