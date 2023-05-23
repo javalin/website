@@ -121,7 +121,7 @@ app.before("/path/*") { ctx ->
 
 ### Endpoint handlers
 Endpoint handlers are the main handler type, and defines your API. You can add a GET handler to
-server data to a client, or a POST handler to receive some data.
+serve data to a client, or a POST handler to receive some data.
 Common methods are supported directly on the `Javalin` class (<small>GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS</small>),
 uncommon operations (<small>TRACE, CONNECT</small>) are supported via `Javalin#addHandler`.
 
