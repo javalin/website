@@ -1160,6 +1160,7 @@ Javalin.create(config -> {
     config.jetty.sessionHandler(sessionHandlerSupplier); // set the SessionHandler that Jetty will use for sessions
     config.jetty.contextHandlerConfig(contextHandlerConsumer); // configure the ServletContextHandler Jetty runs on
     config.jetty.wsFactoryConfig(jettyWebSocketServletFactoryConsumer); // configure the JettyWebSocketServletFactory
+    config.jetty.httpConfigurationConfig(httpConfigurationConsumer); // configure the HttpConfiguration of Jetty
 });
 {% endcapture %}
 {% capture kotlin %}
@@ -1168,6 +1169,7 @@ Javalin.create { config ->
     config.jetty.sessionHandler(sessionHandlerSupplier) // set the SessionHandler that Jetty will use for sessions
     config.jetty.contextHandlerConfig(contextHandlerConsumer) // configure the ServletContextHandler Jetty runs on
     config.jetty.wsFactoryConfig(jettyWebSocketServletFactoryConsumer) // configure the JettyWebSocketServletFactory
+    config.jetty.httpConfigurationConfig(httpConfigurationConsumer) // configure the HttpConfiguration of Jetty
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -1439,7 +1441,7 @@ Javalin.create { config ->
 
 #### SSL/HTTP2
 Javalin now has a SSL plugin: https://javalin.io/plugins/ssl-helpers. It's
-recommended to use this plugin for setting up SSL and HTTP2/3, 
+recommended to use this plugin for setting up SSL and HTTP2/3,
 as it's a lot more user-friendly than configuring it manually in Jetty.
 
 To configure SSL or HTTP2 manually in Jetty you need to use a custom server.
@@ -1565,7 +1567,7 @@ Different endpoints can have different rate limits. It works as follows:
 
 ### Android
 
-Due to [Jetty 11 not working on Android](https://github.com/javalin/javalin.github.io/issues/211#issuecomment-1438319603), Javalin 5 is not compatible either, but Javalin 4 is. You can find the docs for Javalin 4 [here](/archive/docs/v4.6.X.html). 
+Due to [Jetty 11 not working on Android](https://github.com/javalin/javalin.github.io/issues/211#issuecomment-1438319603), Javalin 5 is not compatible either, but Javalin 4 is. You can find the docs for Javalin 4 [here](/archive/docs/v4.6.X.html).
 
 You can check the status of Jetty 11 on Android [here](https://github.com/eclipse/jetty.project/issues/8912#issuecomment-1439716937).
 
@@ -1770,13 +1772,13 @@ The `JsonMapper` interface has four optional methods:
 ```java
 String toJsonString(Object obj, Type type) { // basic method for mapping to json
 InputStream toJsonStream(Object obj, Type type) { // more memory efficient method for mapping to json
-writeToOutputStream(Stream<*> stream, OutputStream outputStream) { // most memory efficient method for mapping to json    
+writeToOutputStream(Stream<*> stream, OutputStream outputStream) { // most memory efficient method for mapping to json
 <T> T fromJsonString(String json, Type targetType) { // basic method for mapping from json
 <T> T fromJsonStream(InputStream json, Type targetType) { // more memory efficient method for mapping from json
 ```
 
 #### The default JSON mapper (Jackson)
-Javalin uses Jackson as the default JSON mapper. It's a fast and feature-rich mapper, and 
+Javalin uses Jackson as the default JSON mapper. It's a fast and feature-rich mapper, and
 has the following modules enabled if they are available on the classpath:
 
 * `com.fasterxml.jackson.module.kotlin.KotlinModule` // Kotlin support
@@ -1784,7 +1786,7 @@ has the following modules enabled if they are available on the classpath:
 * `org.ktorm.jackson.KtormModule` // Ktorm support
 * `com.fasterxml.jackson.datatype.eclipsecollections.EclipseCollectionsModule` // Eclipse Collections support
 
-If you need further config, you can update the default settings like this: 
+If you need further config, you can update the default settings like this:
 
 {% capture java %}
 config.jsonMapper(new JavalinJackson().updateMapper(mapper -> {
@@ -1835,7 +1837,7 @@ val app = Javalin.create { it.jsonMapper(gsonMapper) }.start(7070)
 
 ### Adding other Servlets and Filters to Javalin
 Javalin is designed to work with other `Servlet` and `Filter` instances running on the Jetty Server.
-Filters are pretty straighforward to add, since they don't finish the request. 
+Filters are pretty straighforward to add, since they don't finish the request.
 If you need to add a serlvet there's an example in the repo:
 [/src/test/java/io/javalin/examples/HelloWorldServlet.java#L21-L29](https://github.com/javalin/javalin/blob/master/javalin/src/test/java/io/javalin/examples/HelloWorldServlet.java#L21-L29)
 
@@ -1880,7 +1882,7 @@ the section below for more information.
 
 ### Default implementations
 Javalin offers an artifact with several template engines, called `javalin-rendering`,
-which follows the same version as the `javalin` artifact. You can learn more 
+which follows the same version as the `javalin` artifact. You can learn more
 about this at [/plugins/rendering](/plugins/rendering).
 
 ---
