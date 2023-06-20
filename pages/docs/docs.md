@@ -1781,10 +1781,10 @@ writeToOutputStream(Stream<*> stream, OutputStream outputStream) { // most memor
 Javalin uses Jackson as the default JSON mapper. It's a fast and feature-rich mapper, and
 has the following modules enabled if they are available on the classpath:
 
-* `com.fasterxml.jackson.module.kotlin.KotlinModule` // Kotlin support
-* `com.fasterxml.jackson.datatype.jsr310.JavaTimeModule` // Java date/time support
-* `org.ktorm.jackson.KtormModule` // Ktorm support
-* `com.fasterxml.jackson.datatype.eclipsecollections.EclipseCollectionsModule` // Eclipse Collections support
+* *com.fasterxml.jackson.module.kotlin.KotlinModule* // Kotlin support
+* *com.fasterxml.jackson.datatype.jsr310.JavaTimeModule* // Java date/time support
+* *org.ktorm.jackson.KtormModule* // Ktorm support
+* *com.fasterxml.jackson.datatype.eclipsecollections.EclipseCollectionsModule* // Eclipse Collections support
 
 If you need further config, you can update the default settings like this:
 
