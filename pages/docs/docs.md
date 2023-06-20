@@ -95,6 +95,9 @@ The before-, endpoint- and after-handlers require three parts:
 The `Handler` interface has a void return type. You use a method like `ctx.result(result)`,
 `ctx.json(obj)`, or `ctx.future(future)` to set the response which will be returned to the user.
 
+If you add multiple before/after handlers for the same path, they will be executed in the order they were added.
+This can be useful for adding authentication, caching, logging, etc.
+
 You can learn about how Javalin handles concurrency in [FAQ - Concurrency](#concurrency).
 
 ### Before handlers
