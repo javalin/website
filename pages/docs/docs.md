@@ -1339,6 +1339,9 @@ they will be available at `/webjars/name/version/file.ext`.
 WebJars can be found on [https://www.webjars.org/](https://www.webjars.org/).
 Everything available through NPM is also available through WebJars.
 
+If you are building a Single Page Application (SPA), you should
+have a look at the [SpaRootConfig](#sparootconfig)
+
 ### Logging
 
 #### Adding a logger
