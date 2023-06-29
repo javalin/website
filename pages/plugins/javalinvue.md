@@ -32,17 +32,16 @@ permalink: /plugins/javalinvue
 
 The JavalinVue plugin provides a very clever integration with [Vue.js](https://vuejs.org/).
 As with most clever programming tricks, you will probably either love it or hate it.
-These docs are only valid for Javalin 5.X.
+These docs are only valid for the current version of Javalin ({{ site.javalinversion }}).
 
 ## How does it work?
 The JavalinVue plugin is basically a very specialized templating engine.
 It finds `.vue` (and optionally `.js` and `.css`) files and glues them together,
 and serves it all as one big HTML file. You start by creating a layout file:
 
-```html
+{% capture vue2 %}
 <head>
-    <script src="/webjars/vue/2.6.10/dist/vue.min.js"></script>
-    <style>@inlineFile("/vue/styles.css")</style> <!-- You can inline specific js/css files -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
     @componentRegistration <!-- JavalinVue will find required vue files and inline them here -->
 </head>
 <body>
@@ -53,14 +52,29 @@ and serves it all as one big HTML file. You start by creating a layout file:
     new Vue({el: "#main-vue"});
 </script>
 </body>
-```
+{% endcapture %}
+{% capture vue3 %}
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.min.js"></script>
+    <script>const app = Vue.createApp({});</script>
+    @componentRegistration <!-- JavalinVue will find required vue files and inline them here -->
+</head>
+<body>
+<main id="main-vue" v-cloak>
+    @routeComponent <!-- Your route component will be inlined here (app.get("/my-page", VueComponent("my-page"))) -->
+</main>
+<script>
+    app.mount("#main-vue");
+</script>
+</body>
+{% endcapture %}
+{% include macros/vueDocsSnippet.html vue2=vue2 vue3=vue3 %}
 
 When a user tries to access `/my-page` in their browser, JavalinVue will serve the following HTML:
 
-```html
+{% capture vue2 %}
 <head>
-    <script src="/webjars/vue/2.6.10/dist/vue.min.js"></script>
-    <style>body{background:red}</style> <!-- whatever was in styles.css -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
     <!-- <my-page></my-page> component and all of its dependencies -->
 </head>
 <body>
@@ -71,10 +85,27 @@ When a user tries to access `/my-page` in their browser, JavalinVue will serve t
     new Vue({el: "#main-vue"});
 </script>
 </body>
-```
+{% endcapture %}
+{% capture vue3 %}
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.min.js"></script>
+    <script>const app = Vue.createApp({});</script>
+    <!-- <my-page></my-page> component and all of its dependencies -->
+</head>
+<body>
+<main id="main-vue" v-cloak>
+    <my-page></my-page> <!-- this was defined in app.get("/my-page", VueComponent("my-page")) -->
+</main>
+<script>
+    app.mount("#main-vue");
+</script>
+</body>
+{% endcapture %}
+{% include macros/vueDocsSnippet.html vue2=vue2 vue3=vue3 %}
 
 You don't need any frontend build tool (like Webpack, Parcel, Grunt, etc) – JavalinVue takes care of all that.
-As a consequence import/export of ES modules is not needed (and not supported as of now).
+As a consequence import/export of ES modules is not needed. You can still use native ES modules if you want to,
+for example if you want to use a third-party library that is only available as an ES module.
 
 There is a longer tutorial which includes the motivation behind creating this
 integration, as well as some discussion about pros and cons:
@@ -96,11 +127,11 @@ src
 ```
 
 Your `layout.html` file will be responsible for initializing Vue and including all your dependencies.
-The snippet below shows all the available macros (`@macroName`):
+The snippet below shows all the available macros (`@macroName`), except `@cdnWebjar`:
 
-```html
+{% capture vue2 %}
 <head>
-    <script src="@cdnWebjar/vue/2.6.10/dist/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
     <style>@inlineFile("/vue/styles.css")</style> <!-- always included -->
     <script>@inlineFileDev("/vue/scripts-dev.js")</script> <!-- only included in dev -->
     <script>@inlineFileNotDev("/vue/scripts-not-dev.js")</script> <!-- only included in not dev -->
@@ -114,13 +145,35 @@ The snippet below shows all the available macros (`@macroName`):
     new Vue({el: "#main-vue"});
 </script>
 </body>
-```
+{% endcapture %}
+{% capture vue3 %}
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.min.js"></script>
+    <script>const app = Vue.createApp({});</script>
+    <style>@inlineFile("/vue/styles.css")</style> <!-- always included -->
+    <script>@inlineFileDev("/vue/scripts-dev.js")</script> <!-- only included in dev -->
+    <script>@inlineFileNotDev("/vue/scripts-not-dev.js")</script> <!-- only included in not dev -->
+    @componentRegistration <!-- JavalinVue will find required vue files and inline them here -->
+</head>
+<body>
+<main id="main-vue" v-cloak>
+    @routeComponent <!-- Your route component will be inlined here (app.get("/my-page", VueComponent("my-page"))) -->
+</main>
+<script>
+    app.mount("#main-vue");
+</script>
+</body>
+{% endcapture %}
+{% include macros/vueDocsSnippet.html vue2=vue2 vue3=vue3 %}
+
+The `@cdnWebjar` macro is used to include a webjar when running in dev mode,
+see [@cdnWebjar](#cdnwebjar) for more information.
 
 ### Creating a component
 Components will be inlined where the `@componentRegistration` macro is present in your `layout.html`,
 which means you have to register them as global Vue components:
 
-```html
+{% capture vue2 %}
 <template id="my-component">
     <div>
         <!-- Component code goes here -->
@@ -131,7 +184,20 @@ which means you have to register them as global Vue components:
         template: "#my-component"
     });
 </script>
-```
+{% endcapture %}
+{% capture vue3 %}
+<template id="my-component">
+    <div>
+        <!-- Component code goes here -->
+    </div>
+</template>
+<script>
+    app.component("my-component", {
+        template: "#my-component"
+    });
+</script>
+{% endcapture %}
+{% include macros/vueDocsSnippet.html vue2=vue2 vue3=vue3 %}
 
 This component will now be available to be called from any other component you make,
 or as a `@routeComponent`.
@@ -311,11 +377,10 @@ If you do this, the path will resolve to `/webjars/` on when `isDevFunction` ret
 on non-localhost. **Note that this only works with NPM webjars.**
 
 ## LoadableData
-
 The JavalinVue plugin includes a small class for making HTTP get-requests
 to your backend, it can be used like this:
 
-```html
+{% capture vue2 %}
 <template id="books-component">
     <div>
         <div v-if="books.loading">Loading books ...</div>
@@ -331,7 +396,25 @@ to your backend, it can be used like this:
         }),
     });
 </script>
-```
+{% endcapture %}
+{% capture vue3 %}
+<template id="books-component">
+    <div>
+        <div v-if="books.loading">Loading books ...</div>
+        {% raw %}<div v-if="books.loadError">Failed to load books! ({{books.loadError.text}})</div>{% endraw %}
+        {% raw %}<div v-if="books.loaded" v-for="book in books.data">{{book}}</div>{% endraw %}
+    </div>
+</template>
+<script>
+    app.component("books-component", {
+        template: "#books-component",
+        data: () => ({
+            books: new LoadableData("/api/books"),
+        }),
+    });
+</script>
+{% endcapture %}
+{% include macros/vueDocsSnippet.html vue2=vue2 vue3=vue3 %}
 
 The class automatically caches the request in `localStorage`,
 so subsequent requests will appear to load instantly.
