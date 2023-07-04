@@ -211,10 +211,12 @@ This translates nicely into code:
 {% capture java %}
 public static void accessManager(Handler handler, Context ctx, Set<RouteRole> permittedRoles) {
     if (permittedRoles.contains(Role.ANYONE)) {
-        return handler.handle(ctx);
+        handler.handle(ctx);
+        return;
     }
     if (ctx.userRoles().stream().anyMatch(permittedRoles::contains)) {
-        return handler.handle(ctx);
+        handler.handle(ctx);
+        return;
     }   
     ctx.header(Header.WWW_AUTHENTICATE, "Basic");
     throw new UnauthorizedResponse();
