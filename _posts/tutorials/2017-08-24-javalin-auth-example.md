@@ -153,7 +153,7 @@ public class Main {
             path("users", () -> {
                 get(UserController::getAllUserIds, Role.ANYONE);
                 post(UserController::createUser, Role.USER_WRITE);
-                path(":userId", () -> {
+                path("{userId}", () -> {
                     get(UserController::getUser, Role.USER_READ);
                     patch(UserController::updateUser, Role.USER_WRITE);
                     delete(UserController::deleteUser, Role.USER_WRITE);
