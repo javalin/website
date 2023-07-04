@@ -209,7 +209,7 @@ The rules for our access manager are also simple:
 
 This translates nicely into code:
 {% capture java %}
-public static void accessManager(Handler handler, Context ctx, Set<RouteRole> permittedRoles) {
+public static void accessManager(Handler handler, Context ctx, Set<? extends RouteRole> permittedRoles) {
     if (permittedRoles.contains(Role.ANYONE)) {
         handler.handle(ctx);
         return;
