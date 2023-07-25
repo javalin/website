@@ -31,7 +31,7 @@ This lets you focus your classes on core principles rather than specifics for se
 
 ## Small and unopinionated
 Javalin is just a couple of thousands lines of code running on top of Jetty. There is very little magic,
-making it’s easy to fully understand the control-flow of your program.
+making it easy to fully understand the control-flow of your program.
 
 * No annotations
 * No global static state
