@@ -172,6 +172,20 @@ Logback offers other cool appenders, like
 [SMTPAppender](https://logback.qos.ch/manual/appenders.html#SMTPAppender) and
 [DBAppender](https://logback.qos.ch/manual/appenders.html#DBAppender).
 
+Another way to enable logback on your Javalin project is to use the
+`javalin-bundle` artifactId instead of hte regular `javalin` dep:
+
+```xml
+<dependency>
+    <groupId>io.javalin</groupId>
+    <artifactId>javalin-bundle</artifactId>
+    <version>5.6.1</version>
+</dependency>
+```
+
+That way you don't need to explicitly point out logback but still gets it, and
+a few other [reasonable defaults](https://github.com/javalin/javalin/blob/master/javalin-bundle/pom.xml).
+
 ### Log4j2
 
 The [log4j2](https://logging.apache.org/log4j/2.x/manual/appenders.html) library
