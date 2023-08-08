@@ -49,7 +49,7 @@ permalink: /
 %}
 
 {% include landing/section-4-server-and-api.html
-    title="<h1>Declare server and API<br> in the same place</h1>"
+    title="<h1>Declare your server and API<br> in the same file</h1>"
     tutorials="Show me tutorials"
     docs="Show me the docs"
     brag="Creating a REST API has never been easier"
