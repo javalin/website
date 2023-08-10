@@ -1254,6 +1254,7 @@ Javalin.create(config -> {
     config.routing.contextPath = stringValue; // the context path (ex '/blog' if you are hosting an app on a subpath, like 'mydomain.com/blog')
     config.routing.ignoreTrailingSlashes = booleanValue; // treat '/path' and '/path/' as the same path
     config.routing.treatMultipleSlashesAsSingleSlash = booleanValue; // treat '/path//subpath' and '/path/subpath' as the same path
+    config.routing.caseInsensitiveRoutes = booleanValue; // treat '/PATH' and '/path' as the same path
 });
 {% endcapture %}
 {% capture kotlin %}
@@ -1261,6 +1262,7 @@ Javalin.create { config ->
     config.routing.contextPath = stringValue // the context path (ex '/blog' if you are hosting an app on a subpath, like 'mydomain.com/blog')
     config.routing.ignoreTrailingSlashes = booleanValue // treat '/path' and '/path/' as the same path
     config.routing.treatMultipleSlashesAsSingleSlash = booleanValue // treat '/path//subpath' and '/path/subpath' as the same path
+    config.routing.caseInsensitiveRoutes = booleanValue // treat '/PATH' and '/path' as the same path
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
