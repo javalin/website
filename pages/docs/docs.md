@@ -1228,7 +1228,7 @@ and can be used to log events of all types.
 The following example just shows `onMessage`, but `onConnect`, `onError` and `onClose` are all available:
 
 {% capture java %}
-app.create(config -> {
+Javalin.create(config -> {
     config.requestLogger.ws(ws -> {
         ws.onMessage(ctx -> {
             System.out.println("Received: " + ctx.message());
@@ -1237,7 +1237,7 @@ app.create(config -> {
 });
 {% endcapture %}
 {% capture kotlin %}
-app.create { config ->
+Javalin.create { config ->
     config.requestLogger.ws(ws -> {
         ws.onMessage { ctx ->
             println("Received: " + ctx.message());
@@ -1397,7 +1397,7 @@ Javalin.create().start("127.0.0.1", 1235)
 #### Custom server
 If you need to customize the embedded server, you can call the `server()` method:
 {% capture java %}
-app.create(config -> {
+Javalin.create(config -> {
     config.server(() -> {
         Server server = new Server(); // configure this however you want
         return server;
@@ -1405,7 +1405,7 @@ app.create(config -> {
 });
 {% endcapture %}
 {% capture kotlin %}
-app.create { config ->
+Javalin.create { config ->
     config.server {
         val server = Server() // configure this however you want
         server
