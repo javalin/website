@@ -48,66 +48,31 @@ bundle install
 bundle exec jekyll serve --port 4000 --future --incremental
 ```
 
-If you have problems configuring a working Jekyll/Bundler environment, you may prefer to use a Docker container to run and test the javalin.io web site. The following notes assume a Windows host - but they should be adaptable to other operating systems, also.
+### Docker Alternative
 
-a) Make sure Docker Desktop is running.
+If you have problems configuring a working Jekyll/Bundler environment, you may prefer to use a Docker container to run and test the javalin.io web site.
 
-b) At the Windows command prompt, change to the base directory where your local clone was created:
+1. With Docker running, open a terminal and navigate to the root of the cloned repository.
 
-```sh
-cd C:\path\to\your\javalin.github.io
-```
+2. Create the Docker image (note the trailing period):
 
-c) Create the Docker image (note the trailing period):
+    ```sh
+    docker build -t javalin-web .
+    ```
 
-```sh
-docker build --tag javalin-jekyll .
-```
+    >This uses the `Dockerfile` provided in the repository, containing everything needed to build and run the web site. This step only needs to be done once.
 
-This uses the `Dockerfile` provided in the repository. This builds a Docker container using:
+3. Start a new Docker container:
+  
+    ```sh
+    docker run -p 4000:4000 -v ${PWD}:/app javalin-web
+    ```
 
- - Ruby v2.7.7
- - Bundler v2.4.3
- - GitHub Pages v227
+    > If you are using Windows, make sure you are using Powershell. In case you are using CMD, you will need to replace `${PWD}` with `%cd%`.
 
-(Jekyll is included as a dependency of the GitHub Pages gem.)
+4. Browse the web site at `localhost:4000`.
 
-d) Start a new Docker container:
-
-For Windows:
-
-```sh
-docker run ^
-  --rm ^
-  --interactive --tty ^
-  --publish 4000:4000 ^
-  --volume "%CD%":/app ^
-  --workdir /app ^
-  --name javalin-jekyll ^
-  javalin-jekyll
-```
-
-Note the use of `%CD%` to mount the repository contents into the container.
-
-For Linux:
-
-```sh
-docker run \
-  --rm \
-  --interactive --tty \
-  --publish 4000:4000 \
-  --volume $(pwd):/app \
-  --workdir /app \
-  --name javalin-jekyll \
-  javalin-jekyll
-```
-
-e) Browse the web site at `localhost:4000`.
-
-There are some limitations to the Docker approach:
-
- - The `--livereload` flag is not used because it does not appear to have any effect. Stop and restart the Docker container to pick up new changes.
- - If you see some incorrectly rendered content, you can make an arbitrary edit to the affected content, then re-launch the container. (Then reverse your edit, afterwards).
+The auto-reload feature only works on some operating systems. If that is the case for you, re-launch the container after making changes.
 
 ## Questions
 

@@ -1,19 +1,10 @@
-#
-# An updated version of https://github.com/peteretelej/jekyll-container
-#
-FROM ruby:2.7.7-bullseye
+FROM ruby:2.7.4-alpine
 
-RUN apt-get update && \
-  gem install bundler -v 2.4.3 && \
-  mkdir -p /etc/jekyll && \
-  printf 'source "https://rubygems.org"\ngem "github-pages", "227"' > /etc/jekyll/Gemfile && \
-  bundle install --gemfile /etc/jekyll/Gemfile && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+WORKDIR /app
 
-ENV BUNDLE_GEMFILE /etc/jekyll/Gemfile
+COPY Gemfile ./
 
-EXPOSE 4000
+RUN apk add ruby-dev build-base && bundle install
 
 ENTRYPOINT ["bundle", "exec"]
 

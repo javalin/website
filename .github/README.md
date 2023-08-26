@@ -15,6 +15,18 @@ bundle install
 bundle exec jekyll serve --port 4000 --future --incremental
 ```
 
+Alternatively, you can use Docker to run the site without installing Ruby and Bundler.
+
+```bash
+# Build the Docker image
+docker build -t javalin-web .
+# Run the Docker container
+docker run -p 4000:4000 -v ${PWD}:/app javalin-web
+```
+
+The site will be available at `http://localhost:4000`
+
+
 The [contributing guidelines](CONTRIBUTING.md) have additional set-up information.
 
 ## Contributing
