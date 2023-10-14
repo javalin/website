@@ -9,8 +9,17 @@
      if (!allTutorials) return;
      document.querySelectorAll(".tutorial-tab").forEach(tab => {
          tab.addEventListener("click", e => {
-             allTutorials.setAttribute("data-tab", e.target.getAttribute("data-tutorial-tab"));
+             const tab = e.target.getAttribute("data-tutorial-tab");
+             allTutorials.setAttribute("data-tab", tab); // set active tab
+             history.replaceState({}, '', `${location.pathname}?tab=${tab}`);
          })
      })
-     allTutorials.setAttribute("data-tab", "official");
+     allTutorials.setAttribute("data-tab", "official"); // set default tab
+
+     // set active tab from query param
+     const urlParams = new URLSearchParams(location.search);
+     const tab = urlParams.get("tab");
+     if (tab) {
+         allTutorials.setAttribute("data-tab", tab);
+     }
  })();
