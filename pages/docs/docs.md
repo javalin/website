@@ -1582,18 +1582,25 @@ You can check the status of Jetty 11 on Android [here](https://github.com/eclips
 ---
 
 ### Concurrency
+Javalin uses a Jetty `QueuedThreadPool` with 250 threads for serving requests by default.
+Each incoming request is handled by a dedicated thread, so all Handler implementations should be thread-safe.
+This default configuration allows Javalin to handle up to 250 concurrent requests,
+which is generally more than enough (keep in mind, most requests are much shorter than 1 second).
 
-By default, Javalin serves requests using a Jetty `QueuedThreadPool` with 250 threads.
-Handlers are invoked in parallel on multiple threads, so all handler implementations should be thread-safe.
+If your application involves numerous long-running requests,
+consider exploring [Asynchronous requests](#asynchronous-requests) or
+investigate setting up Javalin with project Loom, detailed in the
+[Loomylin repository](https://github.com/tipsy/loomylin).
 
-The default configuration adds a very thin abstraction layer on top of Jetty. It has similar performance to raw
-Jetty, which is able to handle
+In cases where you use `ctx.future()` or `ctx.async()`, the thread will be
+returned to the thread pool while the asynchronous task is running.
+Consequently, the request might be handled by a different thread
+when the asynchronous task is completed.
+
+If you are uncertain whether your application requires asynchronous requests,
+it's likely not necessary. The default configuration provides similar performance
+to Jetty, which can handle
 [over a million plaintext requests per second](https://www.techempower.com/benchmarks/#section=data-r20&hw=ph&test=plaintext&l=zik0vz-sf&p=ziimf3-zik0zj-zik0zj-zik0zj-1ekf).
-
-If you have *a lot* of long running requests, it might be worth looking into [Asynchronous requests](#asynchronous-requests),
-or [setting up Javalin with project Loom](https://github.com/tipsy/loomylin).
-
-If you're not sure if you need async requests, you probably don't.
 
 #### WebSocket Message Ordering
 
