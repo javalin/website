@@ -1400,15 +1400,15 @@ Javalin.create().start("127.0.0.1", 1235)
 If you need to customize the embedded server, you can call the `server()` method:
 {% capture java %}
 Javalin.create(config -> {
-    config.server(() -> {
+    config.jetty.server(() -> {
         Server server = new Server(); // configure this however you want
         return server;
-    }
+    });
 });
 {% endcapture %}
 {% capture kotlin %}
 Javalin.create { config ->
-    config.server {
+    config.jetty.server {
         val server = Server() // configure this however you want
         server
     }
