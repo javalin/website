@@ -10,20 +10,24 @@
             // Function to run after scrolling
         }
     });
-    gumshoe.init({ // https://github.com/cferdinandi/gumshoe (scrollspy)
-        selector: '#spy-nav ul a', // Default link selector
-        selectorHeader: fixedHeaderSelector, // Fixed header selector
-        container: window, // The element to spy on scrolling in (must be a valid DOM Node)
-        offset: 128, // Distance in pixels to offset calculations
-        activeClass: 'active', // Class to apply to active navigation link and its parent list item
-        scrollDelay: false, // Wait until scrolling has stopped before updating the navigation
-        callback: function (nav) {
-            try {
-                document.querySelector(".right-menu .active").scrollIntoView({block: "start"});
-                window.history.replaceState({}, "", location.pathname + "#" + nav.target.id);
-                document.dispatchEvent(new CustomEvent("menu-scroll-enter", {detail: nav}));
-            } catch (e) { /* Doesn't matter */
+    try {
+        gumshoe.init({ // https://github.com/cferdinandi/gumshoe (scrollspy)
+            selector: '#spy-nav ul a', // Default link selector
+            selectorHeader: fixedHeaderSelector, // Fixed header selector
+            container: window, // The element to spy on scrolling in (must be a valid DOM Node)
+            offset: 128, // Distance in pixels to offset calculations
+            activeClass: 'active', // Class to apply to active navigation link and its parent list item
+            scrollDelay: false, // Wait until scrolling has stopped before updating the navigation
+            callback: function (nav) {
+                try {
+                    document.querySelector(".right-menu .active").scrollIntoView({block: "start"});
+                    window.history.replaceState({}, "", location.pathname + "#" + nav.target.id);
+                    document.dispatchEvent(new CustomEvent("menu-scroll-enter", {detail: nav}));
+                } catch (e) { /* Doesn't matter */
+                }
             }
-        }
-    });
+        });
+    } catch (e) {
+        console.error("Failed to initialize gumshoe");
+    }
 })();

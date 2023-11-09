@@ -40,3 +40,13 @@ for (let i = 0; i < document.links.length; i++) {
         submenuLi.querySelector("ul").style.display = "none";
     });
 })();
+
+(() => {
+    let navLinks = document.querySelectorAll(".top-nav li a");
+    navLinks.forEach(link => {
+        const href = link.getAttribute("href")
+        if (window.location.pathname.startsWith(href)) {
+            link.parentElement.classList.add("active");
+        }
+    });
+})();

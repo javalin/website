@@ -73,6 +73,11 @@ nav {
     li {
       margin: 0;
 
+        &.active {
+          color: #000;
+          text-decoration: underline;
+        }
+
       + li {
         border-left: 1px solid $light-border;
       }
