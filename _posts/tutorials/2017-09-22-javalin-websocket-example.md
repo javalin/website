@@ -11,8 +11,6 @@ summary: Learn how to create a simple chat-app with WebSockets in Javalin
 language: ["java", "kotlin"]
 ---
 
-A live demo of this app can be found [here](http://javalin-websocket-example.herokuapp.com) (loads slowly first time)
-
 ## What You Will Learn
 In this tutorial we will create a simple real-time chat application.
 It will feature a chat-panel that stores messages received after you join,

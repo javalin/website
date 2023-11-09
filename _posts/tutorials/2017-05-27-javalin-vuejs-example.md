@@ -16,8 +16,6 @@ language: kotlin
 If you need to learn how to setup Kotlin with Maven, please
 follow the beginning of our [Kotlin CRUD REST API tutorial](/tutorials/simple-kotlin-example)
 
-[A live demo can be found here](http://javalin-vuejs-example.herokuapp.com)
-
 ## Dependencies
 ~~~markup
 <dependency>
