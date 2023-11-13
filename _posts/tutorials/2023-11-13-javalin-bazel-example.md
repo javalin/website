@@ -19,8 +19,10 @@ language: kotlin
 
 - [Bazelisk](https://github.com/bazelbuild/bazelisk): A user-friendly launcher for Bazel. It will download the correct version of Bazel for you.
   - macOS: `brew install bazelisk`
+  - Windows: `choco install bazelisk`
 - [git](https://git-scm.com/): To clone the project
   - macOS: `brew install git`
+  - Windows: `choco install git`
 - <https://github.com/jorunfa/kotlin-javalin-bazel-starter>
   - In this tutorial we'll use *kotlin-javalin-bazel-starter* project on GitHub. Follow the steps below to get started.
 
