@@ -21,7 +21,8 @@ language: kotlin
   - macOS: `brew install bazelisk`
 - [git](https://git-scm.com/): To clone the project
   - macOS: `brew install git`
-- <https://github.com/jorunfa/kotlin-javalin-bazel-starter>: In this tutorial we'll use *kotlin-javalin-bazel-starter* project on GitHub. Follow the steps below to get started.
+- <https://github.com/jorunfa/kotlin-javalin-bazel-starter>
+  - In this tutorial we'll use *kotlin-javalin-bazel-starter* project on GitHub. Follow the steps below to get started.
 
 ## Steps
 
