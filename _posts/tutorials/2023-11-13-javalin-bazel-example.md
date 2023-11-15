@@ -3,7 +3,7 @@ layout: tutorial
 official: true
 title: "Setting up Javalin with Bazel & Kotlin using a template"
 author: <a href="https://www.linkedin.com/in/fagerjord/" target="_blank">Jørund B. Fagerjord</a>
-github: https://github.com/jorunfa/kotlin-javalin-bazel-starter
+github: https://github.com/javalin/kotlin-javalin-bazel-starter
 date: 2022-11-30
 permalink: /tutorials/bazel
 summarytitle: Bazel setup
@@ -31,7 +31,7 @@ language: kotlin
 ### 1. Use the template project
 
 ```bash
-git clone git@github.com:jorunfa/kotlin-javalin-bazel-starter my-javalin-app
+git clone git@github.com:javalin/kotlin-javalin-bazel-starter my-javalin-app
 cd my-javalin-app
 ```
 
