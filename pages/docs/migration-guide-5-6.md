@@ -115,7 +115,7 @@ Javalin.create { config ->
 
 This has been reworked a bit. We wanted to get rid of the supplier methods, and rather focus on giving users the
 option to modify the existing Jetty objects. In particular swapping out the Jetty Server could cause issues,
-both with Javalin internals and with Javalin plugins. The new Jetty config looks like this:
+both with Javalin internals and with Javalin plugins. The new Jetty config in Javalin 6 looks like this:
 
 {% capture java %}
 Javalin.create(config -> {
@@ -147,6 +147,16 @@ Javalin.create { config ->
 
 If you really need to set the Jetty Server, you can do so by accessing it through 
 Javalin's private config: `config.pvt.jetty.server`.
+
+## Changes to private config
+In Javalin 5, you could access Javalin's private config through `app.cfg`, 
+this has been change to `app.unsafeConfig()` in Javalin 6, in order to make it clear that it's not
+recommended to access/change the config. We have also removed `app.updateConfig()`,
+as that also gave the impression that updating the config manually was a safe action.
+
+Most end-users of Javalin should not need to access the private config, if you have a use-case
+that requires it, please reach out to us on [Discord](https://discord.com/invite/sgak4e5NKv) or 
+[GitHub](https://github.com/javalin/javalin).
 
 ## Additional changes
 It's hard to keep track of everything, but you can look at the
