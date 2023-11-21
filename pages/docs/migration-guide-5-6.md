@@ -165,6 +165,49 @@ This allows you to enable compression for responses of unknown size, by calling 
 We also added a `compressionDecisionMade` flag to `CompressedOutputStream`, to avoid this decision being made
 multiple times for the same output stream.
 
+Compression config has also been moved from `config.compression` into `config.http`. In Javalin 5:
+
+{% capture java %}
+Javalin.create(config -> {
+    config.compression.custom(compressionStrategy);      
+    config.compression.brotliAndGzip(gzipLvl, brotliLvl);
+    config.compression.gzipOnly(gzipLvl);                
+    config.compression.brotliOnly(brotliLvl);            
+    config.compression.none();                           
+});
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { config ->
+    config.compression.custom(compressionStrategy)      
+    config.compression.brotliAndGzip(gzipLvl, brotliLvl)
+    config.compression.gzipOnly(gzipLvl)                
+    config.compression.brotliOnly(brotliLvl)            
+    config.compression.none()                           
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+In Javalin 6:
+{% capture java %}
+Javalin.create(config -> {
+    config.http.customCompression(compressionStrategy);      
+    config.http.brotliAndGzipCompression(gzipLvl, brotliLvl);
+    config.http.gzipOnlyCompression(gzipLvl);                
+    config.http.brotliOnlyCompression(brotliLvl);            
+    config.http.disableCompression();                           
+});
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { config ->
+    config.http.customCompression(compressionStrategy)      
+    config.http.brotliAndGzipCompression(gzipLvl, brotliLvl)
+    config.http.gzipOnlyCompression(gzipLvl)                
+    config.http.brotliOnlyCompression(brotliLvl)            
+    config.http.disableCompression()                           
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
 ## Miscellaneous changes
 * We've removed support for jvmbrotli, as it's no longer maintained. Use Brotli4j instead.
 * We've added a small API for getting the type of status code a `HttpStatus` is. For example,
@@ -172,6 +215,8 @@ multiple times for the same output stream.
 * It's now possible to exclude the Jetty websocket dependency without breaking Javalin.
   This is useful if you want to save a couple of bytes, or have other dependencies that
   conflict with Jetty's websocket dependency.
+* Now that Loom is part of the official JDKs, it is no longer opt-in, and therefor no longer enabled by default.  
+  You can enable it by calling `config.useVirtualThreads = true`.
 
 ## Additional changes
 It's hard to keep track of everything, but you can look at the
