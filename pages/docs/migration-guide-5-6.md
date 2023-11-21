@@ -11,7 +11,6 @@ This page attempts to cover all the things you need to know in order to migrate 
 If you find any errors, or if something is missing, please <a href="{{site.repourl}}/blob/master/{{page.path}}">edit this page on GitHub</a>.
 
 ## The AccessManager interface has been removed
-
 This is quite a big internal change, and migrating should be performed with some care.
 It's not a difficult migration, but it's important to understand what's going on.
 
@@ -90,7 +89,6 @@ app.beforeMatched { ctx ->
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ## Jetty config has been reworked
-
 In Javalin5, you configured Jetty like this:
 
 {% capture java %}
@@ -157,6 +155,15 @@ as that also gave the impression that updating the config manually was a safe ac
 Most end-users of Javalin should not need to access the private config, if you have a use-case
 that requires it, please reach out to us on [Discord](https://discord.com/invite/sgak4e5NKv) or 
 [GitHub](https://github.com/javalin/javalin).
+
+## Changes to compression
+The `Context` interface now has a `minSizeForCompression()` function, which sets a minimum size for
+compression. If no value is set, this is populated from the  current 
+`CompressionStrategy` (which is set on the `JavalinConfig`).
+This allows you to enable compression for responses of unknown size, by calling `minSizeForCompression(0)`.
+
+We also added a `compressionDecisionMade` flag to `CompressedOutputStream`, to avoid this decision being made
+multiple times for the same output stream.
 
 ## Additional changes
 It's hard to keep track of everything, but you can look at the
