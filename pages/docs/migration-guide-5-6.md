@@ -89,6 +89,65 @@ app.beforeMatched { ctx ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
+## Jetty config has been reworked
+
+In Javalin5, you configured Jetty like this:
+
+{% capture java %}
+Javalin.create(config -> {
+    config.jetty.server(serverSupplier); // set the Jetty Server for Javalin to run on
+    config.jetty.sessionHandler(sessionHandlerSupplier); // set the SessionHandler that Jetty will use for sessions
+    config.jetty.contextHandlerConfig(contextHandlerConsumer); // configure the ServletContextHandler Jetty runs on
+    config.jetty.wsFactoryConfig(jettyWebSocketServletFactoryConsumer); // configure the JettyWebSocketServletFactory
+    config.jetty.httpConfigurationConfig(httpConfigurationConsumer); // configure the HttpConfiguration of Jetty
+});
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { config ->
+    config.jetty.server(serverSupplier) // set the Jetty Server for Javalin to run on
+    config.jetty.sessionHandler(sessionHandlerSupplier) // set the SessionHandler that Jetty will use for sessions
+    config.jetty.contextHandlerConfig(contextHandlerConsumer) // configure the ServletContextHandler Jetty runs on
+    config.jetty.wsFactoryConfig(jettyWebSocketServletFactoryConsumer) // configure the JettyWebSocketServletFactory
+    config.jetty.httpConfigurationConfig(httpConfigurationConsumer) // configure the HttpConfiguration of Jetty
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+This has been reworked a bit. We wanted to get rid of the supplier methods, and rather focus on giving users the
+option to modify the existing Jetty objects. In particular swapping out the Jetty Server could cause issues,
+both with Javalin internals and with Javalin plugins. The new Jetty config looks like this:
+
+{% capture java %}
+Javalin.create(config -> {
+    config.jetty.defaultHost = "localhost"; // set the default host for Jetty
+    config.jetty.defaultPort = 1234; // set the default port for Jetty
+    config.jetty.threadPool = new ThreadPool(); // set the thread pool for Jetty
+    config.jetty.multipartConfig = new MultipartConfig(); // set the multipart config for Jetty
+    config.jetty.modifyJettyWebSocketServletFactory(factory -> {}); // modify the JettyWebSocketServletFactory
+    config.jetty.modifyServer(server -> {}); // modify the Jetty Server
+    config.jetty.modifyServletContextHandler(handler -> {}); // modify the ServletContextHandler (you can set a SessionHandler here)
+    config.jetty.modifyHttpConfiguration(httpConfig -> {}); // modify the HttpConfiguration
+    config.jetty.addConnector((server, httpConfig) -> new ServerConnector(server)); // add a connector to the Jetty Server
+});
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { config ->
+    config.jetty.defaultHost = "localhost" // set the default host for Jetty
+    config.jetty.defaultPort = 1234 // set the default port for Jetty
+    config.jetty.threadPool = ThreadPool() // set the thread pool for Jetty
+    config.jetty.multipartConfig = MultipartConfig() // set the multipart config for Jetty
+    config.jetty.modifyJettyWebSocketServletFactory { factory -> } // modify the JettyWebSocketServletFactory
+    config.jetty.modifyServer { server -> } // modify the Jetty Server
+    config.jetty.modifyServletContextHandler { handler -> } // modify the ServletContextHandler (you can set a SessionHandler here)
+    config.jetty.modifyHttpConfiguration { httpConfig -> } // modify the HttpConfiguration
+    config.jetty.addConnector { server, httpConfig -> ServerConnector(server) } // add a connector to the Jetty Server
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+If you really need to set the Jetty Server, you can do so by accessing it through 
+Javalin's private config: `config.pvt.jetty.server`.
+
 ## Additional changes
 It's hard to keep track of everything, but you can look at the
 [full commit log](https://github.com/javalin/javalin/compare/javalin-parent-5.6.3...javalin-parent-6.0.0-beta.2)
