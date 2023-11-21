@@ -165,6 +165,14 @@ This allows you to enable compression for responses of unknown size, by calling 
 We also added a `compressionDecisionMade` flag to `CompressedOutputStream`, to avoid this decision being made
 multiple times for the same output stream.
 
+## Miscellaneous changes
+* We've removed support for jvmbrotli, as it's no longer maintained. Use Brotli4j instead.
+* We've added a small API for getting the type of status code a `HttpStatus` is. For example,
+  `status.isSuccess()` will return true for all 2xx status codes.
+* It's now possible to exclude the Jetty websocket dependency without breaking Javalin.
+  This is useful if you want to save a couple of bytes, or have other dependencies that
+  conflict with Jetty's websocket dependency.
+
 ## Additional changes
 It's hard to keep track of everything, but you can look at the
 [full commit log](https://github.com/javalin/javalin/compare/javalin-parent-5.6.3...javalin-parent-6.0.0-beta.2)
