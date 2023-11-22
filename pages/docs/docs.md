@@ -336,7 +336,7 @@ App Attributes can be registered on the Javalin instance, then accessed through 
 app.attribute("myValue", "foo");
 
 app.get("/attribute", ctx -> {
-    String myValue = ctx.attribute("myValue");
+    String myValue = ctx.appAttribute("myValue");
     ctx.result(myValue); // -> foo
 });
 {% endcapture %}
