@@ -88,6 +88,43 @@ app.beforeMatched { ctx ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
+## The Javalin#routes() method has been moved
+In Javalin 5, you could attach routes by calling `Javalin#routes(...)`, and then defining the routes
+inside the lambda. Since a lot of people did this *after* starting the server, we decided to move
+this to the config.
+
+In Javalin 5:
+{% capture java %}
+Javalin app = Javalin.create().start();
+app.routes(() -> {
+    get("/hello", ctx -> ctx.result("Hello World"));
+});
+{% endcapture %}
+{% capture kotlin %}
+val app = Javalin.create().start()
+app.routes {
+    get("/hello") { ctx -> ctx.result("Hello World") }
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+In Javalin 6:
+{% capture java %}
+Javalin app = Javalin.create(config -> {
+    config.router.apiBuilder(() -> {
+        get("/hello", ctx -> ctx.result("Hello World"));
+    });
+}).start();
+{% endcapture %}
+{% capture kotlin %}
+val app = Javalin.create { config ->
+    config.router.apiBuilder {
+        get("/hello") { ctx -> ctx.result("Hello World") }
+    }
+}.start()
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
 ## Jetty config has been reworked
 In Javalin5, you configured Jetty like this:
 
