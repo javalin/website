@@ -183,6 +183,53 @@ Javalin.create { config ->
 If you really need to set the Jetty Server, you can do so by accessing it through 
 Javalin's private config: `config.pvt.jetty.server`.
 
+## New signature for Context#async
+In Javalin 5, the `Context#async` method had the following signature:
+
+{% capture java %}
+ctx.async(
+    10L, // timeoutMillis
+    () -> ctx.result("Timeout"), // onTimeout
+    () -> { // task
+        Thread.sleep(500L);
+        ctx.result("Result");
+    }
+))
+{% endcapture %}
+{% capture kotlin %}
+ctx.async(
+    timeout = 10L,
+    onTimeout = { ctx.result("Timeout") },
+    task = {
+        Thread.sleep(500L)
+        ctx.result("Result")
+    }
+)
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+In Javalin 6, this was changed to a consumer-based signature, similar to many other Javalin APIs:
+
+{% capture java %}
+ctx.async(config -> {
+    config.timeout = 10L;
+    config.onTimeout(timeoutCtx -> timeoutCtx.result("Timeout"));
+}, () -> {
+    Thread.sleep(500L);
+    ctx.result("Result");
+});
+{% endcapture %}
+{% capture kotlin %}
+ctx.async({ config ->
+    config.timeout = 10L
+    config.onTimeout { timeoutCtx -> timeoutCtx.result("Timeout") }
+}) {
+    Thread.sleep(500L)
+    ctx.result("Result")
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
 ## Changes to private config
 In Javalin 5, you could access Javalin's private config through `app.cfg`, 
 this has been change to `app.unsafeConfig()` in Javalin 6, in order to make it clear that it's not
