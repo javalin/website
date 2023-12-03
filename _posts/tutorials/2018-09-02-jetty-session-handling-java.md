@@ -237,12 +237,12 @@ Since Javalin relies on Jetty for session handling can, you simply pass your `Se
 
 {% capture java %}
 Javalin.create(config -> {
-    config.sessionHandler(() -> fileSessionHandler());
+    config.jetty.sessionHandler(() -> fileSessionHandler());
 }).start(7000);
 {% endcapture %}
 {% capture kotlin %}
 val app = Javalin.create {
-    it.sessionHandler { fileSessionHandler() }
+    it.jetty.sessionHandler { fileSessionHandler() }
 }.start(7000)
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
