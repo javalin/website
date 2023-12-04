@@ -88,6 +88,61 @@ app.beforeMatched { ctx ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
+## Untyped "app attributes" are now typed "app data"
+In Javalin 5, you could attach and access untyped attributes to the Javalin instance, like this:
+
+{% capture java %}
+// register a custom attribute
+var app = Javalin.create()
+app.attribute("my-key", myValue);
+// access a custom attribute
+var myValue = (MyValue) ctx.appAttribute("my-key");
+// call a custom method on a custom attribute
+((MyValue) ctx.appAttribute("my-key")).myMethod();
+{% endcapture %}
+{% capture kotlin %}
+// register a custom attribute
+val app = Javalin.create()
+app.attribute("my-key", myValue)
+// access a custom attribute
+val myValue = ctx.appAttribute("my-key") as MyValue
+// call a custom method on a custom attribute
+(ctx.appAttribute("my-key") as MyValue).myMethod()
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+In Javalin 6, the `appAttribute` methods have been renamed to `appData`, 
+and the data is now typed through the `Key<T>` class.
+Data is now registered through the `JavalinConfig`, as opposed to the `Javalin` instance itself:
+
+{% capture java %}
+// register a custom attribute
+static var myKey = new Key<MyValue>("my-key");
+var app = Javalin.create(config -> {
+    config.appData(myKey, myValue);
+});
+// access a custom attribute
+var myValue = ctx.appData(myKey); // var will be inferred to MyValue
+// call a custom method on a custom attribute
+ctx.appData(myKey).myMethod();
+{% endcapture %}
+{% capture kotlin %}
+// register a custom attribute
+val myKey = Key<MyValue>("my-key")
+val app = Javalin.create { config ->
+    config.appData(myKey, myValue)
+}
+// access a custom attribute
+val myValue = ctx.appData(myKey) // val will be inferred to MyValue
+// call a custom method on a custom attribute
+ctx.appData(myKey).myMethod()
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+You don't have to store your keys in a static variable (although it's recommended), so the shortest
+migration path would be to just replace `appAttribute` with `appData` and wrap your strings in `Key<T>`
+(both when declaring the attribute and when accessing it).
+
 ## The Javalin#routes() method has been moved
 In Javalin 5, you could attach routes by calling `Javalin#routes(...)`, and then defining the routes
 inside the lambda. Since a lot of people did this *after* starting the server, we decided to move
@@ -95,7 +150,7 @@ this to the config.
 
 In Javalin 5:
 {% capture java %}
-Javalin app = Javalin.create().start();
+var app = Javalin.create().start();
 app.routes(() -> {
     get("/hello", ctx -> ctx.result("Hello World"));
 });
@@ -110,7 +165,7 @@ app.routes {
 
 In Javalin 6:
 {% capture java %}
-Javalin app = Javalin.create(config -> {
+var app = Javalin.create(config -> {
     config.router.apiBuilder(() -> {
         get("/hello", ctx -> ctx.result("Hello World"));
     });
