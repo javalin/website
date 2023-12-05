@@ -238,6 +238,86 @@ Javalin.create { config ->
 If you really need to set the Jetty Server, you can do so by accessing it through 
 Javalin's private config: `config.pvt.jetty.server`.
 
+## The plugin API has been reworked
+In Javalin 5, plugins were made up of two interfaces, `Plugin` and `PluginLifecycleInit`.
+
+```java
+interface Plugin {
+    void apply(@NotNull Javalin app);
+}
+
+interface PluginLifecycleInit {
+    void init(@NotNull Javalin app);
+}
+```
+
+This API resulted in a lot of different looking plugins. 
+There was no standardized way of doing configuration, and since both interfaces had
+access to the `Javalin` instance, it was unclear when to do what.
+
+In Javalin 6 we've reworked the plugin API to be more opinionated. This will make things
+a bit harder for plugin developers, but it should make things a lot easier for end-users.
+
+Plugins are represented by an abstract class `Plugin` that requires a config consumer and a 
+default config in the constructor:
+
+```kotlin
+abstract class Plugin<CONFIG>(userConfig: Consumer<CONFIG>? = null, defaultConfig: CONFIG? = null) {
+    open fun onInitialize(config: JavalinConfig) {} // optional hook for initializing the plugin
+    open fun onStart(config: JavalinConfig) {} // optional hook for starting the plugin
+    open fun repeatable(): Boolean = false // whether the plugin can be registered multiple times
+    open fun priority(): PluginPriority = PluginPriority.NORMAL // the registration priority of the plugin [LOW, NORMAL, HIGH]
+    open fun name(): String = this.javaClass.simpleName // the name of the plugin
+    protected val pluginConfig // available to extending classes
+}
+```
+
+Below you can find an example of a plugin without configuration, and a plugin with configuration.
+
+### Plugin with no configuration:
+
+{% capture java %}
+public class NoConfigPlugin extends Plugin<Void> {
+    // optionally override any of the methods in the Plugin class
+    // if you try to access pluginConfig, you will get an exception
+}
+{% endcapture %}
+{% capture kotlin %}
+open class NoConfigPlugin : Plugin<Void>() {
+    // optionally override any of the methods in the Plugin class
+    // if you try to access pluginConfig, you will get an exception
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+### Plugin with configuration:
+
+{% capture java %}
+public class PluginWithConfig extends Plugin<PluginWithConfig.Config> {
+    public PluginWithConfig(Consumer<Config> userConfig) {
+        super(userConfig, new Config()); // user config and a default config are passed to the super constructor
+    }
+    // override any methods you want here
+    static class Config { // could be stored in a separate file if you want
+        String someField = "Default value";
+    }
+    var userValue = pluginConfig.someField // pluginConfig holds the config supplied by the user, applied to the default config
+}
+{% endcapture %}
+{% capture kotlin %}
+class PluginWithConfig(userConfig: Consumer<PluginConfig>) : Plugin<PluginConfig>(userConfig, PluginConfig()) {
+    // user config and a default config are passed to the super constructor       ^^^^^^^^^^  ^^^^^^^^^^^^^^
+
+    // override any methods you want here
+    val userValue = pluginConfig.someField // pluginConfig holds the config supplied by the user, applied to the default config
+}
+
+class PluginConfig {
+    @JvmField var someField: String = "Default value"
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
 ## New signature for Context#async
 In Javalin 5, the `Context#async` method had the following signature:
 
