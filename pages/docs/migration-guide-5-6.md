@@ -88,6 +88,13 @@ app.beforeMatched { ctx ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
+## Virtual threads are now opt-in
+In Javalin 5, virtual threads were enabled by default. This was because virtual threads themselves
+were opt-in, and we wanted to make it as easy as possible to try them out. Now that virtual threads
+are becoming part of the official JDKs, we have decided to make them opt-in. You can enable virtual 
+threads by setting `config.useVirtualThreads = true`. This will enable virtual threads for
+all Javalin threads, including the Jetty request threads.
+
 ## Untyped "app attributes" are now typed "app data"
 In Javalin 5, you could attach and access untyped attributes to the Javalin instance, like this:
 
