@@ -172,18 +172,18 @@ app.routes {
 
 In Javalin 6:
 {% capture java %}
-var app = Javalin.create(config -> {
+var app = Javalin.createAndStart(config -> {
     config.router.apiBuilder(() -> {
         get("/hello", ctx -> ctx.result("Hello World"));
     });
-}).start();
+});
 {% endcapture %}
 {% capture kotlin %}
-val app = Javalin.create { config ->
+val app = Javalin.createAndStart { config ->
     config.router.apiBuilder {
         get("/hello") { ctx -> ctx.result("Hello World") }
     }
-}.start()
+}
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
