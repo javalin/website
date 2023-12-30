@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omeglin - Talk to strangers</title>
+    <link href="/favicon.ico" type="image/svg+xml" rel="icon">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header>
+    <img src="/omeglin.svg" alt="Omeglin logo" class="logo">
+</header>
+<main>
+    <div class="video-panel">
+        <section class="remote">
+            <img src="/tail-spin.svg" class="spinner" alt="">
+            <video id="remoteVideo" autoplay playsinline></video>
+        </section>
+        <section class="local">
+            <video id="localVideo" autoplay playsinline muted></video>
+        </section>
+    </div>
+    <div class="chat-panel">
+        <div class="chat-log" id="chatLog"></div>
+        <div class="chat-controls">
+            <div class="pairing">
+                <button id="startPairing">Find stranger</button>
+                <button id="abortPairing">Cancel</button>
+                <button id="leavePairing">Disconnect</button>
+            </div>
+            <div class="messaging">
+                <input type="text" placeholder="Type a message..." id="chatInput">
+                <button id="chatSend">Send</button>
+            </div>
+        </div>
+    </div>
+</main>
+<script type="module" src="/js/app.js"></script>
+</body>
+</html>

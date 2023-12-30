@@ -1,0 +1,183 @@
+:root {
+    --spacing: 12px;
+    --border-radius-large: 8px;
+    --border-radius-small: 4px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body { /* wraps header and main */
+    display: grid;
+    grid-template-rows: auto 1fr;
+    grid-row-gap: var(--spacing);
+    height: 100vh;
+    padding: var(--spacing);
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+}
+
+header img {
+    display: block;
+    margin: 4px auto;
+    max-height: 40px;
+}
+
+main { /* wraps video-panel and chat-panel */
+    display: grid;
+    grid-template-columns: 4fr 7fr; /* video panel is 4/11 of the width, chat panel is 7/11 */
+    grid-column-gap: var(--spacing);
+    overflow: auto;
+}
+
+.video-panel {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    grid-row-gap: var(--spacing);
+    overflow: auto;
+
+    & section {
+        overflow: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #f2f2f2;
+        border-radius: var(--border-radius-large);
+
+        & video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        &.local video {
+            transform: scaleX(-1);
+        }
+    }
+}
+
+.chat-panel {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    grid-row-gap: var(--spacing);
+    padding: var(--spacing);
+    background: #f2f2f2;
+    border-radius: var(--border-radius-large);
+
+    .chat-log {
+        padding: var(--spacing);
+        background: #fff;
+        overflow-y: scroll;
+        border-radius: var(--border-radius-small);
+        line-height: 1.4;
+
+        .message.local::before {
+            font-weight: bold;
+            color: blue;
+            content: "You: ";
+        }
+
+        .message.remote::before {
+            font-weight: bold;
+            color: red;
+            content: "Stranger: ";
+        }
+
+        .message.server {
+            color: #999;
+            font-style: italic;
+        }
+    }
+
+    .chat-controls {
+        display: flex;
+
+        .messaging {
+            display: flex;
+            flex-grow: 1;
+
+            & input {
+                margin: 0 16px;
+                width: 100%;
+                height: 40px;
+                padding: 16px;
+                border: 0;
+                border-radius: var(--border-radius-small);
+                font-size: 16px;
+
+                &:focus {
+                    outline: none;
+                }
+            }
+        }
+
+        .pairing button {
+            width: 120px;
+        }
+    }
+}
+
+button {
+    background: #1e88e5;
+    color: #fff;
+    border: 0;
+    border-radius: var(--border-radius-small);
+    height: 40px;
+    line-height: 1;
+    padding: 0 16px;
+    cursor: pointer;
+
+    &:hover {
+        background: #1976d2;
+    }
+}
+
+/* Conditional styles for buttons */
+.chat-controls .pairing button {
+    display: none;
+}
+
+[data-state=NOT_CONNECTED] button#startPairing,
+[data-state=DISCONNECTED_LOCAL] button#startPairing,
+[data-state=DISCONNECTED_REMOTE] button#startPairing,
+[data-state=CONNECTING] button#abortPairing,
+[data-state=CONNECTED] button#leavePairing {
+    display: block;
+}
+
+/* Conditional styles for spinner */
+.spinner {
+    display: none;
+}
+
+[data-state=CONNECTING] .spinner {
+    display: block;
+}
+
+/* Conditional styles for remote video */
+body:not([data-state=CONNECTED]) .remote video {
+    display: none;
+}
+
+/* Conditional styles for chat */
+body:not([data-state=CONNECTED]) .chat-controls .messaging {
+    filter: grayscale(1);
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Mobile layout */
+@media (max-width: 768px) {
+    main { /* put video panel on top of chat panel */
+        grid-template-columns: none;
+        grid-template-rows: 1fr 2fr;
+        grid-row-gap: var(--spacing);
+    }
+
+    .video-panel { /* put video side by side */
+        grid-template-rows: none;
+        grid-template-columns: 1fr 1fr;
+        grid-column-gap: var(--spacing);
+    }
+}

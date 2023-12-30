@@ -1,0 +1,7 @@
+{% capture java %}
+{% include_relative {{include.java}} %}
+{% endcapture %}
+{% capture kotlin %}
+{% include_relative {{include.kotlin}} %}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
