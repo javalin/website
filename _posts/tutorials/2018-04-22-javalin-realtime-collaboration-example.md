@@ -40,13 +40,15 @@ We need:
 * a map to keep track of document-ids and `Collab`s
  * websocket handlers for connect/message/close
 
-We can get the entire server done in about 30-40 lines:
+We can get the entire server done in around 50 lines:
 
 {% capture java %}
 import io.javalin.Javalin;
 import io.javalin.http.staticfiles.Location;
 import io.javalin.websocket.WsContext;
+
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class JavalinRealtimeCollaborationExampleApp {
@@ -57,22 +59,25 @@ public class JavalinRealtimeCollaborationExampleApp {
 
         Javalin.create(config -> {
             config.staticFiles.add("/public", Location.CLASSPATH);
-        }).ws("/docs/{doc-id}", ws -> {
-            ws.onConnect(ctx -> {
-                if (getCollab(ctx) == null) {
-                    createCollab(ctx);
-                }
-                getCollab(ctx).clients.add(ctx);
-                ctx.send(getCollab(ctx).doc);
-            });
-            ws.onMessage(ctx -> {
-                getCollab(ctx).doc = ctx.message();
-                getCollab(ctx).clients.stream().filter(c -> c.session.isOpen()).forEach(s -> {
-                    s.send(getCollab(ctx).doc);
+            config.router.mount(router -> {
+                router.ws("/docs/{doc-id}", ws -> {
+                    ws.onConnect(ctx -> {
+                        if (getCollab(ctx) == null) {
+                            createCollab(ctx);
+                        }
+                        getCollab(ctx).clients.add(ctx);
+                        ctx.send(getCollab(ctx).doc);
+                    });
+                    ws.onMessage(ctx -> {
+                        getCollab(ctx).doc = ctx.message();
+                        getCollab(ctx).clients.stream().filter(c -> c.session.isOpen()).forEach(s -> {
+                            s.send(getCollab(ctx).doc);
+                        });
+                    });
+                    ws.onClose(ctx -> {
+                        getCollab(ctx).clients.remove(ctx);
+                    });
                 });
-            });
-            ws.onClose(ctx -> {
-                getCollab(ctx).clients.remove(ctx);
             });
         }).start(7070);
 
@@ -86,6 +91,16 @@ public class JavalinRealtimeCollaborationExampleApp {
         collabs.put(ctx.pathParam("doc-id"), new Collab());
     }
 
+    static public class Collab {
+        public String doc;
+        public Set<WsContext> clients;
+
+        public Collab() {
+            this.doc = "";
+            this.clients = ConcurrentHashMap.newKeySet();
+        }
+    }
+
 }
 {% endcapture %}
 {% capture kotlin %}
@@ -94,29 +109,32 @@ import io.javalin.http.staticfiles.Location
 import io.javalin.websocket.WsContext
 import java.util.concurrent.ConcurrentHashMap
 
+data class Collaboration(var doc: String = "", val clients: MutableSet<WsContext> = ConcurrentHashMap.newKeySet())
+
 fun main() {
 
     val collaborations = ConcurrentHashMap<String, Collaboration>()
 
     Javalin.create {
         it.staticFiles.add("/public", Location.CLASSPATH)
-    }.apply {
-        ws("/docs/{doc-id}") { ws ->
-            ws.onConnect { ctx ->
-                if (collaborations[ctx.docId] == null) {
-                    collaborations[ctx.docId] = Collaboration()
+        it.router.mount {
+            it.ws("/docs/{doc-id}") { ws ->
+                ws.onConnect { ctx ->
+                    if (collaborations[ctx.docId] == null) {
+                        collaborations[ctx.docId] = Collaboration()
+                    }
+                    collaborations[ctx.docId]!!.clients.add(ctx)
+                    ctx.send(collaborations[ctx.docId]!!.doc)
                 }
-                collaborations[ctx.docId]!!.clients.add(ctx)
-                ctx.send(collaborations[ctx.docId]!!.doc)
-            }
-            ws.onMessage { ctx ->
-                collaborations[ctx.docId]!!.doc = ctx.message()
-                collaborations[ctx.docId]!!.clients.filter { it.session.isOpen }.forEach {
-                    it.send(collaborations[ctx.docId]!!.doc)
+                ws.onMessage { ctx ->
+                    collaborations[ctx.docId]!!.doc = ctx.message()
+                    collaborations[ctx.docId]!!.clients.filter { it.session.isOpen }.forEach {
+                        it.send(collaborations[ctx.docId]!!.doc)
+                    }
                 }
-            }
-            ws.onClose { ctx ->
-                collaborations[ctx.docId]!!.clients.remove(ctx)
+                ws.onClose { ctx ->
+                    collaborations[ctx.docId]!!.clients.remove(ctx)
+                }
             }
         }
     }.start(7070)
@@ -124,28 +142,6 @@ fun main() {
 }
 
 val WsContext.docId: String get() = this.pathParam("doc-id")
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
-We also need to create a data object for holding our document and the people working on it:
-
-{% capture java %}
-import io.javalin.websocket.WsContext;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
-public class Collab {
-    public String doc;
-    public Set<WsContext> clients;
-
-    public Collab() {
-        this.doc = "";
-        this.clients = ConcurrentHashMap.newKeySet();
-    }
-}
-{% endcapture %}
-{% capture kotlin %}
-data class Collaboration(var doc: String = "", val clients: MutableSet<WsContext> = ConcurrentHashMap.newKeySet())
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 

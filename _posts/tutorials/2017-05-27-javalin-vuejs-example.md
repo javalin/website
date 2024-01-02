@@ -28,6 +28,9 @@ follow the beginning of our [Kotlin CRUD REST API tutorial](/tutorials/simple-ko
 ## Our main class
 
 ~~~kotlin
+import io.javalin.http.staticfiles.Location
+import io.javalin.http.bodyAsClass
+
 data class Todo(val id: Long, val title: String, val completed: Boolean)
 
 fun main() {
@@ -36,15 +39,16 @@ fun main() {
 
     val app = Javalin.create {
         it.staticFiles.add("/public", Location.CLASSPATH)
-    }
-    app.get("/todos") { ctx ->
-        ctx.json(todos)
-    }
-    app.put("/todos") { ctx ->
-        todos = ctx.bodyAsClass()
-        ctx.status(204)
-    }
-    app.start(7070)
+        it.router.mount {
+            it.get("/todos") { ctx ->
+                ctx.json(todos)
+            }
+            it.put("/todos") { ctx ->
+                todos = ctx.bodyAsClass<Array<Todo>>()
+                ctx.status(204)
+            }
+        }
+    }.start(7070)
 
 }
 ~~~

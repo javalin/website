@@ -109,9 +109,9 @@ private static JDBCSessionDataStoreFactory jdbcDataStoreFactory(String driver, S
 {% endcapture %}
 {% capture kotlin %}
 fun sqlSessionHandler(driver: String, url: String) = SessionHandler().apply {
-    sessionCache = DefaultSessionCache(this).apply { // create the session handler
-        sessionDataStore = JDBCSessionDataStoreFactory().apply { // attach a cache to the handler
-            setDatabaseAdaptor(DatabaseAdaptor().apply { // attach a store to the cache
+    sessionCache = DefaultSessionCache(this).apply {
+        sessionDataStore = JDBCSessionDataStoreFactory().apply {
+            setDatabaseAdaptor(DatabaseAdaptor().apply {
                 setDriverInfo(driver, url)
                 // setDatasource(myDataSource) // you can set data source here (for connection pooling, etc)
             })
@@ -236,14 +236,14 @@ Since you are currently on [javalin.io](/), it should be mentioned how to use th
 Since Javalin relies on Jetty for session handling can, you simply pass your `SessionHandler`:
 
 {% capture java %}
-Javalin.create(config -> {
-    config.jetty.sessionHandler(() -> fileSessionHandler());
-}).start(7000);
+var app = Javalin.create(config -> {
+    config.jetty.modifyServletContextHandler(handler -> handler.setSessionHandler(fileSessionHandler()));
+}).start(7070);
 {% endcapture %}
 {% capture kotlin %}
-val app = Javalin.create {
-    it.jetty.sessionHandler { fileSessionHandler() }
-}.start(7000)
+val app = Javalin.create { config ->
+    config.jetty.modifyServletContextHandler { it.sessionHandler = fileSessionHandler() }
+}.start(7070)
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
@@ -317,34 +317,3 @@ app.get("/change-id") { ctx ->
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
-#### Access management
-Sessions work well with the Javalin [AccessManager](https://javalin.io/documentation#access-manager).
-You can check the session store to see if the user is logged in:
-
-{% capture java %}
-app.accessManager((handler, ctx, roles) -> {
-    String currentUser = ctx.sessionAttribute("current-user"); // retrieve user stored during login
-    if (currentUser == null) {
-        redirectToLogin(ctx);
-    } else if (userHasValidRole(ctx, roles)) {
-        handler.handle(ctx);
-    } else {
-        throw new UnauthorizedResponse();
-    }
-});
-{% endcapture %}
-{% capture kotlin %}
-app.accessManager { handler, ctx, roles ->
-    val currentUser = ctx.sessionAttribute<String?>("current-user") // retrieve user stored during login
-    when {
-        currentUser == null -> redirectToLogin(ctx)
-        currentUser != null && userHasValidRole(ctx, roles) -> handler.handle(ctx)
-        else -> throw UnauthorizedResponse()
-    }
-}
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
-The source code for these examples is available in the
-[tutorial repo](https://github.com/javalin/javalin-samples/tree/main/javalin5/javalin-jetty-sessions-example).

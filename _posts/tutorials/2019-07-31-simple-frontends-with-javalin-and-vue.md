@@ -71,7 +71,7 @@ import io.javalin.Javalin
 fun main() {
     val app = Javalin.create { config ->
         config.staticFiles.enableWebjars()
-        config.vue.vueAppName = "app" // only required for Vue 3, is defined in layout.html
+        config.vue.vueInstanceNameInJs = "app" // only required for Vue 3, is defined in layout.html
     }.start(7070)
 }
 ```
@@ -137,7 +137,7 @@ fun main() {
 
     val app = Javalin.create { config ->
         config.staticFiles.enableWebjars()
-        config.vue.vueAppName = "app"
+        config.vue.vueInstanceNameInJs = "app"
     }.start(7070)
 
     app.get("/", VueComponent("hello-world"))
@@ -357,24 +357,23 @@ Now that both the frontend and backend are done, it's time to make things
 more complicated by adding access management to the mix.
 
 ## Access Management
-Access management in Javalin is handled by the aptly named `AccessManager`. This is a functional interface which takes
-a handler function, a HTTP context, and a set of roles. It's up to the developer to determine if a request is valid.
-We will be securing our application using basic-auth for simplicity, but you can use any technique and
-identity provider you want with the `AccessManager` interface.
+Access management in Javalin is handled by a combination of before-filters and route-roles.
+It's up to the developer to determine if a request is valid. We will be securing our application using 
+basic-auth for simplicity, but you can use any technique and identity provider you want.
 
 First we need to define roles. Some parts of the app should be accessible to everyone (the user-overview and the 404 page), while
 other parts should only be available if you log in (the user-profile).\\
 Two roles should be enough: `ANYONE` and `LOGGED_IN`. We add those roles to the endpoints
-(both for the views and the APIs, and create an `AccessManager`:
+(both for the views and the APIs, and create a filter:
 
 ```kotlin
 import io.javalin.Javalin
+import io.javalin.apibuilder.ApiBuilder.get
 import io.javalin.security.RouteRole
 import io.javalin.http.Header
 import io.javalin.http.Context
 import io.javalin.http.HttpStatus
-import io.javalin.http.staticfiles.Location
-import io.javalin.vue.JavalinVue
+import io.javalin.http.UnauthorizedResponse
 import io.javalin.vue.VueComponent
 
 enum class Role : RouteRole { ANYONE, LOGGED_IN }
@@ -383,26 +382,32 @@ fun main() {
 
     val app = Javalin.create { config ->
         config.staticFiles.enableWebjars()
-        config.accessManager { handler, ctx, permittedRoles ->
-            when {
-                Role.ANYONE in permittedRoles -> handler.handle(ctx)
-                Role.LOGGED_IN in permittedRoles && currentUser(ctx) != null -> handler.handle(ctx)
-                else -> ctx.status(401).header(Header.WWW_AUTHENTICATE, "Basic")
-            }
+        config.vue.apply {
+            stateFunction = { ctx -> mapOf("currentUser" to ctx.currentUser()) }
+            vueInstanceNameInJs = "app"
         }
+        config.router.mount {
+            it.beforeMatched { ctx ->
+                if (Role.LOGGED_IN in ctx.routeRoles() && ctx.currentUser() == null) {
+                    ctx.header(Header.WWW_AUTHENTICATE, "Basic")
+                    throw UnauthorizedResponse()
+                }
+            }
+        }.apiBuilder { // frontend routes
+            get("/", VueComponent("hello-world"), Role.ANYONE)
+            get("/users", VueComponent("user-overview"), Role.ANYONE)
+            get("/users/{user-id}", VueComponent("user-profile"), Role.LOGGED_IN)
+        }.apiBuilder { // api routes
+            get("/api/users", UserController::getAll, Role.ANYONE)
+            get("/api/users/{user-id}", UserController::getOne, Role.LOGGED_IN)
+        }
+    }.apply {
+        error(HttpStatus.NOT_FOUND, "html", VueComponent("not-found"))
     }.start(7070)
-
-    app.get("/", VueComponent("hello-world"), Role.ANYONE)
-    app.get("/users", VueComponent("user-overview"), Role.ANYONE)
-    app.get("/users/{user-id}", VueComponent("user-profile"), Role.LOGGED_IN)
-    app.error(HttpStatus.NOT_FOUND, "html", VueComponent("not-found"))
-
-    app.get("/api/users", UserController::getAll, Role.ANYONE)
-    app.get("/api/users/{user-id}", UserController::getOne, Role.LOGGED_IN)
 
 }
 
-private fun currentUser(ctx: Context) = ctx.basicAuthCredentials()?.username
+private fun Context.currentUser() = this.basicAuthCredentials()?.username
 ```
 
 This is just an example, our authentication isn't exactly secure. As long as the user enters
@@ -414,7 +419,7 @@ Our server knows, so we need to transfer this knowledge somehow.
 This can be solved by setting a JavalinVue state function:
 
 ```kotlin
-JavalinVue.stateFunction = { ctx -> mapOf("currentUser" to currentUser(ctx)) }
+config.vue.stateFunction = { ctx -> mapOf("currentUser" to currentUser(ctx)) }
 ```
 
 This line of code sets a function that will run for every `VueComponent`, so all components will now
