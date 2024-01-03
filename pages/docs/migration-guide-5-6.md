@@ -373,7 +373,7 @@ ctx.async({ config ->
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ## Static configuration methods have been removed
-In Javalin 5, there were some classes which had static methods for configuration:
+In Javalin 5, there were some classes which had their own static methods for configuration:
 
 {% capture java %}
 JavalinRenderer.register(myFileRenderer);
@@ -384,7 +384,7 @@ JavalinRenderer.register(myFileRenderer)
 JavalinValidation.register(Custom.class, Custom::parse)
 {% endcapture %}
 
-We've moved all these to the same configuration method in Javalin 6:
+We've moved all these to the config for Javalin 6:
 {% capture java %}
 var app = Javalin.create(config -> {
   config.fileRenderer(myFileRenderer);
