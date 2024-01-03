@@ -383,6 +383,7 @@ JavalinValidation.register(Custom.class, Custom::parse);
 JavalinRenderer.register(myFileRenderer)
 JavalinValidation.register(Custom.class, Custom::parse)
 {% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 We've moved all these to the config for Javalin 6:
 {% capture java %}
