@@ -388,13 +388,13 @@ We've moved all these to the config for Javalin 6:
 {% capture java %}
 var app = Javalin.create(config -> {
   config.fileRenderer(myFileRenderer);
-  config.validation.register(MyCustom.class, MyCustom::parse);
+  config.validation.register(Custom.class, Custom::parse);
 });
 {% endcapture %}
 {% capture kotlin %}
 val app = Javalin.create { config ->
   config.fileRenderer(myFileRenderer)
-  config.validation.register(MyCustom.class, MyCustom::parse)
+  config.validation.register(Custom.class, Custom::parse)
 }
 {% endcapture %}
 
