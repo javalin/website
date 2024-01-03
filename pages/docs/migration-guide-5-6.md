@@ -397,6 +397,7 @@ val app = Javalin.create { config ->
   config.validation.register(Custom.class, Custom::parse)
 }
 {% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ## Changes to private config
 In Javalin 5, you could access Javalin's private config through `app.cfg`, 
