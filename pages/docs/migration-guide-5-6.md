@@ -88,6 +88,9 @@ app.beforeMatched { ctx ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
+If you are not using `UnauthorizedResponse` or any other `HttpResponseException` you shall stop 
+processing further handlers using `ctx.skipRemainingHandlers()` as a last step in the `beforeMatched`.
+
 ## Virtual threads are now opt-in
 In Javalin 5, virtual threads were enabled by default. This was because virtual threads themselves
 were opt-in, and we wanted to make it as easy as possible to try them out. Now that virtual threads
