@@ -372,6 +372,34 @@ ctx.async({ config ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
+## Static configuration methods have been removed
+In Javalin 5, there were some classes which had their own static methods for configuration:
+
+{% capture java %}
+JavalinRenderer.register(myFileRenderer);
+JavalinValidation.register(Custom.class, Custom::parse);
+{% endcapture %}
+{% capture kotlin %}
+JavalinRenderer.register(myFileRenderer)
+JavalinValidation.register(Custom.class, Custom::parse)
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+We've moved all these to the config for Javalin 6:
+{% capture java %}
+var app = Javalin.create(config -> {
+  config.fileRenderer(myFileRenderer);
+  config.validation.register(Custom.class, Custom::parse);
+});
+{% endcapture %}
+{% capture kotlin %}
+val app = Javalin.create { config ->
+  config.fileRenderer(myFileRenderer)
+  config.validation.register(Custom.class, Custom::parse)
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
 ## Changes to private config
 In Javalin 5, you could access Javalin's private config through `app.cfg`, 
 this has been change to `app.unsafeConfig()` in Javalin 6, in order to make it clear that it's not
