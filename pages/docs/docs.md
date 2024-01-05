@@ -1582,7 +1582,22 @@ You can check the status of Jetty 11 on Android [here](https://github.com/eclips
 ---
 
 ### Concurrency
-Javalin uses a Jetty `QueuedThreadPool` with 250 threads for serving requests by default.
+If your JRE supports project Loom,
+Javalin will use a `newVirtualThreadPerTaskExecutor` for serving requests by default.
+Otherwise, a `QueuedThreadPool` with 250 threads will be used.
+
+If you experience problems with the virtual thread pool,
+e.g. if your application doesn't respond to incoming requests after about one minute,
+try disabling project Loom:
+
+{% capture java %}
+ConcurrencyUtil.INSTANCE.setUseLoom(false);
+{% endcapture %}
+{% capture kotlin %}
+ConcurrencyUtil.useLoom = false
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
 Each incoming request is handled by a dedicated thread, so all Handler implementations should be thread-safe.
 This default configuration allows Javalin to handle up to 250 concurrent requests,
 which is generally more than enough (keep in mind, most requests are much shorter than 1 second).
@@ -1675,7 +1690,7 @@ The corresponding HTML might look something like this:
 ### Asynchronous requests
 
 <div class="comment">Synonyms for ctrl+f: Async, CompletableFuture, Future, Concurrent, Concurrency</div>
-While the default ThreadPool (200 threads) is enough for most use cases,
+While the default ThreadPool (250 threads) is enough for most use cases,
 sometimes slow operations should be run asynchronously. Luckily it's very easy in Javalin, just
 pass a `Supplier<CompletableFuture>` to `ctx.future()`. Javalin will automatically switch between sync and async modes to handle the different tasks.
 
