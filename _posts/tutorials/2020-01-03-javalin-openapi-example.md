@@ -82,7 +82,7 @@ We also need to add a build section for the Open API annotations:
 ~~~
 
 You can view the full POM on
-[GitHub](https://github.com/javalin/javalin-samples/tree/main/javalin5/javalin-openapi-example).
+[GitHub](https://github.com/javalin/javalin-samples/tree/main/javalin6/javalin-openapi-example).
 
 ## Building the API
 
@@ -106,19 +106,22 @@ public class Main {
 
     public static void main(String[] args) {
         Javalin.create(config -> {
-            OpenApiConfiguration openApiConfiguration = new OpenApiConfiguration();
-            openApiConfiguration.getInfo().setTitle("Javalin OpenAPI example");
-            config.plugins.register(new OpenApiPlugin(openApiConfiguration));
-            config.plugins.register(new SwaggerPlugin(new SwaggerConfiguration()));
-            config.plugins.register(new ReDocPlugin(new ReDocConfiguration()));
-        }).routes(() -> {
-            path("users", () -> {
-                get(UserController::getAll);
-                post(UserController::create);
-                path("{userId}", () -> {
-                    get(UserController::getOne);
-                    patch(UserController::update);
-                    delete(UserController::delete);
+            config.registerPlugin(new OpenApiPlugin(pluginConfig -> {
+                pluginConfig.withDefinitionConfiguration((version, definition) -> {
+                    definition.withOpenApiInfo(info -> info.setTitle("Javalin OpenAPI example"));
+                });
+            }));
+            config.registerPlugin(new SwaggerPlugin());
+            config.registerPlugin(new ReDocPlugin());
+            config.router.apiBuilder(() -> {
+                path("users", () -> {
+                    get(UserController::getAll);
+                    post(UserController::create);
+                    path("{userId}", () -> {
+                        get(UserController::getOne);
+                        patch(UserController::update);
+                        delete(UserController::delete);
+                    });
                 });
             });
         }).start(7002);
@@ -133,31 +136,38 @@ public class Main {
 package io.javalin.example.kotlin
 
 import io.javalin.Javalin
-import io.javalin.apibuilder.ApiBuilder.*
+import io.javalin.apibuilder.ApiBuilder.delete
+import io.javalin.apibuilder.ApiBuilder.get
+import io.javalin.apibuilder.ApiBuilder.patch
+import io.javalin.apibuilder.ApiBuilder.path
+import io.javalin.apibuilder.ApiBuilder.post
 import io.javalin.example.kotlin.user.UserController
-import io.javalin.openapi.plugin.OpenApiConfiguration
+import io.javalin.openapi.OpenApiInfo
 import io.javalin.openapi.plugin.OpenApiPlugin
-import io.javalin.openapi.plugin.redoc.ReDocConfiguration
 import io.javalin.openapi.plugin.redoc.ReDocPlugin
-import io.javalin.openapi.plugin.swagger.SwaggerConfiguration
 import io.javalin.openapi.plugin.swagger.SwaggerPlugin
 
 fun main() {
 
     Javalin.create { config ->
-        config.plugins.register(OpenApiPlugin(OpenApiConfiguration().apply {
-            info.title = "Javalin OpenAIP example"
-        }))
-        config.plugins.register(SwaggerPlugin(SwaggerConfiguration()))
-        config.plugins.register(ReDocPlugin(ReDocConfiguration()))
-    }.routes {
-        path("users") {
-            get(UserController::getAll)
-            post(UserController::create)
-            path("{userId}") {
-                get(UserController::getOne)
-                patch(UserController::update)
-                delete(UserController::delete)
+        config.registerPlugin(OpenApiPlugin { pluginConfig ->
+            pluginConfig.withDefinitionConfiguration { version, definition ->
+                definition.withOpenApiInfo { info: OpenApiInfo ->
+                    info.title = "Javalin OpenAPI example"
+                }
+            }
+        })
+        config.registerPlugin(SwaggerPlugin())
+        config.registerPlugin(ReDocPlugin())
+        config.router.apiBuilder {
+            path("users") {
+                get(UserController::getAll);
+                post(UserController::create);
+                path("{userId}") {
+                    get(UserController::getOne);
+                    patch(UserController::update);
+                    delete(UserController::delete);
+                }
             }
         }
     }.start(7001)
@@ -340,7 +350,7 @@ This endpoint also has two more responses:
 
 ## That's pretty much it!
 
-The [example repo](https://github.com/tipsy/javalin-openapi-example)
+The [example repo](https://github.com/javalin/javalin-samples/tree/main/javalin6/javalin-openapi-example)
 contains a fully working API, so if you clone it you can play around with the `Try it out`
 button for each endpoint.
 
@@ -374,7 +384,7 @@ Client generation works the same for Kotlin, Java, or any other languages. Simpl
 You will have to download and save your spec somewhere, and depending on what options you use (language, serializer, etc)
 and how your project is set up, you will have to add dependencies to your POM.
 
-I only generated a client for Kotlin since the clients have different dependencies
+I only generated a client for Kotlin since the clients have different dependencies,
 but you can just switch `kotlin` to `java` in the plugin config above to get a Java client.
 
 Using the client is very straightforward in Kotlin:
@@ -416,6 +426,6 @@ fun main() {
 
 That's it. The OpenAPI generator
 ([https://github.com/OpenAPITools/openapi-generator](https://github.com/OpenAPITools/openapi-generator))
-supports a ton of different languages, and will generate markdown docs for for the clients too.
+supports a ton of different languages, and will generate markdown docs for the clients too.
 
 Have fun!
