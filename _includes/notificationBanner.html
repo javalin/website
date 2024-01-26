@@ -1,15 +1,14 @@
-<!-- 
 <script>
-    const notificationId = "javalin-5-released";
+    const notificationId = "javalin-6-released";
     const hasBeenDismissed = localStorage.getItem(notificationId + "-dismissed") === "true";
     const pageLoadCount = parseInt(localStorage.getItem(notificationId + "-count") || 0);
     localStorage.setItem(notificationId + "-count", (pageLoadCount + 1).toString());
     if (!hasBeenDismissed && pageLoadCount >= 0) {
         document.write(`
             <div id="notification-banner">
-                <h1>Javalin 5 is out!</h1>
-                Javalin 5 stable is finally here!
-                Read more in the <a href="/news/javalin-5.0.0-stable.html">release post</a>.
+                <h1>Javalin 6 is out!</h1>
+                Javalin 6 stable is finally here!
+                Read more in the <a href="/news/javalin-6.0.0-stable.html">release post</a>.
             </div>
         `);
         if (pageLoadCount >= 0) {
@@ -29,39 +28,33 @@
         right: 32px;
         width: 360px;
         z-index: 9999999;
-        background: linear-gradient(20deg, #29292d 30%, #008cbb);
-        color: white;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
-        font-size: 16px;
-        border-radius: 8px;
+        background: #ffff64;
+        color: black;
+        font-size: 18px;
         padding: 24px;
+        border: 3px solid black;
+        box-shadow: 0 0 0 3px white;
     }
 
     #notification-banner h1 {
         line-height: 1;
-        margin: 0 0 20px 0;
+        margin: 0 0 12px 0;
         font-family: 'Encode Sans', sans-serif;
-        font-weight: 400;
         font-size: 22px;
-        text-decoration: underline;
     }
 
     #notification-banner a {
-        font-weight: 700;
-        border: 1px solid white;
-        padding: 1px 3px;
-        background: white;
-        color: #333;
-        border-radius: 3px;
-        margin: 0 2px;
+        color: black;
+        text-decoration: underline;
     }
 
     #notification-banner .close {
+        background: white;
         position: absolute;
-        right: 14px;
-        top: 14px;
-        height: 40px;
-        width: 40px;
+        right: -3px;
+        top: -3px;
+        height: 32px;
+        width: 32px;
         line-height: 1;
         display: flex;
         align-items: center;
@@ -69,8 +62,7 @@
         font-size: 28px;
         font-family: arial, sans-serif;
         cursor: pointer;
-        background: rgba(0, 0, 0, 0.15);
-        border-radius: 5px;
+        border: 3px solid black;
     }
 
     @media (max-width: 480px) {
@@ -82,5 +74,19 @@
             font-size: 14px;
         }
     }
+
+    #notification-banner {
+        animation: slide-in 0.2s ease-in-out;
+    }
+
+    @keyframes slide-in {
+        0% {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+        100% {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
 </style>
--->
