@@ -332,35 +332,47 @@ res()                                 // get the underlying HttpServletResponse
 
 // Other methods
 async(runnable)                       // lifts request out of Jetty's ThreadPool, and moves it to Javalin's AsyncThreadPool
+async(asyncConfig, runnable)          // same as above, but with additonal config
 handlerType()                         // handler type of the current handler (BEFORE, AFTER, GET, etc)
-appAttribute("name")                  // get an attribute on the Javalin instance. see app attributes section below
+appData(typedKey)                     // get data from the Javalin instance (see app data section below)
+with(pluginClass)                     // get context plugin by class, see plugin section below
 matchedPath()                         // get the path that was used to match this request (ex, "/hello/{name}")
 endpointHandlerPath()                 // get the path of the endpoint handler that was used to match this request
 cookieStore()                         // see cookie store section below
 skipRemainingHandlers()               // skip all remaining handlers for this request
 ```
 
-#### App Attributes
+#### App data
 
-App Attributes can be registered on the Javalin instance, then accessed through the `appAttribute(...)` method in `Context`:
+App data can be registered on the Javalin instance through `Javalin#create`, 
+then accessed through the `appData(...)` method in `Context`. 
+You need to create a typed key for your data, and then register it on the Javalin instance.
 
 {% capture java %}
-app.attribute("myValue", "foo");
-
-app.get("/attribute", ctx -> {
-    String myValue = ctx.appAttribute("myValue");
-    ctx.result(myValue); // -> foo
+// register a custom attribute
+var myKey = new Key<MyValue>("my-key");
+var app = Javalin.create(config -> {
+    config.appData(myKey, myValue);
 });
+// access a custom attribute
+var myValue = ctx.appData(myKey); // var will be inferred to MyValue
+// call a custom method on a custom attribute
+ctx.appData(myKey).myMethod();
 {% endcapture %}
 {% capture kotlin %}
-app.attribute("myValue", "foo")
-
-app.get("/attribute") { ctx ->
-    val myValue: String = ctx.appAttribute("myValue")
-    ctx.result(myValue) // -> foo
+// register a custom attribute
+val myKey = Key<MyValue>("my-key")
+val app = Javalin.create { config ->
+    config.appData(myKey, myValue)
 }
+// access a custom attribute
+val myValue = ctx.appData(myKey) // val will be inferred to MyValue
+// call a custom method on a custom attribute
+ctx.appData(myKey).myMethod()
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+It can be helpful to store the key as a static field, but you can also recreate the key every time you need it.
 
 #### Cookie Store
 
@@ -591,39 +603,39 @@ error()                                 // the throwable error that occurred
 The `WsConnectContext` class doesn't add anything to the base `WsContext`
 
 ## Handler groups
-You can group your endpoints by using the `routes()` and `path()` methods. `routes()` creates
-a temporary static instance of Javalin so you can skip the `app.` prefix before your handlers.
-This is equivalent to calling `ApiBuilder.get(app, ...)`, which translates
-to `app.get(...)`. It is **not** a global singleton that holds any information, so
+You can group your endpoints by using the `apiBuilder()` and `path()` methods. The `apiBuilder()` 
+methods creates a temporary static instance of Javalin, so that you can skip the `app.` prefix
+before your handlers. This is equivalent to calling `ApiBuilder.get(app, ...)`, which translates
+to `config.router.get(...)`. It is **not** a global singleton that holds any information, so
 you can use this safely in multiple locations and from multiple threads.
 
 You can import all the HTTP methods with `import static io.javalin.apibuilder.ApiBuilder.*`.
 
 {% capture java %}
-app.routes(() -> {
-    path("users", () -> {
+config.router.apiBuilder(() -> {
+    path("/users", () -> {
         get(UserController::getAllUsers);
         post(UserController::createUser);
-        path("{id}", () -> {
+        path("/{id}", () -> {
             get(UserController::getUser);
             patch(UserController::updateUser);
             delete(UserController::deleteUser);
         });
-        ws("events", UserController::webSocketEvents);
+        ws("/events", UserController::webSocketEvents);
     });
 });
 {% endcapture %}
 {% capture kotlin %}
-app.routes {
-    path("users") {
+config.router.apiBuilder {
+    path("/users") {
         get(UserController::getAllUsers)
         post(UserController::createUser)
-        path("{id}") {
+        path("/{id}") {
             get(UserController::getUser)
             patch(UserController::updateUser)
             delete(UserController::deleteUser)
         }
-        ws("events", UserController::webSocketEvents)
+        ws("/events", UserController::webSocketEvents)
     }
 }
 {% endcapture %}
@@ -636,12 +648,12 @@ This means that `path("api", ...)` and `path("/api", ...)` are equivalent.
 The `CrudHandler` is an interface that can be used within a `routes()` call:
 
 {% capture java %}
-app.routes(() -> {
+config.router.apiBuilder(() -> {
     crud("users/{user-id}", new UserController());
 });
 {% endcapture %}
 {% capture kotlin %}
-app.routes {
+config.router.apiBuilder {
     crud("users/{user-id}", UserController())
 }
 {% endcapture %}
@@ -799,74 +811,54 @@ app.exception(ValidationException::class.java) { e, ctx ->
 If you need to validate a non-included class, you have to register a custom converter:
 
 {% capture java %}
-JavalinValidation.register(Instant.class, v -> Instant.ofEpochMilli(v.toLong());
+Javalin.create(config -> {
+    config.validation.register(Instant.class, v -> Instant.ofEpochMilli(Long.parseLong(v)));
+});
 {% endcapture %}
 {% capture kotlin %}
-JavalinValidation.register(Instant::class.java) { Instant.ofEpochMilli(it.toLong()) }
+Javalin.create { config ->
+    config.validation.register(Instant::class.java) { Instant.ofEpochMilli(it.toLong()) }
+}
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ## Access manager
-Javalin has a functional interface `AccessManager`, which let's you
-set per-endpoint authentication and/or authorization. It's also common to use
-before-handlers for this, but enforcing per-endpoint roles give you much more
-explicit and readable code. You can implement your access-manager however you want.
-Below is an example implementation:
+Javalin used to have a functional interface `AccessManager`, which let you
+set per-endpoint authentication and/or authorization. In Javalin 6, this has been
+replaced with the `beforeMatched` handler. You can read more about this in the
+[Javalin 5 to 6 migration guide](/migration-guide-javalin-5-to-6#the-accessmanager-interface-has-been-removed).
+
+To manage access in Javalin 6, you would do something like this:
 
 {% capture java %}
-// Set the access-manager that Javalin should use
-config.accessManager((handler, ctx, routeRoles) -> {
-    MyRole userRole = getUserRole(ctx);
-    if (routeRoles.contains(userRole)) {
-        handler.handle(ctx);
-    } else {
-        ctx.status(401).result("Unauthorized");
+app.beforeMatched(ctx -> {
+    var userRole = getUserRole(ctx); // some user defined function that returns a user role
+    if (!ctx.routeRoles().contains(userRole)) { // routeRoles are provided through the Context interface
+        throw new UnauthorizedResponse(); // request will have to be explicitly stopped by throwing an exception
     }
 });
-
-Role getUserRole(Context ctx) {
-    // determine user role based on request.
-    // typically done by inspecting headers, cookies, or user session
-}
-
-enum Role implements RouteRole {
-    ANYONE, ROLE_ONE, ROLE_TWO, ROLE_THREE;
-}
-
-app.get("/un-secured",   ctx -> ctx.result("Hello"),   Role.ANYONE);
-app.get("/secured",      ctx -> ctx.result("Hello"),   Role.ROLE_ONE);
 {% endcapture %}
 {% capture kotlin %}
-// Set the access-manager that Javalin should use
-config.accessManager { handler, ctx, routeRoles ->
-    val userRole = getUserRole(ctx) // determine user role based on request
-    if (routeRoles.contains(userRole)) {
-        handler.handle(ctx)
-    } else {
-        ctx.status(401).result("Unauthorized")
+app.beforeMatched { ctx ->
+    val userRole = getUserRole(ctx) // some user defined function that returns a user role
+    if (!ctx.routeRoles().contains(userRole)) { // routeRoles are provided through the Context interface
+        throw UnauthorizedResponse() // request will have to be explicitly stopped by throwing an exception
     }
 }
-
-fun getUserRole(ctx: Context) : Role {
-    // determine user role based on request.
-    // typically done by inspecting headers, cookies, or user session
-}
-
-enum class Role : RouteRole {
-    ANYONE, ROLE_ONE, ROLE_TWO, ROLE_THREE
-}
-
-app.get("/un-secured",   { ctx -> ctx.result("Hello") },   Role.ANYONE);
-app.get("/secured",      { ctx -> ctx.result("Hello") },   Role.ROLE_ONE);
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-The `AccessManager` will also run before your WebSocket upgrade request
-(if you have added roles to the endpoint), but keep in mind that WebSockets are long lived,
-so it might be wise to perform a check in `wsBefore` too/instead.
+The routes are set when you declare your endpoints:
 
-If you want to perform less restricted access management,
-you should consider using a `before` filter.
+{% capture java %}
+app.get("/public", ctx -> ctx.result("Hello public"), Role.OPEN);
+app.get("/private", ctx -> ctx.result("Hello private"), Role.LOGGED_IN);
+{% endcapture %}
+{% capture kotlin %}
+app.get("/public", { ctx -> ctx.result("Hello public") }, Role.OPEN)
+app.get("/private", { ctx -> ctx.result("Hello private") }, Role.LOGGED_IN)
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ## Default responses
 Javalin comes with a built in class called `HttpResponseException`, which can be used for default responses.
@@ -1081,45 +1073,66 @@ ctx                                         // the Context from when the client 
 
 ## Configuration
 You can pass a config object when creating a new instance of Javalin.
-Javalin's configuration is grouped into multiple subconfigs:
+Most of Javalin's configuration is available through subconfigs, 
+but there are also a few direct properties and functions:
 
 ```java
 Javalin.create(config -> {
-    config.http             // etags, request size, timeout, etc
-    config.routing          // context path, slash treatment
-    config.jetty            // jetty settings
-    config.staticFiles      // static files and webjars
-    config.spaRoot          // single page application roots
-    config.compression      // gzip, brotli, disable compression
-    config.requestLogger    // http and websocket loggers
-    config.plugins          // enable bundled plugins or add custom ones
-    config.vue              // vue settings, see /plugins/vue
-    config.contextResolvers // change implementation for Context functions
-    config.accessManager()  // configure the access manager
-    config.jsonMapper()     // configure the json mapper
-    config.fileRenderer()   // configure the file renderer
+    config.http // The http layer configuration: etags, request size, timeout, etc
+    config.router // The routing configuration: context path, slash treatment, etc
+    config.jetty // The embedded Jetty webserver configuration
+    config.staticFiles // Static files and webjars configuration
+    config.spaRoot = // Single Page Application roots configuration
+    config.requestLogger // Request Logger configuration: http and websocket loggers
+    config.bundledPlugins // Bundled plugins configuration: enable bundled plugins or add custom ones
+    config.events // Events configuration
+    config.vue // Vue Plugin configuration
+    config.contextResolver // Context resolver implementation configuration
+    config.validation // Default validator configuration
+    config.useVirtualThreads // Use virtual threads (based on Java Project Loom)
+    config.showJavalinBanner // Show the Javalin banner in the logs
+    config.startupWatcherEnabled // Print warning if instance was not started after 5 seconds
+    config.pvt // This is "private", only use it if you know what you're doing
+
+    events(listenerConfig) // Add an event listener
+    jsonMapper(jsonMapper) // Set a custom JsonMapper
+    fileRenderer(fileRenderer) // Set a custom FileRenderer
+    registerPlugin(plugin) // Register a plugin
+    appData(key, data) // Store data on the Javalin instance
 });
 ```
 
 All available subconfigs are explained in the sections below.
 
-### Compression
+### HttpConfig
 {% capture java %}
 Javalin.create(config -> {
-    config.compression.custom(compressionStrategy);       // set a custom CompressionStrategy
-    config.compression.brotliAndGzip(gzipLvl, brotliLvl); // use both gzip and brotli (optional lvls)
-    config.compression.gzipOnly(gzipLvl);                 // use gzip only (optional lvl)
-    config.compression.brotliOnly(brotliLvl);             // use brotli only (optional lvl)
-    config.compression.none();                            // disable compression
+    config.http.generateEtags = booleanValue;       // if javalin should generate etags for dynamic responses (not static files)
+    config.http.prefer405over404 = booleanValue;    // return 405 instead of 404 if path is mapped to different HTTP method
+    config.http.maxRequestSize = longValue;         // the max size of request body that can be accessed without using using an InputStream
+    config.http.defaultContentType = stringValue;   // the default content type
+    config.http.asyncTimeout = longValue;           // timeout in milliseconds for async requests (0 means no timeout)
+    
+    config.http.customCompression(strategy);        // set a custom compression strategy
+    config.http.brotliAndGzipCompression(lvl, lvl); // enable brotli and gzip compression with the specified levels
+    config.http.gzipOnlyCompression(lvl);           // enable gzip compression with the specified level
+    config.http.brotliOnlyCompression(lvl);         // enable brotli compression with the specified level
+    config.http.disableCompression();               // disable compression
 });
 {% endcapture %}
 {% capture kotlin %}
 Javalin.create { config ->
-    config.compression.custom(compressionStrategy)       // set a custom CompressionStrategy
-    config.compression.brotliAndGzip(gzipLvl, brotliLvl) // use both gzip and brotli (optional lvls)
-    config.compression.gzipOnly(gzipLvl)                 // use gzip only (optional lvl)
-    config.compression.brotliOnly(brotliLvl)             // use brotli only (optional lvl)
-    config.compression.none()                            // disable compression
+    config.http.generateEtags = booleanValue        // if javalin should generate etags for dynamic responses (not static files)
+    config.http.prefer405over404 = booleanValue     // return 405 instead of 404 if path is mapped to different HTTP method
+    config.http.maxRequestSize = longValue          // the max size of request body that can be accessed without using using an InputStream
+    config.http.defaultContentType = stringValue    // the default content type
+    config.http.asyncTimeout = longValue            // timeout in milliseconds for async requests (0 means no timeout)
+
+    config.http.customCompression(strategy)         // set a custom compression strategy
+    config.http.brotliAndGzipCompression(lvl, lvl)  // enable brotli and gzip compression with the specified levels
+    config.http.gzipOnlyCompression(lvl)            // enable gzip compression with the specified level
+    config.http.brotliOnlyCompression(lvl)          // enable brotli compression with the specified level
+    config.http.disableCompression()                // disable compression
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -1147,44 +1160,31 @@ Javalin.create { config ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-### HttpConfig
-{% capture java %}
-Javalin.create(config -> {
-    config.http.generateEtags = booleanValue;     // if javalin should generate etags for dynamic responses (not static files)
-    config.http.prefer405over404 = booleanValue;  // return 405 instead of 404 if path is mapped to different HTTP method
-    config.http.maxRequestSize = longValue;       // the max size of request body that can be accessed without using using an InputStream
-    config.http.defaultContentType = stringValue; // the default content type
-    config.http.asyncTimeout = longValue;         // timeout in milliseconds for async requests (0 means no timeout)
-});
-{% endcapture %}
-{% capture kotlin %}
-Javalin.create { config ->
-    config.http.generateEtags = booleanValue     // if javalin should generate etags for dynamic responses (not static files)
-    config.http.prefer405over404 = booleanValue  // return 405 instead of 404 if path is mapped to different HTTP method
-    config.http.maxRequestSize = longValue       // the max size of request body that can be accessed without using using an InputStream
-    config.http.defaultContentType = stringValue //  the default content type
-    config.http.asyncTimeout = longValue         // timeout in milliseconds for async requests (0 means no timeout)
-}
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
 ### JettyConfig
 {% capture java %}
 Javalin.create(config -> {
-    config.jetty.server(serverSupplier); // set the Jetty Server for Javalin to run on
-    config.jetty.sessionHandler(sessionHandlerSupplier); // set the SessionHandler that Jetty will use for sessions
-    config.jetty.contextHandlerConfig(contextHandlerConsumer); // configure the ServletContextHandler Jetty runs on
-    config.jetty.wsFactoryConfig(jettyWebSocketServletFactoryConsumer); // configure the JettyWebSocketServletFactory
-    config.jetty.httpConfigurationConfig(httpConfigurationConsumer); // configure the HttpConfiguration of Jetty
+    config.jetty.defaultHost = "localhost"; // set the default host for Jetty
+    config.jetty.defaultPort = 1234; // set the default port for Jetty
+    config.jetty.threadPool = new ThreadPool(); // set the thread pool for Jetty
+    config.jetty.multipartConfig = new MultipartConfig(); // set the multipart config for Jetty
+    config.jetty.modifyJettyWebSocketServletFactory(factory -> {}); // modify the JettyWebSocketServletFactory
+    config.jetty.modifyServer(server -> {}); // modify the Jetty Server
+    config.jetty.modifyServletContextHandler(handler -> {}); // modify the ServletContextHandler (you can set a SessionHandler here)
+    config.jetty.modifyHttpConfiguration(httpConfig -> {}); // modify the HttpConfiguration
+    config.jetty.addConnector((server, httpConfig) -> new ServerConnector(server)); // add a connector to the Jetty Server
 });
 {% endcapture %}
 {% capture kotlin %}
 Javalin.create { config ->
-    config.jetty.server(serverSupplier) // set the Jetty Server for Javalin to run on
-    config.jetty.sessionHandler(sessionHandlerSupplier) // set the SessionHandler that Jetty will use for sessions
-    config.jetty.contextHandlerConfig(contextHandlerConsumer) // configure the ServletContextHandler Jetty runs on
-    config.jetty.wsFactoryConfig(jettyWebSocketServletFactoryConsumer) // configure the JettyWebSocketServletFactory
-    config.jetty.httpConfigurationConfig(httpConfigurationConsumer) // configure the HttpConfiguration of Jetty
+    config.jetty.defaultHost = "localhost" // set the default host for Jetty
+    config.jetty.defaultPort = 1234 // set the default port for Jetty
+    config.jetty.threadPool = ThreadPool() // set the thread pool for Jetty
+    config.jetty.multipartConfig = MultipartConfig() // set the multipart config for Jetty
+    config.jetty.modifyJettyWebSocketServletFactory { factory -> } // modify the JettyWebSocketServletFactory
+    config.jetty.modifyServer { server -> } // modify the Jetty Server
+    config.jetty.modifyServletContextHandler { handler -> } // modify the ServletContextHandler (you can set a SessionHandler here)
+    config.jetty.modifyHttpConfiguration { httpConfig -> } // modify the HttpConfiguration
+    config.jetty.addConnector { server, httpConfig -> ServerConnector(server) } // add a connector to the Jetty Server
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -1260,21 +1260,21 @@ Javalin.create { config ->
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 The logger runs after the WebSocket handler for the endpoint.
 
-### RoutingConfig
+### RouterConfig
 {% capture java %}
 Javalin.create(config -> {
-    config.routing.contextPath = stringValue; // the context path (ex '/blog' if you are hosting an app on a subpath, like 'mydomain.com/blog')
-    config.routing.ignoreTrailingSlashes = booleanValue; // treat '/path' and '/path/' as the same path
-    config.routing.treatMultipleSlashesAsSingleSlash = booleanValue; // treat '/path//subpath' and '/path/subpath' as the same path
-    config.routing.caseInsensitiveRoutes = booleanValue; // treat '/PATH' and '/path' as the same path
+    config.router.contextPath = stringValue; // the context path (ex '/blog' if you are hosting an app on a subpath, like 'mydomain.com/blog')
+    config.router.ignoreTrailingSlashes = booleanValue; // treat '/path' and '/path/' as the same path
+    config.router.treatMultipleSlashesAsSingleSlash = booleanValue; // treat '/path//subpath' and '/path/subpath' as the same path
+    config.router.caseInsensitiveRoutes = booleanValue; // treat '/PATH' and '/path' as the same path
 });
 {% endcapture %}
 {% capture kotlin %}
 Javalin.create { config ->
-    config.routing.contextPath = stringValue // the context path (ex '/blog' if you are hosting an app on a subpath, like 'mydomain.com/blog')
-    config.routing.ignoreTrailingSlashes = booleanValue // treat '/path' and '/path/' as the same path
-    config.routing.treatMultipleSlashesAsSingleSlash = booleanValue // treat '/path//subpath' and '/path/subpath' as the same path
-    config.routing.caseInsensitiveRoutes = booleanValue // treat '/PATH' and '/path' as the same path
+    config.router.contextPath = stringValue // the context path (ex '/blog' if you are hosting an app on a subpath, like 'mydomain.com/blog')
+    config.router.ignoreTrailingSlashes = booleanValue // treat '/path' and '/path/' as the same path
+    config.router.treatMultipleSlashesAsSingleSlash = booleanValue // treat '/path//subpath' and '/path/subpath' as the same path
+    config.router.caseInsensitiveRoutes = booleanValue // treat '/PATH' and '/path' as the same path
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -1407,26 +1407,6 @@ The `Javalin#start` method is overloaded to accept the Host (IP) as the first ar
 ```java
 Javalin.create().start("127.0.0.1", 1235)
 ```
-
-#### Custom server
-If you need to customize the embedded server, you can call the `server()` method:
-{% capture java %}
-Javalin.create(config -> {
-    config.jetty.server(() -> {
-        Server server = new Server(); // configure this however you want
-        return server;
-    });
-});
-{% endcapture %}
-{% capture kotlin %}
-Javalin.create { config ->
-    config.jetty.server {
-        val server = Server() // configure this however you want
-        server
-    }
-}
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 #### Custom SessionHandler
 Read about how to configure sessions in our [session tutorial](/tutorials/jetty-session-handling).
