@@ -4,43 +4,51 @@
 import io.javalin.Javalin;
 import static io.javalin.apibuilder.ApiBuilder.*;
 
-Javalin app = Javalin.create(config -> {
-    config.enableCorsForAllOrigins();
-    config.asyncRequestTimeout = 10_000L;
-    config.enforceSsl = true;
-}).routes(() -> {
-    path("users", () -> {
-        get(UserController::getAll);
-        post(UserController::create);
-        path("{userId}", () -> {
-            get(UserController::getOne);
-            patch(UserController::update);
-            delete(UserController::delete);
+public static void main(String[] args) {
+    var app = Javalin.create(config -> {
+        config.useVirtualThreads = true;
+        config.http.asyncTimeout = 10_000L;
+        config.staticFiles.add("/public");
+        config.staticFiles.enableWebjars();
+        config.router.apiBuilder(() -> {
+            path("/users", () -> {
+                get(UserController::getAll);
+                post(UserController::create);
+                path("/{userId}", () -> {
+                    get(UserController::getOne);
+                    patch(UserController::update);
+                    delete(UserController::delete);
+                });
+                ws("/events", userController::webSocketEvents);
+            });
         });
-        ws("events", userController::webSocketEvents);
-    });
-}).start(port);
+    }).start(7070);
+}
 {% endcapture %}
 {% capture kotlin %}
-import io.javalin.Javalin;
-import io.javalin.apibuilder.ApiBuilder.*;
+import io.javalin.Javalin
+import io.javalin.apibuilder.ApiBuilder.*
 
-val app = Javalin.create { config ->
-    config.enableCorsForAllOrigins()
-    config.asyncRequestTimeout = 10_000L
-    config.enforceSsl = true
-}.routes {
-    path("users") {
-        get(UserController::getAll)
-        post(UserController::create)
-        path("{userId}") {
-            get(UserController::getOne)
-            patch(UserController::update)
-            delete(UserController::delete)
+fun main() {
+    val app = Javalin.create { config ->
+        config.useVirtualThreads = true
+        config.http.asyncTimeout = 10_000L
+        config.staticFiles.add("/public")
+        config.staticFiles.enableWebjars()
+        config.router.apiBuilder {
+            path("/users") {
+                get(UserController::getAll)
+                post(UserController::create)
+                path("/{userId}") {
+                    get(UserController::getOne)
+                    patch(UserController::update)
+                    delete(UserController::delete)
+                }
+                ws("/events", userController::webSocketEvents)
+            }
         }
-        ws("events", userController::webSocketEvents)
-    }
-}.start(port)
+    }.start(7070)
+}
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 

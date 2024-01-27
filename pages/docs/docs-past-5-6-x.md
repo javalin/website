@@ -1,8 +1,8 @@
 ---
 layout: default
-title: Documentation
+title: Archive - v5 Documentation
 rightmenu: true
-permalink: /documentation
+permalink: /archive/docs/v5.6.X.html
 ---
 
 {% include notificationBanner.html %}
@@ -67,11 +67,10 @@ permalink: /documentation
   - [Documentation for previous versions](#documentation-for-previous-versions)
 </div>
 
-<h1 class="no-margin-top">Documentation</h1>
+<h1 class="no-margin-top">Documentation - Javalin 5.X</h1>
 
-The documentation is for the latest version of Javalin, currently `{{site.javalinversion}}`.
-Javalin follows [semantic versioning](http://semver.org/), meaning there are no breaking
-changes unless the major (leftmost) digit changes, for example `5.X.X` to `6.X.X`.
+This page contains documentation for an older version of Javalin.
+Go to [javalin.io/documentation](/documentation) to view documentation for the newest version.
 
 {% include sponsorOrStar.html %}
 
@@ -121,22 +120,6 @@ app.before("/path/*") { ctx ->
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
-In some cases, you might want to only run a before-handler if the request will be matched (not 404).
-In this case you can use the `app.beforeMatched` method:
-
-{% capture java %}
-app.beforeMatched(ctx -> {
-    // runs before all matched requests (including static files)
-});
-{% endcapture %}
-{% capture kotlin %}
-app.beforeMatched { ctx ->
-    // runs before all matched requests (including static files)
-}
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
 
 ### Endpoint handlers
 Endpoint handlers are the main handler type, and defines your API. You can add a GET handler to
@@ -226,21 +209,6 @@ app.after { ctx ->
 }
 app.after("/path/*") { ctx ->
     // runs after request to /path/*
-}
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
-In some cases, you might want to only run an after-handler if the request will be matched (not 404).
-In this case you can use the `app.afterMatched` method:
-
-{% capture java %}
-app.afterMatched(ctx -> {
-    // runs after all matched requests (including static files)
-});
-{% endcapture %}
-{% capture kotlin %}
-app.afterMatched { ctx ->
-    // runs after all matched requests (including static files)
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -337,8 +305,27 @@ appAttribute("name")                  // get an attribute on the Javalin instanc
 matchedPath()                         // get the path that was used to match this request (ex, "/hello/{name}")
 endpointHandlerPath()                 // get the path of the endpoint handler that was used to match this request
 cookieStore()                         // see cookie store section below
-skipRemainingHandlers()               // skip all remaining handlers for this request
 ```
+
+It is also possible to cast `Context` to an internal Javalin implementation.
+
+The following example accesses the `JavalinServletContext` task queue, and skips
+any remaining tasks for the request (access-manager, http-handlers, after-handlers, etc):
+
+{% capture java %}
+app.before(ctx -> {
+    ctx.result("My result here");
+    JavalinServletContext jsc = (JavalinServletContext) ctx;
+    jsc.getTasks().clear();
+})
+{% endcapture %}
+{% capture kotlin %}
+app.before { ctx ->
+    it.result("My result here")
+    (ctx as JavalinServletContext).tasks.clear()
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 #### App Attributes
 
@@ -2057,7 +2044,6 @@ After switching the class loader, you may still receive a missing dependency err
 ---
 
 ### Documentation for previous versions
-Docs for 5.6.X (last 4.X version) can be found [here](/archive/docs/v5.6.X.html).\\
 Docs for 4.6.X (last 4.X version) can be found [here](/archive/docs/v4.6.X.html).\\
 Docs for 3.13.X (last 3.X version) can be found [here](/archive/docs/v3.13.X.html).\\
 Docs for 2.8.0 (last 2.X version) can be found [here](/archive/docs/v2.8.0.html).\\
