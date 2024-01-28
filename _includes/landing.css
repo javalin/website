@@ -60,8 +60,12 @@ nav ul li a:hover {
 }
 
 .bluepart .multitab-code {
-    max-width: 540px;
+    max-width: 600px;
     margin: 40px auto;
+}
+
+.bluepart.blackpart .multitab-code {
+    max-width: 540px;
 }
 
 .bluepart .multitab-code ul {

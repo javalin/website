@@ -70,11 +70,3 @@ permalink: /
     title="<h1 id='whos-using-javalin'>Who's using Javalin?</h1>"
     paragraph="Are you using Javalin? <a href='https://github.com/javalin/javalin/issues/1676'>Let us know</a>!"
 %}
-
-{% include landing/section-7-survey.html
-    title="<h1>What is Javalin used for?</h1>"
-    paragraph="
-        Check out our recent <a href='/blog/javalin-user-survey-2021'>survey results</a><br>
-        to learn more about how people use Javalin.
-    "
-%}

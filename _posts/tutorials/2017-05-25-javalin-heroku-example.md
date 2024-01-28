@@ -119,21 +119,21 @@ so we have to get this port and tell Javalin to use it:
 ~~~java
 import io.javalin.Javalin;
 
-public class Main {
+public class JavalinHerokuExampleApp {
 
-  public static void main(String[] args) {
-    Javalin app = Javalin.create()
-        .start(getHerokuAssignedPort())
-        .get("/", ctx -> ctx.result("Hello Heroku"));
-  }
-
-  private static int getHerokuAssignedPort() {
-    String herokuPort = System.getenv("PORT");
-    if (herokuPort != null) {
-      return Integer.parseInt(herokuPort);
+    public static void main(String[] args) {
+        Javalin.create()
+            .get("/", ctx -> ctx.result("Hello Heroku"))
+            .start(getHerokuAssignedPort());
     }
-    return 7000;
-  }
+
+    private static int getHerokuAssignedPort() {
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        if (processBuilder.environment().get("PORT") != null) {
+            return Integer.parseInt(processBuilder.environment().get("PORT"));
+        }
+        return 7070;
+    }
 
 }
 ~~~

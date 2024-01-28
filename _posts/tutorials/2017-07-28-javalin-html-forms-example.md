@@ -47,7 +47,7 @@ public class JavalinHtmlFormsExampleApp {
 
         Javalin app = Javalin.create(config -> {
             config.staticFiles.add("/public", Location.CLASSPATH);
-        }).start(7070);
+        });
 
         app.post("/make-reservation", ctx -> {
             reservations.put(ctx.formParam("day"), ctx.formParam("time"));
@@ -57,6 +57,8 @@ public class JavalinHtmlFormsExampleApp {
         app.get("/check-reservation", ctx -> {
             ctx.html(reservations.get(ctx.queryParam("day")));
         });
+
+        app.start();
 
     }
 
@@ -68,15 +70,15 @@ import io.javalin.http.staticfiles.Location
 import io.javalin.util.FileUtil
 
 private val reservations = mutableMapOf<String?, String?>(
-    "saturday" to "No reservation",
-    "sunday" to "No reservation"
+"saturday" to "No reservation",
+"sunday" to "No reservation"
 )
 
 fun main() {
 
     val app = Javalin.create {
         it.staticFiles.add("/public", Location.CLASSPATH)
-    }.start(7070)
+    }
 
     app.post("/make-reservation") { ctx ->
         reservations[ctx.formParam("day")] = ctx.formParam("time")
@@ -86,6 +88,8 @@ fun main() {
     app.get("/check-reservation") { ctx ->
         ctx.html(reservations[ctx.queryParam("day")]!!)
     }
+
+    app.start(7070)
 
 }
 {% endcapture %}
@@ -167,7 +171,7 @@ Let's expand our example a bit to include file uploads.
 {% capture java %}
 app.post("/upload-example", ctx -> {
     ctx.uploadedFiles("files").forEach(file -> {
-        FileUtil.streamToFile(file.getContent(), "upload/" + file.getFilename());
+        FileUtil.streamToFile(file.content(), "upload/" + file.filename());
     });
     ctx.html("Upload successful");
 });

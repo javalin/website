@@ -7,7 +7,7 @@ date: 2017-08-24
 permalink: /tutorials/auth-example
 github: https://github.com/javalin/javalin-samples/tree/main/javalin5/javalin-auth-example
 summarytitle: Secure your endpoints!
-summary: Learn how to secure your endpoints using Javalin's AccessManager interface
+summary: Learn how to secure your endpoints using before-filters and route-roles
 language: ["java", "kotlin"]
 ---
 
@@ -116,21 +116,20 @@ object UserController {
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-<small><em>We're using `!!` to convert nullables to non-nullables.
-If `{user-id}` is missing or `users[id]` returns null, we'll get a NullPointerException
-and our application will crash. Handling this is outside the scope of the tutorial.</em></small>
-
 ## Creating roles
 Now that we have our functionality, we need to define a set of roles for our system.
-This is done by implementing the `Role` interface from `io.javalin.security.Role`.
+This is done by implementing the `RouteRole` interface from `io.javalin.security.RouteRole`.
 We'll define three roles, one for "anyone", one for permission to read user-data,
 and one for permission to write user-data.
 
-
 {% capture java %}
+import io.javalin.security.RouteRole;
+
 enum Role implements RouteRole { ANYONE, USER_READ, USER_WRITE }
 {% endcapture %}
 {% capture kotlin %}
+import io.javalin.security.RouteRole
+
 enum class Role : RouteRole { ANYONE, USER_READ, USER_WRITE }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -140,26 +139,29 @@ Now that we have roles, we can implement our endpoints:
 
 {% capture java %}
 import io.javalin.Javalin;
-import io.javalin.apibuilder.ApiBuilder.*;
+import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class Main {
 
     public static void main(String[] args) {
 
         Javalin app = Javalin.create(config -> {
-            config.accessManager(Auth::accessManager);
-        }).routes(() -> {
-            get("/", ctx -> ctx.redirect("/users"), Role.ANYONE);
-            path("users", () -> {
-                get(UserController::getAllUserIds, Role.ANYONE);
-                post(UserController::createUser, Role.USER_WRITE);
-                path("{userId}", () -> {
-                    get(UserController::getUser, Role.USER_READ);
-                    patch(UserController::updateUser, Role.USER_WRITE);
-                    delete(UserController::deleteUser, Role.USER_WRITE);
+            config.router.mount(router -> {
+                router.beforeMatched(Auth::handleAccess);
+            }).apiBuilder(() -> {
+                get("/", ctx -> ctx.redirect("/users"), Role.ANYONE);
+                path("users", () -> {
+                    get(UserController::getAllUserIds, Role.ANYONE);
+                    post(UserController::createUser, Role.USER_WRITE);
+                    path("{userId}", () -> {
+                        get(UserController::getUser, Role.USER_READ);
+                        patch(UserController::updateUser, Role.USER_WRITE);
+                        delete(UserController::deleteUser, Role.USER_WRITE);
+                    });
                 });
             });
         }).start(7070);
+        
     }
 }
 {% endcapture %}
@@ -169,17 +171,19 @@ import io.javalin.Javalin
 
 fun main() {
 
-    Javalin.create{
-        it.accessManager(Auth::accessManager)
-    }.routes {
-        get("/", { ctx -> ctx.redirect("/users") }, Role.ANYONE)
-        path("users") {
-            get(UserController::getAllUserIds, Role.ANYONE)
-            post(UserController::createUser, Role.USER_WRITE)
-            path("{userId}") {
-                get(UserController::getUser, Role.USER_READ)
-                patch(UserController::updateUser, Role.USER_WRITE)
-                delete(UserController::deleteUser, Role.USER_WRITE)
+    Javalin.create {
+        it.router.mount {
+            it.beforeMatched(Auth::handleAccess)
+        }.apiBuilder {
+            get("/", { ctx -> ctx.redirect("/users") }, Role.ANYONE)
+            path("users") {
+                get(UserController::getAllUserIds, Role.ANYONE)
+                post(UserController::createUser, Role.USER_WRITE)
+                path("{userId}") {
+                    get(UserController::getUser, Role.USER_READ)
+                    patch(UserController::updateUser, Role.USER_WRITE)
+                    delete(UserController::deleteUser, Role.USER_WRITE)
+                }
             }
         }
     }.start(7070)
@@ -193,40 +197,34 @@ A role has now been given to every endpoint:
 * `USER_READ` can `getUser`
 * `USER_WRITE` can `createUser`, `updateUser` and `deleteUser`
 
-Now, all that remains is to implement the access-manager (`Auth::accessManager`).
+Now, all that remains is to implement the access-management (`Auth::handleAccess`).
 
 ## Implementing auth
-
-The `AccessManager` interface in Javalin is pretty simple.
-It takes a `Handler` a `Context` and a set of `Role`s.
-The idea is that you implement code to run the handler
-based on what's in the context, and what roles are set for the endpoint.
-
-The rules for our access manager are also simple:
+The rules for our access manager are simple:
 * When endpoint has `ApiRole.ANYONE`, all requests will be handled
 * When endpoint has another role set and the request has matching credentials, the request will be handled
-* Else we ignore the request and send `401 Unauthorized` back to the client
+* Otherwise, we stop the request and send `401 Unauthorized` back to the client
 
 This translates nicely into code:
 {% capture java %}
-public static void accessManager(Handler handler, Context ctx, Set<? extends RouteRole> permittedRoles) {
+public static void handleAccess(Context ctx) {
+    var permittedRoles = ctx.routeRoles();
     if (permittedRoles.contains(Role.ANYONE)) {
-        handler.handle(ctx);
-        return;
+        return; // anyone can access
     }
-    if (ctx.userRoles().stream().anyMatch(permittedRoles::contains)) {
-        handler.handle(ctx);
-        return;
-    }   
+    if (userRoles(ctx).stream().anyMatch(permittedRoles::contains)) {
+        return; // user has role required to access
+    }
     ctx.header(Header.WWW_AUTHENTICATE, "Basic");
     throw new UnauthorizedResponse();
 }
 {% endcapture %}
 {% capture kotlin %}
-fun accessManager(handler: Handler, ctx: Context, permittedRoles: Set<RouteRole>) {
+fun handleAccess(ctx: Context) {
+    val permittedRoles = ctx.routeRoles()
     when {
-        permittedRoles.contains(Role.ANYONE) -> handler.handle(ctx)
-        ctx.userRoles.any { it in permittedRoles } -> handler.handle(ctx)
+        permittedRoles.contains(Role.ANYONE) -> return
+        ctx.userRoles.any { it in permittedRoles } -> return
         else -> {
             ctx.header(Header.WWW_AUTHENTICATE, "Basic")
             throw UnauthorizedResponse();
@@ -237,18 +235,19 @@ fun accessManager(handler: Handler, ctx: Context, permittedRoles: Set<RouteRole>
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ### Extracting user-roles from the context
-There is no `ctx.userRoles` concept in Javalin, so we need to implement it.
+There is no `ctx.userRoles` or `userRoles(ctx)` built into Javalin, so we need to implement something.
 First we need a user-table. We'll create a `map(Pair<String, String>, Set<Role>)` where keys are
 username+password in cleartext (please don't do this for a real service), and values are user-roles:
 
 {% capture java %}
-public record Pair(String user, String password) {}
+record Pair(String a, String b) {}
 private static final Map<Pair, List<Role>> userRolesMap = Map.of(
     new Pair("alice", "weak-1234"), List.of(Role.USER_READ),
     new Pair("bob", "weak-123456"), List.of(Role.USER_READ, Role.USER_WRITE)
 );
 {% endcapture %}
 {% capture kotlin %}
+// pair is a native kotlin class
 private val userRolesMap = mapOf(
     Pair("alice", "weak-1234") to listOf(Role.USER_READ),
     Pair("bob", "weak-123456") to listOf(Role.USER_READ, Role.USER_WRITE)
@@ -281,15 +280,4 @@ When using basic auth, credentials are transferred as plain text (although base6
 </em></small>
 
 ## Conclusion
-This tutorial showed one possible way of implementing an `AccessManager` in Javalin, but
-the interface is very flexible and you can really do whatever you want:
-```kotlin
-app.accessManager(handler, ctx, permittedRoles) -> {
-    when {
-        ctx.host().contains("localhost") -> handler.handle(ctx)
-        Math.random() > 0.5 -> handler.handle(ctx)
-        dayOfWeek == Calendar.SUNDAY -> handler.handle(ctx)
-        else -> ctx.status(401).json("Unauthorized")
-    }
-};
-```
+That's it! You now have a secure REST API with three roles.

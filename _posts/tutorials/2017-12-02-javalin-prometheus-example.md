@@ -49,14 +49,13 @@ public static void main(String[] args) throws Exception {
     StatisticsHandler statisticsHandler = new StatisticsHandler();
     QueuedThreadPool queuedThreadPool = new QueuedThreadPool(200, 8, 60_000);
 
-    Javalin app = Javalin.create(config ->
-        config.jetty.server(() -> {
-            Server server = new Server(queuedThreadPool);
+    Javalin app = Javalin.create(config -> {
+        config.jetty.threadPool = queuedThreadPool;
+        config.jetty.modifyServer(server -> {
             server.setHandler(statisticsHandler);
-            return server;
-        })
-    ).start(7070);
-
+        });
+    }).start(7070);
+    initializePrometheus(statisticsHandler, queuedThreadPool);
 }
 
 private static void initializePrometheus(StatisticsHandler statisticsHandler, QueuedThreadPool queuedThreadPool) throws IOException {
@@ -73,13 +72,12 @@ fun main() {
     val queuedThreadPool = QueuedThreadPool(200, 8, 60_000)
 
     val app = Javalin.create {
-        it.jetty.server {
-            Server(queuedThreadPool).apply {
-                handler = statisticsHandler
-            }
+        it.jetty.threadPool = queuedThreadPool
+        it.jetty.modifyServer { 
+            it.handler = statisticsHandler 
         }
     }.start(7070)
-
+    initializePrometheus(statisticsHandler, queuedThreadPool)
 }
 
 private fun initializePrometheus(statisticsHandler: StatisticsHandler, queuedThreadPool: QueuedThreadPool) {
@@ -97,7 +95,6 @@ We then call `initializePrometheus` which registers collectors for these objects
 If you are familiar with how Prometheus/Grafana works, you can stop reading the tutorial now and start scraping from the server running on port `7080`.
 If not, please read on.
 
-
 ## Exporting statistics using Prometheus-client
 To collect data using Prometheus you need to create object which extends `Collector`.
 In the source code you'll find two such objects: [StatisticsHandlerCollector](https://github.com/tipsy/javalin-prometheus-example/blob/master/src/main/java/StatisticsHandlerCollector.java)
@@ -112,7 +109,7 @@ To make sure that everything works, it's good to have some traffic to look at.
 So, we need to declare a few endpoints and make requests to them. Let's add this to our `public static void main`:
 
 {% capture java %}
-app.routes(() -> {
+router.apiBuilder(() -> { // available on config.router inside Javalin.create()
     get("/1", ctx -> ctx.result("Hello World"));
     get("/2", ctx -> {
         Thread.sleep((long) (Math.random() * 2000));
@@ -128,7 +125,7 @@ while (true) {
 }
 {% endcapture %}
 {% capture kotlin %}
-app.routes {
+router.apiBuilder { // available on config.router inside Javalin.create()
     get("/1") { ctx -> ctx.result("Hello World") }
     get("/2") { ctx ->
         Thread.sleep((Math.random() * 2000).toLong())

@@ -70,23 +70,24 @@ public class JavalinWebsocketExampleApp {
     public static void main(String[] args) {
         Javalin app = Javalin.create(config -> {
             config.staticFiles.add("/public", Location.CLASSPATH);
+            config.router.mount(router -> {
+                router.ws("/chat", ws -> {
+                    ws.onConnect(ctx -> {
+                        String username = "User" + nextUserNumber++;
+                        userUsernameMap.put(ctx, username);
+                        broadcastMessage("Server", (username + " joined the chat"));
+                    });
+                    ws.onClose(ctx -> {
+                        String username = userUsernameMap.get(ctx);
+                        userUsernameMap.remove(ctx);
+                        broadcastMessage("Server", (username + " left the chat"));
+                    });
+                    ws.onMessage(ctx -> {
+                        broadcastMessage(userUsernameMap.get(ctx), ctx.message());
+                    });
+                });
+            });
         }).start(7070);
-
-        app.ws("/chat", ws -> {
-            ws.onConnect(ctx -> {
-                String username = "User" + nextUserNumber++;
-                userUsernameMap.put(ctx, username);
-                broadcastMessage("Server", (username + " joined the chat"));
-            });
-            ws.onClose(ctx -> {
-                String username = userUsernameMap.get(ctx);
-                userUsernameMap.remove(ctx);
-                broadcastMessage("Server", (username + " left the chat"));
-            });
-            ws.onMessage(ctx -> {
-                broadcastMessage(userUsernameMap.get(ctx), ctx.message());
-            });
-        });
     }
 
     // Sends a message from one user to all users, along with a list of current usernames
@@ -127,20 +128,21 @@ private var nextUserNumber = 1 // Assign to username for next connecting user
 fun main() {
     Javalin.create {
         it.staticFiles.add("/public", Location.CLASSPATH)
-    }.apply {
-        ws("/chat") { ws ->
-            ws.onConnect { ctx ->
-                val username = "User" + nextUserNumber++
-                userUsernameMap.put(ctx, username)
-                broadcastMessage("Server", "$username joined the chat")
-            }
-            ws.onClose { ctx ->
-                val username = userUsernameMap[ctx]
-                userUsernameMap.remove(ctx)
-                broadcastMessage("Server", "$username left the chat")
-            }
-            ws.onMessage { ctx ->
-                broadcastMessage(userUsernameMap[ctx]!!, ctx.message())
+        it.router.mount {
+            it.ws("/chat") { ws ->
+                ws.onConnect { ctx ->
+                    val username = "User" + nextUserNumber++
+                    userUsernameMap[ctx] = username
+                    broadcastMessage("Server", "$username joined the chat")
+                }
+                ws.onClose { ctx ->
+                    val username = userUsernameMap[ctx]
+                    userUsernameMap.remove(ctx)
+                    broadcastMessage("Server", "$username left the chat")
+                }
+                ws.onMessage { ctx ->
+                    broadcastMessage(userUsernameMap[ctx]!!, ctx.message())
+                }
             }
         }
     }.start(7070)
