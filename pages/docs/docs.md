@@ -20,26 +20,24 @@ permalink: /documentation
   - [After](#wsafter)
   - [WsContext (wsCtx)](#wscontext)
 - [Handler groups](#handler-groups)
-  - [CrudHandler](#crudhandler)
 - [Validation](#validation)
   - [Validator API](#validator-api)
   - [Validation examples](#validation-examples)
   - [Collecting errors](#collecting-multiple-errors)
   - [ValidationException](#validationexception)
   - [Custom converters](#custom-converters)
-- [Access manager](#access-manager)
+- [Access management](#access-management)
 - [Default responses](#default-responses)
 - [Exception Mapping](#exception-mapping)
 - [Error Mapping](#error-mapping)
 - [Server-sent Events](#server-sent-events)
   - [SseClient API](#sseclient-api)
 - [Configuration](#configuration)
-  - [Compression](#compression)
-  - [ContextResolvers](#contextresolvers)
   - [HttpConfig](#httpconfig)
+  - [ContextResolvers](#contextresolvers)
   - [JettyConfig](#jettyconfig)
   - [RequestLoggerConfig](#requestloggerconfig)
-  - [RoutingConfig](#routingconfig)
+  - [RouterConfig](#routerconfig)
   - [SpaRootConfig](#sparootconfig)
   - [StaticFileConfig](#staticfileconfig)
   - [Logging](#logging)
@@ -604,9 +602,9 @@ The `WsConnectContext` class doesn't add anything to the base `WsContext`
 
 ## Handler groups
 You can group your endpoints by using the `apiBuilder()` and `path()` methods. The `apiBuilder()` 
-methods creates a temporary static instance of Javalin, so that you can skip the `app.` prefix
-before your handlers. This is equivalent to calling `ApiBuilder.get(app, ...)`, which translates
-to `config.router.get(...)`. It is **not** a global singleton that holds any information, so
+methods creates a temporary static instance of Javalin, so that you can skip the `app.` or `router.` prefix
+before your handlers. This is equivalent to calling `ApiBuilder.get(app/router, ...)`, which translates
+to `app/router.get(...)`. It is **not** a global singleton that holds static information, so
 you can use this safely in multiple locations and from multiple threads.
 
 You can import all the HTTP methods with `import static io.javalin.apibuilder.ApiBuilder.*`.
@@ -645,7 +643,7 @@ Note that `path()` prefixes your paths with `/` (if you don't add it yourself).\
 This means that `path("api", ...)` and `path("/api", ...)` are equivalent.
 
 ### CrudHandler
-The `CrudHandler` is an interface that can be used within a `routes()` call:
+The `CrudHandler` is an interface that can be used within an `apiBuilder()` call:
 
 {% capture java %}
 config.router.apiBuilder(() -> {
@@ -822,7 +820,7 @@ Javalin.create { config ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-## Access manager
+## Access management
 Javalin used to have a functional interface `AccessManager`, which let you
 set per-endpoint authentication and/or authorization. In Javalin 6, this has been
 replaced with the `beforeMatched` handler. You can read more about this in the
@@ -1094,11 +1092,11 @@ Javalin.create(config -> {
     config.startupWatcherEnabled // Print warning if instance was not started after 5 seconds
     config.pvt // This is "private", only use it if you know what you're doing
 
-    events(listenerConfig) // Add an event listener
-    jsonMapper(jsonMapper) // Set a custom JsonMapper
-    fileRenderer(fileRenderer) // Set a custom FileRenderer
-    registerPlugin(plugin) // Register a plugin
-    appData(key, data) // Store data on the Javalin instance
+    config.events(listenerConfig) // Add an event listener
+    config.jsonMapper(jsonMapper) // Set a custom JsonMapper
+    config.fileRenderer(fileRenderer) // Set a custom FileRenderer
+    config.registerPlugin(plugin) // Register a plugin
+    config.appData(key, data) // Store data on the Javalin instance
 });
 ```
 
@@ -1486,33 +1484,10 @@ app.stop() // serverStopping -> serverStopped
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ## Plugins
-Javalin's plugin system has two interfaces, `Plugin` and `PluginLifecycleInit`:
+Javalin has a plugin system, which lets you add functionality to Javalin.
+You do this by extending the `Plugin` class and overriding the methods you're interested in.
 
-```java
-interface Plugin {
-    void apply(@NotNull Javalin app);
-}
-interface PluginLifecycleInit {
-    void init(@NotNull Javalin app);
-}
-```
-
-When implementing `PluginLifecycleInit#init`, you are not allowed to add `Handler` instances to the app.\\
-The two interface methods are called like this during setup:
-
-```java
-initPlugins.forEach(plugin -> {
-    plugin.init(app);
-    // will throw exception if `init` adds Handler
-});
-
-plugins.forEach(plugin -> plugin.apply(app));
-```
-
-This is mainly so each plugin has a chance to add `handlerAdded` listeners before other plugins
-add *their* handlers, so that each plugin has a complete overview of all handlers.
-
-See the [plugins](/plugins) page for more information about plugins.
+See the [plugins](/plugins/how-to) page for more information about plugins.
 
 ## FAQ
 Frequently asked questions.
@@ -1567,28 +1542,18 @@ Different endpoints can have different rate limits. It works as follows:
 
 ### Android
 
-Due to [Jetty 11 not working on Android](https://github.com/javalin/javalin.github.io/issues/211#issuecomment-1438319603), Javalin 5 is not compatible either, but Javalin 4 is. You can find the docs for Javalin 4 [here](/archive/docs/v4.6.X.html).
-
-You can check the status of Jetty 11 on Android [here](https://github.com/eclipse/jetty.project/issues/8912#issuecomment-1439716937).
+Due to [Jetty 11 not working on Android](https://github.com/javalin/javalin.github.io/issues/211#issuecomment-1438319603), 
+Javalin 5+ is not compatible either, but Javalin 4 is.\\
+You can find the docs for Javalin 4 [here](/archive/docs/v4.6.X.html).\\
+You can check the status of Jetty 11+ on Android [here](https://github.com/eclipse/jetty.project/issues/8912#issuecomment-1439716937).
 
 ---
 
 ### Concurrency
 If your JRE supports project Loom,
-Javalin will use a `newVirtualThreadPerTaskExecutor` for serving requests by default.
+Javalin will use a `newVirtualThreadPerTaskExecutor` for serving requests if you set the 
+`enableVirtualThreads` config option.
 Otherwise, a `QueuedThreadPool` with 250 threads will be used.
-
-If you experience problems with the virtual thread pool,
-e.g. if your application doesn't respond to incoming requests after about one minute,
-try disabling project Loom:
-
-{% capture java %}
-ConcurrencyUtil.INSTANCE.setUseLoom(false);
-{% endcapture %}
-{% capture kotlin %}
-ConcurrencyUtil.useLoom = false
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 Each incoming request is handled by a dedicated thread, so all Handler implementations should be thread-safe.
 This default configuration allows Javalin to handle up to 250 concurrent requests,
