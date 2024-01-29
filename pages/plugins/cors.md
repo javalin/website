@@ -56,7 +56,7 @@ deny via other means such as an access manager, but it is recommended to just al
 Javalin.create(config -> {
     config.bundledPlugins.enableCors(cors -> {
         cors.addRule(it -> {
-            it.allowHost("example.com", "javalin.io");
+            it.anyHost();
         });
     });
 });
@@ -65,7 +65,7 @@ Javalin.create(config -> {
 Javalin.create { config ->
     config.bundledPlugins.enableCors { cors ->
         cors.addRule {
-            it.allowHost("example.com", "javalin.io")
+            it.anyHost()
         }
     }
 }
