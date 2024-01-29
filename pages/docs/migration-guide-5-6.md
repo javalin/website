@@ -474,6 +474,8 @@ Javalin.create { config ->
   conflict with Jetty's websocket dependency.
 * Now that Loom is part of the official JDKs, it is no longer opt-in, and therefor no longer enabled by default.  
   You can enable it by calling `config.useVirtualThreads = true`.
+* The bundled plugins are now available on `config.bundledPlugins`, instead of `config.plugins`.
+* The `add` method in the CORS-plugin is now called `addRule`.
 
 ## Additional changes
 It's hard to keep track of everything, but you can look at the
