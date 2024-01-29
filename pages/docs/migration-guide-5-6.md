@@ -477,7 +477,7 @@ Javalin.create { config ->
 
 ## Additional changes
 It's hard to keep track of everything, but you can look at the
-[full commit log](https://github.com/javalin/javalin/compare/javalin-parent-5.6.3...javalin-parent-6.0.0-beta.2)
+[full commit log](https://github.com/javalin/javalin/compare/javalin-parent-5.6.3...javalin-parent-6.0.0)
 between the last 5.x version and 6.0.
 
 If you run into something not covered by this guide, please <a href="{{site.repourl}}/blob/master/{{page.path}}">edit this page on GitHub</a>!
