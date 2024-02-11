@@ -15,7 +15,7 @@ github: https://github.com/sombriks/javalin-logging-examples
 
 ## Introduction
 
-Javalin offers support for first class logging via SL4J and with a few tweaks
+Javalin offers support for first class logging via SLF4J and with a few tweaks
 it's possible to configure one [logging framework](https://www.slf4j.org/manual.html#swapping)
 in your project.
 
