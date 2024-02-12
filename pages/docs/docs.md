@@ -1835,11 +1835,11 @@ You can also use it to build simple proxy using `AsyncProxyServlet` that is part
 ```java
 // Add org.eclipse.jetty:jetty-proxy to maven/gradle dependencies (e.g Javalin 5.3.2 uses Jetty 11.0.13)
 Javalin.create(config -> {
-    config.jetty.contextHandlerConfig(sch -> {
-	ServletHolder proxyServlet = new ServletHolder(AsyncProxyServlet.Transparent.class);
-	proxyServlet.setInitParameter("proxyTo", "https://javalin.io/");
-	proxyServlet.setInitParameter("prefix", "/proxy");
-	sch.addServlet(proxyServlet, "/proxy/*");
+    config.jetty.modifyServletContextHandler { handler ->
+        ServletHolder proxyServlet = new ServletHolder(AsyncProxyServlet.Transparent.class);
+        proxyServlet.setInitParameter("proxyTo", "https://javalin.io/");
+        proxyServlet.setInitParameter("prefix", "/proxy");
+        handler.addServlet(proxyServlet, "/proxy/*");
     });
 }).start(7000);
 ```
