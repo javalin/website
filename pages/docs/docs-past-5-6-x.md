@@ -77,6 +77,7 @@ Go to [javalin.io/documentation](/documentation) to view documentation for the n
 ## Getting Started
 
 Add the dependency:
+{% assign javalinVersion = site.javalinFiveVersion %}
 {% include macros/mavenDep.md %}
 
 Start coding:

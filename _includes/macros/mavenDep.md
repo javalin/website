@@ -14,7 +14,7 @@
 <dependency>
     <groupId>io.javalin</groupId>
     <artifactId>javalin</artifactId>
-    <version>{{site.javalinversion}}</version>
+    <version>{{javalinVersion | default: site.javalinversion}}</version>
 </dependency>
 ~~~
 Not familiar with Maven? Read our [Maven tutorial](/tutorials/maven-setup).
@@ -22,38 +22,38 @@ Not familiar with Maven? Read our [Maven tutorial](/tutorials/maven-setup).
 
 <div data-tab="2" markdown="1">
 ~~~java
-implementation("io.javalin:javalin:{{site.javalinversion}}")
+implementation("io.javalin:javalin:{{javalinVersion | default: site.javalinversion }}")
 ~~~
 Not familiar with Gradle? Read our [Gradle tutorial](/tutorials/gradle-setup).
 </div>
 
 <div data-tab="3" markdown="1">
 ~~~java
-libraryDependencies += "io.javalin" % "javalin" % "{{site.javalinversion}}"
+libraryDependencies += "io.javalin" % "javalin" % "{{javalinVersion | default: site.javalinversion }}"
 ~~~
 </div>
 
 <div data-tab="4" markdown="1">
 ~~~java
-@Grab(group='io.javalin', module='javalin', version='{{site.javalinversion}}')
+@Grab(group='io.javalin', module='javalin', version='{{javalinVersion | default: site.javalinversion }}')
 ~~~
 </div>
 
 <div data-tab="5" markdown="1">
 ~~~java
-[io.javalin/javalin "{{site.javalinversion}}"]
+[io.javalin/javalin "{{javalinVersion | default: site.javalinversion }}"]
 ~~~
 </div>
 
 <div data-tab="6" markdown="1">
 ~~~java
-'io.javalin:javalin:jar:{{site.javalinversion}}'
+'io.javalin:javalin:jar:{{javalinVersion | default: site.javalinversion }}'
 ~~~
 </div>
 
 <div data-tab="7" markdown="1">
 ~~~markup
-<dependency org="io.javalin" name="javalin" rev="{{site.javalinversion}}" />
+<dependency org="io.javalin" name="javalin" rev="{{javalinVersion | default: site.javalinversion }}" />
 ~~~
 </div>
 </div>
