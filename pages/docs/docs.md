@@ -2002,7 +2002,7 @@ After switching the class loader, you may still receive a missing dependency err
 ---
 
 ### Documentation for previous versions
-Docs for 5.6.X (last 4.X version) can be found [here](/archive/docs/v5.6.X.html).\\
+Docs for 5.6.X (last 5.X version) can be found [here](/archive/docs/v5.6.X.html).\\
 Docs for 4.6.X (last 4.X version) can be found [here](/archive/docs/v4.6.X.html).\\
 Docs for 3.13.X (last 3.X version) can be found [here](/archive/docs/v3.13.X.html).\\
 Docs for 2.8.0 (last 2.X version) can be found [here](/archive/docs/v2.8.0.html).\\
