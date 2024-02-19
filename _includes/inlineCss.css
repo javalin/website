@@ -1,4 +1,7 @@
-/* Styles that affect the length of the document */
+/*
+    Styles that affect the length of the document,
+    having these inline prevents reflow due to size changes.
+*/
 p code,
 li code {
     font-size: 90%;
@@ -23,8 +26,8 @@ li code {
 
 .anchorjs-link {
     transition: all .25s linear;
-  }
-  
+}
+
 *:hover > .anchorjs-link {
     margin-left: -1.125em !important;
- }
+}

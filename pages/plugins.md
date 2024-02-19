@@ -5,15 +5,45 @@ rightmenu: false
 permalink: /plugins/
 ---
 
-<script>{% include pluginCard.js %}</script>
-<style>{% include pluginCard.css %}</style>
+<script>{% include plugins/pluginCard.js %}</script>
+<style>{% include plugins/pluginCard.css %}</style>
 
 <h1 class="no-margin-top">Plugins</h1>
 This page contains an overview of official and unofficial Javalin plugins.
 If you find an issue with a plugin and the plugin owner refuses to address it,
 please report it on GitHub (link in plugin card).
 
-{% include pluginCard.html
+{% include plugins/pluginCard.html
+    title="OpenAPI Annotation Processor"
+    description="
+        This OpenAPI plugin replaces the old DSL + annotation setup that was
+        available before Javalin 5.
+        Features:
+        <ul>
+            <li>Reflection free, does not perform any extra operations at runtime</li>
+            <li>Uses @OpenApi to simplify migration from bundled OpenApi implementation</li>
+            <li>Provides better projection of OpenAPI specification</li>
+            <li>Schema validation through Swagger core module</li>
+        </ul>
+    "
+    bundled="false"
+    author="dzikoysk"
+    docsUrl="https://github.com/javalin/javalin-openapi#readme"
+    ratingIssueNr="133"
+%}
+
+{% include plugins/pluginCard.html
+    title="SSL Helpers"
+    description="
+        SSL configuration made easy. This plugin provides a simple way to configure SSL for Javalin, just the same way you would configure Javalin itself. Support for PEM, PKCS12, and JKS formats, as well as HTTP/2.
+    "
+    bundled="false"
+    author="zugazagoitia"
+    docsUrl="/plugins/ssl-helpers"
+    ratingIssueNr="134"
+%}
+
+{% include plugins/pluginCard.html
     title="JavalinVue"
     description="
         JavalinVue let's you create simple Vue frontends without having a frontend build pipeline.
@@ -27,39 +57,7 @@ please report it on GitHub (link in plugin card).
     ratingIssueNr="132"
 %}
 
-{% include pluginCard.html
-    title="OpenAPI Annotation Processor"
-    description="
-        This OpenAPI plugin replaces the old DSL + annotation setup that was
-        available before Javalin 5.
-        Features:
-        <ul>
-            <li>Reflection free, does not perform any extra operations at runtime</li>
-            <li>Uses @OpenApi to simplify migration from bundled OpenApi implementation</li>
-            <li>Supports Java 8 and all further releases of Java and Kotlin (through Kapt)</li>
-            <li>Uses internal WebJar handler that works with /* route out of the box</li>
-            <li>Provides better projection of OpenAPI specification</li>
-            <li>Schema validation through Swagger core module</li>
-        </ul>
-    "
-    bundled="false"
-    author="dzikoysk"
-    docsUrl="https://github.com/javalin/javalin-openapi#readme"
-    ratingIssueNr="133"
-%}
-
-{% include pluginCard.html
-    title="SSL Helpers"
-    description="
-        SSL configuration made easy. This plugin provides a simple way to configure SSL for Javalin, just the same way you would configure Javalin itself. Support for PEM, PKCS12, and JKS formats, as well as HTTP/2.
-    "
-    bundled="false"
-    author="zugazagoitia"
-    docsUrl="/plugins/ssl-helpers"
-    ratingIssueNr="134"
-%}
-
-{% include pluginCard.html
+{% include plugins/pluginCard.html
     title="Javalin Rendering"
     description="
         The javalin-rendering artifact is an optional module for the Javalin web framework that 
@@ -73,7 +71,7 @@ please report it on GitHub (link in plugin card).
     ratingIssueNr="228"
 %}
 
-{% include pluginCard.html
+{% include plugins/pluginCard.html
     title="CORS"
     description="
         The CORS plugin bundles the functionality to set CORS headers for some or all origins
@@ -85,7 +83,7 @@ please report it on GitHub (link in plugin card).
     ratingIssueNr="147"
 %}
 
-{% include pluginCard.html
+{% include plugins/pluginCard.html
     title="GraphQL"
     description="
         This plugin allows implementing the
@@ -98,7 +96,7 @@ please report it on GitHub (link in plugin card).
     ratingIssueNr="150"
 %}
 
-{% include pluginCard.html
+{% include plugins/pluginCard.html
     title="JavalinMithril"
     description="
         This is a <a href='https://mithril.js.org/'>Mithril.js</a> plugin.
@@ -111,7 +109,7 @@ please report it on GitHub (link in plugin card).
     ratingIssueNr="151"
 %}
 
-{% include pluginCard.html
+{% include plugins/pluginCard.html
     title="RouteOverview"
     description="
         The route overview provides you with a HTML and/or JSON overview of all the routes
@@ -123,7 +121,7 @@ please report it on GitHub (link in plugin card).
     ratingIssueNr="135"
 %}
 
-{% include pluginCard.html
+{% include plugins/pluginCard.html
     title="DevLogging"
     description="
         The development debugging logger catches most of the interesting stuff about requests
@@ -136,7 +134,7 @@ please report it on GitHub (link in plugin card).
     ratingIssueNr="139"
 %}
 
-{% include pluginCard.html
+{% include plugins/pluginCard.html
     title="Micrometer Plugin"
     description="
         The Micrometer plugin provides a simple way to add metrics to your Javalin application.
