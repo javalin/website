@@ -102,10 +102,6 @@ Javalin.create { config ->
 The configuration classes are not from Javalin, but from the template engine you are using, 
 so please consult the documentation for that particular template engine to learn how to use them.
 
-## Good to know
-Please consult the documentation for that particular template engine to learn how to use
-them, these kinds of settings are not handled through Javalin.
-
 ## Recreating the old JavalinRenderer
 Older versions of Javalin had a `JavalinRenderer` class that was used to render templates.
 This class was able to render templates based on the file extension.
