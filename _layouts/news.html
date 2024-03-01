@@ -12,7 +12,32 @@ layout: default
     </div>
     {% endunless %}
     <div class="post-content" itemprop="articleBody">
+        {% assign thisMajor = page.version | split: "." | first %}
+        {% assign currentMajor = site.javalinversion | split: "." | first %}
+        {% if thisMajor < currentMajor %}
+            <div class="red-notice">
+                <strong>Important:</strong> This news article covers an old version of Javalin (v{{page.version}}).
+                The current version is v{{site.javalinversion}}.
+                <br>
+                See the <a href="/documentation">documentation page</a> for up-to-date information.
+            </div>
+        {% endif %}
         {{ content }}
     </div>
 </article>
 {% include socialButtons.html %}
+
+<style>
+    .red-notice {
+        font-size: 18px;
+        background-color: #e53535;
+        border-radius: 4px;
+        color: #fff;
+        padding: 16px;
+        line-height: 1.6;
+    }
+    .red-notice a {
+        color: #fff;
+        text-decoration: underline;
+    }
+</style>
