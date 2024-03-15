@@ -173,7 +173,7 @@ Logback offers other cool appenders, like
 [DBAppender](https://logback.qos.ch/manual/appenders.html#DBAppender).
 
 Another way to enable logback on your Javalin project is to use the
-`javalin-bundle` artifactId instead of hte regular `javalin` dep:
+`javalin-bundle` artifactId instead of the regular `javalin` dep:
 
 ```xml
 <dependency>
