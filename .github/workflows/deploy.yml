@@ -22,7 +22,7 @@ concurrency:
 jobs:
   # Build job
   build:
-    if: github.repository == 'javalin/javalin.github.io'
+    if: github.repository == 'javalin/website'
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
@@ -62,7 +62,7 @@ jobs:
 
   # Deployment job
   deploy:
-    if: github.repository == 'javalin/javalin.github.io'
+    if: github.repository == 'javalin/website'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
