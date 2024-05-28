@@ -20,8 +20,8 @@
     </p>
     <div class="plugin-box-footer">
         <div class="plugin-reports">
-            <a class="view-reports" href="https://github.com/javalin/javalin.github.io/issues/{{ include.ratingIssueNr }}">View reports</a>
-            <a class="make-report" href="https://github.com/javalin/javalin.github.io/issues/{{ include.ratingIssueNr }}">Report plugin</a>
+            <a class="view-reports" href="https://github.com/javalin/website/issues/{{ include.ratingIssueNr }}">View reports</a>
+            <a class="make-report" href="https://github.com/javalin/website/issues/{{ include.ratingIssueNr }}">Report plugin</a>
         </div>
         {% assign first = include.docsUrl | slice: 0 %}
         <a class="view-docs-btn" href="{{ include.docsUrl }}">
@@ -40,7 +40,7 @@
     <script>
         (() => {
             let pluginName = "{{include.title | slugify}}";
-            let issueUrl = "https://github.com/javalin/javalin.github.io/issues/{{ include.ratingIssueNr }}";
+            let issueUrl = "https://github.com/javalin/website/issues/{{ include.ratingIssueNr }}";
             let apiUrl = issueUrl.replace("https://github.com/", "https://api.github.com/repos/");
             setPluginReports(pluginName, apiUrl);
         })();
