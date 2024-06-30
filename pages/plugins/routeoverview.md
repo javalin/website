@@ -15,11 +15,20 @@ If the clients accepts JSON, this is served as JSON. Otherwise it's served as HT
 
 You can enable the route-overview either through the `config.plugins` or by registering it manually:
 
-```java
+{% capture java %}
 Javalin.create(config -> {
     config.plugins.enableRouteOverview(path);                      // show all routes on specified path
     config.plugins.enableRouteOverview(path, roles);               // show all routes on specified path (with auth)
     config.plugins.register(new RouteOverviewPlugin(path));        // show all routes on specified path
     config.plugins.register(new RouteOverviewPlugin(path, roles)); // show all routes on specified path (with auth)
 });
-```
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { config ->
+    config.plugins.enableRouteOverview(path)                      // show all routes on specified path
+    config.plugins.enableRouteOverview(path, roles)               // show all routes on specified path (with auth)
+    config.plugins.register(RouteOverviewPlugin(path))            // show all routes on specified path
+    config.plugins.register(RouteOverviewPlugin(path, roles))     // show all routes on specified path (with auth)
+}}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
