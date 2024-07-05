@@ -1,24 +1,24 @@
 <script>
-    const notificationId = "javalin-6-released";
-    const hasBeenDismissed = localStorage.getItem(notificationId + "-dismissed") === "true";
-    const pageLoadCount = parseInt(localStorage.getItem(notificationId + "-count") || 0);
-    localStorage.setItem(notificationId + "-count", (pageLoadCount + 1).toString());
-    if (!hasBeenDismissed && pageLoadCount >= 0) {
-        document.write(`
-            <div id="notification-banner">
-                <h1>Javalin 6 is out!</h1>
-                Javalin 6 stable is finally here!
-                Read more in the <a href="/news/javalin-6.0.0-stable.html">release post</a>.
-            </div>
-        `);
-        if (pageLoadCount >= 0) {
-            document.querySelector("#notification-banner").insertAdjacentHTML("beforeend", `<span class="close">×</span>`);
-            document.querySelector("#notification-banner .close").addEventListener("click", () => {
-                document.querySelector("#notification-banner").style.display = "none";
-                localStorage.setItem(notificationId + "-dismissed", "true");
-            });
-        }
-    }
+    // const notificationId = "javalin-6-released";
+    // const hasBeenDismissed = localStorage.getItem(notificationId + "-dismissed") === "true";
+    // const pageLoadCount = parseInt(localStorage.getItem(notificationId + "-count") || 0);
+    // localStorage.setItem(notificationId + "-count", (pageLoadCount + 1).toString());
+    // if (!hasBeenDismissed && pageLoadCount >= 0) {
+    //     document.write(`
+    //         <div id="notification-banner">
+    //             <h1>Javalin 6 is out!</h1>
+    //             Javalin 6 stable is finally here!
+    //             Read more in the <a href="/news/javalin-6.0.0-stable.html">release post</a>.
+    //         </div>
+    //     `);
+    //     if (pageLoadCount >= 0) {
+    //         document.querySelector("#notification-banner").insertAdjacentHTML("beforeend", `<span class="close">×</span>`);
+    //         document.querySelector("#notification-banner .close").addEventListener("click", () => {
+    //             document.querySelector("#notification-banner").style.display = "none";
+    //             localStorage.setItem(notificationId + "-dismissed", "true");
+    //         });
+    //     }
+    // }
 </script>
 <style>
     #notification-banner {
