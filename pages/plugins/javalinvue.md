@@ -425,20 +425,20 @@ const useCache = true/false;
 const errorCallback = error => alert(`An error occurred! Code: ${error.code}, text: ${error.text}`);
 
 // Create a new instance with config options
-const loadableData = new LoadableData("/api/books", useCache, errorCallback);
+const loadableData = new LoadableData("/api/books", {cache: useCache, errorCallback: errorCallback});
 ```
 
 ```javascript
-// Refresh data (can use cache to avoid flickering)
-loadableData.refresh(useCache, errorCallback);
+// Refresh data
+loadableData.refresh();
 
 // Refresh data for other instances which uses the same endpoint
 let users = new LoadableData("/users");
 let sameUsers = new LoadableData("/users"); // this variable could be in a different component
 users.refreshAll(); // sameUsers will also be refreshed, since they share the same URL
 
-// Refresh data via static method
-LoadableData.refreshAll("/users"); // all instances with this URL will refresh themselves
+// Invalidate cache
+loadableData.invalidateCache();
 ```
 
 The `loadError` object contains the HTTP status and error message,
