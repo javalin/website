@@ -48,10 +48,10 @@ StatusCode: 1000
 Reason: No reason was provided
 ```
 
-You can enable dev logging through `config.plugins`:
+You can enable dev logging through `config`:
 
 ```java
 Javalin.create(config -> {
-    config.plugins.enableDevLogging();
+    config.bundledPlugins.enableDevLogging();
 });
 ```
