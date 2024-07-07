@@ -1518,7 +1518,7 @@ app.get("/", ctx -> {
 });
 
 // you can overwrite the key-function:
-RateLimitUti.keyFunction = ctx -> // uses (ip+method+endpointPath) by default
+RateLimitUtil.keyFunction = ctx -> // uses (ip+method+endpointPath) by default
 {% endcapture %}
 {% capture kotlin %}
 app.get("/") { ctx ->
@@ -1527,7 +1527,7 @@ app.get("/") { ctx ->
 }
 
 // you can overwrite the key-function:
-RateLimitUti.keyFunction = { ctx -> } // uses (ip+method+endpointPath) by default
+RateLimitUtil.keyFunction = { ctx -> } // uses (ip+method+endpointPath) by default
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
