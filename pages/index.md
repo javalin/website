@@ -14,7 +14,7 @@ permalink: /
 {% include landing/section-2-small-used-by.html %}
 
 {% include landing/section-3-why-javalin.html
-    title="<h1>Why Javalin?</h1>"
+    title="<h1 id='why-javalin'>Why Javalin?</h1>"
     reasonRow1="
         Simple -- Unlike other Java and Kotlin web frameworks, Javalin has very few concepts that you need to learn.
         You never extend classes and you rarely implement interfaces.
@@ -44,7 +44,7 @@ permalink: /
 %}
 
 {% include landing/section-sponsors.html
-    title="<h1>Our sponsors</h1>"
+    title="<h1 id='our-sponsors'>Our sponsors</h1>"
     cta="Your logo here?"
 %}
 
@@ -56,7 +56,7 @@ permalink: /
 %}
 
 {% include landing/section-5-community.html
-    title="<h1>An active community</h1>"
+    title="<h1 id='an-active-community'>An active community</h1>"
     paragraph="
         Javalin 1.0 was released in 2017, and has been in steady development since.<br><br>
         As of August 2023, the project consists of around 8000 lines of code and 11 000 lines of tests.
