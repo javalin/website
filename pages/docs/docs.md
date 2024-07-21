@@ -1110,6 +1110,7 @@ Javalin.create(config -> {
     config.http.maxRequestSize = longValue;         // the max size of request body that can be accessed without using using an InputStream
     config.http.defaultContentType = stringValue;   // the default content type
     config.http.asyncTimeout = longValue;           // timeout in milliseconds for async requests (0 means no timeout)
+    config.http.strictContentTypes = booleanValue;  // throw exception if e.g content-type is missing/incorrect when attempting to parse JSON
     
     config.http.customCompression(strategy);        // set a custom compression strategy
     config.http.brotliAndGzipCompression(lvl, lvl); // enable brotli and gzip compression with the specified levels
@@ -1125,6 +1126,7 @@ Javalin.create { config ->
     config.http.maxRequestSize = longValue          // the max size of request body that can be accessed without using using an InputStream
     config.http.defaultContentType = stringValue    // the default content type
     config.http.asyncTimeout = longValue            // timeout in milliseconds for async requests (0 means no timeout)
+    config.http.strictContentTypes = booleanValue   // throw exception if e.g content-type is missing/incorrect when attempting to parse JSON
 
     config.http.customCompression(strategy)         // set a custom compression strategy
     config.http.brotliAndGzipCompression(lvl, lvl)  // enable brotli and gzip compression with the specified levels
