@@ -39,15 +39,13 @@ Create a registry, register the plugin, and provide a route:
 
 ```java
 public static void main(String[] args) {
-    PrometheusMeterRegistry registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+    PrometheusMeterRegistry prometheusMeterRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
 
-    MicrometerPlugin micrometerPlugin = MicrometerPlugin.Companion.create(micrometerConfig -> micrometerConfig.registry = registry);
+    MicrometerPlugin micrometerPlugin = new MicrometerPlugin(micrometerPluginConfig -> micrometerPluginConfig.registry = prometheusMeterRegistry);
+    Javalin app = Javalin.create(config -> config.registerPlugin(micrometerPlugin)).start(8080);
 
-    Javalin app = Javalin.create(config -> {
-        config.plugins.register(micrometerPlugin);
-    }).start(8080);
-
-    app.get("/prometheus", ctx -> ctx.contentType(TextFormat.CONTENT_TYPE_004).result(registry.scrape()));
+    String contentType = "text/plain; version=0.0.4; charset=utf-8";
+    app.get("/prometheus", ctx -> ctx.contentType(contentType).result(prometheusMeterRegistry.scrape()));
 }
 ```
 
@@ -65,7 +63,8 @@ import io.micrometer.core.instrument.binder.jvm.*;
 import io.micrometer.core.instrument.binder.system.*;
 
 
-PrometheusMeterRegistry registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+PrometheusMeterRegistry prometheusMeterRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+
 
 // add a tag to all reported values to simplify filtering in large installations:
 registry.config().commonTags("application", "My-Application");
@@ -78,13 +77,12 @@ new UptimeMetrics().bindTo(registry);
 new ProcessorMetrics().bindTo(registry);
 new DiskSpaceMetrics(new File(System.getProperty("user.dir"))).bindTo(registry);
 
-MicrometerPlugin micrometerPlugin = MicrometerPlugin.Companion.create(micrometerConfig -> micrometerConfig.registry = registry);
+MicrometerPlugin micrometerPlugin = new MicrometerPlugin(micrometerPluginConfig -> micrometerPluginConfig.registry = prometheusMeterRegistry);
 
-Javalin app = Javalin.create(config -> {
-    config.plugins.register(micrometerPlugin);
-}).start(8080);
+Javalin app = Javalin.create(config -> config.registerPlugin(micrometerPlugin)).start(8080);
 
-app.get("/prometheus", ctx -> ctx.contentType(TextFormat.CONTENT_TYPE_004).result(registry.scrape()));
+String contentType = "text/plain; version=0.0.4; charset=utf-8";
+app.get("/prometheus", ctx -> ctx.contentType(contentType).result(prometheusMeterRegistry.scrape()));
 ```
 
 ## Custom Meters
