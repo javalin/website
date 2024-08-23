@@ -847,7 +847,7 @@ app.beforeMatched { ctx ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-The routes are set when you declare your endpoints:
+The roles are set when you declare your endpoints:
 
 {% capture java %}
 app.get("/public", ctx -> ctx.result("Hello public"), Role.OPEN);
