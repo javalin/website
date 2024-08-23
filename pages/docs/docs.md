@@ -288,7 +288,8 @@ path()                                // request path
 port()                                // request port
 protocol()                            // request protocol
 queryParam("name")                    // query param by name as string
-queryParamAsClass("name", clazz)      // query param parameter by name, as validator typed as specified class
+queryParamAsClass("name", clazz)      // query param by name, as validator typed as specified class
+queryParamsAsClass("name", clazz)     // query param list by name, as validator typed as list of specified class
 queryParams("name")                   // list of query parameters by name
 queryParamMap()                       // map of all query parameters
 queryString()                         // full query string
