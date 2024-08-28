@@ -38,6 +38,14 @@ jobs:
         with:
           ruby-version: 3.0.0
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically   
+          
+      - name: Update Bundler
+        run: gem install bundler
+
+      - name: Install Gems
+        run: |
+          rm -rf vendor/bundle
+          bundle install
 
       - name: Setup Pages
         id: pages
