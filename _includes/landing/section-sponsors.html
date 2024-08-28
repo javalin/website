@@ -5,6 +5,10 @@
             <img src="/img/sponsors/feature-upvote.png" alt="Feature Upvote">
             <a href="https://featureupvote.com">https://featureupvote.com</a>
         </div>
+        <div class="sponsor">
+            <img src="/img/sponsors/kabcash.svg" alt="KabCash">
+            <a href="https://kab.cash/">https://kab.cash/</a>
+        </div>
         <div class="sponsor cta">
             <div class="dashing-border">
                 {{include.cta}}
@@ -21,11 +25,10 @@
 
     .sponsors {
         display: flex;
-        flex-wrap: wrap;
         max-width: 1140px;
         margin: 0 auto;
         align-items: center;
-        justify-content: space-around;
+        justify-content: center;
     }
 
     .sponsor {
@@ -36,13 +39,15 @@
         width: 280px;
         height: 180px;
         padding: 20px;
-        margin: 20px;
+        margin: 16px;
         border-radius: 5px;
         background: #fff;
         box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        min-width: 200px;
     }
 
     .sponsor:not(.cta) a {
+        flex-shrink: 1;
         color: #333;
         font-size: 14px;
         text-decoration: underline;
@@ -77,5 +82,15 @@
         border-radius: 5px;
         padding: 24px 8px;
         background: #f9f9f9;
+    }
+
+    @media (max-width: 900px) {
+        .sponsors {
+            flex-direction: column;
+        }
+
+        .sponsor {
+            margin: 16px 0;
+        }
     }
 </style>
