@@ -36,7 +36,7 @@ jobs:
       - name: Setup Ruby and Gems
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.0.0
+          ruby-version: 3.3.4
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically   
           
       - name: Update Bundler
