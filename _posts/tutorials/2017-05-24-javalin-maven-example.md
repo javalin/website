@@ -113,7 +113,7 @@ Finally, paste the Javalin "Hello World" snippet into a new file, `HelloWorld.ja
 
 {% include macros/gettingStarted.md %}
 
-Depending on your setup, you might need to explicitly set the language level to Java 8.
+Depending on your setup, you might need to explicitly set the language level to Java 11.
 This can be done in the in the `pom.xml`. Add the following snippet:
 
 ~~~markup
