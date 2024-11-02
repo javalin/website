@@ -1405,7 +1405,7 @@ If you want graceful shutdown, you can configure the server using the `modifySer
 
 {% capture java %}
 Javalin.create(config -> {
-    config.modifyServer(server -> server.setStopTimeout(5_000)); // wait 5 seconds for existing requests to finish
+    config.jetty.modifyServer(server -> server.setStopTimeout(5_000)); // wait 5 seconds for existing requests to finish
 });
 {% endcapture %}
 {% capture kotlin %}
