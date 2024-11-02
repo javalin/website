@@ -1401,6 +1401,20 @@ app.events(event -> {
 });
 ```
 
+If you want graceful shutdown, you can configure the server using the `modifyServer` method:
+
+{% capture java %}
+Javalin.create(config -> {
+    config.modifyServer(server -> server.setStopTimeout(5_000)); // wait 5 seconds for existing requests to finish
+});
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { config ->
+    config.jetty.modifyServer { server -> server.setStopTimeout(5_000) } // wait 5 seconds for existing requests to finish
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
 #### Setting the Host
 
 The `Javalin#start` method is overloaded to accept the Host (IP) as the first argument:
