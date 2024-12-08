@@ -24,7 +24,7 @@ The SSL plugin provides a simple way to configure SSL and HTTP/2 for Javalin, ju
 The plugin provides a `SslConfig` class that can be used to configure this plugin, which can be later registered with Javalin. This class can be configured using a lambda the same way you would configure Javalin itself.
 
 {% capture java %}
-SSLPlugin plugin = new SSLPlugin(conf -> {
+SslPlugin plugin = new SslPlugin(conf -> {
     conf.pemFromPath("certs/cert.pem", "certs/key.pem");
 });
 
@@ -33,7 +33,7 @@ Javalin.create(javalinConfig -> {
 }).start();
 {% endcapture %}
 {% capture kotlin %}
-val plugin = SSLPlugin { conf ->
+val plugin = SslPlugin { conf ->
     conf.pemFromPath("/path/to/cert.pem", "/path/to/key.pem")
 }
 
@@ -87,13 +87,13 @@ Not familiar with Gradle? Read our [Gradle tutorial](/tutorials/gradle-setup).
 Configure the plugin:
 
 {% capture java %}
-SSLPlugin plugin = new SSLPlugin(conf -> {
+SslPlugin plugin = new SslPlugin(conf -> {
     conf.pemFromPath("/path/to/cert.pem", "/path/to/key.pem");
     // additional configuration options
 });
 {% endcapture %}
 {% capture kotlin %}
-val plugin = SSLPlugin { conf ->
+val plugin = SslPlugin { conf ->
     conf.pemFromPath("/path/to/cert.pem", "/path/to/key.pem")
     // additional configuration options
 }
@@ -173,7 +173,7 @@ Each of these methods are mutually exclusive, so only one of them can be used at
 
 ### Advanced configuration
 
-Once the plugin is configured, there is a `SSLPlugin#patch` method that can be used to patch the Jetty server. This method receives a `Server` as a parameter and adds the configured connectors to it. This method can be used to apply the SSL configuration to a server that is not created by Javalin.
+Once the plugin is configured, there is a `SslPlugin#patch` method that can be used to patch the Jetty server. This method receives a `Server` as a parameter and adds the configured connectors to it. This method can be used to apply the SSL configuration to a server that is not created by Javalin.
 
 There are also a set of fields that can be used to further configure the plugin:
 
@@ -188,9 +188,9 @@ withTrustConfig(Consumer<TrustConfig>);        // Set the trust configuration, e
 If you want to verify the client certificates (such as mTLS) you can set the trust configuration using the `TrustConfig` class.
 In contrast to the identity configuration, you can load multiple certificates from different sources.
 
-By adding a `TrustConfig` to the `SSLPlugin` you will enable client certificate verification.
+By adding a `TrustConfig` to the `SslPlugin` you will enable client certificate verification.
 ```java
-new SSLPlugin(ssl->{
+new SslPlugin(ssl->{
     // Load our identity data
     ssl.pemFromPath("/path/to/cert.pem","/path/to/key.pem"); 
 
@@ -218,11 +218,11 @@ trustStoreFromInputStream(inputStream, "password");        // load a trust store
 
 #### Hot reloading
 
-Certificate reloading is supported, if you want to replace the certificate you can simply call `SSLPlugin.reload()` with the new configuration.
+Certificate reloading is supported, if you want to replace the certificate you can simply call `SslPlugin.reload()` with the new configuration.
 
 ```java
 // Create the plugin outside the Javalin config to hold a reference to reload it
-SSLPlugin sslPlugin = new SSLPlugin(ssl->{
+SslPlugin sslPlugin = new SslPlugin(ssl->{
     ssl.pemFromPath("/path/to/cert.pem","/path/to/key.pem");
     ssl.insecurePort = 8080; // any other config you want to change
 });
@@ -252,4 +252,4 @@ sslPlugin.reload(ssl->{
 
  - Jetty 11 ships with SNI verification enabled by default, if hostname spoofing is a not concern, you can disable it by setting the `sniHostCheck` option to `false`. This option is enabled by default for security reasons, but it can be disabled if you are using a reverse proxy that handles the hostname verification. Jetty might respond with an `HTTP ERROR 400 Invalid SNI` if the hostname verification fails.
 
-- mTLS (Mutual TLS) is supported, just add a `TrustConfig` to the `SSLPlugin` to enable client certificate verification. See the [Advanced Configuration](#advanced-configuration) section for more information.
+- mTLS (Mutual TLS) is supported, just add a `TrustConfig` to the `SslPlugin` to enable client certificate verification. See the [Advanced Configuration](#advanced-configuration) section for more information.

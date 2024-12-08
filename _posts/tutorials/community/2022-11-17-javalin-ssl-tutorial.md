@@ -213,7 +213,7 @@ Let's assume that we have our certificate and its private key in the following f
 
 To secure our Javalin application with SSL, we need to configure the Javalin SSL plugin. We can do this by doing the following:
 {% capture java %}
-SSLPlugin plugin = new SSLPlugin(conf -> {
+SslPlugin plugin = new SslPlugin(conf -> {
     conf.pemFromPath("/etc/ssl/certificate.pem", "/etc/ssl/privateKey.pem");
 });
 
@@ -222,7 +222,7 @@ Javalin.create(javalinConfig -> {
 }).start();
 {% endcapture %}
 {% capture kotlin %}
-val plugin = SSLPlugin { conf ->
+val plugin = SslPlugin { conf ->
     conf.pemFromPath("/etc/ssl/certificate.pem", "/etc/ssl/privateKey.pem")
 }
 

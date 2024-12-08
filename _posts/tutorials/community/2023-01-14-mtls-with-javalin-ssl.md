@@ -153,7 +153,7 @@ libraryDependencies += "io.javalin.community.ssl" % "ssl-plugin" % "{{site.javal
 To secure our Javalin application with mTLS, we just need to load the certificates and private keys into the SSL plugin, and register it with our Javalin application.
 
 {% capture java %}
-SSLPlugin plugin = new SSLPlugin(conf -> {
+SslPlugin plugin = new SslPlugin(conf -> {
     conf.insecure = false; // Disable HTTP
 
     // Server certificate and private key
@@ -170,7 +170,7 @@ Javalin.create(javalinConfig -> {
 }).start();
 {% endcapture %}
 {% capture kotlin %}
-val plugin = SSLPlugin { conf ->
+val plugin = SslPlugin { conf ->
     conf.insecure = false // Disable HTTP
 
     // Server certificate and private key
