@@ -970,7 +970,7 @@ app.wsException(Exception::class.java) { e, ctx ->
 HTTP Error mapping is similar to exception mapping, but it operates on HTTP status codes instead of Exceptions:
 {% capture java %}
 app.error(404, ctx -> {
-    ctx.result("Generic 404 message")
+    ctx.result("Generic 404 message");
 });
 {% endcapture %}
 {% capture kotlin %}
@@ -986,7 +986,7 @@ It can make sense to use them together:
 app.exception(FileNotFoundException.class, (e, ctx) -> {
     ctx.status(404);
 }).error(404, ctx -> {
-    ctx.result("Generic 404 message")
+    ctx.result("Generic 404 message");
 });
 {% endcapture %}
 {% capture kotlin %}
@@ -1001,8 +1001,8 @@ app.exception(FileNotFoundException::class.java) { e, ctx ->
 You can also include the content type when declaring your error mappers:
 
 {% capture java %}
-app.error(404, "html" ctx -> {
-    ctx.html("Generic 404 message")
+app.error(404, "html", ctx -> {
+    ctx.html("Generic 404 message");
 });
 {% endcapture %}
 {% capture kotlin %}
