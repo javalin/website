@@ -1001,7 +1001,7 @@ app.exception(FileNotFoundException::class.java) { e, ctx ->
 You can also include the content type when declaring your error mappers:
 
 {% capture java %}
-app.error(404, "html" ctx -> {
+app.error(404, "html", ctx -> {
     ctx.html("Generic 404 message")
 });
 {% endcapture %}
