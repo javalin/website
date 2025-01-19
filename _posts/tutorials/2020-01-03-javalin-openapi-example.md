@@ -108,7 +108,7 @@ public class Main {
         Javalin.create(config -> {
             config.registerPlugin(new OpenApiPlugin(pluginConfig -> {
                 pluginConfig.withDefinitionConfiguration((version, definition) -> {
-                    definition.withOpenApiInfo(info -> info.setTitle("Javalin OpenAPI example"));
+                    definition.withInfo(info -> info.setTitle("Javalin OpenAPI example"));
                 });
             }));
             config.registerPlugin(new SwaggerPlugin());
@@ -127,7 +127,7 @@ public class Main {
         }).start(7002);
 
         System.out.println("Check out ReDoc docs at http://localhost:7002/redoc");
-        System.out.println("Check out Swagger UI docs at http://localhost:7002/swagger-ui");
+        System.out.println("Check out Swagger UI docs at http://localhost:7002/swagger");
     }
 
 }
