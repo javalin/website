@@ -1109,6 +1109,7 @@ Javalin.create(config -> {
     config.http.generateEtags = booleanValue;       // if javalin should generate etags for dynamic responses (not static files)
     config.http.prefer405over404 = booleanValue;    // return 405 instead of 404 if path is mapped to different HTTP method
     config.http.maxRequestSize = longValue;         // the max size of request body that can be accessed without using using an InputStream
+    config.http.responseBufferSize = longValue;     // the size of the response buffer (default 32kb)
     config.http.defaultContentType = stringValue;   // the default content type
     config.http.asyncTimeout = longValue;           // timeout in milliseconds for async requests (0 means no timeout)
     config.http.strictContentTypes = booleanValue;  // throw exception if e.g content-type is missing/incorrect when attempting to parse JSON
@@ -1125,6 +1126,7 @@ Javalin.create { config ->
     config.http.generateEtags = booleanValue        // if javalin should generate etags for dynamic responses (not static files)
     config.http.prefer405over404 = booleanValue     // return 405 instead of 404 if path is mapped to different HTTP method
     config.http.maxRequestSize = longValue          // the max size of request body that can be accessed without using using an InputStream
+    config.http.responseBufferSize = longValue      // the size of the response buffer (default 32kb)
     config.http.defaultContentType = stringValue    // the default content type
     config.http.asyncTimeout = longValue            // timeout in milliseconds for async requests (0 means no timeout)
     config.http.strictContentTypes = booleanValue   // throw exception if e.g content-type is missing/incorrect when attempting to parse JSON
@@ -1167,6 +1169,8 @@ Javalin.create(config -> {
     config.jetty.defaultHost = "localhost"; // set the default host for Jetty
     config.jetty.defaultPort = 1234; // set the default port for Jetty
     config.jetty.threadPool = new ThreadPool(); // set the thread pool for Jetty
+    config.jetty.timeoutStatus = 408; // set the timeout status for Jetty (default 500)
+    config.jetty.clientAbortStatus = 499; // set the abort status for Jetty (default 500)
     config.jetty.multipartConfig = new MultipartConfig(); // set the multipart config for Jetty
     config.jetty.modifyJettyWebSocketServletFactory(factory -> {}); // modify the JettyWebSocketServletFactory
     config.jetty.modifyServer(server -> {}); // modify the Jetty Server
@@ -1180,6 +1184,8 @@ Javalin.create { config ->
     config.jetty.defaultHost = "localhost" // set the default host for Jetty
     config.jetty.defaultPort = 1234 // set the default port for Jetty
     config.jetty.threadPool = ThreadPool() // set the thread pool for Jetty
+    config.jetty.timeoutStatus = 408 // set the timeout status for Jetty (default 500)
+    config.jetty.clientAbortStatus = 499 // set the abort status for Jetty (default 500)
     config.jetty.multipartConfig = MultipartConfig() // set the multipart config for Jetty
     config.jetty.modifyJettyWebSocketServletFactory { factory -> } // modify the JettyWebSocketServletFactory
     config.jetty.modifyServer { server -> } // modify the Jetty Server
