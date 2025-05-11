@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   Deploy:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     if: ${{ github.event.action != 'closed' }}
     steps: 
       - name: Create the comment to be updated
@@ -80,7 +80,7 @@ jobs:
             | 🔍 Latest deploy log | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |
 
   Teardown:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     if: ${{ github.event.action == 'closed' }}
     steps:
       - name: Install surge
