@@ -228,7 +228,7 @@ app.get("/my-path", VueComponent("my-component"), roles(Role.LOGGED_IN))
 {% capture java %}
 Javalin.create(config -> {
     config.vue.rootDirectory        // where JavalinVue should look for files (default: decided based on isDevFunction)
-    config.vue.vueAppName           // the Vue 3 app name (default: null)
+    config.vue.vueInstanceNameInJs  // the Vue 3 app name (default: null)
     config.vue.isDevFunction        // a function to determine if request is on localhost (default: checks ctx.url())
     config.vue.optimizeDependencies // only include required vue files (default: true)
     config.vue.stateFunction        // a function which runs on every request for transferring state from server (default: null)
@@ -239,7 +239,7 @@ Javalin.create(config -> {
 {% capture kotlin %}
 Javalin.create { config ->
     config.vue.rootDirectory        // where JavalinVue should look for files (default: decided based on isDevFunction)
-    config.vue.vueAppName           // the Vue 3 app name (default: null)
+    config.vue.vueInstanceNameInJs  // the Vue 3 app name (default: null)
     config.vue.isDevFunction        // a function to determine if request is on localhost (default: checks ctx.url())
     config.vue.optimizeDependencies // only include required vue files (default: true)
     config.vue.stateFunction        // a function which runs on every request for transferring state from server (default: null)
@@ -277,14 +277,14 @@ If you are using a fat-jar/uber-jar, everything is flattened, and Javalin will f
 If you are using something like [distTar](https://docs.gradle.org/current/userguide/distribution_plugin.html), you will need to
 point JavalinVue to the Jar which contains your resources. You can do this through `rootDirectory(path = "/path", resourcesJarClass = MyClass::class.java)`.
 
-### vueAppName
+### vueInstanceNameInJs
 This setting is only required if you are using Vue 3:
 
 {% capture java %}
-vueAppName = "MyAppName";
+vueInstanceNameInJs = "MyAppName";
 {% endcapture %}
 {% capture kotlin %}
-vueAppName = "MyAppName"
+vueInstanceNameInJs = "MyAppName"
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
