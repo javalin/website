@@ -260,7 +260,7 @@ We do this by getting the username+password from the [Basic-auth-header](https:/
 and using them as keys for the `userRoleMap`:
 
 {% capture java %}
-public static List<Role> getUserRoles(Context ctx) {
+public static List<Role> userRoles(Context ctx) {
     return Optional.ofNullable(ctx.basicAuthCredentials())
         .map(credentials -> userRolesMap.getOrDefault(new Pair(credentials.getUsername(), credentials.getPassword()), List.of()))
         .orElse(List.of());
