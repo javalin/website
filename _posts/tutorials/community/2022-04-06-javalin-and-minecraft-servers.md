@@ -163,7 +163,7 @@ plugins {
 }
 ```
 
-[Relocation](https://imperceptiblethoughts.com/shadow/configuration/relocation/)
+[Relocation](https://gradleup.com/shadow/configuration/relocation/#filtering-relocation)
 in the shadowJar configuration node is to prevent conflicts with the same
 dependencies carried by other plugins. This step is not required,
 **but is recommended if your plugin plans to release it into the public domain to prevent incompatibilities**.

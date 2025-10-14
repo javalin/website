@@ -1993,7 +1993,7 @@ A lot of people use Javalin for Minecraft servers, and they often have issues wi
 Please consider consulting our [Minecraft tutorial](/tutorials/javalin-and-minecraft-servers) if you're working with Javalin and a Minecraft server.
 
 #### Relocation
-Use [relocate](https://imperceptiblethoughts.com/shadow/configuration/relocation/) is not required, but it can easily conflict with other plugin dependencies.
+Using [relocate](https://gradleup.com/shadow/configuration/relocation/#filtering-relocation) is not required, but it can easily conflict with other plugin dependencies.
 If this is a publicly released plugin, this step is recommended to make Javalin work on a different Minecraft Server.
 
 Usually jetty causes the conflict, you can add gradle script to `build.gradle` following after adding the `shadow-jar` gradle plugin:
