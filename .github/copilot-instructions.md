@@ -65,7 +65,8 @@ docker build -t javalin-web .
 # Run the container
 docker run -p 4000:4000 -v ${PWD}:/app javalin-web
 
-# On Windows CMD, replace ${PWD} with %cd%
+# On Windows Command Prompt (CMD), replace ${PWD} with %cd%
+# PowerShell supports ${PWD}
 ```
 
 ## Build and Deployment
@@ -124,7 +125,7 @@ permalink: /page-url
 ### Adding Documentation
 
 1. Edit `pages/docs/docs.md` for current documentation
-2. For version-specific docs, create new file: `docs-past-X-Y-Z.md`
+2. For version-specific docs, create new file: `docs-past-X-Y-x.md`
 3. Update navigation menu in the docs file
 4. Use existing macros for code snippets:
    - `{% include macros/docsSnippet.html %}`
