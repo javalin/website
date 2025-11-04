@@ -280,6 +280,96 @@ nav ul li a:hover {
     font-size: 16px;
 }
 
+.community-stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 60px auto;
+    flex-wrap: wrap;
+}
+
+.stat-card {
+    text-align: center;
+    padding: 40px 30px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
+    min-width: 200px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+    display: block;
+    color: inherit;
+}
+
+.stat-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 30px rgba(93, 173, 226, 0.2);
+    text-decoration: none;
+}
+
+.stat-icon {
+    font-size: 48px;
+    color: #5dade2;
+    margin-bottom: 20px;
+}
+
+.stat-number {
+    font-size: 48px;
+    font-weight: 700;
+    font-family: 'Rajdhani', sans-serif;
+    color: #2a7ba8;
+    margin-bottom: 10px;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 18px;
+    color: rgba(0, 0, 0, 0.6);
+    font-weight: 500;
+}
+
+.stat-sublabel {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.45);
+    margin-top: 8px;
+    font-weight: 400;
+}
+
+.community-stats-date {
+    text-align: center;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.5);
+    font-style: italic;
+    margin-top: -20px;
+    margin-bottom: 40px;
+}
+
+.community-badges {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 40px auto;
+    max-width: 900px;
+}
+
+.community-badges a {
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    display: inline-block;
+}
+
+.community-badges a:hover {
+    transform: translateY(-2px);
+    opacity: 0.85;
+}
+
+.community-badges img {
+    height: 28px;
+    display: block;
+}
+
 .boxes + .boxes {
     margin-top: 0;
     margin-bottom: 64px;
