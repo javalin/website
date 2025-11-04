@@ -28,6 +28,7 @@
             overflow: hidden;
             pointer-events: none;
             z-index: 0;
+            background: #0d1b2a;
         `;
 
         // Determine how many stars should start immediately visible

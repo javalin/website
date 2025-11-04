@@ -53,8 +53,17 @@ nav ul li a:hover {
 }
 
 .bluepart.blackpart {
-    background: #0d1b2a;
     padding: 70px 20px 90px; /* Uneven padding to deal with text height */
+    position: relative;
+}
+
+.bluepart.blackpart:first-of-type {
+    padding: 100px 20px 120px; /* More padding for first section */
+}
+
+.bluepart.blackpart > * {
+    position: relative;
+    z-index: 1;
 }
 
 .bluepart {
@@ -191,6 +200,7 @@ nav ul li a:hover {
     box-shadow: none;
     transition: all 0.2s ease;
     letter-spacing: 0.5px;
+    user-select: none;
 }
 
 .blackpart .landing-btn {

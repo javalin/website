@@ -5,7 +5,7 @@
     'use strict';
 
     const config = {
-        speed: 8000, // ms to cross the screen
+        speedPxPerSecond: 70, // pixels per second
         delayBetweenFlights: 15000, // ms between flights
         initialDelay: 3000, // ms before first flight
         size: 32, // px (reduced from 40)
@@ -93,6 +93,10 @@
         const ship = createSpaceship();
         const sectionRect = section.getBoundingClientRect();
 
+        // Calculate flight duration based on section height and constant speed
+        const travelDistance = sectionRect.height + 150; // section height + 50px above + 100px below
+        const flightDuration = (travelDistance / config.speedPxPerSecond) * 1000; // convert to ms
+
         // Random horizontal position
         const startX = 20 + Math.random() * 60; // 20-80% across
         const endX = startX + (Math.random() - 0.5) * 20; // Slight horizontal drift
@@ -114,7 +118,7 @@
 
         // Animate movement
         setTimeout(() => {
-            ship.style.transition = `all ${config.speed}ms linear`;
+            ship.style.transition = `all ${flightDuration}ms linear`;
             ship.style.top = '-100px';
             ship.style.left = `${endX}%`;
         }, 50);
@@ -135,12 +139,12 @@
         setTimeout(() => {
             ship.style.opacity = '0';
             clearInterval(smokeInterval);
-        }, config.speed - 500);
+        }, flightDuration - 500);
 
         // Remove after animation
         setTimeout(() => {
             ship.remove();
-        }, config.speed + 500);
+        }, flightDuration + 500);
     }
 
     // Launch rocket from specific position
@@ -150,6 +154,10 @@
 
         const ship = createSpaceship();
         const sectionRect = section.getBoundingClientRect();
+
+        // Calculate flight duration based on distance from click to top
+        const travelDistance = clickY + 100; // distance to top + 100px above
+        const flightDuration = (travelDistance / config.speedPxPerSecond) * 1000; // convert to ms
 
         // Convert click position to percentage
         const startXPercent = (clickX / sectionRect.width) * 100;
@@ -172,7 +180,7 @@
 
         // Animate movement
         setTimeout(() => {
-            ship.style.transition = `all ${config.speed}ms linear`;
+            ship.style.transition = `all ${flightDuration}ms linear`;
             ship.style.top = '-100px';
             ship.style.left = `${endXPercent}%`;
         }, 50);
@@ -193,19 +201,23 @@
         setTimeout(() => {
             ship.style.opacity = '0';
             clearInterval(smokeInterval);
-        }, config.speed - 500);
+        }, flightDuration - 500);
 
         // Remove after animation
         setTimeout(() => {
             ship.remove();
-        }, config.speed + 500);
+        }, flightDuration + 500);
     }
 
     // Schedule periodic flights for a section
     function scheduleFlights(section) {
         const fly = () => {
+            const sectionRect = section.getBoundingClientRect();
+            const travelDistance = sectionRect.height + 150;
+            const flightDuration = (travelDistance / config.speedPxPerSecond) * 1000;
+
             flySpaceship(section);
-            setTimeout(fly, config.speed + config.delayBetweenFlights);
+            setTimeout(fly, flightDuration + config.delayBetweenFlights);
         };
 
         // Start after initial delay
