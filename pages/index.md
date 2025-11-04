@@ -4,6 +4,7 @@ splash: true
 permalink: /
 ---
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <style>{% include landing.css %}</style>
 <script>{% include landing/stars-background.js %}</script>
 <script>{% include landing/spaceship.js %}</script>
@@ -32,10 +33,6 @@ permalink: /
         But, if you set a <code>Future</code> as a result, Javalin switches into asynchronous mode.
     "
     reasonRow2="
-        Educational -- Visit our <a href='/for-educators'>educators page</a> if you're teaching web programming
-        and looking for a web framework which will get out of your way and let you focus on the
-        core concepts of your curriculum.
-        ---
         OpenAPI -- Many lightweight Java and Kotlin web frameworks don't support OpenAPI, but Javalin does
         (including Swagger UI and ReDoc). Learn more at the <a href='/plugins/openapi'>OpenAPI plugin page</a>.
         ---

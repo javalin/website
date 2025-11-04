@@ -5,21 +5,17 @@
 <div class="landing whitepart">
     {{ include.title }}
     <div class="boxes">
-        {% assign reasons = include.reasonRow1 | split: "---" %}
-        {% for reason in reasons %}
+        {% assign allReasons = include.reasonRow1 | append: "---" | append: include.reasonRow2 | split: "---" %}
+        {% assign icons = "cube,feather,link,file-code,diagram-project,globe" | split: "," %}
+        {% for reason in allReasons %}
             <div class="box">
-                <h2>{{ reason | split: "--" | first }}</h2>
+                {% assign icon = icons[forloop.index0] %}
+                <div class="icon-heading">
+                    <i class="fa-solid fa-{{ icon }} icon"></i>
+                    <h2>{{ reason | split: "--" | first }}</h2>
+                </div>
                 <p>{{ reason | split: "--" | last }}</p>
             </div>
-        {% endfor %}
-    </div>
-    <div class="boxes">
-        {% assign reasons = include.reasonRow2 | split: "---" %}
-        {% for reason in reasons %}
-        <div class="box">
-            <h2>{{ reason | split: "--" | first }}</h2>
-            <p>{{ reason | split: "--" | last }}</p>
-        </div>
         {% endfor %}
     </div>
 </div>
