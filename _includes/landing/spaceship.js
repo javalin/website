@@ -28,13 +28,16 @@
                 <path d="M15 35 L8 50 L15 45 Z" fill="#5dade2" stroke="#85c1e9" stroke-width="1"/>
                 <!-- Right fin -->
                 <path d="M25 35 L32 50 L25 45 Z" fill="#5dade2" stroke="#85c1e9" stroke-width="1"/>
-                <!-- Flame -->
-                <ellipse cx="20" cy="50" rx="6" ry="8" fill="#ff6b6b" opacity="0.8">
-                    <animate attributeName="ry" values="8;12;8" dur="0.3s" repeatCount="indefinite"/>
+                <!-- Flame (yellow/hot near engine, red further away) -->
+                <ellipse cx="20" cy="53" rx="6" ry="8" fill="#f06b6b" opacity="0.8">
+                    <animate attributeName="ry" values="6;10;6" dur="0.3s" repeatCount="indefinite"/>
                     <animate attributeName="opacity" values="0.8;1;0.8" dur="0.3s" repeatCount="indefinite"/>
                 </ellipse>
-                <ellipse cx="20" cy="52" rx="4" ry="6" fill="#ffd93d" opacity="0.9">
-                    <animate attributeName="ry" values="6;9;6" dur="0.2s" repeatCount="indefinite"/>
+                <ellipse cx="20" cy="50" rx="5" ry="6" fill="#ffd93d" opacity="0.85">
+                    <animate attributeName="ry" values="6;8;6" dur="0.25s" repeatCount="indefinite"/>
+                </ellipse>
+                <ellipse cx="20" cy="48" rx="4" ry="5" fill="#ffffff" opacity="0.9">
+                    <animate attributeName="ry" values="5;7;5" dur="0.2s" repeatCount="indefinite"/>
                 </ellipse>
             </svg>
         `;
