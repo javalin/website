@@ -1,10 +1,10 @@
-<div class="landing bluepart">
+<div class="landing bluepart blackpart">
 {{ include.title }}
 {% capture java %}
 import io.javalin.Javalin;
 import static io.javalin.apibuilder.ApiBuilder.*;
 
-public static void main(String[] args) {
+void main() {
     var app = Javalin.create(config -> {
         config.useVirtualThreads = true;
         config.http.asyncTimeout = 10_000L;

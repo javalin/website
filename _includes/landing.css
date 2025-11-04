@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&display=swap');
+
 main {
     padding: 0;
 }
@@ -18,7 +20,7 @@ main.width-limit {
 header {
     position: absolute;
     border: 0;
-    background: radial-gradient(#1a1a1a, #212121);
+    background: #050a12;
     height: 80px;
 }
 
@@ -32,11 +34,12 @@ nav ul li + li {
 }
 
 nav ul li a {
-    color: rgba(255, 255, 255, 0.95);
+    color: #e0e6ed;
+    transition: color 0.2s ease;
 }
 
 nav ul li a:hover {
-    color: white;
+    color: #5dade2;
 }
 
 .landing h1 {
@@ -45,81 +48,102 @@ nav ul li a:hover {
 }
 
 .bluepart *::selection {
-    background: #000000;
+    background: #5dade2;
+    color: #0d1b2a;
 }
 
 .bluepart.blackpart {
-    background: #343434;
-    background: radial-gradient(#313131, #212121);
+    background: #0d1b2a;
     padding: 70px 20px 90px; /* Uneven padding to deal with text height */
 }
 
 .bluepart {
     padding: 60px 20px;
-    background: radial-gradient(#02a2d7, #028ebc);
+    background: #1b263b;
 }
 
 .bluepart .multitab-code {
-    max-width: 600px;
+    max-width: 650px;
     margin: 40px auto;
 }
 
 .bluepart.blackpart .multitab-code {
-    max-width: 540px;
+    max-width: 590px;
+}
+
+.bluepart .multitab-code {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 .bluepart .multitab-code ul {
-    background: rgba(0, 0, 0, 0.35);
+    background: #162032;
+    border-bottom: 1px solid #2d3e57;
 }
 
 .bluepart .multitab-code pre {
-    background: rgba(0, 0, 0, 0.30);
+    background: #0d1b2a;
 }
 
 .bluepart.blackpart .multitab-code ul {
-    background: rgba(0, 0, 0, 0.30);
+    background: #0a1220;
+    border-bottom: 1px solid #1b263b;
 }
 
 .bluepart.blackpart .multitab-code pre {
-    background: rgba(0, 0, 0, 0.25);
+    background: #050a12;
 }
 
 .bluepart .multitab-code pre code {
-    line-height: 1.4;
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.3);
+    line-height: 1.5;
+    text-shadow: none;
     font-size: 15px;
+    color: #e0e6ed;
+}
+
+.bluepart .multitab-code ul li {
+    color: #8b9bb3;
+    transition: all 0.2s ease;
+}
+
+.bluepart .multitab-code ul li.active {
+    color: #5dade2;
+    background: rgba(93, 173, 226, 0.1);
 }
 
 .bluepart .multitab-code pre code .token.number {
-    color: #ffbbea;
+    color: #85c1e9;
 }
 
 .bluepart .multitab-code pre code .token.function {
-    color: #ffe200;
+    color: #52b788;
 }
 
 .bluepart .multitab-code pre code .token.string {
-    color: #9be800;
+    color: #95d5b2;
 }
 
 .bluepart .multitab-code pre code .token.keyword {
-    color: #54e3ff;
+    color: #5dade2;
 }
 
 .bluepart .multitab-code pre code .token.comment {
-    color: #a0bedc;
+    color: #8b9bb3;
 }
 
 .bluepart h1 {
     text-align: center;
-    color: white;
-    font-weight: 600;
+    color: #ffffff;
+    font-weight: 700;
     margin: 0;
-    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 1px;
 }
 
 .blackpart h1 {
-    text-shadow: 2px 2px 0 #000;
+    color: #ffffff;
 }
 
 .whitepart {
@@ -132,12 +156,19 @@ nav ul li a:hover {
 
 .bluepart > p {
     text-align: center;
-    color: white;
+    color: #e0e6ed;
 }
 
 .bluepart > p > a {
-    color: white;
-    text-decoration: underline;
+    color: #5dade2;
+    text-decoration: none;
+    border-bottom: 1px solid #5dade2;
+    transition: all 0.2s ease;
+}
+
+.bluepart > p > a:hover {
+    color: #85c1e9;
+    border-bottom-color: #85c1e9;
 }
 
 .center {
@@ -149,22 +180,39 @@ nav ul li a:hover {
     padding: 12px 28px;
     text-align: center;
     display: inline-block;
-    background: rgba(255, 255, 255, 0.15);
-    border-bottom: 2px solid rgba(0, 0, 0, 0.3);
-    color: white;
+    background: #1b263b;
+    border: 2px solid #ffffff;
+    color: #ffffff;
     cursor: pointer;
-    border-radius: 50px;
+    border-radius: 8px;
     font-size: 16px;
-    font-family: 'Roboto Slab', arial, sans-serif;
+    font-family: 'Roboto Mono', 'Consolas', 'Monaco', monospace;
     font-weight: 500;
+    box-shadow: none;
+    transition: all 0.2s ease;
+    letter-spacing: 0.5px;
 }
 
 .blackpart .landing-btn {
-    border-bottom: 3px solid rgba(0, 0, 0, 0.7);
+    background: #0d1b2a;
+    border-color: #ffffff;
+    color: #ffffff;
 }
 
 .landing-btn:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: #ffffff;
+    color: #0d1b2a;
+    border-color: #ffffff;
+    transform: translateY(-2px);
+}
+
+.landing-btn.arrow svg {
+    fill: #ffffff;
+    transition: fill 0.2s ease;
+}
+
+.landing-btn.arrow:hover svg {
+    fill: #0d1b2a;
 }
 
 .boxes {
@@ -239,10 +287,16 @@ nav ul li a:hover {
     height: 135px;
     padding: 20px;
     margin: 20px;
-    border-radius: 5px;
-    background: #fff;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     object-fit: contain;
+    transition: all 0.3s ease;
+}
+
+.used-by img:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
 }
 
 .small-used-by {
