@@ -8,6 +8,7 @@ permalink: /
 <style>{% include landing.css %}</style>
 <script>{% include landing/stars-background.js %}</script>
 <script>{% include landing/spaceship.js %}</script>
+<script>{% include landing/button-rocket.js %}</script>
 
 {% include landing/section-1-title-and-get-started.html
     title="<h1>A simple web framework<br>for Java and Kotlin</h1>"

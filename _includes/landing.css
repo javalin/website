@@ -186,7 +186,7 @@ nav ul li a:hover {
 
 .landing-btn {
     margin: 8px 8px 0 8px;
-    padding: 12px 28px;
+    padding: 10px 18px;
     text-align: center;
     display: inline-block;
     background: #1b263b;
@@ -207,6 +207,8 @@ nav ul li a:hover {
     background: #0d1b2a;
     border-color: #ffffff;
     color: #ffffff;
+    display: inline-flex;
+    align-items: center;
 }
 
 .landing-btn:hover {
@@ -219,6 +221,11 @@ nav ul li a:hover {
 .landing-btn.arrow svg {
     fill: #ffffff;
     transition: fill 0.2s ease;
+}
+
+.landing-btn.arrow svg {
+    margin-left: 12px;
+    fill: #fff;
 }
 
 .landing-btn.arrow:hover svg {
@@ -336,6 +343,18 @@ nav ul li a:hover {
     font-weight: 400;
 }
 
+@media (max-width: 768px) {
+    .community-stats {
+        gap: 20px;
+    }
+
+    .stat-card {
+        flex: 0 0 calc(50% - 10px);
+        min-width: 0;
+        padding: 30px 20px;
+    }
+}
+
 .community-stats-date {
     text-align: center;
     font-size: 14px;
@@ -390,6 +409,9 @@ nav ul li a:hover {
 
 @media (max-width: 480px) {
     .bluepart {
+        padding: 40px 20px;
+    }
+    .bluepart.blackpart:first-of-type {
         padding: 40px 20px;
     }
 }
@@ -534,4 +556,8 @@ nav ul li a:hover {
 
 .bluepart.blackpart.image .landing-btn:hover {
     background: rgb(35, 75, 113);
+}
+
+.landing-btn.arrow svg {
+    margin-left: 12px;
 }

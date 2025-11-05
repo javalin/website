@@ -4,6 +4,9 @@
 (function() {
     'use strict';
 
+    // Global rocket counter (shared with button-rocket.js)
+    window.rocketSpawnCount = window.rocketSpawnCount || 0;
+
     const config = {
         speedPxPerSecond: 70, // pixels per second
         delayBetweenFlights: 15000, // ms between flights
@@ -243,6 +246,9 @@
                 const y = e.clientY - rect.top;
 
                 launchRocketAt(section, x, y);
+
+                // Increment global rocket counter
+                window.rocketSpawnCount++;
             });
         });
     }
