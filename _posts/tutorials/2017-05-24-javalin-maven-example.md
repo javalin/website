@@ -237,6 +237,8 @@ There are several ways to run your Javalin application:
    }
    ~~~
 
+   > 💡 **Note**: Update `mainClass` to match your package and class name (e.g., `com.mygroup.HelloWorld`), and `projectName` to match your project's ArtifactId from `pom.xml`.
+
    Then press `F5` or go to `Run` → `Start Debugging`. VS Code's Java extension handles compilation automatically.
 
 > 💡 **Tip**: If VS Code doesn't recognize the Javalin imports, try:
@@ -247,6 +249,6 @@ There are several ways to run your Javalin application:
 > ⚠ **Troubleshooting "ClassNotFoundException"**: If you see `Error: Could not find or load main class HelloWorld`:
 > 1. Right-click on `pom.xml` → select `Maven` → `Reload project` to ensure dependencies are resolved
 > 2. Run `Java: Clean Java Language Server Workspace` from the Command Palette
-> 3. Reload VS Code window: `Cmd+Shift+P` / `Ctrl+Shift+P` → `Developer: Reload Window`
+> 3. Reload VS Code window: `Ctrl+Shift+P` / `Cmd+Shift+P` → `Developer: Reload Window`
 
 Now everything should be ready for you to run your application. Enjoy!
