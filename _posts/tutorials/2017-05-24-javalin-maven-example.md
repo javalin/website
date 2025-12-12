@@ -142,21 +142,7 @@ Now everything should be ready for you to run your application. Enjoy!
 
 ### Prerequisites
 
-Before creating a Maven project, ensure you have the following installed:
-
-* **Maven** - Required for building the project. Install it using:
-  ~~~bash
-  # macOS (using Homebrew)
-  brew install maven
-
-  # macOS/Linux (using SDKMAN)
-  sdk install maven
-
-  # Linux (Debian/Ubuntu)
-  sudo apt install maven
-  ~~~
-
-* **Extension Pack for Java** - This extension pack includes essential Java development tools and the Maven for Java extension. Install it from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack) or by searching for "Extension Pack for Java" in the Extensions view (`Ctrl+Shift+X` / `Cmd+Shift+X`).
+Before creating a Maven project, ensure you have the **Extension Pack for Java** installed. This extension pack includes essential Java development tools and Maven support. Install it from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack) or by searching for "Extension Pack for Java" in the Extensions view (`Ctrl+Shift+X` / `Cmd+Shift+X`).
 
 ### Creating a New Maven Project
 
@@ -210,9 +196,11 @@ Update the `maven-compiler-plugin` configuration in your `pom.xml` to use Java 1
 
 ### Creating the Application
 
-Create a new file `HelloWorld.java` in `src/main/java/` (note: at the root of the java source folder, not inside a package):
+The archetype creates a package structure (e.g., `com.example`) based on your GroupId. You can either modify the generated `App.java` or create a new `HelloWorld.java` in the same package directory (e.g., `src/main/java/com/example/`):
 
 ~~~java
+package com.example; // use your GroupId as the package name
+
 import io.javalin.Javalin;
 
 public class HelloWorld {
@@ -230,57 +218,10 @@ public class HelloWorld {
 
 There are several ways to run your Javalin application:
 
-1. **Using Maven (Recommended for first run)**: Open the integrated terminal in VS Code (`` Ctrl+` `` / `` Cmd+` ``) and run:
-   ~~~bash
-   mvn compile exec:java -Dexec.mainClass="HelloWorld"
-   ~~~
+1. **Using the Run button**: Open `HelloWorld.java` and click the `Run` button (▶) above the `main` method. This CodeLens feature is provided by the Java extension and works out of the box.
 
-   Add the exec plugin to your `pom.xml` inside `<plugins>` for easier execution:
-   ~~~markup
-   <plugin>
-       <groupId>org.codehaus.mojo</groupId>
-       <artifactId>exec-maven-plugin</artifactId>
-       <version>3.1.0</version>
-       <configuration>
-           <mainClass>HelloWorld</mainClass>
-       </configuration>
-   </plugin>
-   ~~~
+2. **Using Debug Configuration (F5)**: For a more configurable debugging setup, create `.vscode/launch.json`:
 
-2. **Using the Run button**: Open `HelloWorld.java` and click the `Run` button (▶) above the `main` method.
-
-3. **Using Debug Configuration (F5)**: For debugging support, create the following VS Code configuration files:
-
-   Create `.vscode/settings.json`:
-   ~~~json
-   {
-       "java.project.sourcePaths": ["src/main/java"],
-       "java.project.outputPath": "target/classes",
-       "java.configuration.updateBuildConfiguration": "automatic"
-   }
-   ~~~
-
-   Create `.vscode/tasks.json`:
-   ~~~json
-   {
-       "version": "2.0.0",
-       "tasks": [
-           {
-               "label": "mvn compile",
-               "type": "shell",
-               "command": "mvn",
-               "args": ["compile"],
-               "group": {
-                   "kind": "build",
-                   "isDefault": true
-               },
-               "problemMatcher": "$mvn"
-           }
-       ]
-   }
-   ~~~
-
-   Create `.vscode/launch.json`:
    ~~~json
    {
        "version": "0.2.0",
@@ -289,15 +230,14 @@ There are several ways to run your Javalin application:
                "type": "java",
                "name": "Run HelloWorld",
                "request": "launch",
-               "mainClass": "HelloWorld",
-               "projectName": "my-javalin-project",
-               "preLaunchTask": "mvn compile"
+               "mainClass": "com.example.HelloWorld",
+               "projectName": "my-javalin-project"
            }
        ]
    }
    ~~~
 
-   Then press `F5` or go to `Run` → `Start Debugging`.
+   Then press `F5` or go to `Run` → `Start Debugging`. VS Code's Java extension handles compilation automatically.
 
 > 💡 **Tip**: If VS Code doesn't recognize the Javalin imports, try:
 > * Right-click on `pom.xml` → select `Maven` → `Reload project`
@@ -305,8 +245,8 @@ There are several ways to run your Javalin application:
 > * If issues persist, run `Java: Clean Java Language Server Workspace` from the Command Palette
 
 > ⚠ **Troubleshooting "ClassNotFoundException"**: If you see `Error: Could not find or load main class HelloWorld`:
-> 1. Ensure Maven is installed: run `mvn -version` in terminal
-> 2. Compile the project first: run `mvn compile` in terminal
-> 3. Reload VS Code window: `Cmd+Shift+P` → `Developer: Reload Window`
+> 1. Right-click on `pom.xml` → select `Maven` → `Reload project` to ensure dependencies are resolved
+> 2. Run `Java: Clean Java Language Server Workspace` from the Command Palette
+> 3. Reload VS Code window: `Cmd+Shift+P` / `Ctrl+Shift+P` → `Developer: Reload Window`
 
 Now everything should be ready for you to run your application. Enjoy!
