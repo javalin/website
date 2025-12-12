@@ -230,26 +230,9 @@ public class HelloWorld {
 
 There are several ways to run your Javalin application:
 
-1. **Using Maven (Recommended for first run)**: Open the integrated terminal in VS Code (`` Ctrl+` `` / `` Cmd+` ``) and run:
-   ~~~bash
-   mvn compile exec:java -Dexec.mainClass="HelloWorld"
-   ~~~
+1. **Using the Run button**: Open `HelloWorld.java` and click the `Run` button (▶) above the `main` method. This CodeLens feature is provided by the Java extension and works out of the box.
 
-   Add the exec plugin to your `pom.xml` inside `<plugins>` for easier execution:
-   ~~~markup
-   <plugin>
-       <groupId>org.codehaus.mojo</groupId>
-       <artifactId>exec-maven-plugin</artifactId>
-       <version>3.1.0</version>
-       <configuration>
-           <mainClass>HelloWorld</mainClass>
-       </configuration>
-   </plugin>
-   ~~~
-
-2. **Using the Run button**: Open `HelloWorld.java` and click the `Run` button (▶) above the `main` method.
-
-3. **Using Debug Configuration (F5)**: For debugging support, create the following VS Code configuration files:
+2. **Using Debug Configuration (F5)**: For debugging support, create the following VS Code configuration files:
 
    Create `.vscode/settings.json`:
    ~~~json
