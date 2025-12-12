@@ -142,21 +142,7 @@ Now everything should be ready for you to run your application. Enjoy!
 
 ### Prerequisites
 
-Before creating a Maven project, ensure you have the following installed:
-
-* **Maven** - Required for building the project. Install it using:
-  ~~~bash
-  # macOS (using Homebrew)
-  brew install maven
-
-  # macOS/Linux (using SDKMAN)
-  sdk install maven
-
-  # Linux (Debian/Ubuntu)
-  sudo apt install maven
-  ~~~
-
-* **Extension Pack for Java** - This extension pack includes essential Java development tools and the Maven for Java extension. Install it from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack) or by searching for "Extension Pack for Java" in the Extensions view (`Ctrl+Shift+X` / `Cmd+Shift+X`).
+Before creating a Maven project, ensure you have the **Extension Pack for Java** installed. This extension pack includes essential Java development tools and Maven support. Install it from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack) or by searching for "Extension Pack for Java" in the Extensions view (`Ctrl+Shift+X` / `Cmd+Shift+X`).
 
 ### Creating a New Maven Project
 
