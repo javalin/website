@@ -6,13 +6,14 @@ author: <a href="https://www.linkedin.com/in/davidaase" target="_blank">David Å
 date: 2017-05-24
 permalink: /tutorials/maven-setup
 summarytitle: Maven setup
-summary: Set up a Javalin project using Maven in IntelliJ IDEA and Eclipse.
+summary: Set up a Javalin project using Maven in IntelliJ IDEA, Eclipse, and VS Code.
 language: java
 ---
 
 ## IDE Guides
 <a href="#intellij">- Instructions for IntelliJ IDEA</a><br>
 <a href="#eclipse">- Instructions for Eclipse</a><br>
+<a href="#vscode">- Instructions for VS Code</a><br>
 
 ## About Maven
 Maven is a build automation tool used primarily for Java projects.
@@ -134,5 +135,120 @@ This can be done in the in the `pom.xml`. Add the following snippet:
 
 Depending on your version of eclipse, you might have to
 - `Right click on your project` select `Maven` then `Update Project`
+
+Now everything should be ready for you to run your application. Enjoy!
+
+<h2 id="vscode">Instructions for VS Code</h2>
+
+### Prerequisites
+
+Before creating a Maven project, ensure you have the **Extension Pack for Java** installed. This extension pack includes essential Java development tools and Maven support. Install it from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack) or by searching for "Extension Pack for Java" in the Extensions view (`Ctrl+Shift+X` / `Cmd+Shift+X`).
+
+### Creating a New Maven Project
+
+* Open the Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`)
+* Type `Java: Create Java Project` and select it
+* Select `Maven` as the project type
+* Select `maven-archetype-quickstart` as the archetype
+* Select the latest version of the archetype
+* Enter the GroupId (e.g., `com.mygroup`)
+* Enter the ArtifactId (e.g., `my-javalin-project`)
+* Select a folder to create the project in
+* When prompted in the terminal:
+  * Press `Enter` to accept the default version (`1.0-SNAPSHOT`)
+  * Type `Y` and press `Enter` to confirm the properties configuration
+
+> ⚠ **macOS/Linux Users**: If you encounter errors with the Maven wrapper (`mvnw`), ensure Maven is installed on your system (see Prerequisites above). The Java extension will automatically detect and use the system-installed Maven.
+
+### Adding Javalin Dependency
+
+Open the generated `pom.xml` file and add the Javalin dependency inside the `<dependencies>` section:
+
+~~~markup
+<dependency>
+    <groupId>io.javalin</groupId>
+    <artifactId>javalin</artifactId>
+    <version>{{site.javalinversion}}</version>
+</dependency>
+~~~
+
+Your `<dependencies>` section should now include both JUnit (added by the archetype) and Javalin.
+
+### Configuring Java Version
+
+Update the `maven-compiler-plugin` configuration in your `pom.xml` to use Java 11 (or higher):
+
+~~~markup
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.13.0</version>
+            <configuration>
+                <source>11</source>
+                <target>11</target>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+~~~
+
+### Creating the Application
+
+The archetype creates a package structure (e.g., `com.example`) based on your GroupId. You can either modify the generated `App.java` or create a new `HelloWorld.java` in the same package directory (e.g., `src/main/java/com/example/`):
+
+~~~java
+package com.example; // use your GroupId as the package name
+
+import io.javalin.Javalin;
+
+public class HelloWorld {
+    public static void main(String[] args) {
+        var app = Javalin.create(/*config*/)
+            .get("/", ctx -> ctx.result("Hello World"))
+            .start(7070);
+    }
+}
+~~~
+
+> 💡 **Note**: We use the traditional `public static void main(String[] args)` syntax for better compatibility with VS Code's debugger. Java 21's implicit class syntax (`void main()`) may cause issues with debugging.
+
+### Running the Application
+
+There are several ways to run your Javalin application:
+
+1. **Using the Run button**: Open `HelloWorld.java` and click the `Run` button (▶) above the `main` method. This CodeLens feature is provided by the Java extension and works out of the box.
+
+2. **Using Debug Configuration (F5)**: For a more configurable debugging setup, create `.vscode/launch.json`:
+
+   ~~~json
+   {
+       "version": "0.2.0",
+       "configurations": [
+           {
+               "type": "java",
+               "name": "Run HelloWorld",
+               "request": "launch",
+               "mainClass": "com.example.HelloWorld",
+               "projectName": "my-javalin-project"
+           }
+       ]
+   }
+   ~~~
+
+   > 💡 **Note**: Update `mainClass` to match your package and class name (e.g., `com.mygroup.HelloWorld`), and `projectName` to match your project's ArtifactId from `pom.xml`.
+
+   Then press `F5` or go to `Run` → `Start Debugging`. VS Code's Java extension handles compilation automatically.
+
+> 💡 **Tip**: If VS Code doesn't recognize the Javalin imports, try:
+> * Right-click on `pom.xml` → select `Maven` → `Reload project`
+> * Or run `Maven: Reload Projects` from the Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`)
+> * If issues persist, run `Java: Clean Java Language Server Workspace` from the Command Palette
+
+> ⚠ **Troubleshooting "ClassNotFoundException"**: If you see `Error: Could not find or load main class HelloWorld`:
+> 1. Right-click on `pom.xml` → select `Maven` → `Reload project` to ensure dependencies are resolved
+> 2. Run `Java: Clean Java Language Server Workspace` from the Command Palette
+> 3. Reload VS Code window: `Ctrl+Shift+P` / `Cmd+Shift+P` → `Developer: Reload Window`
 
 Now everything should be ready for you to run your application. Enjoy!
