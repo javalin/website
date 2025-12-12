@@ -210,9 +210,11 @@ Update the `maven-compiler-plugin` configuration in your `pom.xml` to use Java 1
 
 ### Creating the Application
 
-Create a new file `HelloWorld.java` in `src/main/java/` (note: at the root of the java source folder, not inside a package):
+The archetype creates a package structure (e.g., `com.example`) based on your GroupId. You can either modify the generated `App.java` or create a new `HelloWorld.java` in the same package directory (e.g., `src/main/java/com/example/`):
 
 ~~~java
+package com.example; // use your GroupId as the package name
+
 import io.javalin.Javalin;
 
 public class HelloWorld {
@@ -223,8 +225,6 @@ public class HelloWorld {
     }
 }
 ~~~
-
-> 💡 **Note**: We use the traditional `public static void main(String[] args)` syntax for better compatibility with VS Code's debugger. Java 21's implicit class syntax (`void main()`) may cause issues with debugging.
 
 ### Running the Application
 
@@ -242,7 +242,7 @@ There are several ways to run your Javalin application:
                "type": "java",
                "name": "Run HelloWorld",
                "request": "launch",
-               "mainClass": "HelloWorld",
+               "mainClass": "com.example.HelloWorld",
                "projectName": "my-javalin-project"
            }
        ]
