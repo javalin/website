@@ -226,6 +226,8 @@ public class HelloWorld {
 }
 ~~~
 
+> 💡 **Note**: We use the traditional `public static void main(String[] args)` syntax for better compatibility with VS Code's debugger. Java 21's implicit class syntax (`void main()`) may cause issues with debugging.
+
 ### Running the Application
 
 There are several ways to run your Javalin application:
