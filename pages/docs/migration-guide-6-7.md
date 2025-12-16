@@ -7,74 +7,10 @@ permalink: /migration-guide-javalin-6-to-7
 
 <h1 class="no-margin-top">Javalin 6 to 7 migration guide</h1>
 
-Javalin 7 brings exciting new features and improvements! This guide will help you migrate from Javalin 6 to 7.
+This guide will help you migrate from Javalin 6 to 7.
 If you find any errors, or if something is missing, please <a href="{{site.repourl}}/blob/master/{{page.path}}">edit this page on GitHub</a>.
 
-## What's new in Javalin 7
-
-### Enhanced endpoint metadata system
-Javalin 7 introduces a powerful new metadata system that lets you attach custom metadata to your endpoints!
-This opens up many possibilities for documentation generation, API introspection, and custom tooling.
-
-The `Context#endpoint()` method now returns a rich `Endpoint` object with access to the path, method, handler, and custom metadata:
-
-{% capture java %}
-// Define custom metadata
-public record ApiDoc(String description, String version) implements EndpointMetadata {}
-
-// Add metadata to endpoint
-config.router.mount(router -> {
-    router.addEndpoint(
-        Endpoint.create(HandlerType.GET, "/users")
-            .addMetadata(new ApiDoc("Get all users", "v1"))
-            .addMetadata(new Roles(Set.of(Role.ADMIN)))
-            .handler(ctx -> ctx.result("Users"))
-    );
-});
-
-// Access metadata in handlers or middleware
-config.routes.get("/users", ctx -> {
-    ApiDoc doc = ctx.endpoint().metadata(ApiDoc.class);
-    String description = doc.description(); // "Get all users"
-});
-{% endcapture %}
-{% capture kotlin %}
-// Define custom metadata
-data class ApiDoc(val description: String, val version: String) : EndpointMetadata
-
-// Add metadata to endpoint
-config.router.mount { router ->
-    router.addEndpoint(
-        Endpoint.create(HandlerType.GET, "/users")
-            .addMetadata(ApiDoc("Get all users", "v1"))
-            .addMetadata(Roles(setOf(Role.ADMIN)))
-            .handler { ctx -> ctx.result("Users") }
-    )
-}
-
-// Access metadata in handlers or middleware
-config.routes.get("/users") { ctx ->
-    val doc = ctx.endpoint().metadata(ApiDoc::class.java)
-    val description = doc.description // "Get all users"
-}
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
-### Zstandard compression support
-Javalin 7 now supports Zstandard compression alongside Gzip and Brotli! Zstandard offers better compression ratios
-and faster decompression than Gzip, making your API responses even more efficient.
-
-### Custom HTTP methods
-You can now use custom HTTP methods beyond the standard GET, POST, PUT, DELETE, etc. This is useful for
-implementing custom protocols or working with APIs that use non-standard methods.
-
-### Other improvements
-* Jetty 12 brings significant performance improvements
-* Better async timeout configuration for long-running requests
-* Static files can now have route roles for access control
-* Built on Java 17 and Kotlin 2.0.21
-
-## Breaking changes and migration steps
+## Breaking changes
 
 ### Routing is now configured upfront
 Routes are now defined in the config block, ensuring all routes are registered before the server starts.
@@ -187,11 +123,10 @@ val app = Javalin.create { config ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-### Richer endpoint information with ctx.endpoint()
-The `Context#matchedPath()` method has been replaced with `Context#endpoint()`, which returns a rich
-`Endpoint` object with much more information about the matched route.
+### ctx.matchedPath() replaced with ctx.endpoint().path()
+The `Context#matchedPath()` method has been replaced with `Context#endpoint()`.
 
-**Simple migration:** `ctx.matchedPath()` becomes `ctx.endpoint().path()`
+**Migration:** `ctx.matchedPath()` becomes `ctx.endpoint().path()`
 
 In Javalin 6:
 {% capture java %}
@@ -215,28 +150,6 @@ config.routes.get("/users/{id}", ctx -> {
 {% capture kotlin %}
 config.routes.get("/users/{id}") { ctx ->
     val path = ctx.endpoint().path() // "/users/{id}"
-}
-{% endcapture %}
-{% include macros/docsSnippet.html java=java kotlin=kotlin %}
-
-**Bonus:** The `Endpoint` object gives you access to much more information:
-
-{% capture java %}
-config.routes.get("/users/{id}", ctx -> {
-    Endpoint endpoint = ctx.endpoint();
-    String path = endpoint.path();           // "/users/{id}"
-    HandlerType method = endpoint.method();  // GET
-    Handler handler = endpoint.handler();    // the handler function
-    // Access custom metadata (see below)
-});
-{% endcapture %}
-{% capture kotlin %}
-config.routes.get("/users/{id}") { ctx ->
-    val endpoint = ctx.endpoint()
-    val path = endpoint.path()           // "/users/{id}"
-    val method = endpoint.method()       // GET
-    val handler = endpoint.handler()     // the handler function
-    // Access custom metadata (see below)
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -305,6 +218,7 @@ Available modules:
 * `javalin-rendering-pebble`
 * `javalin-rendering-commonmark`
 * `javalin-rendering-jte`
+* `javalin-rendering-handlebars`
 
 Your code doesn't need to change - the template renderer classes (`JavalinVelocity`, `JavalinFreemarker`, etc.) remain in the same package and work the same way.
 
@@ -320,19 +234,95 @@ If you're using Jetty-specific APIs directly, note that:
 ### Java 17 required
 Javalin 7 requires Java 17 or higher (previously Java 11).
 
-## Additional improvements
-* Kotlin upgraded from 1.9.25 to 2.0.21
+### Kotlin standard library dependencies removed
+Javalin 7 no longer includes `kotlin-stdlib-jdk8` and `kotlin-reflect` as transitive dependencies.
+If your project relies on these, you'll need to add them explicitly to your build file.
+
+### JavalinConfig split into JavalinConfig and JavalinState
+Javalin's internal configuration has been split into two classes:
+- **JavalinConfig**: Used during application setup (in `Javalin.create()`)
+- **JavalinState**: The runtime state after configuration is complete
+
+If you were accessing Javalin's internal config through `app.unsafe` (previously `app.unsafeConfig()` in Javalin 6), you now get a `JavalinState` instance instead of `JavalinConfig`.
+
+**Migration:** Update references from `app.unsafeConfig().pvt` to `app.unsafe`:
+
+In Javalin 6:
+{% capture java %}
+var app = Javalin.create().start();
+var jetty = app.unsafeConfig().pvt.jetty;
+var jsonMapper = app.unsafeConfig().pvt.jsonMapper;
+{% endcapture %}
+{% capture kotlin %}
+val app = Javalin.create().start()
+val jetty = app.unsafeConfig().pvt.jetty
+val jsonMapper = app.unsafeConfig().pvt.jsonMapper
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+In Javalin 7:
+{% capture java %}
+var app = Javalin.create().start();
+var jetty = app.unsafe.jetty;
+var jsonMapper = app.unsafe.jsonMapper;
+{% endcapture %}
+{% capture kotlin %}
+val app = Javalin.create().start()
+val jetty = app.unsafe.jetty
+val jsonMapper = app.unsafe.jsonMapper
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+**Note:** Some properties have moved to subconfigs. For example:
+- `app.unsafeConfig().pvt.compressionStrategy` → `app.unsafe.http.compressionStrategy`
+- `app.unsafeConfig().pvt.jetty.server` → `app.unsafe.jettyInternal.server`
+
+**Plugin developers:** If you're writing custom plugins, the `Plugin.onStart()` method now receives `JavalinState` instead of `JavalinConfig`:
+
+In Javalin 6:
+{% capture java %}
+@Override
+public void onStart(JavalinConfig config) {
+    config.jetty.addConnector(...);
+}
+{% endcapture %}
+{% capture kotlin %}
+override fun onStart(config: JavalinConfig) {
+    config.jetty.addConnector(...)
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+In Javalin 7:
+{% capture java %}
+@Override
+public void onStart(JavalinState state) {
+    state.jetty.addConnector(...);
+}
+{% endcapture %}
+{% capture kotlin %}
+override fun onStart(state: JavalinState) {
+    state.jetty.addConnector(...)
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+## Other changes
+
+### Major dependency updates
+* **Jetty**: 11 → 12 (see breaking changes above)
+* **Kotlin**: 1.9.25 → 2.0.21
+* **Pebble** (rendering module): 3.x → 4.0.0
+
+### Other changes
 * `HandlerType` is now a record instead of an enum
-* HTTP 405 responses now include the `Allow` header
-* Better handling of invalid URL encoding in form parameters
-* Support for quoted charset in content-type header
 * The JavalinTest client now uses JDK's native HttpClient instead of OkHttp
 * Removed support for Conscrypt ALPN from SSL Plugin (use standard JDK ALPN instead)
 
 ## Additional changes
 It's hard to keep track of everything, but you can look at the
-[full commit log](https://github.com/javalin/javalin/compare/javalin-parent-6.7.0...javalin-parent-7.0.0-alpha.1)
-between the last 6.x version and 7.0.
+[full commit log](https://github.com/javalin/javalin/compare/javalin-parent-6.7.0...javalin-parent-7.0.0-alpha.4)
+between the last 6.x version and 7.0.0.
 
 If you run into something not covered by this guide, please <a href="{{site.repourl}}/blob/master/{{page.path}}">edit this page on GitHub</a>!
 
