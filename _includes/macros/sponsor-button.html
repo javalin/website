@@ -1,7 +1,5 @@
 <a class="sponsor-button" href="https://github.com/sponsors/tipsy">
-  <svg width="24" height="24" viewBox="0 0 24 24">
-    <path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"/>
-  </svg>
+  <span class="gh-ico" aria-hidden="true"></span>
   Sponsor Javalin
 </a>
 <style>
@@ -9,42 +7,28 @@
         margin: 0 12px;
         display: flex;
         align-items: center;
-        color: rgba(0, 0, 0, 0.7);
-        background: #ffe8e8;
-        border: 1px solid #ffb5b5;
-        border-radius: 30px;
-        padding: 4px 12px;
-        font-weight: 500;
-        font-family: 'Roboto Slab', sans-serif;
-        transition: all .15s ease-in-out;
+        color: #24292f;
+        background: #eee;
+        background: linear-gradient(to bottom, #fcfcfc 0%, #eee 100%);
+        border: 1px solid #d4d4d4;
+        border-radius: 4px;
+        padding: 0 8px;
+        height: 30px;
+        line-height: 30px;
+        font-weight: 700;
+        font-size: 16px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+        white-space: nowrap;
     }
 
     .sponsor-button:hover {
-        color: rgba(0, 0, 0, 0.8);
-        background: #ffe0e0;
+        background: #eee;
     }
 
-    .sponsor-button svg {
-        transition: all .15s ease-in-out;
+    .gh-ico {
+        width: 20px;
+        height: 20px;
+        background: url(data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc0MCcgaGVpZ2h0PSc0MCcgdmlld0JveD0nMTIgMTIgNDAgNDAnPjxwYXRoIGZpbGw9JyMzMzMnIGQ9J00zMiAxMy40Yy0xMC41IDAtMTkgOC41LTE5IDE5IDAgOC40IDUuNSAxNS41IDEzIDE4IDEgLjIgMS4zLS40IDEuMy0uOXYtMy4yYy01LjMgMS4xLTYuNC0yLjYtNi40LTIuNi0uOS0yLjEtMi4xLTIuNy0yLjEtMi43LTEuNy0xLjIuMS0xLjEuMS0xLjEgMS45LjEgMi45IDIgMi45IDIgMS43IDIuOSA0LjUgMi4xIDUuNSAxLjYuMi0xLjIuNy0yLjEgMS4yLTIuNi00LjItLjUtOC43LTIuMS04LjctOS40IDAtMi4xLjctMy43IDItNS4xLS4yLS41LS44LTIuNC4yLTUgMCAwIDEuNi0uNSA1LjIgMiAxLjUtLjQgMy4xLS43IDQuOC0uNyAxLjYgMCAzLjMuMiA0LjcuNyAzLjYtMi40IDUuMi0yIDUuMi0yIDEgMi42LjQgNC42LjIgNSAxLjIgMS4zIDIgMyAyIDUuMSAwIDcuMy00LjUgOC45LTguNyA5LjQuNy42IDEuMyAxLjcgMS4zIDMuNXY1LjJjMCAuNS40IDEuMSAxLjMuOSA3LjUtMi42IDEzLTkuNyAxMy0xOC4xIDAtMTAuNS04LjUtMTktMTktMTl6Jy8+PC9zdmc+) no-repeat 0 0 / 100% 100%;
         margin-right: 8px;
-    }
-
-    .sponsor-button svg path {
-        fill: #ff6363;
-        transform-origin: center;
-        animation: heartbeat 1.3s infinite;
-    }
-
-    .sponsor-button:hover svg {
-        transform: scale(1.15);
-    }
-
-    @keyframes heartbeat {
-        0% { transform: scale(1); }
-        10% { transform: scale(1.1); }
-        20% { transform: scale(1); }
-        30% { transform: scale(1.1); }
-        40% { transform: scale(1); }
-        100% { transform: scale(1); }
     }
 </style>
