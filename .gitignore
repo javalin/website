@@ -105,3 +105,6 @@ Temporary Items
 
 # Vscode
 .vscode
+
+# GitHub access tokens
+_data/access_token.txt
