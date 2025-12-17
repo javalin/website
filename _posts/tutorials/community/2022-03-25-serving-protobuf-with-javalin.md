@@ -30,7 +30,7 @@ We will be using Javalin for our web-server, slf4j for logging, and protobuf for
 ```groovy
 dependencies {
     implementation 'org.slf4j:slf4j-simple:1.8.0-beta4'
-    implementation 'io.javalin:javalin:{{site.javalinversion}}'
+    implementation 'io.javalin:javalin:{{site.javalinSixVersion}}'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2'
     implementation 'com.google.protobuf:protobuf-java:3.19.6'
 }
@@ -192,7 +192,7 @@ repositories {
 
 dependencies {
     implementation 'org.slf4j:slf4j-simple:1.8.0-beta4'
-    implementation 'io.javalin:javalin:{{site.javalinversion}}'
+    implementation 'io.javalin:javalin:{{site.javalinSixVersion}}'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2'
     implementation 'com.google.protobuf:protobuf-java:3.19.6'
 }

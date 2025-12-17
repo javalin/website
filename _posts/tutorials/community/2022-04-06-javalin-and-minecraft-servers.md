@@ -67,7 +67,7 @@ dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
 
     // https://mvnrepository.com/artifact/io.javalin/javalin
-    implementation 'io.javalin:javalin:{{site.javalinversion}}'
+    implementation 'io.javalin:javalin:{{site.javalinSixVersion}}'
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
     implementation 'org.slf4j:slf4j-simple:{{site.slf4jversion}}'
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
@@ -88,7 +88,7 @@ dependencies {
     compileOnly 'net.md-5:bungeecord-api:1.16-R0.5-SNAPSHOT'
 
     // https://mvnrepository.com/artifact/io.javalin/javalin
-    implementation 'io.javalin:javalin:{{site.javalinversion}}'
+    implementation 'io.javalin:javalin:{{site.javalinSixVersion}}'
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
     implementation 'org.slf4j:slf4j-simple:{{site.slf4jversion}}'
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
@@ -172,7 +172,7 @@ A common practice is to relocation the entire dependent library.
 
 ```groovy
 shadowJar {
-    relocate 'io.javalin:javalin:{{site.javalinversion}}', 'shadow.io.javalin'
+    relocate 'io.javalin:javalin:{{site.javalinSixVersion}}', 'shadow.io.javalin'
     relocate 'org.slf4j:slf4j-simple:{{site.slf4jversion}}', 'shadow.org.slf4j'
     relocate 'com.fasterxml.jackson.core:jackson-databind:2.13.2', 'shadow.com.fasterxml.jackson.core'
 }
@@ -187,7 +187,7 @@ For more information on the Gradle Shadow plugin see https://imperceptiblethough
 
 ```yaml
 libraries:
-  - "io.javalin:javalin:{{site.javalinversion}}"
+  - "io.javalin:javalin:{{site.javalinSixVersion}}"
   - "org.slf4j:slf4j-simple:{{site.slf4jversion}}"
   - "com.fasterxml.jackson.core:jackson-databind:2.13.2"
 ```

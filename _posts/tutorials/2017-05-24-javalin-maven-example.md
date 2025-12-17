@@ -41,7 +41,7 @@ Here's a minimal example:
         <dependency>
             <groupId>io.javalin</groupId>
             <artifactId>javalin</artifactId>
-            <version>{{site.javalinversion}}</version>
+            <version>{{site.javalinSixVersion}}</version>
         </dependency>
     </dependencies>
 </project>
@@ -60,7 +60,7 @@ Here's a minimal example:
     <dependency>
         <groupId>io.javalin</groupId>
         <artifactId>javalin</artifactId>
-        <version>{{site.javalinversion}}</version>
+        <version>{{site.javalinSixVersion}}</version>
     </dependency>
 </dependencies>
 ~~~
@@ -105,7 +105,7 @@ Now everything should be ready for you to run your application. Enjoy!
     <dependency>
         <groupId>io.javalin</groupId>
         <artifactId>javalin</artifactId>
-        <version>{{site.javalinversion}}</version>
+        <version>{{site.javalinSixVersion}}</version>
     </dependency>
 </dependencies>
 ~~~
@@ -168,7 +168,7 @@ Open the generated `pom.xml` file and add the Javalin dependency inside the `<de
 <dependency>
     <groupId>io.javalin</groupId>
     <artifactId>javalin</artifactId>
-    <version>{{site.javalinversion}}</version>
+    <version>{{site.javalinSixVersion}}</version>
 </dependency>
 ~~~
 

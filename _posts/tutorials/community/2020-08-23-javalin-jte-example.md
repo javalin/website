@@ -32,12 +32,12 @@ The Javalin jte extension was introduced in Javalin 3.10.0, so make sure to use 
 <dependency>
     <groupId>io.javalin</groupId>
     <artifactId>javalin</artifactId>
-    <version>{{site.javalinversion}}</version>
+    <version>{{site.javalinSixVersion}}</version>
 </dependency>
 <dependency>
     <groupId>io.javalin</groupId>
     <artifactId>javalin-rendering</artifactId>
-    <version>{{site.javalinversion}}</version>
+    <version>{{site.javalinSixVersion}}</version>
 </dependency>
 ```
 

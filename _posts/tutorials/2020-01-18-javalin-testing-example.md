@@ -23,7 +23,7 @@ with Javalin and [AssertJ](https://joel-costigliola.github.io/assertj/):
 <dependency>
     <groupId>io.javalin</groupId>
     <artifactId>javalin-bundle</artifactId>
-    <version>{{site.javalinversion}}</version>
+    <version>{{site.javalinSixVersion}}</version>
 </dependency>
 <dependency>
     <groupId>org.assertj</groupId>

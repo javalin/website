@@ -20,7 +20,7 @@ First, we need to create a Maven project with some dependencies: [(→ Tutorial)
     <dependency>
         <groupId>io.javalin</groupId>
         <artifactId>javalin-bundle</artifactId>
-        <version>{{site.javalinversion}}</version>
+        <version>{{site.javalinSixVersion}}</version>
     </dependency>
 </dependencies>
 ~~~

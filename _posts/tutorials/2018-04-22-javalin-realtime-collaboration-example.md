@@ -28,7 +28,7 @@ We will be using Javalin for our web-server and WebSockets:
     <dependency>
         <groupId>io.javalin</groupId>
         <artifactId>javalin-bundle</artifactId>
-        <version>{{site.javalinversion}}</version>
+        <version>{{site.javalinSixVersion}}</version>
     </dependency>
 </dependencies>
 ```

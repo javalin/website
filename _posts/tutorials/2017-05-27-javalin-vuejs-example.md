@@ -21,7 +21,7 @@ follow the beginning of our [Kotlin CRUD REST API tutorial](/tutorials/simple-ko
 <dependency>
     <groupId>io.javalin</groupId>
     <artifactId>javalin-bundle</artifactId>
-    <version>{{site.javalinversion}}</version>
+    <version>{{site.javalinSixVersion}}</version>
 </dependency>
 ~~~
 

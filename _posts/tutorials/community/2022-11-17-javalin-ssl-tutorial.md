@@ -153,7 +153,7 @@ Once we have our certificate and its private key, to secure our Javalin applicat
 <dependency>
     <groupId>io.javalin.community.ssl</groupId>
     <artifactId>ssl-plugin</artifactId>
-    <version>{{site.javalinversion}}</version>
+    <version>{{site.javalinSixVersion}}</version>
 </dependency>
 ~~~
 Not familiar with Maven? Read our [Maven tutorial](/tutorials/maven-setup).
@@ -161,38 +161,38 @@ Not familiar with Maven? Read our [Maven tutorial](/tutorials/maven-setup).
 
 <div data-tab="2" markdown="1">
 ~~~java
-implementation("io.javalin.community.ssl:ssl-plugin:{{site.javalinversion}}")
+implementation("io.javalin.community.ssl:ssl-plugin:{{site.javalinSixVersion}}")
 ~~~
 Not familiar with Gradle? Read our [Gradle tutorial](/tutorials/gradle-setup).
 </div>
 
 <div data-tab="3" markdown="1">
 ~~~java
-libraryDependencies += "io.javalin.community.ssl" % "ssl-plugin" % "{{site.javalinversion}}"
+libraryDependencies += "io.javalin.community.ssl" % "ssl-plugin" % "{{site.javalinSixVersion}}"
 ~~~
 </div>
 
 <div data-tab="4" markdown="1">
 ~~~java
-@Grab(group='io.javalin.community.ssl', module='ssl-plugin', version='{{site.javalinversion}}')
+@Grab(group='io.javalin.community.ssl', module='ssl-plugin', version='{{site.javalinSixVersion}}')
 ~~~
 </div>
 
 <div data-tab="5" markdown="1">
 ~~~java
-[io.javalin.community.ssl/ssl-plugin "{{site.javalinversion}}"]
+[io.javalin.community.ssl/ssl-plugin "{{site.javalinSixVersion}}"]
 ~~~
 </div>
 
 <div data-tab="6" markdown="1">
 ~~~java
-'io.javalin.community.ssl:ssl-plugin:jar:{{site.javalinversion}}'
+'io.javalin.community.ssl:ssl-plugin:jar:{{site.javalinSixVersion}}'
 ~~~
 </div>
 
 <div data-tab="7" markdown="1">
 ~~~markup
-<dependency org="io.javalin.community.ssl" name="ssl-plugin" rev="{{site.javalinversion}}" />
+<dependency org="io.javalin.community.ssl" name="ssl-plugin" rev="{{site.javalinSixVersion}}" />
 ~~~
 </div>
 </div>

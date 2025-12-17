@@ -42,7 +42,7 @@ Please add the following dependencies to your build file:
 <dependency>
     <groupId>io.javalin</groupId>
     <artifactId>javalin-bundle</artifactId>
-    <version>{{site.javalinversion}}</version>
+    <version>{{site.javalinSixVersion}}</version>
 </dependency>
 ```
 
