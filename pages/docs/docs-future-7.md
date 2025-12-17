@@ -2,7 +2,7 @@
 layout: default
 title: Documentation
 rightmenu: true
-permalink: /documentation
+permalink: /docs-future
 ---
 
 {% include notificationBanner.html %}
@@ -65,21 +65,36 @@ permalink: /documentation
   - [Documentation for previous versions](#documentation-for-previous-versions)
 </div>
 
-<h1 class="no-margin-top">Documentation</h1>
+<h1 class="no-margin-top">Documentation - Javalin 7.X</h1>
 
-The documentation is for the latest version of Javalin, currently `{{site.javalinversion}}`.
+This documentation is for Javalin 7.X, which is currently in development.
+For the current stable version (6.X), see the [current documentation](/documentation).
 Javalin follows [semantic versioning](http://semver.org/), meaning there are no breaking
-changes unless the major (leftmost) digit changes, for example `5.X.X` to `6.X.X`.
+changes unless the major (leftmost) digit changes, for example `6.X.X` to `7.X.X`.
+
+### Major Changes in Javalin 7
+
+- **Java 17 required** (previously Java 11)
+- **Jetty 12** (previously Jetty 11) - servlet packages changed from `javax.servlet.*` to `jakarta.servlet.*`
+- **Routes must be configured upfront** in `config.routes.*` instead of `app.*`
+
+See the [migration guide](/migration-guide-javalin-6-to-7) for complete details.
 
 {% include sponsorOrStar.html %}
 
 ## Getting Started
 
 Add the dependency:
+{% assign javalinVersion = "7.0.0-alpha4" %}
 {% include macros/mavenDep.md %}
 
 Start coding:
-{% include macros/gettingStarted.md %}
+{% include macros/gettingStarted7.md %}
+
+<div class="comment" markdown="1">
+**Important change in Javalin 7:** Routes must now be defined in the `config.routes` block during application creation.
+You can no longer add routes after calling `.start()`. See the [migration guide](/migration-guide-javalin-6-to-7) for details.
+</div>
 
 ## Handlers
 Javalin has three main handler types: before-handlers, endpoint-handlers, and after-handlers.
@@ -103,33 +118,33 @@ Before-handlers are matched before every request (including static files).
 <div class="comment">You might know before-handlers as filters, interceptors, or middleware from other libraries.</div>
 
 {% capture java %}
-app.before(ctx -> {
+config.routes.before(ctx -> {
     // runs before all requests
 });
-app.before("/path/*", ctx -> {
+config.routes.before("/path/*", ctx -> {
     // runs before request to /path/*
 });
 {% endcapture %}
 {% capture kotlin %}
-app.before { ctx ->
+config.routes.before { ctx ->
     // runs before all requests
 }
-app.before("/path/*") { ctx ->
+config.routes.before("/path/*") { ctx ->
     // runs before request to /path/*
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 In some cases, you might want to only run a before-handler if the request will be matched (not 404).
-In this case you can use the `app.beforeMatched` method:
+In this case you can use the `config.routes.beforeMatched` method:
 
 {% capture java %}
-app.beforeMatched(ctx -> {
+config.routes.beforeMatched(ctx -> {
     // runs before all matched requests (including static files)
 });
 {% endcapture %}
 {% capture kotlin %}
-app.beforeMatched { ctx ->
+config.routes.beforeMatched { ctx ->
     // runs before all matched requests (including static files)
 }
 {% endcapture %}
@@ -139,31 +154,31 @@ app.beforeMatched { ctx ->
 ### Endpoint handlers
 Endpoint handlers are the main handler type, and defines your API. You can add a GET handler to
 serve data to a client, or a POST handler to receive some data.
-Common methods are supported directly on the `Javalin` class (<small>GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS</small>),
-uncommon operations (<small>TRACE, CONNECT</small>) are supported via `Javalin#addHandler`.
+Common methods are supported via `config.routes` (<small>GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS</small>),
+uncommon operations (<small>TRACE, CONNECT</small>) are supported via `config.routes.addHandler`.
 
 Endpoint-handlers are matched in the order they are defined.
 
 <div class="comment">You might know endpoint-handlers as routes or middleware from other libraries.</div>
 
 {% capture java %}
-app.get("/output", ctx -> {
+config.routes.get("/output", ctx -> {
     // some code
     ctx.json(object);
 });
 
-app.post("/input", ctx -> {
+config.routes.post("/input", ctx -> {
     // some code
     ctx.status(201);
 });
 {% endcapture %}
 {% capture kotlin %}
-app.get("/output") { ctx ->
+config.routes.get("/output") { ctx ->
     // some code
     ctx.json(object)
 }
 
-app.post("/input") { ctx ->
+config.routes.post("/input") { ctx ->
     // some code
     ctx.status(201)
 }
@@ -172,18 +187,18 @@ app.post("/input") { ctx ->
 
 Handler paths can include path-parameters. These are available via `ctx.pathParam("key")`:
 {% capture java %}
-app.get("/hello/{name}", ctx -> { // the {} syntax does not allow slashes ('/') as part of the parameter
+config.routes.get("/hello/{name}", ctx -> { // the {} syntax does not allow slashes ('/') as part of the parameter
     ctx.result("Hello: " + ctx.pathParam("name"));
 });
-app.get("/hello/<name>", ctx -> { // the <> syntax allows slashes ('/') as part of the parameter
+config.routes.get("/hello/<name>", ctx -> { // the <> syntax allows slashes ('/') as part of the parameter
     ctx.result("Hello: " + ctx.pathParam("name"));
 });
 {% endcapture %}
 {% capture kotlin %}
-app.get("/hello/{name}") { ctx -> // the {} syntax does not allow slashes ('/') as part of the parameter
+config.routes.get("/hello/{name}") { ctx -> // the {} syntax does not allow slashes ('/') as part of the parameter
     ctx.result("Hello: " + ctx.pathParam("name"))
 }
-app.get("/hello/<name>") { ctx -> // the <> syntax allows slashes ('/') as part of the parameter
+config.routes.get("/hello/<name>") { ctx -> // the <> syntax allows slashes ('/') as part of the parameter
     ctx.result("Hello: " + ctx.pathParam("name"))
 }
 {% endcapture %}
@@ -192,13 +207,13 @@ app.get("/hello/<name>") { ctx -> // the <> syntax allows slashes ('/') as part 
 Handler paths can also include wildcard parameters:
 
 {% capture java %}
-app.get("/path/*", ctx -> { // will match anything starting with /path/
-    ctx.result("You are here because " + ctx.path() + " matches " + ctx.matchedPath());
+config.routes.get("/path/*", ctx -> { // will match anything starting with /path/
+    ctx.result("You are here because " + ctx.path() + " matches " + ctx.endpoint().path());
 });
 {% endcapture %}
 {% capture kotlin %}
-app.get("/path/*") { ctx -> // will match anything starting with /path/
-    ctx.result("You are here because " + ctx.path() + " matches " + ctx.matchedPath())
+config.routes.get("/path/*") { ctx -> // will match anything starting with /path/
+    ctx.result("You are here because " + ctx.path() + " matches " + ctx.endpoint().path())
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -211,33 +226,33 @@ After-handlers run after every request (even if an exception occurred)
 <div class="comment">You might know after-handlers as filters, interceptors, or middleware from other libraries.</div>
 
 {% capture java %}
-app.after(ctx -> {
+config.routes.after(ctx -> {
     // run after all requests
 });
-app.after("/path/*", ctx -> {
+config.routes.after("/path/*", ctx -> {
     // runs after request to /path/*
 });
 {% endcapture %}
 {% capture kotlin %}
-app.after { ctx ->
+config.routes.after { ctx ->
     // run after all requests
 }
-app.after("/path/*") { ctx ->
+config.routes.after("/path/*") { ctx ->
     // runs after request to /path/*
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 In some cases, you might want to only run an after-handler if the request will be matched (not 404).
-In this case you can use the `app.afterMatched` method:
+In this case you can use the `config.routes.afterMatched` method:
 
 {% capture java %}
-app.afterMatched(ctx -> {
+config.routes.afterMatched(ctx -> {
     // runs after all matched requests (including static files)
 });
 {% endcapture %}
 {% capture kotlin %}
-app.afterMatched { ctx ->
+config.routes.afterMatched { ctx ->
     // runs after all matched requests (including static files)
 }
 {% endcapture %}
@@ -335,7 +350,7 @@ async(asyncConfig, runnable)          // same as above, but with additonal confi
 handlerType()                         // handler type of the current handler (BEFORE, AFTER, GET, etc)
 appData(typedKey)                     // get data from the Javalin instance (see app data section below)
 with(pluginClass)                     // get context plugin by class, see plugin section below
-matchedPath()                         // get the path that was used to match this request (ex, "/hello/{name}")
+endpoint().path()                     // get the path that was used to match this request (ex, "/hello/{name}")
 endpointHandlerPath()                 // get the path of the endpoint handler that was used to match this request
 cookieStore()                         // see cookie store section below
 skipRemainingHandlers()               // skip all remaining handlers for this request
@@ -425,12 +440,12 @@ Javalin has a very intuitive way of handling WebSockets. You declare an endpoint
 with a path and configure the different event handlers in a lambda:
 
 {% capture java %}
-app.ws("/websocket/{path}", ws -> {
+config.routes.ws("/websocket/{path}", ws -> {
     ws.onConnect(ctx -> System.out.println("Connected"));
 });
 {% endcapture %}
 {% capture kotlin %}
-app.ws("/websocket/{path}") { ws ->
+config.routes.ws("/websocket/{path}") { ws ->
     ws.onConnect { ctx -> println("Connected") }
 }
 {% endcapture %}
@@ -453,30 +468,30 @@ The differences between the different contexts is small, and a full overview can
 You can learn about how Javalin handles WebSocket concurrency in [FAQ - Concurrency](#concurrency).
 
 ### WsBefore
-The `app.wsBefore` adds a handler that runs before a WebSocket handler.
+The `config.routes.wsBefore` adds a handler that runs before a WebSocket handler.
 You can have as many before-handlers as you want per WebSocket endpoint, and all events are supported.
 {% capture java %}
-app.wsBefore(ws -> {
+config.routes.wsBefore(ws -> {
     // runs before all WebSocket requests
 });
-app.wsBefore("/path/*", ws -> {
+config.routes.wsBefore("/path/*", ws -> {
     // runs before websocket requests to /path/*
 });
 {% endcapture %}
 {% capture kotlin %}
-app.wsBefore { ws ->
+config.routes.wsBefore { ws ->
     // runs before all WebSocket requests
 }
-app.wsBefore("/path/*") { ws ->
+config.routes.wsBefore("/path/*") { ws ->
     // runs before websocket requests to /path/*
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ### WsEndpoint
-A WebSocket endpoint is declared with `app.ws(path, handler)`. WebSocket handlers require unique paths.
+A WebSocket endpoint is declared with `config.routes.ws(path, handler)`. WebSocket handlers require unique paths.
 {% capture java %}
-app.ws("/websocket/{path}", ws -> {
+config.routes.ws("/websocket/{path}", ws -> {
     ws.onConnect(ctx -> System.out.println("Connected"));
     ws.onMessage(ctx -> {
         User user = ctx.messageAsClass(User.class); // convert from json
@@ -488,7 +503,7 @@ app.ws("/websocket/{path}", ws -> {
 });
 {% endcapture %}
 {% capture kotlin %}
-app.ws("/websocket/{path}") { ws ->
+config.routes.ws("/websocket/{path}") { ws ->
     ws.onConnect { ctx -> println("Connected") }
     ws.onMessage { ctx ->
         val user = ctx.messageAsClass<User>(); // convert from json
@@ -502,22 +517,22 @@ app.ws("/websocket/{path}") { ws ->
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ### WsAfter
-The `app.wsAfter` adds a handler that runs after a WebSocket handler.
+The `config.routes.wsAfter` adds a handler that runs after a WebSocket handler.
 You can have as many after-handlers as you want per WebSocket endpoint, and all events are supported.
 
 {% capture java %}
-app.wsAfter(ws -> {
+config.routes.wsAfter(ws -> {
     // runs after all WebSocket requests
 });
-app.wsAfter("/path/*", ws -> {
+config.routes.wsAfter("/path/*", ws -> {
     // runs after websocket requests to /path/*
 });
 {% endcapture %}
 {% capture kotlin %}
-app.wsAfter { ws ->
+config.routes.wsAfter { ws ->
     // runs after all WebSocket requests
 }
-app.wsAfter("/path/*") { ws ->
+config.routes.wsAfter("/path/*") { ws ->
     // runs after websocket requests to /path/*
 }
 {% endcapture %}
@@ -536,7 +551,7 @@ send(byteBuffer)                        // send bytes to client
 sendAsClass(obj, clazz)                 // serialize object to json string and send it to client
 
 // Upgrade Context methods (getters)
-matchedPath()                           // get the path that was used to match this request (ex, "/hello/{name}")
+endpoint().path()                       // get the path that was used to match this request (ex, "/hello/{name}")
 host()                                  // host as string
 
 queryParam("name")                      // query param by name as string
@@ -611,7 +626,7 @@ you can use this safely in multiple locations and from multiple threads.
 You can import all the HTTP methods with `import static io.javalin.apibuilder.ApiBuilder.*`.
 
 {% capture java %}
-config.router.apiBuilder(() -> {
+config.routes.apiBuilder(() -> {
     path("/users", () -> {
         get(UserController::getAllUsers);
         post(UserController::createUser);
@@ -625,7 +640,7 @@ config.router.apiBuilder(() -> {
 });
 {% endcapture %}
 {% capture kotlin %}
-config.router.apiBuilder {
+config.routes.apiBuilder {
     path("/users") {
         get(UserController::getAllUsers)
         post(UserController::createUser)
@@ -647,12 +662,12 @@ This means that `path("api", ...)` and `path("/api", ...)` are equivalent.
 The `CrudHandler` is an interface that can be used within an `apiBuilder()` call:
 
 {% capture java %}
-config.router.apiBuilder(() -> {
+config.routes.apiBuilder(() -> {
     crud("users/{user-id}", new UserController());
 });
 {% endcapture %}
 {% capture kotlin %}
-config.router.apiBuilder {
+config.routes.apiBuilder {
     crud("users/{user-id}", UserController())
 }
 {% endcapture %}
@@ -827,10 +842,10 @@ set per-endpoint authentication and/or authorization. In Javalin 6, this has bee
 replaced with the `beforeMatched` handler. You can read more about this in the
 [Javalin 5 to 6 migration guide](/migration-guide-javalin-5-to-6#the-accessmanager-interface-has-been-removed).
 
-To manage access in Javalin 6, you would do something like this:
+To manage access in Javalin 7, you would do something like this:
 
 {% capture java %}
-app.beforeMatched(ctx -> {
+config.routes.beforeMatched(ctx -> {
     var userRole = getUserRole(ctx); // some user defined function that returns a user role
     if (!ctx.routeRoles().contains(userRole)) { // routeRoles are provided through the Context interface
         throw new UnauthorizedResponse(); // request will have to be explicitly stopped by throwing an exception
@@ -838,7 +853,7 @@ app.beforeMatched(ctx -> {
 });
 {% endcapture %}
 {% capture kotlin %}
-app.beforeMatched { ctx ->
+config.routes.beforeMatched { ctx ->
     val userRole = getUserRole(ctx) // some user defined function that returns a user role
     if (!ctx.routeRoles().contains(userRole)) { // routeRoles are provided through the Context interface
         throw UnauthorizedResponse() // request will have to be explicitly stopped by throwing an exception
@@ -850,12 +865,12 @@ app.beforeMatched { ctx ->
 The roles are set when you declare your endpoints:
 
 {% capture java %}
-app.get("/public", ctx -> ctx.result("Hello public"), Role.OPEN);
-app.get("/private", ctx -> ctx.result("Hello private"), Role.LOGGED_IN);
+config.routes.get("/public", ctx -> ctx.result("Hello public"), Role.OPEN);
+config.routes.get("/private", ctx -> ctx.result("Hello private"), Role.LOGGED_IN);
 {% endcapture %}
 {% capture kotlin %}
-app.get("/public", { ctx -> ctx.result("Hello public") }, Role.OPEN)
-app.get("/private", { ctx -> ctx.result("Hello private") }, Role.LOGGED_IN)
+config.routes.get("/public", { ctx -> ctx.result("Hello public") }, Role.OPEN)
+config.routes.get("/private", { ctx -> ctx.result("Hello private") }, Role.LOGGED_IN)
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
@@ -864,7 +879,7 @@ Javalin comes with a built in class called `HttpResponseException`, which can be
 If the client accepts JSON, a JSON object is returned. Otherwise a plain text response is returned.
 
 ```java
-app.post("/") { throw new ForbiddenResponse("Off limits!") }
+config.routes.post("/", ctx -> { throw new ForbiddenResponse("Off limits!"); });
 ```
 If client accepts JSON:
 ```java
@@ -1091,7 +1106,6 @@ Javalin.create(config -> {
     config.useVirtualThreads // Use virtual threads (based on Java Project Loom)
     config.showJavalinBanner // Show the Javalin banner in the logs
     config.startupWatcherEnabled // Print warning if instance was not started after 5 seconds
-    config.pvt // This is "private", only use it if you know what you're doing
 
     config.events(listenerConfig) // Add an event listener
     config.jsonMapper(jsonMapper) // Set a custom JsonMapper
@@ -1242,7 +1256,7 @@ Javalin.create { config ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-You can add a WebSocket logger by calling `config.requestLogger.ws()`. The method takes a the same arguments as a normal `app.ws()` call,
+You can add a WebSocket logger by calling `config.requestLogger.ws()`. The method takes a the same arguments as a normal `config.routes.ws()` call,
 and can be used to log events of all types.
 The following example just shows `onMessage`, but `onConnect`, `onError` and `onClose` are all available:
 
@@ -1382,8 +1396,11 @@ dependency to your project:
 
 ### Server setup
 
-Javalin runs on an embedded [Jetty](http://eclipse.org/jetty/). To start and stop the server,
-use `start()` and `stop`:
+Javalin runs on an embedded [Jetty](http://eclipse.org/jetty/).
+
+**Note:** Javalin 7 uses **Jetty 12** (previously Jetty 11), which means servlet packages have changed from `javax.servlet.*` to `jakarta.servlet.*`.
+
+To start and stop the server, use `start()` and `stop`:
 
 ```java
 Javalin app = Javalin.create()
@@ -1397,14 +1414,14 @@ Your program will not exit until this thread is terminated by calling `app.stop(
 If you want to do a clean shutdown when the program is exiting, you could use:
 
 ```java
+Javalin app = Javalin.create(config -> {
+    config.events.serverStopping(() -> { /* Your code here */ });
+    config.events.serverStopped(() -> { /* Your code here */ });
+});
+
 Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 	app.stop();
 }));
-
-app.events(event -> {
-    event.serverStopping(() -> { /* Your code here */ });
-    event.serverStopped(() -> { /* Your code here */ });
-});
 ```
 
 If you want graceful shutdown, you can configure the server using the `modifyServer` method:
@@ -1477,28 +1494,28 @@ fully functioning example server in both Kotlin and Java: [javalin-http2-example
 Javalin has events for server start/stop, as well as for when handlers are added.
 The snippet below shows all of them in action:
 {% capture java %}
-Javalin app = Javalin.create().events(event -> {
-    event.serverStarting(() -> { ... });
-    event.serverStarted(() -> { ... });
-    event.serverStartFailed(() -> { ... });
-    event.serverStopping(() -> { ... });
-    event.serverStopped(() -> { ... });
-    event.handlerAdded(handlerMetaInfo -> { ... });
-    event.wsHandlerAdded(wsHandlerMetaInfo -> { ... });
+Javalin app = Javalin.create(config -> {
+    config.events.serverStarting(() -> { ... });
+    config.events.serverStarted(() -> { ... });
+    config.events.serverStartFailed(() -> { ... });
+    config.events.serverStopping(() -> { ... });
+    config.events.serverStopped(() -> { ... });
+    config.events.handlerAdded(handlerMetaInfo -> { ... });
+    config.events.wsHandlerAdded(wsHandlerMetaInfo -> { ... });
 });
 
 app.start() // serverStarting -> (serverStarted || serverStartFailed)
 app.stop() // serverStopping -> serverStopped
 {% endcapture %}
 {% capture kotlin %}
-Javalin app = Javalin.create().events { event ->
-    event.serverStarting { ... }
-    event.serverStarted { ... }
-    event.serverStartFailed { ... }
-    event.serverStopping { ... }
-    event.serverStopped { ... }
-    event.handlerAdded { handlerMetaInfo -> }
-    event.wsHandlerAdded { wsHandlerMetaInfo -> }
+Javalin app = Javalin.create { config ->
+    config.events.serverStarting { ... }
+    config.events.serverStarted { ... }
+    config.events.serverStartFailed { ... }
+    config.events.serverStopping { ... }
+    config.events.serverStopped { ... }
+    config.events.handlerAdded { handlerMetaInfo -> }
+    config.events.wsHandlerAdded { wsHandlerMetaInfo -> }
 }
 
 app.start() // serverStarting -> (serverStarted || serverStartFailed)
@@ -1519,10 +1536,10 @@ Frequently asked questions.
 The Javalin request lifecycle is pretty straightforward.
 The following snippet covers every place you can hook into:
 ```java
-Javalin#before              // runs first, can throw exception (which will skip any endpoint handlers)
-Javalin#get/post/patch/etc  // runs second, can throw exception
-Javalin#error               // runs third, can throw exception
-Javalin#after               // runs fourth, can throw exception
+config.routes.before              // runs first, can throw exception (which will skip any endpoint handlers)
+config.routes.get/post/patch/etc  // runs second, can throw exception
+Javalin#error                     // runs third, can throw exception
+config.routes.after               // runs fourth, can throw exception
 Javalin#exception           // runs any time a handler throws (cannot throw exception)
 JavalinConfig#requestLogger // runs after response is written to client
 JavalinConfig#accessManager // wraps all your endpoint handlers in a lambda of your choice
@@ -1535,7 +1552,7 @@ There is a very simple rate limiter included in Javalin.
 You can call it in the beginning of your endpoint `Handler` functions:
 
 {% capture java %}
-app.get("/", ctx -> {
+config.routes.get("/", ctx -> {
     NaiveRateLimit.requestPerTimeUnit(ctx, 5, TimeUnit.MINUTES); // throws if rate limit is exceeded
     ctx.status("Hello, rate-limited World!");
 });
@@ -1544,7 +1561,7 @@ app.get("/", ctx -> {
 RateLimitUtil.keyFunction = ctx -> // uses (ip+method+endpointPath) by default
 {% endcapture %}
 {% capture kotlin %}
-app.get("/") { ctx ->
+config.routes.get("/") { ctx ->
     NaiveRateLimit.requestPerTimeUnit(ctx, 5, TimeUnit.MINUTES) // throws if rate limit is exceeded
     ctx.status("Hello, rate-limited World!")
 }
@@ -1646,16 +1663,17 @@ on another web server (such as Tomcat), you can use Maven or Gradle to exclude J
 ### Uploads
 Uploaded files are easily accessible via `ctx.uploadedFiles()`:
 {% capture java %}
-app.post("/upload", ctx -> {
+config.routes.post("/upload", ctx -> {
     ctx.uploadedFiles("files").forEach(uploadedFile ->
         FileUtil.streamToFile(uploadedFile.content(), "upload/" + uploadedFile.filename()));
 });
 {% endcapture %}
 {% capture kotlin %}
-app.post("/upload") { ctx ->
+config.routes.post("/upload") { ctx ->
     ctx.uploadedFiles("files").forEach { uploadedFile ->
         FileUtil.streamToFile(uploadedFile.content(), "upload/${uploadedFile.filename()}")
     }
+}
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -1703,7 +1721,7 @@ private fun getRandomCatFactFuture(): CompletableFuture<HttpResponse<String>> {
 Now we can use this method in our Javalin app to return cat facts to the client asynchronously:
 
 {% capture java %}
-app.get("/cat-facts", ctx -> {
+config.routes.get("/cat-facts", ctx -> {
     ctx.future(() -> {
         return getRandomCatFactFuture()
             .thenAccept(response -> ctx.html(response.body()).status(response.statusCode()))
@@ -1715,7 +1733,7 @@ app.get("/cat-facts", ctx -> {
 });
 {% endcapture %}
 {% capture kotlin %}
-app.get("/cat-facts") { ctx ->
+config.routes.get("/cat-facts") { ctx ->
     ctx.future {
         getRandomCatFactFuture()
             .thenAccept { response -> ctx.html(response.body()).status(response.statusCode()) }
@@ -1753,7 +1771,7 @@ once the task is done.
 The snippet belows shows a full example with a custom timeout, timeout handler, and a task:
 
 {% capture java %}
-app.get("/async", ctx -> {
+config.routes.get("/async", ctx -> {
     ctx.async(
         1000,                                      // timeout in ms
         () -> ctx.result("Request took too long"), // timeout callback
@@ -1762,8 +1780,7 @@ app.get("/async", ctx -> {
 });
 {% endcapture %}
 {% capture kotlin %}
-
-app.get("/async") { ctx ->
+config.routes.get("/async") { ctx ->
     ctx.async(
         1000,                                    // timeout in ms
         { ctx.result("Request took too long") }, // timeout callback
@@ -1904,6 +1921,9 @@ about this at [/plugins/rendering](/plugins/rendering).
 
 ### Vue support (JavalinVue)
 If you don't want to deal with NPM and frontend builds, Javalin has support for simplified Vue.js development.
+
+**Note:** In Javalin 7, JavalinVue is now a plugin. You need to register it using `config.registerPlugin(new JavalinVuePlugin(...))`.
+
 This requires you to make a layout template, `src/main/resources/vue/layout.html`:
 
 ```markup
@@ -1963,19 +1983,19 @@ which is 30 seconds by default in Jetty/Javalin. This is not a bug.
 
 ### Java lang Error handling
 Javalin has a default error handler for `java.lang.Error` that will log the error and return a 500.
-The default error handler can be overridden using the private config:
+The default error handler can be overridden using `config.router`:
 
 {% capture java %}
-Javalin.create( cfg -> {
-    cfg.pvt.javaLangErrorHandler((res, error) -> {
+Javalin.create(config -> {
+    config.router.javaLangErrorHandler((res, error) -> {
         res.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.getCode());
         JavalinLogger.error("Exception occurred while servicing http-request", error);
     });
 });
 {% endcapture %}
 {% capture kotlin %}
-Javalin.create { cfg ->
-    cfg.pvt.javaLangErrorHandler { res, error ->
+Javalin.create { config ->
+    config.router.javaLangErrorHandler { res, error ->
         res.status = HttpStatus.INTERNAL_SERVER_ERROR.code
         JavalinLogger.error("Exception occurred while servicing http-request", error)
     }
