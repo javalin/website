@@ -65,9 +65,9 @@ permalink: /docs-future
   - [Documentation for previous versions](#documentation-for-previous-versions)
 </div>
 
-<h1 class="no-margin-top">Documentation - Javalin 7.X</h1>
+<h1 class="no-margin-top">Documentation - Javalin 7</h1>
 
-This documentation is for Javalin 7.X, which is currently in development.
+This documentation is for Javalin 7, which is currently in development.
 For the current stable version (6.X), see the [current documentation](/documentation).
 Javalin follows [semantic versioning](http://semver.org/), meaning there are no breaking
 changes unless the major (leftmost) digit changes, for example `6.X.X` to `7.X.X`.
