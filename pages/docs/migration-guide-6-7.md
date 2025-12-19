@@ -205,6 +205,39 @@ val app = Javalin.create { config ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
+### Compression configuration has changed
+The compression API has been simplified. Instead of calling methods like `brotliAndGzipCompression()`, you now set the `compressionStrategy` property.
+
+In Javalin 6:
+{% capture java %}
+var app = Javalin.create(config -> {
+    config.http.brotliAndGzipCompression();
+});
+{% endcapture %}
+{% capture kotlin %}
+val app = Javalin.create { config ->
+    config.http.brotliAndGzipCompression()
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+In Javalin 7:
+{% capture java %}
+import io.javalin.compression.CompressionStrategy;
+
+var app = Javalin.create(config -> {
+    config.http.compressionStrategy = CompressionStrategy.GZIP;
+});
+{% endcapture %}
+{% capture kotlin %}
+import io.javalin.compression.CompressionStrategy
+
+val app = Javalin.create { config ->
+    config.http.compressionStrategy = CompressionStrategy.GZIP
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
 ### Template rendering is now modular
 The `javalin-rendering` module has been split into separate modules for each template engine.
 
