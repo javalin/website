@@ -231,6 +231,57 @@ If you're using Jetty-specific APIs directly, note that:
 * Package names have changed from `javax.servlet.*` to `jakarta.servlet.*`
 * Some Jetty APIs have been updated or deprecated
 
+#### Jetty Session Handler changes
+If you're using custom Jetty session handlers, you'll need to update your imports and API usage:
+
+**Package changes:**
+* `org.eclipse.jetty.server.session.SessionHandler` → `org.eclipse.jetty.ee10.servlet.SessionHandler`
+* `org.eclipse.jetty.server.session.*` → `org.eclipse.jetty.session.*` (for session data stores, caches, etc.)
+
+**API changes:**
+* Property `httpOnly` → `isHttpOnly` (Kotlin) or use `setHttpOnly()` method (Java)
+* Property `sessionHandler` no longer exists - use the SessionHandler instance directly
+* Property `sameSite` → use `setSameSite()` method
+* Property `isSecureRequestOnly` → use `setSecureRequestOnly()` method
+
+In Javalin 6:
+{% capture java %}
+SessionHandler sessionHandler = new SessionHandler();
+SessionCache sessionCache = new DefaultSessionCache(sessionHandler);
+sessionCache.setSessionDataStore(factory.getSessionDataStore(sessionHandler.getSessionHandler()));
+sessionHandler.setSessionCache(sessionCache);
+sessionHandler.setHttpOnly(true);
+{% endcapture %}
+{% capture kotlin %}
+fun sessionHandler() = SessionHandler().apply {
+    sessionCache = DefaultSessionCache(this).apply {
+        sessionDataStore = factory.getSessionDataStore(sessionHandler)
+    }
+    httpOnly = true
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+In Javalin 7:
+{% capture java %}
+SessionHandler sessionHandler = new SessionHandler();
+SessionCache sessionCache = new DefaultSessionCache(sessionHandler);
+sessionCache.setSessionDataStore(factory.getSessionDataStore(sessionHandler));
+sessionHandler.setSessionCache(sessionCache);
+sessionHandler.setHttpOnly(true);
+{% endcapture %}
+{% capture kotlin %}
+fun sessionHandler() = SessionHandler().apply {
+    sessionCache = DefaultSessionCache(this).also {
+        it.sessionDataStore = factory.getSessionDataStore(this)
+    }
+    isHttpOnly = true
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+**Note:** In Kotlin, using `also` instead of `apply` for the nested `DefaultSessionCache` block allows you to access both the cache (`it`) and the outer SessionHandler (`this`) without needing labeled lambdas or temporary variables
+
 ### Java 17 required
 Javalin 7 requires Java 17 or higher (previously Java 11).
 
