@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&display=swap');
-
 main {
     padding: 0;
 }
@@ -195,7 +193,7 @@ nav ul li a:hover {
     cursor: pointer;
     border-radius: 8px;
     font-size: 16px;
-    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    font-family: var(--jv-font-mono);
     font-weight: 500;
     box-shadow: none;
     transition: all 0.2s ease;
@@ -319,8 +317,8 @@ nav ul li a:hover {
 
 .stat-number {
     font-size: 48px;
-    font-weight: 700;
-    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-family: var(--jv-font-heading);
     color: #2a7ba8;
     margin-bottom: 10px;
     line-height: 1;

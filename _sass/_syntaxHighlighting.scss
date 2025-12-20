@@ -13,7 +13,7 @@ $code-bg-color: #2a2b31;
       float: left;
       font-size: 14px;
       line-height: 1.5;
-      font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+      font-family: var(--jv-font-mono);
     }
     .comment {
       font-size: 100%;

@@ -31,7 +31,7 @@ button, input, select, textarea {
 }
 
 html {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: var(--jv-font-body);
   background: #f9f9f9;
   background: linear-gradient(#f9f9fc, #fcfcff);
   overflow-y: scroll;
@@ -65,8 +65,8 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: 'Rajdhani', sans-serif;
-  font-weight: 700;
+  font-family: var(--jv-font-heading);
+  font-weight: 600;
   letter-spacing: -0.5px;
   margin-top: 1.75em;
   margin-bottom: 0.25em;
@@ -85,7 +85,7 @@ main.width-limit hr {
 }
 
 p {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: var(--jv-font-body);
   margin: 1.5em 0 0.25em;
 }
 
@@ -119,7 +119,7 @@ li {
 }
 
 pre {
-  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  font-family: var(--jv-font-mono);
   margin: .5em 0;
   background: #333;
   padding: 15px;

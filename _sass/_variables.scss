@@ -3,6 +3,11 @@
    ============================================================================ */
 
 :root {
+  /* Typography */
+  --jv-font-heading: 'Zilla Slab', serif;
+  --jv-font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --jv-font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+
   /* Colors */
   --jv-color-border: #e5e7eb;
 
