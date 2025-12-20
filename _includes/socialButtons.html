@@ -2,10 +2,11 @@
     .social {
         margin: 30px 0;
         display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
     }
     .social-btn {
         text-align: center;
-        min-width: 240px;
         padding: 10px 16px 8px;
         font-size: 14px;
         font-family: 'Roboto Slab', sans-serif;
@@ -14,39 +15,82 @@
         background: #000;
         border-radius: 50px;
         box-shadow: 2px 2px red, -2px -2px cyan;
-    }
-    .social-btn + .social-btn {
-        margin-left: 24px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap;
+        cursor: pointer;
+        border: none;
+        transition: all 0.2s ease;
     }
     .social-btn:hover {
-        background: #008ab4;
+        transform: translateY(-2px);
+        box-shadow: 2px 2px red, -2px -2px cyan, 0 5px 10px rgba(0, 0, 0, 0.25);
     }
-    .social-btn img {
-        width: 24px;
+    .social-btn svg {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+        fill: currentColor;
+    }
+    .social-btn-text {
         display: inline;
-        vertical-align: middle;
-        margin-right: 12px;
     }
-    @media (max-width: 480px) {
+    @media (max-width: 768px) {
         .social {
-            justify-content: space-between;
+            gap: 8px;
         }
         .social-btn {
-            min-width: 0;
-            width: calc(50% - 12px);
-            text-align: left;
-            display: flex;
-            align-items: center;
+            padding: 8px 12px 6px;
+            font-size: 13px;
         }
-        .social-btn + .social-btn {
-            margin-left: 0;
+        .social-btn svg {
+            width: 18px;
+            height: 18px;
+            margin-right: 6px;
+        }
+    }
+    @media (max-width: 480px) {
+        .social-btn-text {
+            display: none;
+        }
+        .social-btn svg {
+            margin-right: 0;
+        }
+        .social-btn {
+            padding: 10px;
         }
     }
 </style>
 <div class="social">
-    <a class="social-btn" href="https://twitter.com/intent/tweet?text={{ page.title }}&url={{ site.url }}{{ page.url }}&via=javalin_io&related=javalin_io"
+    <a class="social-btn"
+       href="https://twitter.com/intent/tweet?text={{ page.title }}&url=https://javalin.io{{ page.url }}&via=javalin_io&related=javalin_io"
        rel="nofollow"
-       title="Share on Twitter">
-        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAAAM1BMVEUAAAD///////////////////////////////////////////////////////////////+3leKCAAAAEHRSTlMA8BDQwKCAMOBwYECwUCCQ27fl2AAAAW1JREFUWMPtltuOwyAMRLG5QxL8/1+7G6lKFApMaJ5W2/NIPCPAnlL15R+xRSM7ZPMnci5yYvxrNRt3VMRtpPdBLqR9MWkhPkpI80BPUpFy2dfiUbKK9B02kjbmrCkycNAdfeCqpuOQOnrye2teRS9LrxqEjn4tQSS/io7Fxg1Kn/MWjxX7dgw30NvGNkO9CQP1O8v7oGEDq07i9Uu+YxAvs1J91GmDBtdQLVKjYz6/YINNWujiVgsMet3CqAr7yICKn3XQF4N9gizJDAsIDMSBLkIyyDzkmjqmWb0GoYUUBVKLWFUF6yk9gccDYtU7bKabWBNv9yKoDunmTcSW2Im+uwNi1cBP5+DjUSAGrzgiVcLZSBmlHjnQBv7L4AOMYEdwiAGcFgK/A5BN9/WsMCs90nsjT/SrGd0fI3UJIIIdovtlAUnWftA5KwiKakg2Y7ljfPn9tzWkUw5GsHV059UEOVpDR2wXl1l9+RP8AHA4c7ljId3mAAAAAElFTkSuQmCC">Share on X/Twitter
+       target="_blank"
+       title="Share on X/Twitter">
+        <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
+        <span class="social-btn-text">Share on X</span>
     </a>
+    <a class="social-btn"
+       href="https://www.reddit.com/submit?url=https://javalin.io{{ page.url }}&title={{ page.title | url_encode }}"
+       rel="nofollow"
+       target="_blank"
+       title="Share on Reddit">
+        <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+        <span class="social-btn-text">Share on Reddit</span>
+    </a>
+    <a class="social-btn"
+       href="https://news.ycombinator.com/submitlink?u=https://javalin.io{{ page.url }}&t={{ page.title | url_encode }}"
+       rel="nofollow"
+       target="_blank"
+       title="Share on Hacker News">
+        <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M0 24V0h24v24H0zM6.951 5.896l4.112 7.708v5.064h1.583v-4.972l4.148-7.799h-1.749l-2.457 4.875c-.372.745-.688 1.434-.688 1.434s-.297-.708-.651-1.434L8.831 5.896h-1.88z"/></svg>
+        <span class="social-btn-text">Hacker News</span>
+    </a>
+    <button class="social-btn"
+            onclick="navigator.clipboard.writeText('https://javalin.io{{ page.url }}'); this.innerHTML = this.innerHTML.replace('Copy Link', 'Copied!'); setTimeout(() => { this.innerHTML = this.innerHTML.replace('Copied!', 'Copy Link'); }, 2000);"
+            title="Copy link to clipboard">
+        <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13.723 18.654l-3.61 3.609c-2.316 2.315-6.063 2.315-8.378 0-1.12-1.118-1.735-2.606-1.735-4.188 0-1.582.615-3.07 1.734-4.189l4.866-4.865c2.355-2.355 6.114-2.262 8.377 0 .453.453.81.973 1.089 1.527l-1.593 1.592c-.18-.613-.5-1.189-.964-1.652-1.448-1.448-3.93-1.51-5.439-.001l-.001.002-4.867 4.865c-1.5 1.499-1.5 3.941 0 5.44 1.517 1.517 3.958 1.488 5.442 0l2.425-2.424c.993.284 1.791.335 2.654.284zm.161-16.918l-3.574 3.576c.847-.05 1.655 0 2.653.283l2.393-2.389c1.498-1.502 3.94-1.5 5.44-.001 1.517 1.518 1.486 3.959 0 5.442l-4.831 4.831-.003.002c-1.438 1.437-3.886 1.552-5.439-.002-.473-.474-.785-1.042-.956-1.643l-.084.068-1.517 1.515c.28.556.635 1.075 1.088 1.528 2.245 2.245 6.004 2.374 8.378 0l4.832-4.831c2.314-2.316 2.316-6.062-.001-8.377-2.317-2.321-6.067-2.313-8.379-.002z"/></svg>
+        <span class="social-btn-text">Copy Link</span>
+    </button>
 </div>
