@@ -18,17 +18,8 @@ ul.post-list {
     margin-top: 0;
   }
   li {
-    + li {
-      margin-top: 20px;
-    }
     a {
-      position: relative;
-      color: #444;
-      display: block;
       padding: 20px;
-      background: #fff;
-      border-radius: 5px;
-      box-shadow: $card-shadow;
       &:hover {
         transform: scale(1.01);
       }
@@ -56,9 +47,6 @@ ul.post-list {
         font-size: 20px;
         font-weight: 500;
       }
-    }
-    p {
-      font-size: 14px;
     }
   }
 }

@@ -118,14 +118,22 @@ main {
 }
 
 .notification {
-  margin: 15px 0;
-  background: #fff;
-  padding: 15px;
-  border: 1px dashed #bbc;
-  border-radius: 5px;
+  margin: 24px 0;
+  background: #f0f8ff;
+  padding: 16px 20px;
+  border: 1px solid #c5e3f6;
+  border-left: 4px solid #60b8e8;
+  border-radius: var(--jv-radius-md);
+  color: #4a6b8a;
 
   p {
     margin: 0;
+    line-height: 1.6;
+  }
+
+  a {
+    color: #4a6b8a;
+    text-decoration: underline;
   }
 }
 

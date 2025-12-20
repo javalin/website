@@ -5,18 +5,6 @@
     position: absolute;
     right: 24px;
     top: 24px;
-
-    .tutorial-language {
-      text-transform: capitalize;
-      background: #d6f0f9;
-      border-radius: 5px;
-      padding: 1px 6px;
-      display: inline-block;
-      font-size: 14px;
-      + .tutorial-language {
-        margin-left: 4px;
-      }
-    }
   }
 }
 

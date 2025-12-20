@@ -2,6 +2,7 @@
 # Only the main Sass file needs front matter (the dashes are enough)
 ---
 
+@import 'variables';
 @import 'normalize';
 @import 'prism';
 @import 'main';
@@ -9,3 +10,4 @@
 @import 'frame';
 @import 'tutorial';
 @import 'post';
+@import 'jv-card';

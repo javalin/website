@@ -1,4 +1,4 @@
-<div class="plugin-box {{include.title | slugify}}">
+<div class="jv-card plugin-box {{include.title | slugify}}">
     <div class="plugin-box-header">
         <h2>
             {{ include.title }}
@@ -9,9 +9,9 @@
         </h2>
         <span class="plugin-tags">
              {% if include.bundled == "true" %}
-                <span class="plugin-tag">Bundled</span>
+                <span class="jv-label">Bundled</span>
              {% else %}
-                <span class="plugin-tag">Third party</span>
+                <span class="jv-label">Third party</span>
              {% endif %}
         </span>
     </div>

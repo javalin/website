@@ -1,42 +1,36 @@
 .plugin-box {
-    position: relative;
-    color: #444;
-    display: block;
-    padding: 20px;
-    background: #fff;
-    border-radius: 5px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    margin-top: 20px;
-    font-size: 14px;
+    padding: 24px;
 }
 
 .plugin-box-header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
 }
 
-.plugin-box-header .plugin-tag {
-    text-transform: capitalize;
-    background: #d6f0f9;
-    border-radius: 5px;
-    padding: 2px 6px 1px;
-    display: inline-block;
-    font-size: 14px;
+.plugin-box-header .jv-label {
+    flex-shrink: 0;
 }
 
 .plugin-box h2 {
-    font-size: 22px;
-    margin-top: 0;
+    font-size: 20px;
+    margin: 0;
+    line-height: 1.3;
 }
 
 .plugin-box p {
-    margin-top: 0;
+    margin: 0 0 16px 0;
+    line-height: 1.6;
 }
 
 .plugin-box h2 .plugin-authors {
-    font-size: 70%;
+    display: block;
+    font-size: 13px;
     font-weight: 400;
+    color: #666;
+    margin-top: 4px;
 }
 
 .plugin-authors a + a {
@@ -54,23 +48,34 @@
 
 .plugin-box-footer {
     font-size: 13px;
-    margin-top: 8px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #f0f0f0;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
 .plugin-box-footer .view-docs-btn {
-    background: #f5f5f5;
-    border-radius: 40px;
-    padding: 8px 16px;
+    background: #007ea3;
+    color: white;
+    border-radius: 6px;
+    padding: 8px 14px;
     display: inline-flex;
     align-items: center;
-    color: black;
+    font-weight: 500;
+    transition: background 0.2s ease;
+}
+
+.plugin-box-footer .view-docs-btn:hover {
+    background: #006080;
 }
 
 .plugin-box-footer .view-docs-btn svg {
-    margin-left: 4px;
+    margin-left: 6px;
+    width: 16px;
+    height: 16px;
+    fill: white;
 }
 
 .plugin-box-footer .plugin-reports {

@@ -244,15 +244,10 @@ nav ul li a:hover {
     flex-basis: calc(33.333% - 32px);
     margin: 0 16px 32px 16px;
     padding: 32px;
-    background: #fff;
-    border-radius: 5px;
     line-height: 1.7;
     color: rgba(0, 0, 0, 0.7);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
     text-wrap: pretty;
     border-left: 4px solid #5dade2;
-    position: relative;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
     text-align: left;
 }
 
@@ -302,7 +297,8 @@ nav ul li a:hover {
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
-    min-width: 200px;
+    flex: 1 1 200px;
+    max-width: 250px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     text-decoration: none;
     display: block;
