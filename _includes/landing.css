@@ -195,7 +195,7 @@ nav ul li a:hover {
     cursor: pointer;
     border-radius: 8px;
     font-size: 16px;
-    font-family: 'Roboto Mono', 'Consolas', 'Monaco', monospace;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
     font-weight: 500;
     box-shadow: none;
     transition: all 0.2s ease;

@@ -59,7 +59,6 @@ nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-family: 'Roboto Slab', sans-serif;
   height: 80px;
   position: relative;
 
@@ -88,8 +87,9 @@ nav {
 
       a {
         margin: 0 6px;
-        font-weight: 500;
-        font-size: 18px;
+        font-family: 'Rajdhani', sans-serif;
+        font-weight: 600;
+        font-size: 20px;
         display: block;
         color: #333;
         text-decoration: none;
@@ -105,7 +105,6 @@ nav {
 }
 
 .right-menu {
-  font-family: Arial, sans-serif;
   position: fixed;
   left: 50%;
   list-style: none;
@@ -148,7 +147,7 @@ nav {
 
   ul.tutorial-menu {
     font-size: 13px;
-    font-family: Tahoma, arial, sans-serif;
+    font-family: 'Rajdhani', sans-serif;
 
     a {
       padding: 2px 0;
