@@ -1,6 +1,6 @@
-$javalin-brand-primary: #007ea3;
-$light-border: #dde;
-$card-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+// Legacy SCSS variables for compatibility
+$javalin-brand-primary: var(--jv-color-primary);
+$light-border: var(--jv-color-border-light);
 
 @mixin noselect() {
   -webkit-touch-callout: none;
@@ -32,7 +32,7 @@ button, input, select, textarea {
 
 html {
   font-family: var(--jv-font-body);
-  background: #f9f9f9;
+  background: var(--jv-color-bg-light);
   background: linear-gradient(#f9f9fc, #fcfcff);
   overflow-y: scroll;
   color: #333;
@@ -40,7 +40,7 @@ html {
 }
 
 a {
-  color: $javalin-brand-primary;
+  color: var(--jv-color-primary);
   text-decoration: none;
   overflow-wrap: break-word
 }
@@ -98,11 +98,11 @@ li {
   > code {
     font-size: 90%;
     letter-spacing: -0.5px;
-    border: 1px solid #ccd;
-    background: #f5f5f5;
+    border: 1px solid var(--jv-color-code-border);
+    background: var(--jv-color-code-bg);
     padding: 1px 3px;
-    color: darken($javalin-brand-primary, 10%);
-    border-radius: 3px;
+    color: #005a75;
+    border-radius: var(--jv-radius-sm);
     font-style: normal;
   }
 
@@ -123,7 +123,7 @@ pre {
   margin: .5em 0;
   background: #333;
   padding: 15px;
-  border-radius: 5px;
+  border-radius: var(--jv-radius-md);
   color: #f5f5f5;
   overflow-x: scroll;
 }
@@ -221,8 +221,8 @@ pre { // scrollbar in code examples
 }
 
 img.bordered-image {
-  border: 1px solid $light-border;
-  border-radius: 3px;
+  border: 1px solid var(--jv-color-border-light);
+  border-radius: var(--jv-radius-sm);
   box-sizing: content-box;
 }
 

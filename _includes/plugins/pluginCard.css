@@ -58,9 +58,9 @@
 }
 
 .plugin-box-footer .view-docs-btn {
-    background: #007ea3;
+    background: var(--jv-color-primary);
     color: white;
-    border-radius: 6px;
+    border-radius: var(--jv-radius-md);
     padding: 8px 14px;
     display: inline-flex;
     align-items: center;
@@ -87,9 +87,9 @@
 .plugin-box-footer .r-icon {
     display: inline-flex;
     align-items: center;
-    background: 1px #f5f5f5;
+    background: var(--jv-color-code-bg);
     padding: 4px 8px;
-    border-radius: 5px;
+    border-radius: var(--jv-radius-md);
     line-height: 1;
 }
 

@@ -9,15 +9,23 @@
   --jv-font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
 
   /* Colors */
+  --jv-color-primary: #007ea3;
   --jv-color-border: #e5e7eb;
+  --jv-color-border-light: #dde;
+  --jv-color-code-border: #ccd;
+  --jv-color-code-bg: #f5f5f5;
+  --jv-color-bg-light: #f9f9f9;
 
   /* Spacing */
   --jv-space-5: 24px;
 
   /* Border Radius */
-  --jv-radius-md: 8px;
+  --jv-radius-sm: 3px;
+  --jv-radius-md: 5px;
+  --jv-radius-lg: 8px;
 
   /* Shadows */
   --jv-shadow-card: 0 2px 10px rgba(0, 0, 0, 0.08);
+  --jv-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 

@@ -41,6 +41,7 @@ nav ul li a:hover {
 }
 
 .landing h1 {
+    font-family: 'Rajdhani', sans-serif;
     text-align: center;
     margin: 32px 0 40px; /* offset line height */
 }

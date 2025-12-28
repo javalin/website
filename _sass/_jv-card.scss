@@ -7,7 +7,7 @@
   display: block;
   background: #fff;
   border: 1px solid var(--jv-color-border);
-  border-radius: var(--jv-radius-md);
+  border-radius: var(--jv-radius-lg);
   box-shadow: var(--jv-shadow-card);
   color: #444;
   font-size: 14px;
@@ -16,7 +16,7 @@
 
 .jv-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--jv-shadow-hover);
 }
 
 /* ============================================================================
@@ -48,7 +48,7 @@
 .jv-label {
   text-transform: capitalize;
   background: #e8f4f8;
-  border-radius: 6px;
+  border-radius: var(--jv-radius-md);
   padding: 4px 10px;
   display: inline-block;
   font-size: 12px;
