@@ -14,17 +14,9 @@ Setting up and configuring these servers for each student requires a lot of effo
 could be spent teaching students about HTTP and programming instead.
 
 Javalin runs on an embedded Jetty server, and you only need to add the dependency
-and write a single line of code to create and start a server. A full "Hello World" app looks like this:
-```java
-import io.javalin.Javalin;
+and write a few lines of code to create and start a server. A full "Hello World" app looks like this:
 
-public class HelloWorld {
-    public static void main(String[] args) {
-        Javalin app = Javalin.create().start(7000); // create and launch server
-        app.get("/", ctx -> ctx.result("Hello World")); // add root endpoint
-    }
-}
-```
+{% include macros/gettingStarted.md %}
 
 This app can be packaged and launched with `java -jar hello-world.jar`, no further configuration required.
 This lets you focus your classes on core principles rather than specifics for setting up an application server.
@@ -44,17 +36,43 @@ with a Javalin project should transfer easily to other (non Javalin) projects.
 
 ## API discoverability
 Javalin’s API is built with discoverability in mind.
-The server configuration object has a fluent/chainable API,
-and the context object has everything needed for handling a HTTP-request.
+The configuration object is organized into logical sub-objects,
+and the context object has everything needed for handling HTTP requests.
 
-This lets new users discover the API with their IDE:
+All configuration in Javalin follows a `Consumer<Config>` pattern, which means students can explore
+configuration options simply by typing the config object name and letting their IDE's autocomplete
+guide them through available options:
 
-<img src="/img/pages/for-educators-discoverability.png" alt="Discoverability">
+```java
+Javalin.create(config -> {
+    config.           // reveals configuration categories like http, router, jetty
+    config.http.      // shows HTTP settings like asyncTimeout, generateEtags, maxRequestSize
+    config.routes.    // provides access to attach HTTP method handlers like get(...), post(...), put(...), etc
+    config.router.    // exposes routing options like ignoreTrailingSlashes, caseInsensitiveRoutes
+});
+```
+
+The `Context` object contains everything needed for handling requests and responses:
+
+```java
+ctx.pathParam(...)    // extract path parameters from the URL
+ctx.queryParam(...)   // extract query parameters from the URL
+ctx.body()            // get the request body
+ctx.header(...)       // get or set headers
+ctx.result(...)       // set the response body
+ctx.json(...)         // serialize an object to JSON and set as response
+ctx.status(...)       // set the HTTP status code
+ctx.contentType(...)  // set the content type
+```
+
+This organized structure makes learning intuitive and self-guided, as students can discover features
+by exploring the API with their IDE's autocomplete.
 
 ## Good documentation and tutorials
 Javalin's documentation is example-based rather than technical, which allows new users to copy snippets and experiment with them.
 Javalin also has tutorials for most common tasks that developers have to solve when starting web-programming.
 
-## Active development
-A new (backwards compatible) version of Javalin has been released every month since the first version.
-Pull requests and issues are reviewed swiftly, normally every week.
+## Stable and actively maintained
+Javalin has been in active development since 2017, with a strong focus on backwards compatibility.
+The framework is stable and production-ready, while still being actively maintained with regular updates.
+Pull requests and issues are reviewed swiftly, ensuring the framework stays current with the Java ecosystem.

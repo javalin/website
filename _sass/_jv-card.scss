@@ -1,0 +1,121 @@
+/* ============================================================================
+   JV-CARD - Simple card component
+   ============================================================================ */
+
+.jv-card {
+  position: relative;
+  display: block;
+  background: #fff;
+  border: 1px solid var(--jv-color-border);
+  border-radius: var(--jv-radius-lg);
+  box-shadow: var(--jv-shadow-card);
+  color: #444;
+  font-size: 14px;
+  padding: 20px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.jv-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--jv-shadow-hover);
+}
+
+/* News/post card specific styles */
+.jv-card .date {
+  font-size: 14px;
+  color: #666;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+.jv-card-list .jv-card-title {
+  max-width: calc(100% - 120px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.jv-card p {
+  margin: 12px 0 0;
+}
+
+/* Posts overview wrapper */
+.posts-overview {
+  margin: 24px 0;
+}
+
+.posts-header,
+.posts-footer {
+  clear: both;
+  p {
+    margin: 0;
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 480px) {
+  .jv-card-list .jv-card-title {
+    font-size: 18px;
+  }
+
+  .jv-card .date {
+    margin-top: 3px;
+  }
+}
+
+/* ============================================================================
+   JV-CARD-LIST - Vertical list of cards with spacing
+   ============================================================================ */
+
+.jv-card-list {
+  list-style: none;
+  padding: 0;
+  margin: var(--jv-space-5) 0 0 0;
+}
+
+.jv-card-list > * + * {
+  margin-top: var(--jv-space-5);
+}
+
+/* ============================================================================
+   JV-CARD-GRID - Grid layout for cards
+   ============================================================================ */
+
+.jv-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--jv-space-5);
+}
+
+/* ============================================================================
+   JV-CARD-TITLE - Standardized card heading
+   ============================================================================ */
+
+.jv-card-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* ============================================================================
+   JV-LABEL - Label/tag component
+   ============================================================================ */
+
+.jv-label {
+  text-transform: capitalize;
+  background: #e8f4f8;
+  border-radius: var(--jv-radius-md);
+  padding: 4px 10px;
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 500;
+  color: #0369a1;
+  white-space: nowrap;
+}
+
+.jv-label + .jv-label {
+  margin-left: 6px;
+}
+

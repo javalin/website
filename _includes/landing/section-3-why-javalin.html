@@ -8,7 +8,7 @@
         {% assign allReasons = include.reasonRow1 | append: "---" | append: include.reasonRow2 | split: "---" %}
         {% assign icons = "cube,feather,link,file-code,diagram-project,globe" | split: "," %}
         {% for reason in allReasons %}
-            <div class="box">
+            <div class="jv-card box">
                 {% assign icon = icons[forloop.index0] %}
                 <div class="icon-heading">
                     <i class="fa-solid fa-{{ icon }} icon"></i>

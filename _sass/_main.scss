@@ -1,7 +1,3 @@
-$javalin-brand-primary: #007ea3;
-$light-border: #dde;
-$card-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-
 @mixin noselect() {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -9,12 +5,30 @@ $card-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   user-select: none;
 }
 
-* {
+/* ============================================================================
+   MINIMAL MODERN RESET
+   ============================================================================ */
+
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
+body {
+  margin: 0;
+}
+
+img {
+  border-style: none;
+}
+
+button, input, select, textarea {
+  font: inherit;
+  margin: 0;
+}
+
 html {
-  background: #f9f9f9;
+  font-family: var(--jv-font-body);
+  background: var(--jv-color-bg-light);
   background: linear-gradient(#f9f9fc, #fcfcff);
   overflow-y: scroll;
   color: #333;
@@ -22,7 +36,7 @@ html {
 }
 
 a {
-  color: $javalin-brand-primary;
+  color: var(--jv-color-primary);
   text-decoration: none;
   overflow-wrap: break-word
 }
@@ -47,7 +61,7 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: 'Roboto Slab', sans-serif;
+  font-family: var(--jv-font-heading);
   font-weight: 700;
   letter-spacing: -0.5px;
   margin-top: 1.75em;
@@ -67,7 +81,7 @@ main.width-limit hr {
 }
 
 p {
-  font-family: Verdana, sans-serif;
+  font-family: var(--jv-font-body);
   margin: 1.5em 0 0.25em;
 }
 
@@ -80,11 +94,11 @@ li {
   > code {
     font-size: 90%;
     letter-spacing: -0.5px;
-    border: 1px solid #ccd;
-    background: #f5f5f5;
+    border: 1px solid var(--jv-color-code-border);
+    background: var(--jv-color-code-bg);
     padding: 1px 3px;
-    color: darken($javalin-brand-primary, 10%);
-    border-radius: 3px;
+    color: #005a75;
+    border-radius: var(--jv-radius-sm);
     font-style: normal;
   }
 
@@ -101,10 +115,11 @@ li {
 }
 
 pre {
+  font-family: var(--jv-font-mono);
   margin: .5em 0;
   background: #333;
   padding: 15px;
-  border-radius: 5px;
+  border-radius: var(--jv-radius-md);
   color: #f5f5f5;
   overflow-x: scroll;
 }
@@ -118,14 +133,22 @@ main {
 }
 
 .notification {
-  margin: 15px 0;
-  background: #fff;
-  padding: 15px;
-  border: 1px dashed #bbc;
-  border-radius: 5px;
+  margin: 24px 0;
+  background: #f0f8ff;
+  padding: 16px 20px;
+  border: 1px solid #c5e3f6;
+  border-left: 4px solid #60b8e8;
+  border-radius: var(--jv-radius-md);
+  color: #4a6b8a;
 
   p {
     margin: 0;
+    line-height: 1.6;
+  }
+
+  a {
+    color: #4a6b8a;
+    text-decoration: underline;
   }
 }
 
@@ -194,8 +217,8 @@ pre { // scrollbar in code examples
 }
 
 img.bordered-image {
-  border: 1px solid $light-border;
-  border-radius: 3px;
+  border: 1px solid var(--jv-color-border-light);
+  border-radius: var(--jv-radius-sm);
   box-sizing: content-box;
 }
 

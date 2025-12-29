@@ -1,22 +1,10 @@
-.tutorials .post-summary {
+.tutorial-card {
   position: relative;
 
   .tutorial-languages {
     position: absolute;
     right: 24px;
     top: 24px;
-
-    .tutorial-language {
-      text-transform: capitalize;
-      background: #d6f0f9;
-      border-radius: 5px;
-      padding: 1px 6px;
-      display: inline-block;
-      font-size: 14px;
-      + .tutorial-language {
-        margin-left: 4px;
-      }
-    }
   }
 }
 
@@ -34,7 +22,7 @@
       width: 100%;
       padding-top: 8px;
       margin-top: 8px;
-      border-top: 1px solid $light-border;
+      border-top: 1px solid var(--jv-color-border-light);
     }
   }
 }
@@ -50,25 +38,36 @@
 
 /* Tutorial overview tabs */
 .tutorial-tabs {
-  margin-top: 40px;
-  margin-bottom: 20px;
+  margin-top: 32px;
+  margin-bottom: 24px;
   display: flex;
+  gap: 0;
+  border-bottom: 2px solid #ddd;
 
   .tutorial-tab {
-    font-size: 24px;
-    font-family: 'Roboto Slab', arial, sans-serif;
+    font-size: 16px;
+    font-family: var(--jv-font-body);
     font-weight: 500;
     cursor: pointer;
+    padding: 12px 16px;
+    color: #666;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    border-radius: var(--jv-radius-md) var(--jv-radius-md) 0 0;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 
-    + .tutorial-tab {
-      margin-left: 20px;
+    &:hover {
+      background: rgba(0, 0, 0, 0.05);
+      color: #333;
+      border-bottom-color: #bbb;
     }
   }
 }
 
 .all-tutorials[data-tab=official] {
   [data-tutorial-tab=official] {
-    border-bottom: 3px solid $javalin-brand-primary;
+    color: #333;
+    border-bottom-color: #333;
   }
 
   [data-tutorial-content=community] {
@@ -78,7 +77,8 @@
 
 .all-tutorials[data-tab=community] {
   [data-tutorial-tab=community] {
-    border-bottom: 3px solid $javalin-brand-primary;
+    color: #333;
+    border-bottom-color: #333;
   }
 
   [data-tutorial-content=official] {
@@ -88,12 +88,18 @@
 
 @media (max-width: 600px) {
   .tutorial-tabs .tutorial-tab {
-    font-size: 18px;
+    font-size: 16px;
+    padding: 10px 16px;
   }
 }
 
 @media (max-width: 480px) {
+  .tutorial-tabs {
+    gap: 4px;
+  }
+
   .tutorial-tabs .tutorial-tab {
-    font-size: 16px;
+    font-size: 15px;
+    padding: 10px 12px;
   }
 }

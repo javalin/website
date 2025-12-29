@@ -13,6 +13,7 @@ This page contains an overview of official and unofficial Javalin plugins.
 If you find an issue with a plugin and the plugin owner refuses to address it,
 please report it on GitHub (link in plugin card).
 
+<div class="jv-card-list">
 {% include plugins/pluginCard.html
     title="OpenAPI Annotation Processor"
     description="
@@ -145,3 +146,4 @@ please report it on GitHub (link in plugin card).
     docsUrl="/plugins/micrometer"
     ratingIssueNr="137"
 %}
+</div>

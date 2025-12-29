@@ -1,17 +1,17 @@
-<div class="plugin-box {{include.title | slugify}}">
+<div class="jv-card plugin-box {{include.title | slugify}}">
     <div class="plugin-box-header">
-        <h2>
+        <h2 class="jv-card-title">
             {{ include.title }}
             <small class="plugin-authors">
                 {% assign authors = include.author | split: "," %}
-                (by {% for author in authors %}<a href="https://github.com/{{ author }}">@{{ author }}</a>{% endfor %})
+                Created by {% for author in authors %}<a href="https://github.com/{{ author }}">@{{ author }}</a>{% endfor %}
             </small>
         </h2>
         <span class="plugin-tags">
              {% if include.bundled == "true" %}
-                <span class="plugin-tag">Bundled</span>
+                <span class="jv-label">Bundled</span>
              {% else %}
-                <span class="plugin-tag">Third party</span>
+                <span class="jv-label">Third party</span>
              {% endif %}
         </span>
     </div>

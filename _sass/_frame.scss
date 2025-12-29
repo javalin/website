@@ -16,7 +16,7 @@ header {
   width: 100%;
   top: 0;
   left: 0;
-  border-bottom: 1px solid $light-border;
+  border-bottom: 1px solid var(--jv-color-border-light);
 }
 
 main {
@@ -33,7 +33,7 @@ footer {
   line-height: 40px;
   text-align: center;
   background: #fff;
-  border-top: 1px solid $light-border;
+  border-top: 1px solid var(--jv-color-border-light);
   padding: 0 20px;
   overflow: hidden;
   z-index: 9999999;
@@ -59,7 +59,6 @@ nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-family: 'Roboto Slab', sans-serif;
   height: 80px;
   position: relative;
 
@@ -83,13 +82,15 @@ nav {
         }
 
       + li {
-        border-left: 1px solid $light-border;
+        border-left: 1px solid var(--jv-color-border-light);
       }
 
       a {
         margin: 0 6px;
-        font-weight: 500;
-        font-size: 18px;
+        font-family: var(--jv-font-heading);
+        font-weight: 600;
+        font-size: 19px;
+        line-height: 1;
         display: block;
         color: #333;
         text-decoration: none;
@@ -97,7 +98,7 @@ nav {
         transition: color .1s ease-in-out;
 
         &:hover {
-          color: $javalin-brand-primary;
+          color: var(--jv-color-primary);
         }
       }
     }
@@ -105,7 +106,6 @@ nav {
 }
 
 .right-menu {
-  font-family: Arial, sans-serif;
   position: fixed;
   left: 50%;
   list-style: none;
@@ -148,7 +148,7 @@ nav {
 
   ul.tutorial-menu {
     font-size: 13px;
-    font-family: Tahoma, arial, sans-serif;
+    font-family: 'Rajdhani', sans-serif;
 
     a {
       padding: 2px 0;
@@ -157,9 +157,9 @@ nav {
   }
 
   .submenu-close {
-    border: 1px dashed $javalin-brand-primary;
+    border: 1px dashed var(--jv-color-primary);
     background: #ffffff;
-    color: $javalin-brand-primary;
+    color: var(--jv-color-primary);
     font-weight: 400;
     line-height: 16px;
     height: 18px;
