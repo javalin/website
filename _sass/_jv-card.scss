@@ -11,6 +11,7 @@
   box-shadow: var(--jv-shadow-card);
   color: #444;
   font-size: 14px;
+  padding: 20px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -19,12 +20,58 @@
   box-shadow: var(--jv-shadow-hover);
 }
 
+/* News/post card specific styles */
+.jv-card .date {
+  font-size: 14px;
+  color: #666;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+.jv-card-list .jv-card-title {
+  max-width: calc(100% - 120px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.jv-card p {
+  margin: 12px 0 0;
+}
+
+/* Posts overview wrapper */
+.posts-overview {
+  margin: 24px 0;
+}
+
+.posts-header,
+.posts-footer {
+  clear: both;
+  p {
+    margin: 0;
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 480px) {
+  .jv-card-list .jv-card-title {
+    font-size: 18px;
+  }
+
+  .jv-card .date {
+    margin-top: 3px;
+  }
+}
+
 /* ============================================================================
    JV-CARD-LIST - Vertical list of cards with spacing
    ============================================================================ */
 
 .jv-card-list {
-  margin-top: var(--jv-space-5);
+  list-style: none;
+  padding: 0;
+  margin: var(--jv-space-5) 0 0 0;
 }
 
 .jv-card-list > * + * {
@@ -39,6 +86,17 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--jv-space-5);
+}
+
+/* ============================================================================
+   JV-CARD-TITLE - Standardized card heading
+   ============================================================================ */
+
+.jv-card-title {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.3;
 }
 
 /* ============================================================================

@@ -14,11 +14,11 @@ or [Facebook](https://www.facebook.com/javalin.io) to get notified about new rel
 {% assign newsposts = site.posts | where: "category" , "news" | sort: 'date' | reverse %}
 
 <div class="posts-overview">
-    <ul class="post-list jv-card-list">
+    <ul class="jv-card-list">
         {% for post in newsposts %}
             <li class="post-summary">
                 <a class="jv-card" href="{{ post.url }}">
-                    <h2>Javalin {{ post.version }} - {{ post.title }}</h2>
+                    <h2 class="jv-card-title">Javalin {{ post.version }} - {{ post.title }}</h2>
                     <span class="date">
                         <time datetime="{{ post.date | date_to_xmlschema }}" itemprop="datePublished">{{ post.date | date: "%b %-d, %Y" }}</time>
                     </span>

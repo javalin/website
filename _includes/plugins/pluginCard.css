@@ -1,5 +1,5 @@
 .plugin-box {
-    padding: 24px;
+    padding: 24px; /* Override .jv-card's 20px for more spacious layout */
 }
 
 .plugin-box-header {
@@ -14,12 +14,7 @@
     flex-shrink: 0;
 }
 
-.plugin-box h2 {
-    font-size: 22px;
-    font-weight: 600;
-    margin: 0;
-    line-height: 1.3;
-}
+/* Card title styling now handled by .jv-card-title */
 
 .plugin-box p {
     margin: 0 0 16px 0;

@@ -1,9 +1,9 @@
 <div class="posts-overview">
-    <ul class="post-list jv-card-list tutorials">
+    <ul class="jv-card-list tutorials">
         {% for tutorial in include.tutorials %}
         <li class="post-summary">
             <a class="jv-card" href="{{ tutorial.url }}">
-                <h2>{{ tutorial.summarytitle }}</h2>
+                <h2 class="jv-card-title">{{ tutorial.summarytitle }}</h2>
                 <p>{{ tutorial.summary }}</p>
                 <div class="tutorial-languages">
                     {% for lang in tutorial.language %}
