@@ -156,9 +156,9 @@ nav {
   }
 
   .submenu-close {
-    border: 1px dashed $javalin-brand-primary;
+    border: 1px dashed var(--jv-color-primary);
     background: #ffffff;
-    color: $javalin-brand-primary;
+    color: var(--jv-color-primary);
     font-weight: 400;
     line-height: 16px;
     height: 18px;
