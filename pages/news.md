@@ -16,7 +16,7 @@ or [Facebook](https://www.facebook.com/javalin.io) to get notified about new rel
 <div class="posts-overview">
     <ul class="jv-card-list">
         {% for post in newsposts %}
-            <li class="post-summary">
+            <li>
                 <a class="jv-card" href="{{ post.url }}">
                     <h2 class="jv-card-title">Javalin {{ post.version }} - {{ post.title }}</h2>
                     <span class="date">
