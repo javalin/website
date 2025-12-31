@@ -31,10 +31,11 @@ istutorial: true
         {{ content }}
     </div>
     <h3>Thanks for reading</h3>
-    If you find any errors, please <a href="{{site.repourl}}/blob/master/{{page.path}}">edit this page on GitHub</a>.
-    <br>
+    <p>If you find any errors, please <a href="{{site.repourl}}/blob/master/{{page.path}}">edit this page on GitHub</a>.
     {% if page.github %}
+        <br>
         The full source code for this tutorial can also be found on <a href="{{page.github}}">GitHub</a>.
     {% endif %}
+    </p>
 </article>
 {% include socialButtons.html %}

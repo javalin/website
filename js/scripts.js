@@ -10,3 +10,4 @@
 {% include_relative _partials/code.js %}
 {% include_relative _partials/scrolling.js %}
 {% include_relative _partials/main.js %}
+{% include_relative _partials/dark-mode.js %}

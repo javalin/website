@@ -66,12 +66,19 @@ This page lists all the places to ask for help or discuss Javalin, in order of r
         color: rgba(0, 0, 0, 0.3);
     }
 
+    body.dark-mode .total-contributors {
+        color: rgba(255, 255, 255, 0.4);
+    }
 
     .contributors .contributor {
         display: flex;
         align-items: center;
         padding: 16px;
         color: rgba(0, 0, 0, 0.75);
+    }
+
+    body.dark-mode .contributors .contributor {
+        color: rgba(255, 255, 255, 0.85);
     }
 
     .contributors .contributor img {

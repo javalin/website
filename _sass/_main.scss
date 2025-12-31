@@ -28,11 +28,13 @@ button, input, select, textarea {
 
 html {
   font-family: var(--jv-font-body);
-  background: var(--jv-color-bg-light);
-  background: linear-gradient(#f9f9fc, #fcfcff);
   overflow-y: scroll;
-  color: #333;
+  color: var(--jv-color-text);
   line-height: 1.4;
+}
+
+body:not(.dark-mode) {
+  background: linear-gradient(#f9f9fc, #fcfcff);
 }
 
 a {
@@ -66,6 +68,7 @@ h4 {
   letter-spacing: -0.5px;
   margin-top: 1.75em;
   margin-bottom: 0.25em;
+  color: var(--jv-color-heading);
   //white-space: nowrap;
   //overflow: hidden;
   //text-overflow: ellipsis;
@@ -83,14 +86,17 @@ main.width-limit hr {
 p {
   font-family: var(--jv-font-body);
   margin: 1.5em 0 0.25em;
+  color: var(--jv-color-text);
 }
 
 li {
   margin: 3px 0;
+  color: var(--jv-color-text);
 }
 
 p,
-li {
+li,
+small {
   > code {
     font-size: 90%;
     letter-spacing: -0.5px;
@@ -100,17 +106,6 @@ li {
     color: #005a75;
     border-radius: var(--jv-radius-sm);
     font-style: normal;
-  }
-
-  .highlighter-rouge pre {
-    margin-bottom: 20px;
-    padding: 10px;
-
-    code {
-      font-size: 14px;
-      line-height: 1.45;
-      border: 0;
-    }
   }
 }
 
@@ -224,4 +219,56 @@ img.bordered-image {
 
 .no-margin-top {
   margin-top: 0;
+}
+
+.news-date {
+  font-weight: 400;
+  font-size: 60%;
+  color: var(--jv-color-text-light);
+}
+
+/* ============================================================================
+   Dark Mode Overrides
+   ============================================================================ */
+
+body.dark-mode {
+  background: #2f3136;
+
+  main.width-limit hr {
+    border-bottom-color: rgba(255, 255, 255, 0.2);
+  }
+
+  p > code,
+  li > code,
+  small > code {
+    color: var(--jv-color-primary);
+    background: rgba(91, 168, 208, 0.1);
+    border-color: rgba(91, 168, 208, 0.2);
+  }
+
+  pre {
+    background: var(--jv-color-bg-main);
+    border: 1px solid var(--jv-color-border);
+  }
+
+  .notification {
+    background: rgba(91, 168, 208, 0.08);
+    border: 1px solid rgba(91, 168, 208, 0.2);
+    border-left: 4px solid var(--jv-color-primary);
+    color: #dcddde;
+
+    a {
+      color: var(--jv-color-primary);
+    }
+  }
+
+  .post-content blockquote,
+  blockquote {
+    background: rgba(255, 255, 255, 0.05);
+    border-left-color: rgba(255, 255, 255, 0.15);
+
+    &:before {
+      color: rgba(255, 255, 255, 0.2);
+    }
+  }
 }

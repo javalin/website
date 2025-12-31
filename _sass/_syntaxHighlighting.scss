@@ -19,6 +19,11 @@
   }
 }
 
+body.dark-mode .highlighter-rouge pre {
+  background: var(--jv-color-bg-main);
+  border: 1px solid var(--jv-color-border);
+}
+
 .smaller-code {
   pre code {
     font-size: 13px;
@@ -100,6 +105,22 @@ pre.code-toolbar > .toolbar span {
     overflow: auto;
     background: var(--jv-color-code-bg-dark);
     padding: 15px;
+  }
+}
+
+body.dark-mode .multitab-code {
+  ul {
+    background: var(--jv-color-bg-main);
+    border: 1px solid var(--jv-color-border);
+    border-bottom: 1px solid var(--jv-color-border);
+    li + li {
+      border-left: 1px solid var(--jv-color-border);
+    }
+  }
+  pre {
+    background: var(--jv-color-bg-main);
+    border: 1px solid var(--jv-color-border);
+    border-top: 0;
   }
 }
 

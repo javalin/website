@@ -8,7 +8,7 @@
   --jv-font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --jv-font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
 
-  /* Colors */
+  /* Colors - Light Mode */
   --jv-color-primary: #007ea3;
   --jv-color-border: #e5e7eb;
   --jv-color-border-light: #dde;
@@ -16,6 +16,10 @@
   --jv-color-code-bg: #f5f5f5;
   --jv-color-code-bg-dark: #2a2b31;
   --jv-color-bg-light: #f9f9f9;
+  --jv-color-bg-main: #fff;
+  --jv-color-text: #333;
+  --jv-color-text-light: #666;
+  --jv-color-heading: #000;
 
   /* Spacing */
   --jv-space-5: 24px;
@@ -28,5 +32,25 @@
   /* Shadows */
   --jv-shadow-card: 0 2px 10px rgba(0, 0, 0, 0.08);
   --jv-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Dark Mode */
+body.dark-mode {
+  /* Colors - Dark Mode - Discord-inspired palette */
+  --jv-color-primary: #5ba8d0;
+  --jv-color-border: #202225;
+  --jv-color-border-light: #2f3136;
+  --jv-color-code-border: #202225;
+  --jv-color-code-bg: #2f3136;
+  --jv-color-code-bg-dark: #2f3136;
+  --jv-color-bg-light: #2f3136;
+  --jv-color-bg-main: #36393f;
+  --jv-color-text: #dcddde;
+  --jv-color-text-light: #96989d;
+  --jv-color-heading: #ffffff;
+
+  /* Shadows - No shadows in dark mode */
+  --jv-shadow-card: none;
+  --jv-shadow-hover: none;
 }
 

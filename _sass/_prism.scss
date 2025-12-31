@@ -41,6 +41,12 @@ pre[class*="language-"] {
   background: #272822;
 }
 
+body.dark-mode :not(pre) > code[class*="language-"],
+body.dark-mode pre[class*="language-"] {
+  background: var(--jv-color-bg-main);
+  border: 1px solid var(--jv-color-border);
+}
+
 /* Inline code */
 :not(pre) > code[class*="language-"] {
   padding: .1em;
