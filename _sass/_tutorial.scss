@@ -34,6 +34,11 @@
     display: inline-block;
     float: none;
   }
+
+  .tutorial-card .tutorial-languages {
+    position: static;
+    margin-top: 12px;
+  }
 }
 
 /* Tutorial overview tabs */

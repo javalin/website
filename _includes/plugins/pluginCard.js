@@ -19,8 +19,8 @@ function setPluginReports(pluginName, apiUrl) {
     function setReports(comments) {
         document.querySelector(`.${pluginName} .plugin-reports`).insertAdjacentHTML("afterbegin", `
           ${comments > 0
-            ? `<span class="r-icon r-alert">${reactionIcons.alert} This plugin has been reported ${comments} times</span>`
-            : `<span class="r-icon r-check">${reactionIcons.check} This plugin has never been reported</span>`}
+            ? `<span class="r-icon r-alert">${reactionIcons.alert} ${comments} reports</span>`
+            : `<span class="r-icon r-check">${reactionIcons.check} Never reported</span>`}
         `)
     }
 }

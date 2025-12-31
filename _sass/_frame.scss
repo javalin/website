@@ -334,8 +334,9 @@ body.dark-mode {
 
         li {
           a {
+            margin: 0;
             font-size: 16px;
-            padding: 8px 12px;
+            padding: 8px;
           }
 
           + li {
