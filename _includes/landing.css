@@ -3,7 +3,6 @@ main {
 }
 
 header.top-nav-header {
-    position: absolute;
     border: 0;
     background: #050a12;
 }
@@ -23,7 +22,7 @@ header.top-nav-header nav ul.top-nav li a:hover {
 
 /* Hide dark mode toggle on landing page */
 #dark-mode-toggle {
-    display: none;
+    visibility: hidden;
 }
 
 /* White variant for header icons */
@@ -493,11 +492,7 @@ header.top-nav-header nav ul.top-nav li a:hover {
     line-height: 1.7;
 }
 
-@media (max-width: 600px) {
-    body {
-        padding-top: 100px !important;
-    }
-}
+
 
 @media (max-width: 480px) {
 
