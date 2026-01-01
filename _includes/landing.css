@@ -6,20 +6,6 @@ header.top-nav-header {
     position: absolute;
     border: 0;
     background: #050a12;
-    height: 80px;
-}
-
-header.top-nav-header nav.width-limit {
-    justify-content: center;
-}
-
-header.top-nav-header nav ul.top-nav {
-    display: none;
-}
-
-header.top-nav-header #logo img {
-    height: 40px;
-    margin: 0;
 }
 
 main.width-limit {
@@ -27,22 +13,28 @@ main.width-limit {
     padding: 0;
 }
 
-nav ul li + li {
-    border: 0;
+header.top-nav-header nav ul.top-nav li a {
+    color: #ffffff !important;
 }
 
-nav ul li a {
-    color: #e0e6ed;
-    transition: color 0.2s ease;
+header.top-nav-header nav ul.top-nav li a:hover {
+    color: #5dade2 !important;
 }
 
-nav ul li a:hover {
-    color: #5dade2;
-}
-
-/* Hide header icons on landing page */
-.header-icons {
+/* Hide dark mode toggle on landing page */
+#dark-mode-toggle {
     display: none;
+}
+
+/* White variant for header icons */
+#discord-link svg,
+#github-link svg {
+    fill: #e0e6ed;
+}
+
+#discord-link:hover svg,
+#github-link:hover svg {
+    fill: #5dade2;
 }
 
 .landing h1 {
@@ -503,7 +495,7 @@ nav ul li a:hover {
 
 @media (max-width: 600px) {
     body {
-        padding-top: 56px !important;
+        padding-top: 100px !important;
     }
 }
 

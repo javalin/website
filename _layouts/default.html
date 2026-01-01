@@ -33,7 +33,6 @@
                 <li><a href="/plugins">Plugins</a></li>
                 <li><a href="/community">Community</a></li>
             </ul>
-            {% unless page.splash %}
             <div class="header-icons">
                 <button id="dark-mode-toggle" aria-label="Toggle dark mode">
                     <svg class="icon-sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -54,7 +53,6 @@
                     </svg>
                 </a>
             </div>
-            {% endunless %}
         </nav>
     </header>
     <main class="width-limit{% if page.rightmenu %} has-right-menu{% endif %}">

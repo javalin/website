@@ -85,10 +85,6 @@ nav.width-limit {
         text-decoration: underline;
       }
 
-      + li {
-        border-left: 1px solid var(--jv-color-border-light);
-      }
-
       a {
         margin: 0 6px;
         font-family: var(--jv-font-heading);
@@ -337,10 +333,6 @@ body.dark-mode {
             margin: 0;
             font-size: 16px;
             padding: 8px;
-          }
-
-          + li {
-            border-left: none;
           }
         }
       }
