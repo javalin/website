@@ -172,6 +172,51 @@ config.routes.ws("/chat/{room}") { ws ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
+### Validation API now returns nullable types
+The validation API has been updated to better reflect nullability. Validator methods now return `Validator<T?>` by default, and you must call `.required()` to get a non-nullable validator.
+
+**Migration:** Add `.required()` before `.get()` when you expect a non-null value.
+
+In Javalin 6:
+{% capture java %}
+Integer age = ctx.queryParamAsClass("age", Integer.class).get();
+MyObject body = ctx.bodyValidator(MyObject.class).get();
+{% endcapture %}
+{% capture kotlin %}
+val age = ctx.queryParamAsClass<Int>("age").get()
+val body = ctx.bodyValidator<MyObject>().get()
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+In Javalin 7:
+{% capture java %}
+Integer age = ctx.queryParamAsClass("age", Integer.class).required().get();
+MyObject body = ctx.bodyValidator(MyObject.class).required().get();
+{% endcapture %}
+{% capture kotlin %}
+val age = ctx.queryParamAsClass<Int>("age").required().get()
+val body = ctx.bodyValidator<MyObject>().required().get()
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+If you want to handle nullable values explicitly, you can use `.getOrNull()`:
+{% capture java %}
+Integer age = ctx.queryParamAsClass("age", Integer.class).getOrNull(); // Returns null if not present
+{% endcapture %}
+{% capture kotlin %}
+val age = ctx.queryParamAsClass<Int>("age").getOrNull() // Returns null if not present
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+This change affects all validation methods:
+* `ctx.bodyValidator()`
+* `ctx.queryParamAsClass()`
+* `ctx.queryParamsAsClass()`
+* `ctx.formParamAsClass()`
+* `ctx.formParamsAsClass()`
+* `ctx.pathParamAsClass()`
+* `ctx.headerAsClass()`
+
 ### JavalinVue is now a plugin
 JavalinVue configuration has been moved to a bundled plugin for better modularity.
 
