@@ -60,7 +60,7 @@ Augment breaks down complex tasks into steps and verifies each one. When I ask i
 
 I pointed Augment at the [GitHub versions comparison](https://github.com/javalin/javalin/compare/javalin-parent-6.7.0...javalin-parent-7.0.0-alpha.4) and asked it to write a migration guide. About 80% of the work was done after handing it that URL. It analyzed the commits, identified breaking changes, and structured the guide with before/after examples. Then it also used the migration guide it had just written to create the new documentation page.
 
-Total time: maybe 2 hours including review and iteration. Doing this manually would have taken at least a full day.
+Total time was maybe two hours, including review and iteration. Doing this manually would have taken me at least a full day.
 
 ### Upgrading from Jetty 11 to Jetty 12
 
@@ -96,7 +96,7 @@ I worked through the samples one by one with the agent. For each project, I'd sa
 
 Dark mode for the Javalin website has been requested for years, but I never prioritized it. It's the kind of feature that touches many files (CSS, JavaScript, HTML templates) and requires careful attention to every component on every page. It's easy to start but tedious to finish properly.
 
-With Augment, I finally got it done. The agent added the toggle button, created the JavaScript for persistence and system preference detection, and then systematically went through every SCSS file to add dark mode variants. When something looked off, I'd post screenshots and tell it to fix it.
+With Augment, I finally got it done. The agent added the toggle button, created code for persistence, and then systematically went through every CSS file to add dark mode variants. When something looked off, I'd post screenshots and tell it to fix it. It also cleaned up some of the existing CSS while it was working on the change.
 
 ## Comparison with alternatives
 
