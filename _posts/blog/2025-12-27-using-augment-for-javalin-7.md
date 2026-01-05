@@ -52,7 +52,7 @@ In my experience, hallucinations are rare with Augment, while I struggled a lot 
 
 ### Stepwise plans and repeated verification
 
-Augment breaks down complex tasks into steps and verifies each one. When I ask it to make a large change, it creates a task list and works through it methodically. After each step, it uses IntelliJ's problem analysis to verify the code still compiles and makes sense, and runs relevant tests to verify behavior. If the amount of files becomes too large, both Copilot and Antigravity would often "give up" and start reporting successful test runs even if the code doesn't compile.
+Augment breaks down complex tasks into steps and verifies each one. When I ask it to make a large change, it creates a task list and works through it methodically. After each step, it uses IntelliJ's problem analysis to verify the code still compiles and makes sense, and runs relevant tests to verify behavior. If the amount of files becomes too large, both Copilot and Antigravity would often "give up" and start reporting successful test runs even if the code didn't compile.
 
 ## Examples from working on the Javalin 7 release
 
