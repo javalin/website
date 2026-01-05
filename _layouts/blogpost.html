@@ -2,8 +2,8 @@
 layout: default
 ---
 
-<article class="tutorial" itemscope itemtype="http://schema.org/BlogPosting">
-    <div class="tutorial-header">
+<article class="jv-article" itemscope itemtype="http://schema.org/BlogPosting">
+    <div class="jv-article-header">
         <h1 class="no-margin-top" itemprop="name headline">{{ page.title }}</h1>
         <p class="notification">
             <time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{{ page.date | date: "%b %-d, %Y" }}</time>
@@ -14,8 +14,5 @@ layout: default
     <div class="post-content" itemprop="articleBody">
         {{ content }}
     </div>
-    <h3>Thanks for reading</h3>
-    If you find any errors, please <a href="{{site.repourl}}/blob/master/{{page.path}}">edit this page on GitHub</a>.
-    <br>
 </article>
 {% include socialButtons.html %}

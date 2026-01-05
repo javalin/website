@@ -8,12 +8,13 @@
   }
 }
 
-.tutorial {
+// Generic article styles shared by blogpost.html and tutorial.html
+.jv-article {
   #timeToRead {
     float: right;
   }
 
-  .tutorial-header .notification {
+  .jv-article-header .notification {
     font-size: 14px;
     margin-bottom: 30px;
 
@@ -28,7 +29,7 @@
 }
 
 @media (max-width: 600px) {
-  .tutorial #timeToRead {
+  .jv-article #timeToRead {
     white-space: nowrap;
     margin-top: 4px;
     display: inline-block;

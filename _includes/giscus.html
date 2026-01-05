@@ -1,0 +1,40 @@
+## Comments
+
+*You can comment below by authorizing Giscus, or head directly to the [GitHub Discussion](https://github.com/javalin/website/discussions/{{ include.discussion }}).*
+
+<script>
+    function getGiscusTheme() {
+        return document.body.classList.contains('dark-mode') ? 'dark_dimmed' : 'light';
+    }
+
+    function setGiscusTheme(theme) {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage(
+            { giscus: { setConfig: { theme } } },
+            'https://giscus.app'
+        );
+    }
+
+    // Set initial theme based on saved preference
+    const initialTheme = localStorage.getItem('javalin-dark-mode') === 'true' ? 'dark_dimmed' : 'light';
+    document.write(`<script src="https://giscus.app/client.js"
+        data-repo="javalin/website"
+        data-repo-id="MDEwOlJlcG9zaXRvcnk5MTI2NjkxNA=="
+        data-mapping="number"
+        data-term="{{ include.discussion }}"
+        data-reactions-enabled="0"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="${initialTheme}"
+        data-lang="en"
+        crossorigin="anonymous"
+        async><\/script>`);
+
+    // Sync Giscus theme when dark mode is toggled
+    const toggle = document.getElementById('dark-mode-toggle');
+    if (toggle) {
+        toggle.addEventListener('click', () => setTimeout(() => setGiscusTheme(getGiscusTheme()), 0));
+    }
+</script>
+
