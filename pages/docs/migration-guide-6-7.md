@@ -300,6 +300,11 @@ Available modules:
 
 Your code doesn't need to change - the template renderer classes (`JavalinVelocity`, `JavalinFreemarker`, etc.) remain in the same package and work the same way.
 
+Pebble was updated from version 3.1.6 to 4.1.0. Depending on your application, you might need to:
+* Provide custom Loader. See [https://github.com/PebbleTemplates/pebble/releases/tag/4.1.0](https://github.com/PebbleTemplates/pebble/releases/tag/4.1.0)
+* Rename package in imports from from `com.mitchellbosecke` to `io.pebbletemplates`
+
+
 ### Multipart configuration improvements
 Multipart configuration is now part of the Jetty config instead of a global singleton, giving you more flexibility.
 If you were using `MultipartUtil.preUploadFunction`, configure multipart settings through `config.jetty.multipartConfig` instead.
@@ -441,7 +446,7 @@ override fun onStart(state: JavalinState) {
 ### Major dependency updates
 * **Jetty**: 11 → 12 (see breaking changes above)
 * **Kotlin**: 1.9.25 → 2.0.21
-* **Pebble** (rendering module): 3.x → 4.0.0
+* **Pebble** (rendering module): 3.x → 4.1.0
 
 ### Other changes
 * `HandlerType` is now a record instead of an enum
