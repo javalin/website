@@ -1,6 +1,6 @@
 # javalin.io [![Chat at https://discord.gg/sgak4e5NKv](https://img.shields.io/badge/chat-on%20Discord-%234cb697)](https://discord.gg/sgak4e5NKv) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-## Prueba con estudiantes...
+## Prueba con estudiantes
 
 This repo contains the source code for [javalin.io](https://javalin.io).
 
