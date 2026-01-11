@@ -5,6 +5,10 @@
             <img src="/img/sponsors/feature-upvote.png" alt="Feature Upvote">
             <a href="https://featureupvote.com">https://featureupvote.com</a>
         </div>
+        <div class="sponsor">
+            <img src="/img/sponsors/pair-systems.svg" alt="PAIR Systems">
+            <a href="https://www.pairsys.ai">https://www.pairsys.ai</a>
+        </div>
         <div class="sponsor cta">
             <div class="dashing-border">
                 {{include.cta}}
@@ -30,9 +34,9 @@
 
     .sponsor {
         display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: space-around;
-        flex-wrap: wrap;
+        justify-content: center;
         width: 280px;
         height: 180px;
         padding: 20px;
@@ -44,16 +48,20 @@
     }
 
     .sponsor:not(.cta) a {
-        flex-shrink: 1;
+        flex-shrink: 0;
         color: #333;
         font-size: 14px;
         text-decoration: underline;
+        margin-top: 12px;
     }
 
     .sponsor img {
         display: block;
         max-width: 100%;
-        max-height: 100%;
+        max-height: 100px;
+        width: auto;
+        height: auto;
+        object-fit: contain;
     }
 
     .sponsor.cta {
