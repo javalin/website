@@ -802,7 +802,7 @@ val manyErrors = listOf(ageValidator, otherValidator, ...).collectErrors()
 When a `Validator` throws, it is mapped by:
 
 ```kotlin
-app.exception(ValidationException::class.java) { e, ctx ->
+config.routes.exception(ValidationException::class.java) { e, ctx ->
     ctx.json(e.errors).status(400)
 }
 ```
@@ -810,12 +810,12 @@ app.exception(ValidationException::class.java) { e, ctx ->
 You can override this by doing:
 
 {% capture java %}
-app.exception(ValidationException.class, (e, ctx) -> {
+config.routes.exception(ValidationException.class, (e, ctx) -> {
     // your code
 });
 {% endcapture %}
 {% capture kotlin %}
-app.exception(ValidationException::class.java) { e, ctx ->
+config.routes.exception(ValidationException::class.java) { e, ctx ->
     // your code
 }
 {% endcapture %}
@@ -936,47 +936,51 @@ Returns a [504 Gateway Timeout](https://developer.mozilla.org/en-US/docs/Web/HTT
 ## Exception Mapping
 All handlers (before, endpoint, after, ws) can throw `Exception`
 (and any subclass of `Exception`).
-The `app.exception()` and `app.wsException()` methods gives you a way of handling these exceptions:
+The `config.routes.exception()` and `config.routes.wsException()` methods give you a way of handling these exceptions:
 {% capture java %}
-// HTTP exceptions
-app.exception(NullPointerException.class, (e, ctx) -> {
-    // handle nullpointers here
-});
+Javalin.create(config -> {
+    // HTTP exceptions
+    config.routes.exception(NullPointerException.class, (e, ctx) -> {
+        // handle nullpointers here
+    });
 
-app.exception(Exception.class, (e, ctx) -> {
-    // handle general exceptions here
-    // will not trigger if more specific exception-mapper found
-});
+    config.routes.exception(Exception.class, (e, ctx) -> {
+        // handle general exceptions here
+        // will not trigger if more specific exception-mapper found
+    });
 
-// WebSocket exceptions
-app.wsException(NullPointerException.class, (e, ctx) -> {
-    // handle nullpointers here
-});
+    // WebSocket exceptions
+    config.routes.wsException(NullPointerException.class, (e, ctx) -> {
+        // handle nullpointers here
+    });
 
-app.wsException(Exception.class, (e, ctx) -> {
-    // handle general exceptions here
-    // will not trigger if more specific exception-mapper found
+    config.routes.wsException(Exception.class, (e, ctx) -> {
+        // handle general exceptions here
+        // will not trigger if more specific exception-mapper found
+    });
 });
 {% endcapture %}
 {% capture kotlin %}
-// HTTP exceptions
-app.exception(NullPointerException::class.java) { e, ctx ->
-    // handle nullpointers here
-}
+Javalin.create { config ->
+    // HTTP exceptions
+    config.routes.exception(NullPointerException::class.java) { e, ctx ->
+        // handle nullpointers here
+    }
 
-app.exception(Exception::class.java) { e, ctx ->
-    // handle general exceptions here
-    // will not trigger if more specific exception-mapper found
-}
+    config.routes.exception(Exception::class.java) { e, ctx ->
+        // handle general exceptions here
+        // will not trigger if more specific exception-mapper found
+    }
 
-// WebSocket exceptions
-app.wsException(NullPointerException::class.java) { e, ctx ->
-    // handle nullpointers here
-}
+    // WebSocket exceptions
+    config.routes.wsException(NullPointerException::class.java) { e, ctx ->
+        // handle nullpointers here
+    }
 
-app.wsException(Exception::class.java) { e, ctx ->
-    // handle general exceptions here
-    // will not trigger if more specific exception-mapper found
+    config.routes.wsException(Exception::class.java) { e, ctx ->
+        // handle general exceptions here
+        // will not trigger if more specific exception-mapper found
+    }
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -984,13 +988,17 @@ app.wsException(Exception::class.java) { e, ctx ->
 ## Error Mapping
 HTTP Error mapping is similar to exception mapping, but it operates on HTTP status codes instead of Exceptions:
 {% capture java %}
-app.error(404, ctx -> {
-    ctx.result("Generic 404 message");
+Javalin.create(config -> {
+    config.routes.error(404, ctx -> {
+        ctx.result("Generic 404 message");
+    });
 });
 {% endcapture %}
 {% capture kotlin %}
-app.error(404) { ctx ->
-    ctx.result("Generic 404 message")
+Javalin.create { config ->
+    config.routes.error(404) { ctx ->
+        ctx.result("Generic 404 message")
+    }
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -998,17 +1006,23 @@ app.error(404) { ctx ->
 It can make sense to use them together:
 
 {% capture java %}
-app.exception(FileNotFoundException.class, (e, ctx) -> {
-    ctx.status(404);
-}).error(404, ctx -> {
-    ctx.result("Generic 404 message");
+Javalin.create(config -> {
+    config.routes.exception(FileNotFoundException.class, (e, ctx) -> {
+        ctx.status(404);
+    });
+    config.routes.error(404, ctx -> {
+        ctx.result("Generic 404 message");
+    });
 });
 {% endcapture %}
 {% capture kotlin %}
-app.exception(FileNotFoundException::class.java) { e, ctx ->
-    ctx.status(404)
-}.error(404) { ctx ->
-    ctx.result("Generic 404 message")
+Javalin.create { config ->
+    config.routes.exception(FileNotFoundException::class.java) { e, ctx ->
+        ctx.status(404)
+    }
+    config.routes.error(404) { ctx ->
+        ctx.result("Generic 404 message")
+    }
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -1016,13 +1030,17 @@ app.exception(FileNotFoundException::class.java) { e, ctx ->
 You can also include the content type when declaring your error mappers:
 
 {% capture java %}
-app.error(404, "html", ctx -> {
-    ctx.html("Generic 404 message");
+Javalin.create(config -> {
+    config.routes.error(404, "html", ctx -> {
+        ctx.html("Generic 404 message");
+    });
 });
 {% endcapture %}
 {% capture kotlin %}
-app.error(404, "html") { ctx ->
-    ctx.html("Generic 404 message")
+Javalin.create { config ->
+    config.routes.error(404, "html") { ctx ->
+        ctx.html("Generic 404 message")
+    }
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -1031,17 +1049,17 @@ This can be useful if you, for example, want one set of error handlers for HTML,
 
 ## Server-sent Events
 Server-sent events (often also called event source) are very simple in Javalin.
-You call `app.sse()`, which gives you access to the connected `SseClient`:
+You call `config.routes.sse()`, which gives you access to the connected `SseClient`:
 
 {% capture java %}
-app.sse("/sse", client -> {
+config.routes.sse("/sse", client -> {
     client.sendEvent("connected", "Hello, SSE");
     client.onClose(() -> System.out.println("Client disconnected"));
     client.close(); // close the client
 });
 {% endcapture %}
 {% capture kotlin %}
-app.sse("/sse") { client ->
+config.routes.sse("/sse") { client ->
     client.sendEvent("connected", "Hello, SSE")
     client.onClose { println("Client disconnected") }
     client.close() // close the client
@@ -1054,7 +1072,7 @@ Clients are automatically closed when leaving the handler, if you need to use th
 {% capture java %}
 Queue<SseClient> clients = new ConcurrentLinkedQueue<SseClient>();
 
-app.sse("/sse", client -> {
+config.routes.sse("/sse", client -> {
     client.keepAlive();
     client.onClose(() - > clients.remove(client));
     clients.add(client);
@@ -1063,7 +1081,7 @@ app.sse("/sse", client -> {
 {% capture kotlin %}
 val clients = ConcurrentLinkedQueue<SseClient>()
 
-app.sse("/sse") { client ->
+config.routes.sse("/sse") { client ->
     client.keepAlive()
     client.onClose { clients.remove(client) }
     clients.add(client)
@@ -1538,11 +1556,10 @@ The following snippet covers every place you can hook into:
 ```java
 config.routes.before              // runs first, can throw exception (which will skip any endpoint handlers)
 config.routes.get/post/patch/etc  // runs second, can throw exception
-Javalin#error                     // runs third, can throw exception
+config.routes.error               // runs third, can throw exception
 config.routes.after               // runs fourth, can throw exception
-Javalin#exception           // runs any time a handler throws (cannot throw exception)
-JavalinConfig#requestLogger // runs after response is written to client
-JavalinConfig#accessManager // wraps all your endpoint handlers in a lambda of your choice
+config.routes.exception           // runs any time a handler throws (cannot throw exception)
+JavalinConfig#requestLogger       // runs after response is written to client
 ```
 
 ---

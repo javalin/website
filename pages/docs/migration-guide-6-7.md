@@ -57,6 +57,90 @@ val app = Javalin.create { config ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
+### Exception and error handlers are now configured upfront
+Like routes, exception and error handlers are now configured in the config block.
+
+In Javalin 6:
+{% capture java %}
+var app = Javalin.create().start();
+app.exception(NullPointerException.class, (e, ctx) -> {
+    ctx.status(500).result("Null pointer exception");
+});
+app.error(404, ctx -> {
+    ctx.result("Not found");
+});
+{% endcapture %}
+{% capture kotlin %}
+val app = Javalin.create().start()
+app.exception(NullPointerException::class.java) { e, ctx ->
+    ctx.status(500).result("Null pointer exception")
+}
+app.error(404) { ctx ->
+    ctx.result("Not found")
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+In Javalin 7:
+{% capture java %}
+var app = Javalin.create(config -> {
+    config.routes.exception(NullPointerException.class, (e, ctx) -> {
+        ctx.status(500).result("Null pointer exception");
+    });
+    config.routes.error(404, ctx -> {
+        ctx.result("Not found");
+    });
+}).start();
+{% endcapture %}
+{% capture kotlin %}
+val app = Javalin.create { config ->
+    config.routes.exception(NullPointerException::class.java) { e, ctx ->
+        ctx.status(500).result("Null pointer exception")
+    }
+    config.routes.error(404) { ctx ->
+        ctx.result("Not found")
+    }
+}.start()
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+The same applies to WebSocket exception handlers (`app.wsException()` → `config.routes.wsException()`).
+
+### SSE handlers are now configured upfront
+Like routes, SSE (Server-Sent Events) handlers are now configured in the config block.
+
+In Javalin 6:
+{% capture java %}
+var app = Javalin.create().start();
+app.sse("/sse", client -> {
+    client.sendEvent("connected", "Hello, SSE");
+});
+{% endcapture %}
+{% capture kotlin %}
+val app = Javalin.create().start()
+app.sse("/sse") { client ->
+    client.sendEvent("connected", "Hello, SSE")
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+In Javalin 7:
+{% capture java %}
+var app = Javalin.create(config -> {
+    config.routes.sse("/sse", client -> {
+        client.sendEvent("connected", "Hello, SSE");
+    });
+}).start();
+{% endcapture %}
+{% capture kotlin %}
+val app = Javalin.create { config ->
+    config.routes.sse("/sse") { client ->
+        client.sendEvent("connected", "Hello, SSE")
+    }
+}.start()
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
 ### Lifecycle events are now configured upfront
 Like routes, lifecycle events are now configured in the config block for consistency and clarity.
 
