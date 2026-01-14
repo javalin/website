@@ -1,6 +1,6 @@
 <div class="landing bluepart sponsors-part">
+    {{include.title}}
     <div class="sponsors">
-        {{include.title}}
         <div class="sponsor">
             <img src="/img/sponsors/feature-upvote.png" alt="Feature Upvote">
             <a href="https://featureupvote.com">https://featureupvote.com</a>
@@ -8,6 +8,10 @@
         <div class="sponsor">
             <img src="/img/sponsors/goodmem.png" alt="GoodMem">
             <a href="https://goodmem.ai">https://goodmem.ai</a>
+        </div>
+        <div class="sponsor">
+            <img src="/img/sponsors/Cloudflare_Logo.svg.png" alt="Cloudflare">
+            <a href="https://cloudflare.com">https://cloudflare.com</a>
         </div>
         <div class="sponsor cta">
             <div class="dashing-border">
@@ -24,8 +28,13 @@
         background: #050a12 !important;
     }
 
+    .bluepart.sponsors-part h1 {
+        margin: 0 0 32px;
+    }
+
     .sponsors {
         display: flex;
+        flex-wrap: wrap;
         max-width: 1140px;
         margin: 0 auto;
         align-items: center;
@@ -37,14 +46,13 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        width: 280px;
+        width: 260px;
         height: 180px;
         padding: 20px;
-        margin: 16px;
+        margin: 12px;
         border-radius: 8px;
         background: #fff;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
-        min-width: 200px;
     }
 
     .sponsor:not(.cta) a {
@@ -58,9 +66,8 @@
     .sponsor img {
         display: block;
         max-width: 100%;
-        max-height: 100px;
+        height: 100px;
         width: auto;
-        height: auto;
         object-fit: contain;
     }
 

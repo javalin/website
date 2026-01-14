@@ -44,7 +44,7 @@ permalink: /
 %}
 
 {% include landing/section-sponsors.html
-    title="<h1 id='our-sponsors'>Our<br>sponsors</h1>"
+    title="<h1 id='our-sponsors'>Our sponsors</h1>"
     cta="Your logo here?"
 %}
 
