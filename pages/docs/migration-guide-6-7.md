@@ -334,6 +334,33 @@ val app = Javalin.create { config ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
+### JavalinVue's LoadableData is disabled by default
+The `LoadableData` JavaScript class is no longer included by default in JavalinVue pages.
+If you rely on `LoadableData`, you need to explicitly enable it:
+
+{% capture java %}
+config.registerPlugin(new JavalinVuePlugin(vue -> {
+    vue.enableLoadableData = true; // deprecated, consider using Vue Query instead
+}));
+{% endcapture %}
+{% capture kotlin %}
+config.registerPlugin(JavalinVuePlugin { vue ->
+    vue.enableLoadableData = true // deprecated, consider using Vue Query instead
+})
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+### AliasCheck import has changed
+If you use `AliasCheck` for symlink checking with static files, the import has changed from Jetty's package to Javalin's own package:
+
+```java
+// Before (Javalin 6)
+import org.eclipse.jetty.server.AliasCheck;
+
+// After (Javalin 7)
+import io.javalin.http.staticfiles.AliasCheck;
+```
+
 ### Compression configuration has changed
 The compression API has been simplified. Instead of calling methods like `brotliAndGzipCompression()`, you now set the `compressionStrategy` property.
 

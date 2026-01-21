@@ -1392,6 +1392,25 @@ they will be available at `/webjars/name/version/file.ext`.
 WebJars can be found on [https://www.webjars.org/](https://www.webjars.org/).
 Everything available through NPM is also available through WebJars.
 
+#### Jetty-free static file serving
+If you want to serve static files without depending on Jetty's resource handling,
+you can use the `JavalinStaticResourceHandler`:
+
+{% capture java %}
+Javalin.create(config -> {
+    config.resourceHandler(new JavalinStaticResourceHandler());
+});
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { config ->
+    config.resourceHandler(JavalinStaticResourceHandler())
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+This is useful if you want to use Javalin with a different embedded server,
+or if you want to avoid Jetty-specific dependencies for static file handling.
+
 If you are building a Single Page Application (SPA), you should
 have a look at the [SpaRootConfig](#sparootconfig)
 
@@ -1940,6 +1959,21 @@ about this at [/plugins/rendering](/plugins/rendering).
 If you don't want to deal with NPM and frontend builds, Javalin has support for simplified Vue.js development.
 
 **Note:** In Javalin 7, JavalinVue is now a plugin. You need to register it using `config.registerPlugin(new JavalinVuePlugin(...))`.
+
+**Note:** The `LoadableData` JavaScript class is no longer included by default.
+If you want to use `LoadableData`, you need to explicitly enable it:
+
+{% capture java %}
+config.registerPlugin(new JavalinVuePlugin(vue -> {
+    vue.enableLoadableData = true;
+}));
+{% endcapture %}
+{% capture kotlin %}
+config.registerPlugin(JavalinVuePlugin { vue ->
+    vue.enableLoadableData = true
+})
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 This requires you to make a layout template, `src/main/resources/vue/layout.html`:
 
