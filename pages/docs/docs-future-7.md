@@ -154,8 +154,11 @@ config.routes.beforeMatched { ctx ->
 ### Endpoint handlers
 Endpoint handlers are the main handler type, and defines your API. You can add a GET handler to
 serve data to a client, or a POST handler to receive some data.
-Common methods are supported via `config.routes` (<small>GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS</small>),
+Common methods are supported via `config.routes` (<small>GET, POST, QUERY, PUT, PATCH, DELETE, HEAD, OPTIONS</small>),
 uncommon operations (<small>TRACE, CONNECT</small>) are supported via `config.routes.addHandler`.
+
+The [QUERY method](https://httpwg.org/http-extensions/draft-ietf-httpbis-safe-method-w-body.html) is similar to GET,
+but allows a request body. This is useful for complex queries that don't fit in a URL.
 
 Endpoint-handlers are matched in the order they are defined.
 
