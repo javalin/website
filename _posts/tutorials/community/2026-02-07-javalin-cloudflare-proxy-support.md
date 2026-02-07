@@ -5,7 +5,7 @@ title: Javalin Cloudflare Proxy Support
 permalink: /tutorials/javalin-cloudflare-proxy-support
 summarytitle: Using Javalin with Cloudflare
 summary: Learn how to make Javalin work with Cloudflare.
-date: 2025-02-07
+date: 2026-02-07
 author: <a href="https://github.com/AoElite">AoElite</a>
 language: ["java"]
 rightmenu: true
