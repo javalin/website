@@ -1133,6 +1133,8 @@ Javalin.create(config -> {
     config.fileRenderer(fileRenderer) // Set a custom FileRenderer
     config.registerPlugin(plugin) // Register a plugin
     config.appData(key, data) // Store data on the Javalin instance
+
+    config.unsafe // Advanced/unsafe API providing access to internal Javalin configuration (use with caution)
 });
 ```
 
@@ -1201,8 +1203,8 @@ Javalin.create { config ->
 ### JettyConfig
 {% capture java %}
 Javalin.create(config -> {
-    config.jetty.defaultHost = "localhost"; // set the default host for Jetty
-    config.jetty.defaultPort = 1234; // set the default port for Jetty
+    config.jetty.host = "localhost"; // set the host for Jetty
+    config.jetty.port = 1234; // set the port for Jetty
     config.jetty.threadPool = new ThreadPool(); // set the thread pool for Jetty
     config.jetty.timeoutStatus = 408; // set the timeout status for Jetty (default 500)
     config.jetty.clientAbortStatus = 499; // set the abort status for Jetty (default 500)
@@ -1216,8 +1218,8 @@ Javalin.create(config -> {
 {% endcapture %}
 {% capture kotlin %}
 Javalin.create { config ->
-    config.jetty.defaultHost = "localhost" // set the default host for Jetty
-    config.jetty.defaultPort = 1234 // set the default port for Jetty
+    config.jetty.host = "localhost" // set the host for Jetty
+    config.jetty.port = 1234 // set the port for Jetty
     config.jetty.threadPool = ThreadPool() // set the thread pool for Jetty
     config.jetty.timeoutStatus = 408 // set the timeout status for Jetty (default 500)
     config.jetty.clientAbortStatus = 499 // set the abort status for Jetty (default 500)
@@ -1447,6 +1449,22 @@ Javalin app = Javalin.create()
     .start() // start server (sync/blocking)
     .stop() // stop server (sync/blocking)
 ```
+
+There is also a convenience method `Javalin.start(config)` that creates and starts a Javalin instance in one call:
+
+{% capture java %}
+Javalin app = Javalin.start(config -> {
+    config.jetty.port = 8080;
+    config.routes.get("/", ctx -> ctx.result("Hello World"));
+});
+{% endcapture %}
+{% capture kotlin %}
+val app = Javalin.start { config ->
+    config.jetty.port = 8080
+    config.routes.get("/") { ctx -> ctx.result("Hello World") }
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 The `app.start()` method spawns a user thread, starts the server, and then returns.
 Your program will not exit until this thread is terminated by calling `app.stop()`.

@@ -197,13 +197,59 @@ val app = Javalin.createAndStart { config ->
 In Javalin 7:
 {% capture java %}
 var app = Javalin.create(config -> {
-    config.jetty.defaultPort = 8080;
+    config.jetty.port = 8080;
 }).start();
 {% endcapture %}
 {% capture kotlin %}
 val app = Javalin.create { config ->
-    config.jetty.defaultPort = 8080
+    config.jetty.port = 8080
 }.start()
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+You can also use the new `Javalin.start(config)` convenience method:
+{% capture java %}
+var app = Javalin.start(config -> {
+    config.jetty.port = 8080;
+});
+{% endcapture %}
+{% capture kotlin %}
+val app = Javalin.start { config ->
+    config.jetty.port = 8080
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+### jetty.defaultHost/defaultPort renamed to jetty.host/port
+The `config.jetty.defaultHost` and `config.jetty.defaultPort` properties have been renamed to `config.jetty.host` and `config.jetty.port`.
+
+In Javalin 6:
+{% capture java %}
+Javalin.create(config -> {
+    config.jetty.defaultHost = "localhost";
+    config.jetty.defaultPort = 8080;
+});
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { config ->
+    config.jetty.defaultHost = "localhost"
+    config.jetty.defaultPort = 8080
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+In Javalin 7:
+{% capture java %}
+Javalin.create(config -> {
+    config.jetty.host = "localhost";
+    config.jetty.port = 8080;
+});
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { config ->
+    config.jetty.host = "localhost"
+    config.jetty.port = 8080
+}
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
