@@ -267,14 +267,16 @@ Wrapper-handlers run "around" requests.
 This is useful when you need to "wrap", for example to propagate a `ThreadLocal` or a `ScopedValue`:
 
 {% capture java %}
-app.router.handlerWrapper(endpoint -> ctx -> ScopedValue.where(...).run(endpoint.handle(ctx)));
+config.router.handlerWrapper(endpoint -> ctx -> ScopedValue.where(...).run(endpoint.handle(ctx)));
 {% endcapture %}
 {% capture kotlin %}
-app.router.handlerWrapper { 
+config.router.handlerWrapper { 
     ScopedValue.where(...).run(endpoint.handle(ctx))
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+Note that `handlerWrapper` is on `router` not on `routes` of `config`.
 
 ### Context
 The `Context` object provides you with everything you need to handle a http-request.
