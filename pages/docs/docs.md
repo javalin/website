@@ -389,10 +389,16 @@ res()                                 // get the underlying HttpServletResponse
 // Other methods
 async(runnable)                       // lifts request out of Jetty's ThreadPool, and moves it to Javalin's AsyncThreadPool
 async(asyncConfig, runnable)          // same as above, but with additional config
+endpoint()                            // get the current Endpoint (method, path, handler)
 endpoint().method                     // handler type of the current handler (BEFORE, AFTER, GET, etc)
+endpoint().path                       // get the path that was used to match this request (ex, "/hello/{name}")
+endpoints()                           // get all endpoints visited during this request (in order)
+endpoints().current()                 // get the last endpoint in the stack
+endpoints().lastHttpEndpoint()        // get the last HTTP endpoint (useful in AFTER handlers)
+endpoints().list()                    // get all endpoints as an unmodifiable list
+routeRoles()                          // get the roles for the matched endpoint
 appData(typedKey)                     // get data from the Javalin instance (see app data section below)
 with(pluginClass)                     // get context plugin by class, see plugin section below
-endpoint().path                       // get the path that was used to match this request (ex, "/hello/{name}")
 cookieStore()                         // see cookie store section below
 skipRemainingHandlers()               // skip all remaining handlers for this request
 ```
@@ -583,6 +589,57 @@ config.routes.wsAfter { ws ->
 }
 config.routes.wsAfter("/path/*") { ws ->
     // runs after websocket requests to /path/*
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+### WsBeforeUpgrade
+The `config.routes.wsBeforeUpgrade` adds a handler that runs before the WebSocket upgrade is attempted.
+This is an HTTP handler (not a WsConfig handler), so you have access to the regular `Context`.
+It's useful for authentication, validation, or rejecting upgrade requests before they happen.
+
+{% capture java %}
+config.routes.wsBeforeUpgrade(ctx -> {
+    // runs before all WebSocket upgrade requests
+});
+config.routes.wsBeforeUpgrade("/path/*", ctx -> {
+    // runs before websocket upgrade requests to /path/*
+    if (!isAuthenticated(ctx)) {
+        throw new UnauthorizedResponse();
+    }
+});
+{% endcapture %}
+{% capture kotlin %}
+config.routes.wsBeforeUpgrade { ctx ->
+    // runs before all WebSocket upgrade requests
+}
+config.routes.wsBeforeUpgrade("/path/*") { ctx ->
+    // runs before websocket upgrade requests to /path/*
+    if (!isAuthenticated(ctx)) {
+        throw UnauthorizedResponse()
+    }
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+### WsAfterUpgrade
+The `config.routes.wsAfterUpgrade` adds a handler that runs after the WebSocket upgrade is attempted.
+Like `wsBeforeUpgrade`, this is an HTTP handler with access to the regular `Context`.
+
+{% capture java %}
+config.routes.wsAfterUpgrade(ctx -> {
+    // runs after all WebSocket upgrade requests
+});
+config.routes.wsAfterUpgrade("/path/*", ctx -> {
+    // runs after websocket upgrade requests to /path/*
+});
+{% endcapture %}
+{% capture kotlin %}
+config.routes.wsAfterUpgrade { ctx ->
+    // runs after all WebSocket upgrade requests
+}
+config.routes.wsAfterUpgrade("/path/*") { ctx ->
+    // runs after websocket upgrade requests to /path/*
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -1161,12 +1218,13 @@ but there are also a few direct properties and functions:
 Javalin.create(config -> {
     config.http // The http layer configuration: etags, request size, timeout, etc
     config.router // The routing configuration: context path, slash treatment, etc
+    config.routes // Routes configuration: HTTP handlers, WebSocket handlers, SSE, exceptions, errors
     config.jetty // The embedded Jetty webserver configuration
     config.staticFiles // Static files and webjars configuration
-    config.spaRoot = // Single Page Application roots configuration
+    config.spaRoot // Single Page Application roots configuration
     config.requestLogger // Request Logger configuration: http and websocket loggers
     config.bundledPlugins // Bundled plugins configuration: enable bundled plugins or add custom ones
-    config.events // Events configuration
+    config.events // Events configuration: server lifecycle events, handler added events
     config.contextResolver // Context resolver implementation configuration
     config.validation // Default validator configuration
     config.concurrency.useVirtualThreads // Use virtual threads (based on Java Project Loom)
@@ -1174,9 +1232,9 @@ Javalin.create(config -> {
     config.startup.showOldJavalinVersionWarning // Show a warning if an old Javalin version is being used
     config.startup.startupWatcherEnabled // Print warning if instance was not started after 5 seconds
 
-    config.events(listenerConfig) // Add an event listener
     config.jsonMapper(jsonMapper) // Set a custom JsonMapper
     config.fileRenderer(fileRenderer) // Set a custom FileRenderer
+    config.resourceHandler(resourceHandler) // Set a custom ResourceHandler for static files (Jetty-free)
     config.registerPlugin(plugin) // Register a plugin
     config.appData(key, data) // Store data on the Javalin instance
 
@@ -1200,6 +1258,7 @@ Javalin.create(config -> {
     config.http.compressionStrategy = new CompressionStrategy(new Brotli(lvl), new Gzip(lvl));
     config.http.compressionStrategy = new CompressionStrategy(null, new Gzip(lvl));
     config.http.compressionStrategy = new CompressionStrategy(new Brotli(lvl), null);
+    config.http.compressionStrategy = new CompressionStrategy(null, null, new Zstd(lvl));
     config.http.compressionStrategy = CompressionStrategy.NONE;
 });
 {% endcapture %}
@@ -1216,6 +1275,7 @@ Javalin.create { config ->
     config.http.compressionStrategy = CompressionStrategy(Brotli(lvl), Gzip(lvl))
     config.http.compressionStrategy = CompressionStrategy(null, Gzip(lvl))
     config.http.compressionStrategy = CompressionStrategy(Brotli(lvl), null)
+    config.http.compressionStrategy = CompressionStrategy(null, null, Zstd(lvl))
     config.http.compressionStrategy = CompressionStrategy.NONE
 }
 {% endcapture %}
@@ -1587,6 +1647,39 @@ An example of a custom server with SSL can be found in the examples,
 A custom HTTP2 server is a bit more work to set up, but we have a repo with a
 fully functioning example server in both Kotlin and Java: [javalin-http2-example](https://github.com/tipsy/javalin-http2-example)
 
+### BundledPluginsConfig
+Javalin comes with several bundled plugins that can be enabled through `config.bundledPlugins`:
+
+{% capture java %}
+Javalin.create(config -> {
+    config.bundledPlugins.enableRouteOverview("/routes");                   // HTML/JSON overview of all routes
+    config.bundledPlugins.enableRouteOverview("/routes", roles);            // route overview with access roles
+    config.bundledPlugins.enableBasicAuth("username", "password");          // basic auth for all routes
+    config.bundledPlugins.enableGlobalHeaders(headers -> { ... });         // add global response headers
+    config.bundledPlugins.enableCors(cors -> { ... });                     // enable CORS
+    config.bundledPlugins.enableHttpAllowedMethodsOnRoutes();              // auto Access-Control-Allow-Methods for OPTIONS
+    config.bundledPlugins.enableDevLogging();                               // development request/response logger
+    config.bundledPlugins.enableDevLogging(devCfg -> { ... });             // dev logger with custom config
+    config.bundledPlugins.enableRedirectToLowercasePaths();                // redirect /Users/John to /users/John
+    config.bundledPlugins.enableSslRedirects();                            // redirect HTTP to HTTPS
+});
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { config ->
+    config.bundledPlugins.enableRouteOverview("/routes")                    // HTML/JSON overview of all routes
+    config.bundledPlugins.enableRouteOverview("/routes", roles)             // route overview with access roles
+    config.bundledPlugins.enableBasicAuth("username", "password")           // basic auth for all routes
+    config.bundledPlugins.enableGlobalHeaders { headers -> }               // add global response headers
+    config.bundledPlugins.enableCors { cors -> }                           // enable CORS
+    config.bundledPlugins.enableHttpAllowedMethodsOnRoutes()               // auto Access-Control-Allow-Methods for OPTIONS
+    config.bundledPlugins.enableDevLogging()                                // development request/response logger
+    config.bundledPlugins.enableDevLogging { devCfg -> }                   // dev logger with custom config
+    config.bundledPlugins.enableRedirectToLowercasePaths()                 // redirect /Users/John to /users/John
+    config.bundledPlugins.enableSslRedirects()                             // redirect HTTP to HTTPS
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
 ## Lifecycle events
 Javalin has events for server start/stop, as well as for when handlers are added.
 The snippet below shows all of them in action:
@@ -1636,9 +1729,11 @@ The Javalin request lifecycle is pretty straightforward.
 The following snippet covers every place you can hook into:
 ```java
 config.routes.before              // runs first, can throw exception (which will skip any endpoint handlers)
-config.routes.get/post/patch/etc  // runs second, can throw exception
-config.routes.error               // runs third, can throw exception
-config.routes.after               // runs fourth, can throw exception
+config.routes.beforeMatched       // runs after a matching endpoint is found, can throw exception
+config.routes.get/post/patch/etc  // runs third, can throw exception
+config.routes.afterMatched        // runs after the endpoint handler (only if a match was found)
+config.routes.error               // runs fifth, can throw exception
+config.routes.after               // runs sixth, can throw exception
 config.routes.exception           // runs any time a handler throws (cannot throw exception)
 JavalinConfig#requestLogger       // runs after response is written to client
 ```
