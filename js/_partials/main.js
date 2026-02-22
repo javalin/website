@@ -7,7 +7,7 @@ for (let i = 0; i < document.links.length; i++) {
 }
 
 (() => {
-    let collapsibleLimit = 4;
+    let collapsibleLimit = 5;
     let subMenus = Array.from(document.querySelectorAll(".right-menu li > ul")).filter(ul => ul.children.length > collapsibleLimit);
     subMenus.forEach(ul => ul.style.display = "none");
     let subMenuParents = subMenus.map(ul => ul.parentElement);

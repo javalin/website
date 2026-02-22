@@ -13,6 +13,7 @@ permalink: /docs-future
   - [Before](#before-handlers)
   - [Endpoint](#endpoint-handlers)
   - [After](#after-handlers)
+  - [Wrapper](#wrapper-handlers)
   - [Context (ctx)](#context)
 - [WebSockets](#websockets)
   - [Before](#wsbefore)
@@ -262,21 +263,53 @@ config.routes.afterMatched { ctx ->
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ### Wrapper handlers
-Wrapper-handlers run "around" requests.
+Wrapper-handlers run "around" endpoint handlers. The `HandlerWrapper` functional interface
+receives an `Endpoint` (with `method`, `path`, and `handler`) and returns a new `Handler` that wraps the original.
 
-This is useful when you need to "wrap", for example to propagate a `ThreadLocal` or a `ScopedValue`:
+This is useful for propagating context like `ThreadLocal` or `ScopedValue`:
 
 {% capture java %}
-config.router.handlerWrapper(endpoint -> ctx -> ScopedValue.where(...).run(endpoint.handle(ctx)));
+config.router.handlerWrapper(endpoint -> ctx -> {
+    ScopedValue.where(MY_VALUE, "something").run(() -> {
+        endpoint.handler.handle(ctx);
+    });
+});
 {% endcapture %}
 {% capture kotlin %}
-config.router.handlerWrapper { 
-    ScopedValue.where(...).run(endpoint.handle(ctx))
-}
+config.router.handlerWrapper { endpoint -> Handler { ctx ->
+    ScopedValue.where(MY_VALUE, "something").run {
+        endpoint.handler.handle(ctx)
+    }
+}}
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-Note that `handlerWrapper` is on `router` not on `routes` of `config`.
+You can also wrap only HTTP endpoints (excluding before/after handlers):
+
+{% capture java %}
+config.router.handlerWrapper(endpoint -> {
+    if (endpoint.method.isHttpMethod()) {
+        return ctx -> {
+            // wrap logic
+            endpoint.handler.handle(ctx);
+        };
+    }
+    return endpoint.handler;
+});
+{% endcapture %}
+{% capture kotlin %}
+config.router.handlerWrapper { endpoint ->
+    if (endpoint.method.isHttpMethod) {
+        Handler { ctx ->
+            // wrap logic
+            endpoint.handler.handle(ctx)
+        }
+    } else {
+        endpoint.handler
+    }
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ### Context
 The `Context` object provides you with everything you need to handle a http-request.
