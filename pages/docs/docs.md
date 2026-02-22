@@ -201,12 +201,12 @@ Handler paths can also include wildcard parameters:
 
 {% capture java %}
 config.routes.get("/path/*", ctx -> { // will match anything starting with /path/
-    ctx.result("You are here because " + ctx.path() + " matches " + ctx.endpoint().path());
+    ctx.result("You are here because " + ctx.path() + " matches " + ctx.endpoint().path);
 });
 {% endcapture %}
 {% capture kotlin %}
 config.routes.get("/path/*") { ctx -> // will match anything starting with /path/
-    ctx.result("You are here because " + ctx.path() + " matches " + ctx.endpoint().path())
+    ctx.result("You are here because " + ctx.path() + " matches " + ctx.endpoint().path)
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -592,7 +592,7 @@ send(byteBuffer)                        // send bytes to client
 sendAsClass(obj, clazz)                 // serialize object to json string and send it to client
 
 // Upgrade Context methods (getters)
-endpoint().path()                       // get the path that was used to match this request (ex, "/hello/{name}")
+endpoint().path                         // get the path that was used to match this request (ex, "/hello/{name}")
 host()                                  // host as string
 
 queryParam("name")                      // query param by name as string
@@ -1161,9 +1161,10 @@ Javalin.create(config -> {
     config.events // Events configuration
     config.contextResolver // Context resolver implementation configuration
     config.validation // Default validator configuration
-    config.useVirtualThreads // Use virtual threads (based on Java Project Loom)
-    config.showJavalinBanner // Show the Javalin banner in the logs
-    config.startupWatcherEnabled // Print warning if instance was not started after 5 seconds
+    config.concurrency.useVirtualThreads // Use virtual threads (based on Java Project Loom)
+    config.startup.showJavalinBanner // Show the Javalin banner in the logs
+    config.startup.showOldJavalinVersionWarning // Show a warning if an old Javalin version is being used
+    config.startup.startupWatcherEnabled // Print warning if instance was not started after 5 seconds
 
     config.events(listenerConfig) // Add an event listener
     config.jsonMapper(jsonMapper) // Set a custom JsonMapper
@@ -1598,7 +1599,7 @@ app.start() // serverStarting -> (serverStarted || serverStartFailed)
 app.stop() // serverStopping -> serverStopped
 {% endcapture %}
 {% capture kotlin %}
-Javalin app = Javalin.create { config ->
+val app = Javalin.create { config ->
     config.events.serverStarting { ... }
     config.events.serverStarted { ... }
     config.events.serverStartFailed { ... }
@@ -2005,9 +2006,9 @@ The default `FileRenderer` of Javalin is a singleton named `JavalinRenderer`, se
 the section below for more information.
 
 ### Default implementations
-Javalin offers an artifact with several template engines, called `javalin-rendering`,
-which follows the same version as the `javalin` artifact. You can learn more
-about this at [/plugins/rendering](/plugins/rendering).
+Javalin offers separate per-engine artifacts for template rendering (e.g. `javalin-rendering-freemarker`,
+`javalin-rendering-velocity`, `javalin-rendering-thymeleaf`, etc.), which follow the same version as the
+`javalin` artifact. You can learn more about this at [/plugins/rendering](/plugins/rendering).
 
 ---
 
