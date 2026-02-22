@@ -369,7 +369,7 @@ result("result")                      // set result stream to specified string (
 result(byteArray)                     // set result stream to specified byte array (overwrites any previously set result)
 result(inputStream)                   // set result stream to specified input stream (overwrites any previously set result)
 future(futureSupplier)                // set the result to be a future, see async section (overwrites any previously set result)
-writeSeekableStream(inputStream)      // write content immediately as seekable stream (useful for audio and video)
+writeSeekableStream(stream, type)     // write content immediately as seekable stream (useful for audio and video)
 result()                              // get current result stream as string (if possible), and reset result stream
 resultInputStream()                   // get current result stream
 contentType("type")                   // set the response content type
@@ -389,11 +389,10 @@ res()                                 // get the underlying HttpServletResponse
 // Other methods
 async(runnable)                       // lifts request out of Jetty's ThreadPool, and moves it to Javalin's AsyncThreadPool
 async(asyncConfig, runnable)          // same as above, but with additonal config
-handlerType()                         // handler type of the current handler (BEFORE, AFTER, GET, etc)
+endpoint().method                     // handler type of the current handler (BEFORE, AFTER, GET, etc)
 appData(typedKey)                     // get data from the Javalin instance (see app data section below)
 with(pluginClass)                     // get context plugin by class, see plugin section below
-endpoint().path()                     // get the path that was used to match this request (ex, "/hello/{name}")
-endpointHandlerPath()                 // get the path of the endpoint handler that was used to match this request
+endpoint().path                       // get the path that was used to match this request (ex, "/hello/{name}")
 cookieStore()                         // see cookie store section below
 skipRemainingHandlers()               // skip all remaining handlers for this request
 ```
@@ -1551,25 +1550,20 @@ You can configure your embedded jetty-server with a handler-chain
 and Javalin will attach it's own handlers to the end of this chain.
 {% capture java %}
 StatisticsHandler statisticsHandler = new StatisticsHandler();
+Server server = new Server();
+server.setHandler(statisticsHandler);
 
-Javalin.create(config -> {
-    config.server(() -> {
-        Server server = new Server();
-        server.setHandler(statisticsHandler);
-        return server;
-    })
-});
+Javalin app = Javalin.create(config -> { /* your config */ });
+app.unsafe.jettyInternal.server = server;
+app.start();
 {% endcapture %}
 {% capture kotlin %}
 val statisticsHandler = StatisticsHandler()
+val server = Server().apply { handler = statisticsHandler }
 
-Javalin.create { config ->
-    config.server {
-        Server().apply {
-            handler = statisticsHandler
-        }
-    }
-}.start();
+val app = Javalin.create { /* your config */ }
+app.unsafe.jettyInternal.server = server
+app.start()
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
@@ -1643,26 +1637,32 @@ JavalinConfig#requestLogger       // runs after response is written to client
 ---
 
 ### Rate limiting
-There is a very simple rate limiter included in Javalin.
-You can call it in the beginning of your endpoint `Handler` functions:
+There is a very simple rate limiter included in Javalin, available via `RateLimitPlugin`.
+First, register the plugin, then call it in your endpoint `Handler` functions via `ctx.with(RateLimitPlugin.class)`:
 
 {% capture java %}
-config.routes.get("/", ctx -> {
-    NaiveRateLimit.requestPerTimeUnit(ctx, 5, TimeUnit.MINUTES); // throws if rate limit is exceeded
-    ctx.status("Hello, rate-limited World!");
+Javalin.create(config -> {
+    config.registerPlugin(new RateLimitPlugin(cfg -> {
+        // optional: customize the key function (default: ip + method + path)
+        cfg.keyFunction = ctx -> ctx.ip();
+    }));
+    config.routes.get("/", ctx -> {
+        ctx.with(RateLimitPlugin.class).requestPerTimeUnit(5, TimeUnit.MINUTES); // throws if rate limit is exceeded
+        ctx.result("Hello, rate-limited World!");
+    });
 });
-
-// you can overwrite the key-function:
-RateLimitUtil.keyFunction = ctx -> // uses (ip+method+endpointPath) by default
 {% endcapture %}
 {% capture kotlin %}
-config.routes.get("/") { ctx ->
-    NaiveRateLimit.requestPerTimeUnit(ctx, 5, TimeUnit.MINUTES) // throws if rate limit is exceeded
-    ctx.status("Hello, rate-limited World!")
+Javalin.create { config ->
+    config.registerPlugin(RateLimitPlugin { cfg ->
+        // optional: customize the key function (default: ip + method + path)
+        cfg.keyFunction = { ctx -> ctx.ip() }
+    })
+    config.routes.get("/") { ctx ->
+        ctx.with(RateLimitPlugin::class).requestPerTimeUnit(5, TimeUnit.MINUTES) // throws if rate limit is exceeded
+        ctx.result("Hello, rate-limited World!")
+    }
 }
-
-// you can overwrite the key-function:
-RateLimitUtil.keyFunction = { ctx -> } // uses (ip+method+endpointPath) by default
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
@@ -1686,8 +1686,8 @@ You can check the status of Jetty 11+ on Android [here](https://github.com/eclip
 
 ### Concurrency
 If your JRE supports project Loom,
-Javalin will use a `newVirtualThreadPerTaskExecutor` for serving requests if you set the 
-`enableVirtualThreads` config option.
+Javalin will use a `newVirtualThreadPerTaskExecutor` for serving requests if you set the
+`config.concurrency.useVirtualThreads = true` config option.
 Otherwise, a `QueuedThreadPool` with 250 threads will be used.
 
 Each incoming request is handled by a dedicated thread, so all Handler implementations should be thread-safe.
@@ -1854,33 +1854,30 @@ If you want to execute a blocking task outside of the server ThreadPool, you can
 The snippet below shows the available overloads for the method:
 
 ```
-async(runnableTask)                               // Javalin's default executor, no timeout or timeout callback
-async(timeout, onTimeout, runnableTask)           // Javalin's default executor, custom timeout handling
-async(executor, timeout, onTimeout, runnableTask) // custom everything!
+async(runnableTask)             // Javalin's default executor, no timeout or timeout callback
+async(asyncConfig, runnableTask) // custom executor, timeout, and timeout callback via AsyncTaskConfig
 ```
 
 Javalin will immediately start an async context and run the task on a dedicated executor service.
 It will resume the normal request flow (after-handlers, request-logging)
 once the task is done.
 
-The snippet belows shows a full example with a custom timeout, timeout handler, and a task:
+The snippet below shows a full example with a custom timeout, timeout handler, and a task:
 
 {% capture java %}
 config.routes.get("/async", ctx -> {
-    ctx.async(
-        1000,                                      // timeout in ms
-        () -> ctx.result("Request took too long"), // timeout callback
-        () -> ctx.result(someSlowResult)           // some long running task
-    );
+    ctx.async(cfg -> {
+        cfg.timeout = 1000;                                    // timeout in ms
+        cfg.onTimeout(c -> c.result("Request took too long")); // timeout callback
+    }, () -> ctx.result(someSlowResult));                      // some long running task
 });
 {% endcapture %}
 {% capture kotlin %}
 config.routes.get("/async") { ctx ->
-    ctx.async(
-        1000,                                    // timeout in ms
-        { ctx.result("Request took too long") }, // timeout callback
-        { ctx.result(someSlowResult)             // some long running task
-    )
+    ctx.async({ cfg ->
+        cfg.timeout = 1000                                     // timeout in ms
+        cfg.onTimeout { c -> c.result("Request took too long") } // timeout callback
+    }) { ctx.result(someSlowResult) }                          // some long running task
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
