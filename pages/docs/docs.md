@@ -19,6 +19,8 @@ permalink: /documentation
   - [Before](#wsbefore)
   - [Endpoint](#wsendpoint)
   - [After](#wsafter)
+  - [BeforeUpgrade](#wsbeforeupgrade)
+  - [AfterUpgrade](#wsafterupgrade)
   - [WsContext (wsCtx)](#wscontext)
 - [Handler groups](#handler-groups)
 - [Validation](#validation)
@@ -41,6 +43,7 @@ permalink: /documentation
   - [RouterConfig](#routerconfig)
   - [SpaRootConfig](#sparootconfig)
   - [StaticFileConfig](#staticfileconfig)
+  - [BundledPluginsConfig](#bundledpluginsconfig)
   - [Logging](#logging)
   - [Server setup](#server-setup)
 - [Lifecycle events](#lifecycle-events)
@@ -91,7 +94,7 @@ Javalin has three main handler types: before-handlers, endpoint-handlers, and af
 (There are also exception-handlers and error-handlers, but we'll get to them later).
 The before-, endpoint- and after-handlers require three parts:
 
-* A verb, one of: `before`, `get`, `post`, `put`, `patch`, `delete`, `after` <small>(... `head`, `options`, `trace`, `connect`)</small>
+* A verb, one of: `before`, `get`, `post`, `query`, `put`, `patch`, `delete`, `after` <small>(... `head`, `options`, `trace`, `connect`)</small>
 * A path, ex: `/`, `/hello-world`, `/hello/{name}`
 * A handler implementation, ex `ctx -> { ... }`, `MyClass implements Handler`, etc
 
@@ -145,7 +148,7 @@ config.routes.beforeMatched { ctx ->
 Endpoint handlers are the main handler type, and defines your API. You can add a GET handler to
 serve data to a client, or a POST handler to receive some data.
 Common methods are supported via `config.routes` (<small>GET, POST, QUERY, PUT, PATCH, DELETE, HEAD, OPTIONS</small>),
-uncommon operations (<small>TRACE, CONNECT</small>) are supported via `config.routes.addHandler`.
+uncommon operations (<small>TRACE, CONNECT</small>) are supported via `config.routes.addHttpHandler`.
 
 The [QUERY method](https://httpwg.org/http-extensions/draft-ietf-httpbis-safe-method-w-body.html) is similar to GET,
 but allows a request body. This is useful for complex queries that don't fit in a URL.
@@ -374,14 +377,17 @@ result()                              // get current result stream as string (if
 resultInputStream()                   // get current result stream
 contentType("type")                   // set the response content type
 header("name", "value")               // set response header by name (can be used with Header.HEADERNAME)
+removeHeader("name")                  // remove a response header by name
 redirect("/path", code)               // redirect to the given path with the given status code
 status(code)                          // set the response status code
-status()                              // get the response status code
+status()                              // get the response status
+statusCode()                          // get the response status code as int
 cookie("name", "value", maxAge)       // set response cookie by name, with value and max-age (optional).
 cookie(cookie)                        // set cookie using javalin Cookie class
 removeCookie("name", "/path")         // removes cookie by name and path (optional)
 json(obj)                             // calls result(jsonString), and also sets content type to json
 jsonStream(obj)                       // calls result(jsonStream), and also sets content type to json
+writeJsonStream(stream)               // writes JSON stream directly to response (memory efficient for large collections)
 html("html")                          // calls result(string), and also sets content type to html
 render("/template.tmpl", model)       // calls html(renderedTemplate)
 res()                                 // get the underlying HttpServletResponse
@@ -506,7 +512,7 @@ config.routes.ws("/websocket/{path}") { ws ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-There are a total of five events supported:
+There are a total of six events supported:
 
 ```java
 ws.onConnect(WsConnectContext)
@@ -514,6 +520,7 @@ ws.onError(WsErrorContext)
 ws.onClose(WsCloseContext)
 ws.onMessage(WsMessageContext)
 ws.onBinaryMessage(WsBinaryMessageContext)
+ws.onUpgrade(WsUpgradeLogger)
 ```
 
 The different flavors of `WsContext` expose different things, for example,
@@ -1027,6 +1034,9 @@ Returns a [409 Conflict](https://developer.mozilla.org/en-US/docs/Web/HTTP/Statu
 ### GoneResponse
 Returns a [410 Gone](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/410) response with the default title `Gone`.
 
+### TooManyRequestsResponse
+Returns a [429 Too Many Requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) response with the default title `Too many requests`.
+
 ### InternalServerErrorResponse
 Returns a [500 Internal Server Error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500) response with the default title `Internal server error`.
 
@@ -1206,7 +1216,7 @@ onClose(runnable)                           // callback which runs when a client
 keepAlive()                                 // keeps the connection alive. useful if you want to keep a list of clients to broadcast to.
 close()                                     // closes the connection
 terminated()                                // returns true if the connection has been closed
-ctx                                         // the Context from when the client connected (to fetch query-params, etc)
+ctx()                                       // the Context from when the client connected (to fetch query-params, etc)
 ```
 
 ## Configuration
@@ -1249,7 +1259,7 @@ All available subconfigs are explained in the sections below.
 Javalin.create(config -> {
     config.http.generateEtags = booleanValue;       // if javalin should generate etags for dynamic responses (not static files)
     config.http.prefer405over404 = booleanValue;    // return 405 instead of 404 if path is mapped to different HTTP method
-    config.http.maxRequestSize = longValue;         // the max size of request body that can be accessed without using using an InputStream
+    config.http.maxRequestSize = longValue;         // the max size of request body that can be accessed without using an InputStream
     config.http.responseBufferSize = intValue;      // the size of the response buffer (default 32kb)
     config.http.defaultContentType = stringValue;   // the default content type
     config.http.asyncTimeout = longValue;           // timeout in milliseconds for async requests (0 means no timeout)
@@ -1266,7 +1276,7 @@ Javalin.create(config -> {
 Javalin.create { config ->
     config.http.generateEtags = booleanValue        // if javalin should generate etags for dynamic responses (not static files)
     config.http.prefer405over404 = booleanValue     // return 405 instead of 404 if path is mapped to different HTTP method
-    config.http.maxRequestSize = longValue          // the max size of request body that can be accessed without using using an InputStream
+    config.http.maxRequestSize = longValue          // the max size of request body that can be accessed without using an InputStream
     config.http.responseBufferSize = intValue        // the size of the response buffer (default 32kb)
     config.http.defaultContentType = stringValue    // the default content type
     config.http.asyncTimeout = longValue            // timeout in milliseconds for async requests (0 means no timeout)
@@ -1398,9 +1408,9 @@ Javalin.create(config -> {
 {% endcapture %}
 {% capture kotlin %}
 Javalin.create { config ->
-    config.requestLogger.ws(ws -> {
+    config.requestLogger.ws { ws ->
         ws.onMessage { ctx ->
-            println("Received: " + ctx.message());
+            println("Received: " + ctx.message())
         }
     }
 }
@@ -1469,11 +1479,12 @@ Javalin.create(config -> {
     staticFiles.hostedPath = "/";                   // change to host files on a subpath, like '/assets'
     staticFiles.directory = "/public";              // the directory where your files are located
     staticFiles.location = Location.CLASSPATH;      // Location.CLASSPATH (jar) or Location.EXTERNAL (file system)
-    staticFiles.precompress = false;                // if the files should be pre-compressed and cached in memory (optimization)
+    staticFiles.precompressMaxSize = 0;             // max size for pre-compression in bytes (-1 to disable, 0 for all sizes)
     staticFiles.aliasCheck = null;                  // you can configure this to enable symlinks (= ContextHandler.ApproveAliases())
     staticFiles.headers = Map.of(...);              // headers that will be set for the files
     staticFiles.skipFileFunction = req -> false;    // you can use this to skip certain files in the dir, based on the HttpServletRequest
     staticFiles.mimeTypes.add(mimeType, ext);       // you can add custom mimetypes for extensions
+    staticFiles.roles = Set.of(roles);              // roles that are allowed to access the static files (used in beforeMatched)
   });
 });
 {% endcapture %}
@@ -1483,11 +1494,12 @@ Javalin.create { config ->
     staticFiles.hostedPath = "/"                    // change to host files on a subpath, like '/assets'
     staticFiles.directory = "/public"               // the directory where your files are located
     staticFiles.location = Location.CLASSPATH       // Location.CLASSPATH (jar) or Location.EXTERNAL (file system)
-    staticFiles.precompress = false                 // if the files should be pre-compressed and cached in memory (optimization)
+    staticFiles.precompressMaxSize = 0              // max size for pre-compression in bytes (-1 to disable, 0 for all sizes)
     staticFiles.aliasCheck = null                   // you can configure this to enable symlinks (= ContextHandler.ApproveAliases())
     staticFiles.headers = mapOf(...)                // headers that will be set for the files
     staticFiles.skipFileFunction = { req -> false } // you can use this to skip certain files in the dir, based on the HttpServletRequest
     staticFiles.mimeTypes.add(mimeType, ext)        // you can add custom mimetypes for extensions
+    staticFiles.roles = setOf(roles)                // roles that are allowed to access the static files (used in beforeMatched)
   }
 }
 {% endcapture %}
@@ -1586,16 +1598,19 @@ Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 }));
 ```
 
-If you want graceful shutdown, you can configure the server using the `modifyServer` method:
+Javalin's default Jetty server includes a `StatisticsHandler`, so graceful shutdown works out of the box.
+When `app.stop()` is called, the server will wait for active requests to complete before shutting down.
+
+If you are using a custom server, make sure to add a `StatisticsHandler` for graceful shutdown:
 
 {% capture java %}
 Javalin.create(config -> {
-    config.jetty.modifyServer(server -> server.setStopTimeout(5_000)); // wait 5 seconds for existing requests to finish
+    config.jetty.modifyServer(server -> server.insertHandler(new StatisticsHandler()));
 });
 {% endcapture %}
 {% capture kotlin %}
 Javalin.create { config ->
-    config.jetty.modifyServer { server -> server.setStopTimeout(5_000) } // wait 5 seconds for existing requests to finish
+    config.jetty.modifyServer { server -> server.insertHandler(StatisticsHandler()) }
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -1912,7 +1927,7 @@ private fun getRandomCatFactFuture(): CompletableFuture<HttpResponse<String>> {
         .uri(URI.create("https://catfact.ninja/fact"))
         .build()
     return httpClient.sendAsync(request, ofString())
-)
+}
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
@@ -1992,7 +2007,7 @@ config.routes.get("/async") { ctx ->
 To configure the JsonMapper, you need to pass an object which implements the `JsonMapper` interface
 to `config.jsonMapper()`.
 
-The `JsonMapper` interface has four optional methods:
+The `JsonMapper` interface has five optional methods:
 
 ```java
 String toJsonString(Object obj, Type type) { // basic method for mapping to json
@@ -2018,7 +2033,7 @@ If you need further config, you can update the default settings like this:
 {% capture java %}
 config.jsonMapper(new JavalinJackson().updateMapper(mapper -> {
     mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-});
+}));
 {% endcapture %}
 {% capture kotlin %}
 config.jsonMapper(JavalinJackson().updateMapper { mapper ->
@@ -2064,8 +2079,8 @@ val app = Javalin.create { it.jsonMapper(gsonMapper) }.start(7070)
 
 ### Adding other Servlets and Filters to Javalin
 Javalin is designed to work with other `Servlet` and `Filter` instances running on the Jetty Server.
-Filters are pretty straighforward to add, since they don't finish the request.
-If you need to add a serlvet there's an example in the repo:
+Filters are pretty straightforward to add, since they don't finish the request.
+If you need to add a servlet there's an example in the repo:
 [/src/test/java/io/javalin/examples/HelloWorldServlet.java#L21-L29](https://github.com/javalin/javalin/blob/master/javalin/src/test/java/io/javalin/examples/HelloWorldServlet.java#L21-L29)
 
 You can also use it to build simple proxy using `AsyncProxyServlet` that is part of Jetty:
@@ -2171,8 +2186,8 @@ which you can access like this:
 To map a path to a Vue component you use the `VueComponent` class:
 
 ```java
-get("/messages",        VueComponent("inbox-view"))
-get("/messages/{user}", VueComponent("thread-view"))
+config.routes.get("/messages",        new VueComponent("inbox-view"));
+config.routes.get("/messages/{user}", new VueComponent("thread-view"));
 ```
 
 This will give you a lot of the benefits of a modern frontend architecture,
