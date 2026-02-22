@@ -3,6 +3,7 @@ layout: default
 title: JavalinVue Plugin
 rightmenu: true
 permalink: /plugins/javalinvue
+description: "Server-driven Vue.js component loading in Javalin without a build step, using the JavalinVue plugin."
 ---
 
 <div id="spy-nav" class="right-menu" markdown="1">

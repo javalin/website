@@ -3,6 +3,7 @@ layout: default
 title: Documentation
 rightmenu: true
 permalink: /documentation
+description: "Javalin v7 documentation. Full reference for routing, handlers, WebSockets, validation, SSE, and configuration. Java 17+, Jetty 12."
 ---
 
 {% include notificationBanner.html %}

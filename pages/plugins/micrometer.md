@@ -3,6 +3,7 @@ layout: default
 title: Micrometer documentation
 rightmenu: true
 permalink: /plugins/micrometer
+description: "Expose Micrometer metrics from a Javalin application using the Micrometer plugin."
 ---
 
 <div id="spy-nav" class="right-menu" markdown="1">

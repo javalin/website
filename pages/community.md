@@ -3,6 +3,7 @@ layout: default
 title: Community
 rightmenu: false
 permalink: /community
+description: "Join the Javalin community. Discord server, GitHub discussions, contributors, and support resources."
 ---
 
 {% include notificationBanner.html %}

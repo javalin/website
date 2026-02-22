@@ -1,0 +1,34 @@
+# Javalin
+
+> Javalin is a lightweight web framework for Java and Kotlin. Version 7 (current) requires Java 17+ and runs on Jetty 12. All configuration — routes, handlers, plugins, lifecycle events — is passed upfront in a single config block when creating the instance.
+
+Key facts for v7:
+- Minimum Java version is 17 (was 11 in v6)
+- Built on Jetty 12 (was Jetty 11 in v6)
+- All setup is done inside `Javalin.create(config -> { ... })` — routes and handlers are no longer added after `.start()`
+- Template engine support is now modular: add `javalin-rendering-{engine}` instead of a monolithic `javalin-rendering` artifact
+- Kotlin support targets Kotlin 2.0
+
+## Docs
+
+- [Documentation](https://javalin.io/documentation): Full v7 reference — routing, handlers, WebSockets, validation, access management, SSE, configuration, lifecycle, plugins
+- [Migration guide: v6 → v7](https://javalin.io/migration-guide-javalin-6-to-7): Required reading for anyone upgrading from v6; covers all breaking changes including the upfront-config model, Jetty 12, and Java 17 minimum
+
+## Plugins
+
+- [CORS plugin](https://javalin.io/plugins/cors): Configure CORS policies; replaces the old `app.enableCors()` API
+- [OpenAPI plugin](https://javalin.io/plugins/openapi): Generate OpenAPI/Swagger documentation from annotated route handlers
+- [Rendering plugin](https://javalin.io/plugins/rendering): Template engine support (Freemarker, Thymeleaf, Mustache, Velocity, Pebble, JTE, Handlebars, CommonMark) via per-engine `javalin-rendering-{engine}` modules
+- [JavalinVue plugin](https://javalin.io/plugins/javalinvue): Server-driven Vue.js component loading without a build step
+- [SSL plugin](https://javalin.io/plugins/ssl-helpers): HTTPS/HTTP2/mTLS configuration helper
+- [GraphQL plugin](https://javalin.io/plugins/graphql): Add a GraphQL endpoint
+- [Micrometer plugin](https://javalin.io/plugins/micrometer): Expose Micrometer metrics
+- [Route overview plugin](https://javalin.io/plugins/routeoverview): Expose a JSON overview of all registered routes
+- [Dev logging plugin](https://javalin.io/plugins/devlogging): Pretty-print incoming requests and responses during development
+- [How to create plugins](https://javalin.io/plugins/how-to): Guide for writing custom Javalin plugins
+
+## Optional
+
+- [Archived v6 docs](https://javalin.io/archive/docs/v6.X.html): Full reference for Javalin 6 (Java 11+, Jetty 11)
+- [Archived v5 docs](https://javalin.io/archive/docs/v5.6.X.html): Full reference for Javalin 5
+

@@ -3,6 +3,8 @@ layout: default
 title: Archive - v5 Documentation
 rightmenu: true
 permalink: /archive/docs/v5.6.X.html
+noindex: true
+sitemap: false
 ---
 
 {% include notificationBanner.html %}

@@ -3,6 +3,7 @@ layout: default
 title: Comparison to SparkJava
 rightmenu: false
 permalink: /comparisons/sparkjava
+description: "Comparison between Javalin and SparkJava. Differences in API design, features, async support, and WebSocket handling."
 ---
 
 <h1 class="no-margin-top">SparkJava and Javalin comparison</h1>

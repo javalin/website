@@ -3,6 +3,7 @@ layout: default
 title: Migration guide, v6 to v7
 rightmenu: false
 permalink: /migration-guide-javalin-6-to-7
+description: "How to migrate from Javalin 6 to Javalin 7. Covers the upfront config model, Java 17 minimum, Jetty 12, and all breaking API changes."
 ---
 
 <h1 class="no-margin-top">Javalin 6 to 7 migration guide</h1>

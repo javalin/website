@@ -3,6 +3,7 @@ layout: default
 title: DevLoggingPlugin documentation
 rightmenu: false
 permalink: /plugins/devlogging
+description: "Pretty-print incoming requests and responses in development using the Javalin DevLogging plugin."
 ---
 
 <h1 class="no-margin-top">DevLoggingPlugin</h1>

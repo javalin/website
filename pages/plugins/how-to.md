@@ -3,6 +3,7 @@ layout: default
 title: How to write a Javalin plugin
 rightmenu: true
 permalink: /plugins/how-to
+description: "How to create custom plugins for Javalin. Covers the plugin API, lifecycle hooks, and registration."
 ---
 
 <div id="spy-nav" class="right-menu" markdown="1">

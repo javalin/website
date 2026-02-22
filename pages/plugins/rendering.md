@@ -3,6 +3,7 @@ layout: default
 title: Javalin Rendering
 rightmenu: false
 permalink: /plugins/rendering
+description: "Template rendering in Javalin via modular javalin-rendering-{engine} modules. Supports Freemarker, Thymeleaf, Mustache, JTE, Pebble, Handlebars, Velocity, and CommonMark."
 ---
 
 <h1 class="no-margin-top">Javalin rendering</h1>

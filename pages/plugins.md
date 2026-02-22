@@ -3,6 +3,7 @@ layout: default
 title: Plugin store
 rightmenu: false
 permalink: /plugins/
+description: "Javalin plugins — CORS, OpenAPI, rendering, SSL, Micrometer, GraphQL, JavalinVue, and more."
 ---
 
 <script>{% include plugins/pluginCard.js %}</script>

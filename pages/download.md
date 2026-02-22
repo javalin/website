@@ -3,6 +3,7 @@ layout: default
 title: Download
 rightmenu: false
 permalink: /download
+description: "Download Javalin. Maven and Gradle dependency snippets for the latest version."
 ---
 
 {% include notificationBanner.html %}
