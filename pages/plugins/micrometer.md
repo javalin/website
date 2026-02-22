@@ -40,12 +40,13 @@ Create a registry, register the plugin, and provide a route:
 ```java
 public static void main(String[] args) {
     PrometheusMeterRegistry prometheusMeterRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+    String contentType = "text/plain; version=0.0.4; charset=utf-8";
 
     MicrometerPlugin micrometerPlugin = new MicrometerPlugin(micrometerPluginConfig -> micrometerPluginConfig.registry = prometheusMeterRegistry);
-    Javalin app = Javalin.create(config -> config.registerPlugin(micrometerPlugin)).start(8080);
-
-    String contentType = "text/plain; version=0.0.4; charset=utf-8";
-    app.get("/prometheus", ctx -> ctx.contentType(contentType).result(prometheusMeterRegistry.scrape()));
+    Javalin.create(config -> {
+        config.registerPlugin(micrometerPlugin);
+        config.routes.get("/prometheus", ctx -> ctx.contentType(contentType).result(prometheusMeterRegistry.scrape()));
+    }).start(8080);
 }
 ```
 
@@ -78,11 +79,12 @@ new ProcessorMetrics().bindTo(registry);
 new DiskSpaceMetrics(new File(System.getProperty("user.dir"))).bindTo(registry);
 
 MicrometerPlugin micrometerPlugin = new MicrometerPlugin(micrometerPluginConfig -> micrometerPluginConfig.registry = prometheusMeterRegistry);
-
-Javalin app = Javalin.create(config -> config.registerPlugin(micrometerPlugin)).start(8080);
-
 String contentType = "text/plain; version=0.0.4; charset=utf-8";
-app.get("/prometheus", ctx -> ctx.contentType(contentType).result(prometheusMeterRegistry.scrape()));
+
+Javalin.create(config -> {
+    config.registerPlugin(micrometerPlugin);
+    config.routes.get("/prometheus", ctx -> ctx.contentType(contentType).result(prometheusMeterRegistry.scrape()));
+}).start(8080);
 ```
 
 ## Custom Meters

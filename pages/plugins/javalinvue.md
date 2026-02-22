@@ -46,7 +46,7 @@ and serves it all as one big HTML file. You start by creating a layout file:
 </head>
 <body>
 <main id="main-vue" v-cloak>
-    @routeComponent <!-- Your route component will be inlined here (app.get("/my-page", VueComponent("my-page"))) -->
+    @routeComponent <!-- Your route component will be inlined here (config.routes.get("/my-page", VueComponent("my-page"))) -->
 </main>
 <script>
     new Vue({el: "#main-vue"});
@@ -61,7 +61,7 @@ and serves it all as one big HTML file. You start by creating a layout file:
 </head>
 <body>
 <main id="main-vue" v-cloak>
-    @routeComponent <!-- Your route component will be inlined here (app.get("/my-page", VueComponent("my-page"))) -->
+    @routeComponent <!-- Your route component will be inlined here (config.routes.get("/my-page", VueComponent("my-page"))) -->
 </main>
 <script>
     app.mount("#main-vue");
@@ -79,7 +79,7 @@ When a user tries to access `/my-page` in their browser, JavalinVue will serve t
 </head>
 <body>
 <main id="main-vue" v-cloak>
-    <my-page></my-page> <!-- this was defined in app.get("/my-page", VueComponent("my-page")) -->
+    <my-page></my-page> <!-- this was defined in config.routes.get("/my-page", VueComponent("my-page")) -->
 </main>
 <script>
     new Vue({el: "#main-vue"});
@@ -94,7 +94,7 @@ When a user tries to access `/my-page` in their browser, JavalinVue will serve t
 </head>
 <body>
 <main id="main-vue" v-cloak>
-    <my-page></my-page> <!-- this was defined in app.get("/my-page", VueComponent("my-page")) -->
+    <my-page></my-page> <!-- this was defined in config.routes.get("/my-page", VueComponent("my-page")) -->
 </main>
 <script>
     app.mount("#main-vue");
@@ -112,6 +112,23 @@ integration, as well as some discussion about pros and cons:
 [/tutorials/simple-frontends-with-javalin-and-vue](/tutorials/simple-frontends-with-javalin-and-vue)
 
 ## Getting Started
+
+### Registering the plugin
+In Javalin 7, JavalinVue is a plugin and must be registered in the config block:
+
+{% capture java %}
+Javalin.create(config -> {
+    config.registerPlugin(new JavalinVuePlugin());
+    config.routes.get("/my-page", new VueComponent("my-page"));
+}).start(7070);
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { config ->
+    config.registerPlugin(JavalinVuePlugin())
+    config.routes.get("/my-page", VueComponent("my-page"))
+}.start(7070)
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 ### Creating a layout
 
@@ -139,7 +156,7 @@ The snippet below shows all the available macros (`@macroName`), except `@cdnWeb
 </head>
 <body>
 <main id="main-vue" v-cloak>
-    @routeComponent <!-- Your route component will be inlined here (app.get("/my-page", VueComponent("my-page"))) -->
+    @routeComponent <!-- Your route component will be inlined here (config.routes.get("/my-page", VueComponent("my-page"))) -->
 </main>
 <script>
     new Vue({el: "#main-vue"});
@@ -157,7 +174,7 @@ The snippet below shows all the available macros (`@macroName`), except `@cdnWeb
 </head>
 <body>
 <main id="main-vue" v-cloak>
-    @routeComponent <!-- Your route component will be inlined here (app.get("/my-page", VueComponent("my-page"))) -->
+    @routeComponent <!-- Your route component will be inlined here (config.routes.get("/my-page", VueComponent("my-page"))) -->
 </main>
 <script>
     app.mount("#main-vue");
@@ -206,46 +223,46 @@ or as a `@routeComponent`.
 Routing is done server side, so you bind a component to a route by declaring a GET endpoint in Javalin:
 
 {% capture java %}
-app.get("/my-path", new VueComponent("my-component"));
+config.routes.get("/my-path", new VueComponent("my-component"));
 {% endcapture %}
 {% capture kotlin %}
-app.get("/my-path", VueComponent("my-component"))
+config.routes.get("/my-path", VueComponent("my-component"))
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 This means that you can use the same `AccessManager` for frontend routes as you use for your API:
 
 {% capture java %}
-app.get("/my-path", new VueComponent("my-component"), roles(Role.LOGGED_IN));
+config.routes.get("/my-path", new VueComponent("my-component"), roles(Role.LOGGED_IN));
 {% endcapture %}
 {% capture kotlin %}
-app.get("/my-path", VueComponent("my-component"), roles(Role.LOGGED_IN))
+config.routes.get("/my-path", VueComponent("my-component"), roles(Role.LOGGED_IN))
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 
 ## Configuration
 {% capture java %}
-Javalin.create(config -> {
-    config.vue.rootDirectory        // where JavalinVue should look for files (default: decided based on isDevFunction)
-    config.vue.vueInstanceNameInJs  // the Vue 3 app name (default: null)
-    config.vue.isDevFunction        // a function to determine if request is on localhost (default: checks ctx.url())
-    config.vue.optimizeDependencies // only include required vue files (default: true)
-    config.vue.stateFunction        // a function which runs on every request for transferring state from server (default: null)
-    config.vue.cacheControl         // cache control header (default: "no-cache, no-store, must-revalidate")
-    config.vue.enableCspAndNonces   // will enable csp and tag each component with a nonce (default: false)
-});
+config.registerPlugin(new JavalinVuePlugin(vue -> {
+    vue.rootDirectory        // where JavalinVue should look for files (default: decided based on isDevFunction)
+    vue.vueInstanceNameInJs  // the Vue 3 app name (default: null)
+    vue.isDevFunction        // a function to determine if request is on localhost (default: checks ctx.url())
+    vue.optimizeDependencies // only include required vue files (default: true)
+    vue.stateFunction        // a function which runs on every request for transferring state from server (default: null)
+    vue.cacheControl         // cache control header (default: "no-cache, no-store, must-revalidate")
+    vue.enableCspAndNonces   // will enable csp and tag each component with a nonce (default: false)
+}));
 {% endcapture %}
 {% capture kotlin %}
-Javalin.create { config ->
-    config.vue.rootDirectory        // where JavalinVue should look for files (default: decided based on isDevFunction)
-    config.vue.vueInstanceNameInJs  // the Vue 3 app name (default: null)
-    config.vue.isDevFunction        // a function to determine if request is on localhost (default: checks ctx.url())
-    config.vue.optimizeDependencies // only include required vue files (default: true)
-    config.vue.stateFunction        // a function which runs on every request for transferring state from server (default: null)
-    config.vue.cacheControl         // cache control header (default: "no-cache, no-store, must-revalidate")
-    config.vue.enableCspAndNonces   // will enable csp and tag each component with a nonce (default: false)
-}
+config.registerPlugin(JavalinVuePlugin { vue ->
+    vue.rootDirectory        // where JavalinVue should look for files (default: decided based on isDevFunction)
+    vue.vueInstanceNameInJs  // the Vue 3 app name (default: null)
+    vue.isDevFunction        // a function to determine if request is on localhost (default: checks ctx.url())
+    vue.optimizeDependencies // only include required vue files (default: true)
+    vue.stateFunction        // a function which runs on every request for transferring state from server (default: null)
+    vue.cacheControl         // cache control header (default: "no-cache, no-store, must-revalidate")
+    vue.enableCspAndNonces   // will enable csp and tag each component with a nonce (default: false)
+})
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
@@ -478,12 +495,12 @@ Every `VueComponent` can take a state object as a second parameter. This state o
 `stateFunction`. You can either add it directly in a route declaration:
 
 ```kotlin
-app.get("/specific-state", VueComponent("test-component", mapOf("test" to "tast")))
+config.routes.get("/specific-state", VueComponent("test-component", mapOf("test" to "tast")))
 ```
 
 Or inside a handler:
 ```kotlin
-app.get("/specific-state") { ctx ->
+config.routes.get("/specific-state") { ctx ->
     val myState = mapOf("test" to "tast")
     VueComponent("test-component", myState).handle(ctx)
 }

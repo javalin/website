@@ -10,7 +10,7 @@ void main() {
         config.http.asyncTimeout = 10_000L;
         config.staticFiles.add("/public");
         config.staticFiles.enableWebjars();
-        config.router.apiBuilder(() -> {
+        config.routes.apiBuilder(() -> {
             path("/users", () -> {
                 get(UserController::getAll);
                 post(UserController::create);
@@ -35,7 +35,7 @@ fun main() {
         config.http.asyncTimeout = 10_000L
         config.staticFiles.add("/public")
         config.staticFiles.enableWebjars()
-        config.router.apiBuilder {
+        config.routes.apiBuilder {
             path("/users") {
                 get(UserController::getAll)
                 post(UserController::create)
