@@ -66,9 +66,9 @@ permalink: /documentation
   - [Documentation for previous versions](#documentation-for-previous-versions)
 </div>
 
-<h1 class="no-margin-top">Documentation - Javalin 7</h1>
+<h1 class="no-margin-top">Documentation</h1>
 
-Javalin 7 requires **Java 17+**, and uses **Kotlin 2+** and **Jetty 12+** internally.
+Javalin 7 requires **Java 17+**, and **Jetty 12+**.
 See the [migration guide](/migration-guide-javalin-6-to-7) for details on upgrading from Javalin 6. Javalin follows [semantic versioning](http://semver.org/), meaning there are no breaking changes unless the major (leftmost) digit changes, for example `6.X.X` to `7.X.X`.
 
 {% include sponsorOrStar.html %}
