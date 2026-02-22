@@ -261,6 +261,23 @@ config.routes.afterMatched { ctx ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
+### Wrapper handlers
+Wrapper-handlers run "around" requests.
+
+This is useful when you need to "wrap", for example to propagate a `ThreadLocal` or a `ScopedValue`:
+
+{% capture java %}
+config.router.handlerWrapper(endpoint -> ctx -> ScopedValue.where(...).run(endpoint.handle(ctx)));
+{% endcapture %}
+{% capture kotlin %}
+config.router.handlerWrapper { 
+    ScopedValue.where(...).run(endpoint.handle(ctx))
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+Note that `handlerWrapper` is on `router` not on `routes` of `config`.
+
 ### Context
 The `Context` object provides you with everything you need to handle a http-request.
 It contains the underlying servlet-request and servlet-response, and a bunch of getters
