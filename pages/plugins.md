@@ -30,7 +30,7 @@ please report it on GitHub (link in plugin card).
     "
     bundled="false"
     author="dzikoysk"
-    docsUrl="https://github.com/javalin/javalin-openapi#readme"
+    docsUrl="https://javalin.github.io/javalin-openapi/"
     ratingIssueNr="133"
 %}
 
