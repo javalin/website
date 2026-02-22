@@ -217,6 +217,34 @@ config.routes.get("/path/*") { ctx -> // will match anything starting with /path
 However, you cannot extract the value of a wildcard.
 Use a slash accepting path-parameter (`<param-name>` instead of `{param-name}`) if you need this behavior.
 
+#### Custom HTTP methods
+In Javalin 7, `HandlerType` is a record instead of an enum, which means you can create custom HTTP methods
+dynamically using `HandlerType.findOrCreate("METHOD_NAME")`. This is useful for protocols like WebDAV
+that use non-standard HTTP methods such as `PROPFIND`, `MKCOL`, `LOCK`, etc.
+
+{% capture java %}
+HandlerType PROPFIND = HandlerType.findOrCreate("PROPFIND");
+
+Javalin.create(config -> {
+    config.routes.addHttpHandler(PROPFIND, "/webdav/{resource}", ctx -> {
+        ctx.result("PROPFIND: " + ctx.pathParam("resource"));
+    });
+});
+{% endcapture %}
+{% capture kotlin %}
+val PROPFIND = HandlerType.findOrCreate("PROPFIND")
+
+Javalin.create { config ->
+    config.routes.addHttpHandler(PROPFIND, "/webdav/{resource}") { ctx ->
+        ctx.result("PROPFIND: " + ctx.pathParam("resource"))
+    }
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+Custom methods work with all Javalin features including path parameters, roles, before/after handlers, and exception handling.
+Method names must consist of uppercase letters only (e.g. `PROPFIND`, `MKCOL`).
+
 ### After handlers
 After-handlers run after every request (even if an exception occurred)
 <div class="comment">You might know after-handlers as filters, interceptors, or middleware from other libraries.</div>
