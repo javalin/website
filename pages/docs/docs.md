@@ -312,7 +312,7 @@ bodyAsBytes()                         // request body as array of bytes
 bodyAsClass(clazz)                    // request body as specified class (deserialized from JSON)
 bodyStreamAsClass(clazz)              // request body as specified class (memory optimized version of above)
 bodyValidator(clazz)                  // request body as validator typed as specified class
-bodyInputStream()                     // the underyling input stream of the request
+bodyInputStream()                     // the underlying input stream of the request
 uploadedFile("name")                  // uploaded file by name
 uploadedFiles("name")                 // all uploaded files by name
 uploadedFiles()                       // all uploaded files as list
@@ -388,7 +388,7 @@ res()                                 // get the underlying HttpServletResponse
 
 // Other methods
 async(runnable)                       // lifts request out of Jetty's ThreadPool, and moves it to Javalin's AsyncThreadPool
-async(asyncConfig, runnable)          // same as above, but with additonal config
+async(asyncConfig, runnable)          // same as above, but with additional config
 endpoint().method                     // handler type of the current handler (BEFORE, AFTER, GET, etc)
 appData(typedKey)                     // get data from the Javalin instance (see app data section below)
 with(pluginClass)                     // get context plugin by class, see plugin section below
@@ -445,27 +445,35 @@ The cookieStore works like this:
 
 ##### Example:
 {% capture java %}
-serverOneApp.post("/cookie-storer", ctx -> {
-    ctx.cookieStore().set("string", "Hello world!");
-    ctx.cookieStore().set("i", 42);
-    ctx.cookieStore().set("list", Arrays.asList("One", "Two", "Three"));
+var serverOneApp = Javalin.create(config -> {
+    config.routes.post("/cookie-storer", ctx -> {
+        ctx.cookieStore().set("string", "Hello world!");
+        ctx.cookieStore().set("i", 42);
+        ctx.cookieStore().set("list", Arrays.asList("One", "Two", "Three"));
+    });
 });
-serverTwoApp.get("/cookie-reader", ctx -> { // runs on a different server than serverOneApp
-    String string = ctx.cookieStore().get("string")
-    int i = ctx.cookieStore().get("i")
-    List<String> list = ctx.cookieStore().get("list")
+var serverTwoApp = Javalin.create(config -> {
+    config.routes.get("/cookie-reader", ctx -> { // runs on a different server than serverOneApp
+        String string = ctx.cookieStore().get("string");
+        int i = ctx.cookieStore().get("i");
+        List<String> list = ctx.cookieStore().get("list");
+    });
 });
 {% endcapture %}
 {% capture kotlin %}
-serverOneApp.post("/cookie-storer") { ctx ->
-    ctx.cookieStore().set("string", "Hello world!")
-    ctx.cookieStore().set("i", 42)
-    ctx.cookieStore().set("list", listOf("One", "Two", "Three"))
+val serverOneApp = Javalin.create { config ->
+    config.routes.post("/cookie-storer") { ctx ->
+        ctx.cookieStore().set("string", "Hello world!")
+        ctx.cookieStore().set("i", 42)
+        ctx.cookieStore().set("list", listOf("One", "Two", "Three"))
+    }
 }
-serverTwoApp.get("/cookie-reader") { ctx -> // runs on a different server than serverOneApp
-    val string = ctx.cookieStore().get("string")
-    val i = ctx.cookieStore().get("i")
-    val list = ctx.cookieStore().get("list")
+val serverTwoApp = Javalin.create { config ->
+    config.routes.get("/cookie-reader") { ctx -> // runs on a different server than serverOneApp
+        val string = ctx.cookieStore().get("string")
+        val i = ctx.cookieStore().get("i")
+        val list = ctx.cookieStore().get("list")
+    }
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -1115,7 +1123,7 @@ Queue<SseClient> clients = new ConcurrentLinkedQueue<SseClient>();
 
 config.routes.sse("/sse", client -> {
     client.keepAlive();
-    client.onClose(() - > clients.remove(client));
+    client.onClose(() -> clients.remove(client));
     clients.add(client);
 });
 {% endcapture %}
@@ -1184,16 +1192,15 @@ Javalin.create(config -> {
     config.http.generateEtags = booleanValue;       // if javalin should generate etags for dynamic responses (not static files)
     config.http.prefer405over404 = booleanValue;    // return 405 instead of 404 if path is mapped to different HTTP method
     config.http.maxRequestSize = longValue;         // the max size of request body that can be accessed without using using an InputStream
-    config.http.responseBufferSize = longValue;     // the size of the response buffer (default 32kb)
+    config.http.responseBufferSize = intValue;      // the size of the response buffer (default 32kb)
     config.http.defaultContentType = stringValue;   // the default content type
     config.http.asyncTimeout = longValue;           // timeout in milliseconds for async requests (0 means no timeout)
     config.http.strictContentTypes = booleanValue;  // throw exception if e.g content-type is missing/incorrect when attempting to parse JSON
     
-    config.http.customCompression(strategy);        // set a custom compression strategy
-    config.http.brotliAndGzipCompression(lvl, lvl); // enable brotli and gzip compression with the specified levels
-    config.http.gzipOnlyCompression(lvl);           // enable gzip compression with the specified level
-    config.http.brotliOnlyCompression(lvl);         // enable brotli compression with the specified level
-    config.http.disableCompression();               // disable compression
+    config.http.compressionStrategy = new CompressionStrategy(new Brotli(lvl), new Gzip(lvl));
+    config.http.compressionStrategy = new CompressionStrategy(null, new Gzip(lvl));
+    config.http.compressionStrategy = new CompressionStrategy(new Brotli(lvl), null);
+    config.http.compressionStrategy = CompressionStrategy.NONE;
 });
 {% endcapture %}
 {% capture kotlin %}
@@ -1201,16 +1208,15 @@ Javalin.create { config ->
     config.http.generateEtags = booleanValue        // if javalin should generate etags for dynamic responses (not static files)
     config.http.prefer405over404 = booleanValue     // return 405 instead of 404 if path is mapped to different HTTP method
     config.http.maxRequestSize = longValue          // the max size of request body that can be accessed without using using an InputStream
-    config.http.responseBufferSize = longValue      // the size of the response buffer (default 32kb)
+    config.http.responseBufferSize = intValue        // the size of the response buffer (default 32kb)
     config.http.defaultContentType = stringValue    // the default content type
     config.http.asyncTimeout = longValue            // timeout in milliseconds for async requests (0 means no timeout)
     config.http.strictContentTypes = booleanValue   // throw exception if e.g content-type is missing/incorrect when attempting to parse JSON
 
-    config.http.customCompression(strategy)         // set a custom compression strategy
-    config.http.brotliAndGzipCompression(lvl, lvl)  // enable brotli and gzip compression with the specified levels
-    config.http.gzipOnlyCompression(lvl)            // enable gzip compression with the specified level
-    config.http.brotliOnlyCompression(lvl)          // enable brotli compression with the specified level
-    config.http.disableCompression()                // disable compression
+    config.http.compressionStrategy = CompressionStrategy(Brotli(lvl), Gzip(lvl))
+    config.http.compressionStrategy = CompressionStrategy(null, Gzip(lvl))
+    config.http.compressionStrategy = CompressionStrategy(Brotli(lvl), null)
+    config.http.compressionStrategy = CompressionStrategy.NONE
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -1244,10 +1250,10 @@ Javalin.create(config -> {
     config.jetty.host = "localhost"; // set the host for Jetty
     config.jetty.port = 1234; // set the port for Jetty
     config.jetty.threadPool = new ThreadPool(); // set the thread pool for Jetty
-    config.jetty.timeoutStatus = 408; // set the timeout status for Jetty (default 500)
-    config.jetty.clientAbortStatus = 499; // set the abort status for Jetty (default 500)
+    config.jetty.timeoutStatus = 408; // set the timeout status for Jetty (default 408)
+    config.jetty.clientAbortStatus = 499; // set the abort status for Jetty (default 499)
     config.jetty.multipartConfig = new MultipartConfig(); // set the multipart config for Jetty
-    config.jetty.modifyJettyWebSocketServletFactory(factory -> {}); // modify the JettyWebSocketServletFactory
+    config.jetty.modifyWebSocketServletFactory(factory -> {}); // modify the JettyWebSocketServletFactory
     config.jetty.modifyServer(server -> {}); // modify the Jetty Server
     config.jetty.modifyServletContextHandler(handler -> {}); // modify the ServletContextHandler (you can set a SessionHandler here)
     config.jetty.modifyHttpConfiguration(httpConfig -> {}); // modify the HttpConfiguration
@@ -1259,10 +1265,10 @@ Javalin.create { config ->
     config.jetty.host = "localhost" // set the host for Jetty
     config.jetty.port = 1234 // set the port for Jetty
     config.jetty.threadPool = ThreadPool() // set the thread pool for Jetty
-    config.jetty.timeoutStatus = 408 // set the timeout status for Jetty (default 500)
-    config.jetty.clientAbortStatus = 499 // set the abort status for Jetty (default 500)
+    config.jetty.timeoutStatus = 408 // set the timeout status for Jetty (default 408)
+    config.jetty.clientAbortStatus = 499 // set the abort status for Jetty (default 499)
     config.jetty.multipartConfig = MultipartConfig() // set the multipart config for Jetty
-    config.jetty.modifyJettyWebSocketServletFactory { factory -> } // modify the JettyWebSocketServletFactory
+    config.jetty.modifyWebSocketServletFactory { factory -> } // modify the JettyWebSocketServletFactory
     config.jetty.modifyServer { server -> } // modify the Jetty Server
     config.jetty.modifyServletContextHandler { handler -> } // modify the ServletContextHandler (you can set a SessionHandler here)
     config.jetty.modifyHttpConfiguration { httpConfig -> } // modify the HttpConfiguration
@@ -1591,12 +1597,13 @@ Javalin app = Javalin.create(config -> {
     config.events.serverStartFailed(() -> { ... });
     config.events.serverStopping(() -> { ... });
     config.events.serverStopped(() -> { ... });
+    config.events.serverStopFailed(() -> { ... });
     config.events.handlerAdded(handlerMetaInfo -> { ... });
     config.events.wsHandlerAdded(wsHandlerMetaInfo -> { ... });
 });
 
 app.start() // serverStarting -> (serverStarted || serverStartFailed)
-app.stop() // serverStopping -> serverStopped
+app.stop() // serverStopping -> (serverStopped || serverStopFailed)
 {% endcapture %}
 {% capture kotlin %}
 val app = Javalin.create { config ->
@@ -1605,12 +1612,13 @@ val app = Javalin.create { config ->
     config.events.serverStartFailed { ... }
     config.events.serverStopping { ... }
     config.events.serverStopped { ... }
+    config.events.serverStopFailed { ... }
     config.events.handlerAdded { handlerMetaInfo -> }
     config.events.wsHandlerAdded { wsHandlerMetaInfo -> }
 }
 
 app.start() // serverStarting -> (serverStarted || serverStartFailed)
-app.stop() // serverStopping -> serverStopped
+app.stop() // serverStopping -> (serverStopped || serverStopFailed)
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
@@ -1678,8 +1686,8 @@ Different endpoints can have different rate limits. It works as follows:
 
 ### Android
 
-Due to [Jetty 11 not working on Android](https://github.com/javalin/website/issues/211#issuecomment-1438319603), 
-Javalin 5+ is not compatible either, but Javalin 4 is.\\
+Due to [Jetty 11+ not working on Android](https://github.com/javalin/website/issues/211#issuecomment-1438319603), 
+Javalin 5+ (which uses Jetty 11 or 12) is not compatible, but Javalin 4 is.\\
 You can find the docs for Javalin 4 [here](/archive/docs/v4.6.X.html).\\
 You can check the status of Jetty 11+ on Android [here](https://github.com/eclipse/jetty.project/issues/8912#issuecomment-1439716937).
 
@@ -1769,7 +1777,6 @@ config.routes.post("/upload") { ctx ->
     ctx.uploadedFiles("files").forEach { uploadedFile ->
         FileUtil.streamToFile(uploadedFile.content(), "upload/${uploadedFile.filename()}")
     }
-}
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
@@ -1969,7 +1976,7 @@ If you need to add a serlvet there's an example in the repo:
 You can also use it to build simple proxy using `AsyncProxyServlet` that is part of Jetty:
 
 ```java
-// Add org.eclipse.jetty:jetty-proxy to maven/gradle dependencies (e.g Javalin 5.3.2 uses Jetty 11.0.13)
+// Add org.eclipse.jetty:jetty-proxy to maven/gradle dependencies (Javalin 7 uses Jetty 12)
 Javalin.create(config -> {
     config.jetty.modifyServletContextHandler(handler -> {
         ServletHolder proxyServlet = new ServletHolder(AsyncProxyServlet.Transparent.class);
