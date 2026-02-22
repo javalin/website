@@ -3,6 +3,7 @@ layout: default
 title: For educators
 rightmenu: false
 permalink: /for-educators
+description: "Why Javalin is ideal for programming courses, demos, and prototypes. Simple setup, minimal boilerplate, great for teaching."
 ---
 
 <h1 class="no-margin-top">For educators</h1>

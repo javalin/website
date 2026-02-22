@@ -3,6 +3,7 @@ layout: default
 title: SSL Plugin
 rightmenu: true
 permalink: /plugins/ssl-helpers
+description: "Configure HTTPS, HTTP/2, and mutual TLS in Javalin using the SSL plugin."
 ---
 
 <div id="spy-nav" class="right-menu" markdown="1">

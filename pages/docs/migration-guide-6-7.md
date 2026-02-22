@@ -3,6 +3,7 @@ layout: default
 title: Migration guide, v6 to v7
 rightmenu: false
 permalink: /migration-guide-javalin-6-to-7
+description: "How to migrate from Javalin 6 to Javalin 7. Covers the upfront config model, Java 17 minimum, Jetty 12, and all breaking API changes."
 ---
 
 <h1 class="no-margin-top">Javalin 6 to 7 migration guide</h1>
@@ -612,7 +613,7 @@ override fun onStart(state: JavalinState) {
 
 ## Additional changes
 It's hard to keep track of everything, but you can look at the
-[full commit log](https://github.com/javalin/javalin/compare/javalin-parent-{{site.javalinSixVersion}}...javalin-parent-7.0.0-alpha.4)
+[full commit log](https://github.com/javalin/javalin/compare/javalin-parent-{{site.javalinSixVersion}}...javalin-parent-7.0.0)
 between the last 6.x version and 7.0.0.
 
 If you run into something not covered by this guide, please <a href="{{site.repourl}}/blob/master/{{page.path}}">edit this page on GitHub</a>!

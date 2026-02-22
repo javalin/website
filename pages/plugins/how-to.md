@@ -3,6 +3,7 @@ layout: default
 title: How to write a Javalin plugin
 rightmenu: true
 permalink: /plugins/how-to
+description: "How to create custom plugins for Javalin. Covers the plugin API, lifecycle hooks, and registration."
 ---
 
 <div id="spy-nav" class="right-menu" markdown="1">
@@ -17,12 +18,9 @@ permalink: /plugins/how-to
 </div>
 
 <h1 class="no-margin-top">About Plugins</h1>
-In Javalin 6, the plugin system was completely rewritten. The new system is much more powerful and flexible,
-but it's also a bit more complicated. Our hope is that the new system will ensure that all plugins
-follow the same pattern, so that it will be easier for end users to use the plugins.
+Javalin's plugin system enforces a consistent API so that end users can rely on the same patterns across all plugins.
 
-This how-to guide will walk you through the plugin system,
-and how to write your own plugins.
+This how-to guide will walk you through the plugin system and how to write your own plugins.
 
 ## What is a plugin?
 A plugin is a piece of code that can be added to Javalin to extend Javalin's functionality. 
@@ -40,10 +38,10 @@ intimidating, but we will walk you through it step by step. There are also sever
 abstract class Plugin<CONFIG>(userConfig: Consumer<CONFIG>? = null, defaultConfig: CONFIG? = null) {
 
     /** Initialize properties and access configuration before any handler is registered. */
-    open fun onInitialize(config: JavalinConfig) {}
+    open fun onInitialize(state: JavalinState) {}
 
     /** Called when the plugin is applied to the Javalin instance. */
-    open fun onStart(config: JavalinConfig) {}
+    open fun onStart(state: JavalinState) {}
 
     /** Checks if plugin can be registered multiple times. */
     open fun repeatable(): Boolean = false
@@ -66,7 +64,7 @@ which is the type of the configuration object that you want to use. If you don't
 use a configuration object, you can use `Void`/`Unit` as the type parameter.
 
 ### The `ContextPlugin` class
-If you want to add functionality to the `Context` class, you can extend the `ContextExtension` class,
+If you want to add functionality to the `Context` class, you can extend the `ContextPlugin` class,
 which in turn extends the `Plugin` class. This class has a generic type parameter `EXTENSION`,
 in addition to the `CONFIG` type parameter from the `Plugin` class:
 
@@ -81,7 +79,7 @@ abstract class ContextPlugin<CONFIG, EXTENSION>(
 }
 ```
 
-The `ContextExtension` class has a function `createExtension`, which is called when the
+The `ContextPlugin` class has a function `createExtension`, which is called when the
 user calls `ctx.with(Plugin::class)`. This function should return an instance of the
 extension class. It also overrides the `repeatable` function to always returns
 `false`. This is necessary because context extensions are keyed by class, so you can only have one
@@ -107,13 +105,11 @@ Let's create a plugin named `Ratey` that does rate limiting:
 class Ratey extends Plugin<Void> {
     int counter;
     @Override
-    public void onInitialize(JavalinConfig config) {
-        config.router.mount(router -> {
-            router.before(ctx -> {
-                if (counter++ > 100) {
-                    throw new TooManyRequestsResponse();
-                }
-            });
+    public void onStart(JavalinState state) {
+        state.routes.before(ctx -> {
+            if (counter++ > 100) {
+                throw new TooManyRequestsResponse();
+            }
         });
     }
 }
@@ -122,12 +118,10 @@ class Ratey extends Plugin<Void> {
 class Ratey : Plugin<Void>() {
     var counter = 0
 
-    override fun onInitialize(config: JavalinConfig) {
-        config.router.mount { router ->
-            router.before { ctx ->
-                if (counter++ > 100) {
-                    throw TooManyRequestsResponse()
-                }
+    override fun onStart(state: JavalinState) {
+        state.routes.before { ctx ->
+            if (counter++ > 100) {
+                throw TooManyRequestsResponse()
             }
         }
     }
@@ -149,7 +143,7 @@ val app = Javalin.create { config ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-This will register the plugin. The `onInitialize` function will be called when Javalin is initialized,
+This will register the plugin. The `onStart` function will be called when Javalin starts,
 so our rate-limiting code will be executed for every request. This plugin is currently quite terrible,
 as it will rate-limit all requests, and it has a hardcoded limit of 100 requests. Let's make it a bit
 more flexible by adding a config.
@@ -169,13 +163,11 @@ class Ratey extends Plugin<Ratey.Config> { // the Ratey.Config class is the conf
         public int limit = 1;
     }
     @Override
-    public void onInitialize(JavalinConfig config) {
-        config.router.mount(router -> {
-            router.before(ctx -> {
-                if (counter++ > pluginConfig.limit) { // we can access the config through the pluginConfig field
-                    throw new TooManyRequestsResponse();
-                }
-            });
+    public void onStart(JavalinState state) {
+        state.routes.before(ctx -> {
+            if (counter++ > pluginConfig.limit) { // we can access the config through the pluginConfig field
+                throw new TooManyRequestsResponse();
+            }
         });
     }
 }
@@ -190,12 +182,10 @@ class Ratey(userConfig: Consumer<Config>) : Plugin<Ratey.Config>(userConfig, Con
         var limit = 1
     }
 
-    override fun onInitialize(config: JavalinConfig) {
-        config.router.mount { router ->
-            router.before { ctx ->
-                if (counter++ > pluginConfig.limit) { // we can access the config through the pluginConfig field
-                    throw TooManyRequestsResponse()
-                }
+    override fun onStart(state: JavalinState) {
+        state.routes.before { ctx ->
+            if (counter++ > pluginConfig.limit) { // we can access the config through the pluginConfig field
+                throw TooManyRequestsResponse()
             }
         }
     }
@@ -239,7 +229,7 @@ For this example, we want to be able to limit the number of requests per user, a
 Instead of a before-handler, we will create an extension to the `Context` class, which we will let users
 call with `ctx.with(Ratey::class)`. This will return an instance of our extension class.
 
-Let's extend the `ContextExtension` class in our `Ratey` plugin and add a `createExtension` function:
+Let's extend the `ContextPlugin` class in our `Ratey` plugin and add a `createExtension` function:
 
 {% capture java %}
 class Ratey extends ContextPlugin<Ratey.Config, Ratey.Extension> {
@@ -304,40 +294,34 @@ class Ratey(userConfig: Consumer<Config>) : ContextPlugin<Ratey.Config, Ratey.Ex
 Now, we can use our plugin like this:
 
 {% capture java %}
-// register
 var app = Javalin.create(config -> {
     config.registerPlugin(new Ratey(rateyConfig -> {
         rateyConfig.limit = 100_000;
     }));
-});
-
-// use in handler
-app.get("/cheap-endpoint", ctx -> {
-    ctx.with(Ratey.class).tryConsume(1);
-    ctx.result("Hello cheap world!");
-});
-app.get("expensive-endpoint", ctx -> {
-    ctx.with(Ratey.class).tryConsume(100);
-    ctx.result("Hello expensive world!");
-});
+    config.routes.get("/cheap-endpoint", ctx -> {
+        ctx.with(Ratey.class).tryConsume(1);
+        ctx.result("Hello cheap world!");
+    });
+    config.routes.get("/expensive-endpoint", ctx -> {
+        ctx.with(Ratey.class).tryConsume(100);
+        ctx.result("Hello expensive world!");
+    });
+}).start(7070);
 {% endcapture %}
 {% capture kotlin %}
-// register
 val app = Javalin.create { config ->
     config.registerPlugin(Ratey { rateyConfig ->
         rateyConfig.limit = 100_000
     })
-}
-
-// use in handler
-app.get("/cheap-endpoint") { ctx ->
-    ctx.with(Ratey::class).tryConsume(1)
-    ctx.result("Hello cheap world!")
-}
-app.get("expensive-endpoint") { ctx ->
-    ctx.with(Ratey::class).tryConsume(100)
-    ctx.result("Hello expensive world!")
-}
+    config.routes.get("/cheap-endpoint") { ctx ->
+        ctx.with(Ratey::class).tryConsume(1)
+        ctx.result("Hello cheap world!")
+    }
+    config.routes.get("/expensive-endpoint") { ctx ->
+        ctx.with(Ratey::class).tryConsume(100)
+        ctx.result("Hello expensive world!")
+    }
+}.start(7070)
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 

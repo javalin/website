@@ -3,6 +3,8 @@ layout: default
 title: Archive - v5 Documentation
 rightmenu: true
 permalink: /archive/docs/v5.6.X.html
+noindex: true
+sitemap: false
 ---
 
 {% include notificationBanner.html %}
@@ -81,7 +83,7 @@ Add the dependency:
 {% include macros/mavenDep.md %}
 
 Start coding:
-{% include macros/gettingStarted.md %}
+{% include macros/gettingStarted6.md %}
 
 ## Handlers
 Javalin has three main handler types: before-handlers, endpoint-handlers, and after-handlers.

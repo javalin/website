@@ -3,6 +3,7 @@ layout: default
 title: News
 rightmenu: false
 permalink: /news/
+description: "Javalin release notes, announcements, and changelog."
 ---
 
 {% include notificationBanner.html %}

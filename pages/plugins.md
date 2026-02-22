@@ -3,6 +3,7 @@ layout: default
 title: Plugin store
 rightmenu: false
 permalink: /plugins/
+description: "Javalin plugins — CORS, OpenAPI, rendering, SSL, Micrometer, GraphQL, JavalinVue, and more."
 ---
 
 <script>{% include plugins/pluginCard.js %}</script>
@@ -29,7 +30,7 @@ please report it on GitHub (link in plugin card).
     "
     bundled="false"
     author="dzikoysk"
-    docsUrl="https://github.com/javalin/javalin-openapi#readme"
+    docsUrl="https://javalin.github.io/javalin-openapi/"
     ratingIssueNr="133"
 %}
 
