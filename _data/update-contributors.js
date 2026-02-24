@@ -62,7 +62,15 @@
     for (let repo of repos) {
         console.log(`Getting contributors for ${repo} ...`);
         const response = await fetch(`https://api.github.com/repos/javalin/${repo}/contributors`, { headers });
+        if (!response.ok) {
+            console.warn(`Skipping ${repo}: HTTP ${response.status} ${response.statusText}`);
+            continue;
+        }
         const repoContributors = await response.json();
+        if (!Array.isArray(repoContributors)) {
+            console.warn(`Skipping ${repo}: unexpected response format`, repoContributors);
+            continue;
+        }
         console.log(`${repo} has ${repoContributors.length} contributors ...`);
         for (let user of repoContributors) {
             console.log(`Adding contributions of ${user.login} ...`);
