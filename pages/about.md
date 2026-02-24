@@ -3,6 +3,7 @@ layout: default
 title: About
 rightmenu: false
 permalink: /about
+description: "About Javalin — a lightweight Java and Kotlin web framework inspired by Sinatra and koa.js. Philosophy, API design, and Java/Kotlin interoperability."
 ---
 
 <h1 class="no-margin-top">About Javalin</h1>

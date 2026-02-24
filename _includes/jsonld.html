@@ -1,0 +1,91 @@
+{% if page.splash %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Javalin",
+  "description": "A simple, lightweight web framework for Java and Kotlin. Built on top of Jetty, runs on Java 17+.",
+  "url": "https://javalin.io",
+  "applicationCategory": "Framework",
+  "programmingLanguage": ["Java", "Kotlin"],
+  "operatingSystem": "JVM",
+  "license": "https://www.apache.org/licenses/LICENSE-2.0",
+  "sameAs": "https://github.com/javalin/javalin",
+  "author": {
+    "@type": "Organization",
+    "name": "Javalin",
+    "url": "https://javalin.io"
+  }
+}
+</script>
+{% elsif page.title %}
+{% capture page_description %}{% if page.description %}{{ page.description }}{% elsif page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}{% endcapture %}
+{% capture canonical_url %}{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}{% endcapture %}
+{% if page.layout == 'blogpost' or page.layout == 'news' or page.layout == 'tutorial' %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": {{ page.title | jsonify }},
+  "description": {{ page_description | strip | jsonify }},
+  "url": {{ canonical_url | jsonify }},
+  "image": "https://javalin.io/img/javalin.png",
+  "inLanguage": "en",
+  {% if page.date %}"datePublished": "{{ page.date | date_to_xmlschema }}",{% endif %}
+  {% if page.author %}"author": {
+    "@type": "Person",
+    "name": {{ page.author | jsonify }}
+  },{% else %}"author": {
+    "@type": "Organization",
+    "name": "Javalin",
+    "url": "https://javalin.io"
+  },{% endif %}
+  "publisher": {
+    "@type": "Organization",
+    "name": "Javalin",
+    "url": "https://javalin.io",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://javalin.io/img/logo.svg"
+    }
+  }
+}
+</script>
+{% else %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": {{ page.title | append: " - Javalin" | jsonify }},
+  "description": {{ page_description | strip | jsonify }},
+  "url": {{ canonical_url | jsonify }},
+  "image": "https://javalin.io/img/javalin.png",
+  "inLanguage": "en",
+  "about": {
+    "@type": "SoftwareApplication",
+    "name": "Javalin",
+    "applicationCategory": "Framework",
+    "programmingLanguage": ["Java", "Kotlin"],
+    "url": "https://javalin.io",
+    "sameAs": "https://github.com/javalin/javalin"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "Javalin",
+    "url": "https://javalin.io"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Javalin",
+    "url": "https://javalin.io",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://javalin.io/img/logo.svg"
+    }
+  }
+}
+</script>
+{% endif %}
+{% endif %}
+
+

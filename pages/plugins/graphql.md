@@ -3,6 +3,7 @@ layout: default
 title: GraphQL documentation
 rightmenu: true
 permalink: /plugins/graphql
+description: "Add a GraphQL endpoint to a Javalin application using the GraphQL plugin."
 ---
 
 <div id="spy-nav" class="right-menu" markdown="1">

@@ -3,29 +3,26 @@
 ## Documentation Updates
 
 ### Core Documentation
-- [x] `pages/docs/docs-future-7.md` - Updated with all Javalin 7 changes
-- [x] `pages/docs/migration-guide-6-7.md` - Migration guide created
-- [x] `_includes/macros/gettingStarted7.md` - Created Javalin 7 getting started macro
-- [x] `_config.yml` - Added `javalinSixVersion: 6.7.0` config variable
-- [ ] Rename `pages/docs/docs-future-7.md` to `pages/docs/docs.md` (and move current docs.md to docs-past-6-X.md)
-- [ ] Update `pages/docs/migration-guide-6-7.md` link references (currently points to `/migration-guide-javalin-6-to-7`)
+- [x] `pages/docs/docs-future-7.md` renamed to `pages/docs/docs.md`; old `docs.md` moved to `docs-past-6-X.md`
+- [x] `pages/docs/migration-guide-6-7.md` - Migration guide created and link references updated
+- [x] `pages/docs/docs.md` - Cleaned up intro (removed "Major Changes in Javalin 7" bullet list, added Java 17+/Jetty 12+ statement)
 
 ### Plugin Documentation
-- [ ] `pages/plugins/how-to.md` - Update route examples from `app.*` to `config.routes.*`
-- [ ] `pages/plugins/javalinvue.md` - Update to show JavalinVue as a plugin, update route examples
-- [ ] `pages/plugins/rendering.md` - Update route examples if present
-- [ ] `pages/plugins/cors.md` - Update route examples if present
-- [ ] `pages/plugins/devlogging.md` - Update route examples if present
-- [ ] `pages/plugins/graphql.md` - Update route examples if present
-- [ ] `pages/plugins/micrometer.md` - Update route examples if present
-- [ ] `pages/plugins/routeoverview.md` - Update route examples if present
-- [ ] `pages/plugins/ssl-helpers.md` - Update route examples if present
+- [x] `pages/plugins/how-to.md` - Fixed API signatures (`onStart(JavalinState)`, `ContextPlugin`, `state.routes.before(...)`)
+- [x] `pages/plugins/javalinvue.md` - Already uses `config.registerPlugin(new JavalinVuePlugin())` and `config.routes.get(...)` ✓
+- [x] `pages/plugins/rendering.md` - No old route examples present ✓
+- [x] `pages/plugins/cors.md` - No old route examples present ✓
+- [x] `pages/plugins/devlogging.md` - No old route examples present ✓
+- [x] `pages/plugins/graphql.md` - No old route examples present ✓
+- [x] `pages/plugins/micrometer.md` - No old route examples present ✓
+- [x] `pages/plugins/routeoverview.md` - No old route examples present ✓
+- [x] `pages/plugins/ssl-helpers.md` - No old route examples present ✓
 
 ### Other Pages
-- [ ] `pages/for-educators.md` - Update getting started example
-- [ ] `pages/comparison-to-spark.md` - Update route examples if present
-- [ ] `pages/index.md` - Update homepage examples if present
-- [ ] `pages/download.md` - Verify version references
+- [x] `pages/index.md` - Community stats updated (2M+ downloads, 8.2k stars, 638 forks, etc. — "As of February 2026")
+- [x] `pages/comparison-to-spark.md` - Already uses `config.routes.get(...)` ✓
+- [x] `pages/for-educators.md` - Uses `{% include macros/gettingStarted.md %}` which now points to v7 ✓
+- [x] `pages/download.md` - Uses `{{site.javalinversion}}` (resolves to 7.0.0) and `mavenDep.md` macro ✓
 
 ### Tutorial Updates
 - [x] All tutorials in `_posts/tutorials/` locked to `javalinSixVersion` (6.7.0)
@@ -34,41 +31,34 @@
 ## Configuration Updates
 
 ### Version Variables
+- [x] `_config.yml` - `javalinversion` updated to `7.0.0`
 - [x] `_config.yml` - `javalinSixVersion: 6.7.0` added
-- [ ] `_config.yml` - Update `javalinversion` to `7.0.0` (or appropriate version) when ready to release
-- [ ] Verify all version references throughout the site
 
 ### Macros and Includes
-- [x] `_includes/macros/gettingStarted7.md` - Created
-- [ ] `_includes/macros/gettingStarted.md` - Update to Javalin 7 syntax when ready
-- [ ] `_includes/macros/mavenDep.md` - Verify it works with version override
-- [ ] Review other macros in `_includes/macros/` for needed updates
+- [x] `_includes/macros/gettingStarted.md` - Updated to Javalin 7 syntax
+- [x] `_includes/macros/gettingStarted6.md` - Created for v6 archive docs
 
 ## Content Review
 
 ### Code Examples
-- [ ] Search for all `app.get(` references and verify they're either updated or intentionally left for old versions
-- [ ] Search for all `app.post(` references
-- [ ] Search for all `app.before(` references
-- [ ] Search for all `app.after(` references
-- [ ] Search for all `app.ws(` references
-- [ ] Search for all `ctx.matchedPath()` references - should be `ctx.endpoint().path()`
-- [ ] Search for all `app.events(` references - should be `config.events.*`
-- [ ] Search for all `app.unsafeConfig().pvt` references - should be `app.unsafe`
-- [ ] Search for all `config.vue` references - should be JavalinVue plugin
+- [x] `app.get(`, `app.post(`, `app.before(`, `app.after(`, `app.ws(` — only present in `docs-past-*` archives (intentional) ✓
+- [x] `ctx.matchedPath()` — only in archives and migration guide (showing old→new) ✓
+- [x] `app.events(` — only in archives and migration guide (showing old→new) ✓
+- [x] `app.unsafeConfig().pvt` — only in migration guide (showing old→new) ✓
+- [x] `config.vue` — only in archives and migration guides (intentional) ✓
 
 ### Breaking Changes Coverage
-- [ ] Routes configured upfront in `config.routes.*` - documented
-- [ ] Lifecycle events in `config.events.*` - documented
-- [ ] `ctx.matchedPath()` → `ctx.endpoint().path()` - documented
-- [ ] JavalinVue as plugin - documented
-- [ ] `app.unsafeConfig().pvt` → `app.unsafe` - documented
-- [ ] `config.router.javaLangErrorHandler` - documented
-- [ ] Jetty 12 / Jakarta servlet packages - documented
-- [ ] Java 17 requirement - documented
-- [ ] `createAndStart()` removal - documented
-- [ ] HandlerType as record - documented
-- [ ] Template rendering modules - documented
+- [x] Routes configured upfront in `config.routes.*` — docs.md prominently documents this with a callout box ✓
+- [x] Lifecycle events in `config.events.*` — docs.md has full `config.events.*` examples ✓
+- [x] `ctx.matchedPath()` → `ctx.endpoint().path()` — migration guide + docs.md uses `ctx.endpoint().path()` ✓
+- [x] JavalinVue as plugin — docs.md explicitly notes it, `javalinvue.md` uses `config.registerPlugin(...)` ✓
+- [x] `app.unsafeConfig().pvt` → `app.unsafe` — migration guide covers with before/after examples ✓
+- [x] `config.router.javaLangErrorHandler` — covered under the `app.unsafe` migration section ✓
+- [x] Jetty 12 / Jakarta servlet packages — docs.md + migration guide have dedicated sections ✓
+- [x] Java 17 requirement — docs.md intro states it ✓
+- [x] `createAndStart()` removal — migration guide has a dedicated section ✓
+- [x] HandlerType as record — migration guide "Other changes" section ✓
+- [x] Template rendering modules — docs.md references `javalin-rendering` artifact ✓
 
 ## Testing
 
@@ -85,17 +75,30 @@
 - [ ] Test on Safari
 - [ ] Test on mobile devices
 
+## Release Post
+
+- [x] `_posts/news/pre-8.0/2026-02-22-javalin-7.0.0-released.md` - Written and published
+- [x] Release post intro, Hello World + Gradle snippet, REST APIs, Static Files, WebSockets, Config, Plugins sections all updated
+- [x] Dark mode fix for date subtitle (`.release-date` CSS class)
+- [x] `_posts/blog/2025-12-27-using-augment-for-javalin-7.md` - Augment endorsement toned down
+
+## Notification Banner
+
+- [x] `_includes/notificationBanner.html` - Updated for Javalin 7 (uncommented, new content and link)
+- [x] Banner restricted to `/documentation*` and `/tutorials*` pages only
+- [x] Background changed to green (`#9fff82`)
+- [x] Close button replaced with SVG X icon
+- [x] Top-left corner clipped (`clip-path: polygon(...)`)
+
 ## Pre-Release Tasks
 
 ### Communication Preparation
-- [ ] Draft release announcement blog post for website
 - [ ] Prepare GitHub release notes with changelog
 - [ ] Draft Twitter/X announcement (with key highlights)
 - [ ] Draft Reddit post for r/java and r/programming
 - [ ] Draft Hacker News submission (title and description)
 - [ ] Prepare LinkedIn announcement
 - [ ] Draft Discord/Slack community announcements
-- [ ] Update README if needed
 - [ ] Notify key contributors and maintainers
 
 ### Final Checks
@@ -108,10 +111,9 @@
 ## Release Day
 
 ### Website Updates
-- [ ] Rename `docs-future-7.md` to `docs.md`
-- [ ] Move old `docs.md` to `docs-past-6-X.md`
-- [ ] Update `_config.yml` - set `javalinversion: 7.0.0`
-- [ ] Update `_includes/macros/gettingStarted.md` to use Javalin 7 syntax
+- [x] Rename `docs-future-7.md` to `docs.md` and move old `docs.md` to `docs-past-6-X.md`
+- [x] Update `_config.yml` - `javalinversion: 7.0.0`
+- [x] Update `_includes/macros/gettingStarted.md` to use Javalin 7 syntax
 - [ ] Commit and push all changes
 - [ ] Verify deployment
 

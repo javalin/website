@@ -2,6 +2,7 @@
 layout: default
 title: Tutorials
 permalink: /tutorials/
+description: "Javalin tutorials — step-by-step guides for REST APIs, WebSockets, testing, authentication, and more."
 ---
 
 {% include notificationBanner.html %}

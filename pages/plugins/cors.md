@@ -3,6 +3,7 @@ layout: default
 title: CORS plugin documentation
 rightmenu: true
 permalink: /plugins/cors
+description: "Configure Cross-Origin Resource Sharing (CORS) in Javalin using the built-in CORS plugin."
 ---
 
 <div id="spy-nav" class="right-menu" markdown="1">

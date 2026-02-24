@@ -3,6 +3,7 @@ layout: default
 title: Comparison to SparkJava
 rightmenu: false
 permalink: /comparisons/sparkjava
+description: "Comparison between Javalin and SparkJava. Differences in API design, features, async support, and WebSocket handling."
 ---
 
 <h1 class="no-margin-top">SparkJava and Javalin comparison</h1>
@@ -36,8 +37,8 @@ Javalin now offers a lot of features that are not available in Spark:
 Javalin has the concept of a **Handler**. A **Handler** is void and takes a **Context**, which wraps **HttpServletRequest** and **HttpServletResponse**. You operate on both the request and response through this **Context**.
 
 ```java
-javalin.get("/path", ctx -> ctx.result("Hello, World!"));
-javalin.after("/path", ctx -> ctx.result("Actually, nevermind..."));
+config.routes.get("/path", ctx -> ctx.result("Hello, World!"));
+config.routes.after("/path", ctx -> ctx.result("Actually, nevermind..."));
 ```
 
 Spark on the other hand has **Routes** and **Filters** . Both **Route** and **Filter** in Spark take
@@ -57,7 +58,7 @@ Javalin's approach leads to a much more consistent API, both for the previous an
 
 ### Redirects
 ```java
-javalin.get("/", ctx -> ctx.redirect("/new-path"));
+config.routes.get("/", ctx -> ctx.redirect("/new-path"));
 // vs
 Spark.get("/", (req, res) -> {
     res.redirect("/new-path"); // can't return here, the redirect method is void
@@ -67,7 +68,7 @@ Spark.get("/", (req, res) -> {
 
 ### JSON mapping
 ```java
-javalin.get("/", ctx -> ctx.json(object));
+config.routes.get("/", ctx -> ctx.json(object));
 // vs
 Spark.get("/", (req, res) -> object, new JsonTransformer());
 ```
@@ -75,7 +76,7 @@ Spark.get("/", (req, res) -> object, new JsonTransformer());
 ### Templates
 
 ```java
-javalin.get("/", ctx -> ctx.render("path", model));
+config.routes.get("/", ctx -> ctx.render("path", model));
 // vs
 Spark.get("/", (req, res) -> new ModelAndView(model, "path"), new TemplateEngine());
 ```

@@ -24,7 +24,7 @@ Javalin is a passion project which I maintain in my free time. I have a full-tim
 
 This fall, I started trying out various agentic pair programming tools to see if they could help me get more done, and the results have been pretty positive. Major refactorings that would have been too daunting to attempt are now feasible. Nice-to-have improvements actually get done instead of sitting on the backlog forever.
 
-I've tested three tools extensively for Javalin 7: GitHub Copilot, Google Antigravity, and Augment. After months of real-world use on complex refactoring work, my clear recommendation is Augment. It's more expensive than the alternatives, but for the kind of work I do it consistently delivers better results. This post shares some examples and advice for anyone considering using AI agents for their own projects.
+I've tested three tools extensively for Javalin 7: GitHub Copilot, Google Antigravity, and Augment. This post shares some examples and observations for anyone considering using AI agents for their own projects.
 
 ## How I work with AI agents
 
@@ -40,7 +40,7 @@ For larger tasks, I usually spawn two agents: one to write code, and one to disc
 
 ### Code quality and context understanding
 
-The code quality is genuinely good. Out of Javalin's 200+ contributors, I would say Augment is a top ten performer. It understands context deeply enough to make architectural decisions that respect the existing codebase structure and project philosophy.
+The code quality has generally been good. It understands context deeply enough to make architectural decisions that respect the existing codebase structure and project philosophy.
 
 ### Automatic project conventions
 
@@ -123,9 +123,9 @@ For me, Augment's value is strongest for:
 
 Agentic pair programming has changed how I maintain Javalin. Without it, the project would make slower progress.
 
-After extensive testing of multiple AI coding assistants, I recommend Augment for serious development work. It costs more than alternatives, but for complex refactoring, architectural changes, and maintaining large codebases, it consistently delivers better results. The [MCP integration with JetBrains IDEs](https://www.jetbrains.com/help/idea/mcp-server.html) is particularly powerful.
+For the work I do on Javalin — complex refactoring, architectural changes, large codebases — Augment has been the most effective of the three tools I tested. It costs more than the alternatives, so whether it's worth it depends on the kind of work you're doing. The [MCP integration with JetBrains IDEs](https://www.jetbrains.com/help/idea/mcp-server.html) is particularly useful.
 
-If you're doing autocomplete-style coding, stick with Copilot. If you're doing complex refactoring or maintaining a large codebase solo, Augment is worth it.
+If you're doing autocomplete-style coding, Copilot works well and costs less. If you're doing complex refactoring or maintaining a large codebase solo, Augment may be worth evaluating.
 
 Your mileage may vary, but this is what worked for me.
 

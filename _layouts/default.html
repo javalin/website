@@ -5,20 +5,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
     <meta property="og:title" content="{% if page.title %}{{ page.title }} - {% endif %}Javalin - A lightweight Java and Kotlin web framework. Create REST APIs in Java or Kotlin easily.">
     <meta property="og:site_name" content="Javalin">
-    <meta property="og:url" content="https://javalin.io">
-    <meta property="og:description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
+    <meta property="og:url" content="{{ page.url | prepend: site.baseurl | prepend: site.url }}">
+    <meta property="og:description" content="{% if page.description %}{{ page.description }}{% elsif page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
     <meta property="og:image" content="https://javalin.io/img/javalin.png">
+    <meta property="og:type" content="{% if page.layout == 'blogpost' or page.layout == 'news' or page.layout == 'tutorial' %}article{% else %}website{% endif %}">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="{% if page.title %}{{ page.title }} - {% endif %}Javalin">
+    <meta name="twitter:description" content="{% if page.description %}{{ page.description }}{% elsif page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
+    <meta name="twitter:image" content="https://javalin.io/img/javalin.png">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="google-site-verification" content="liMtSlffOZROWLqoiOZdSx-luH9_Siq5-Ot6xqHZwq8">
+    {% if page.noindex %}<meta name="robots" content="noindex">{% endif %}
     <title>
         {% if page.title %}{{ page.title }} - {% endif %}Javalin - A lightweight Java and Kotlin web framework
     </title>
-    <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
+    <meta name="description" content="{% if page.description %}{{ page.description }}{% elsif page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
     <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
     <link rel="shortcut icon" type="image/png" href="/img/favicon.png">
+    <link rel="help" type="text/plain" href="/llms.txt">
     <link rel="stylesheet" href="/css/main.css">
     <style>{% include inlineCss.css %}</style>
+    {% include jsonld.html %}
 </head>
 <body>
     <header class="top-nav-header">

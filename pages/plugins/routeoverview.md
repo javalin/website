@@ -3,6 +3,7 @@ layout: default
 title: RouteOverview documentation
 rightmenu: false
 permalink: /plugins/routeoverview
+description: "Expose a JSON/HTML overview of all registered routes in a Javalin application using the RouteOverview plugin."
 ---
 
 <h1 class="no-margin-top">RouteOverview Plugin</h1>
