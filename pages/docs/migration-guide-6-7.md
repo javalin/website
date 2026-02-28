@@ -348,6 +348,58 @@ This change affects all validation methods:
 * `ctx.pathParamAsClass()`
 * `ctx.headerAsClass()`
 
+### RateLimitUtil is now a plugin
+The `RateLimitUtil` has been converted to a bundled plugin for better modularity and consistency.
+
+In Javalin 6:
+{% capture java %}
+app.get("/api", ctx -> {
+    RateLimitUtil.requestPerTimeUnit(ctx, 100, TimeUnit.MINUTES);
+    ctx.result("OK");
+});
+{% endcapture %}
+{% capture kotlin %}
+app.get("/api") { ctx ->
+    RateLimitUtil.requestPerTimeUnit(ctx, 100, TimeUnit.MINUTES)
+    ctx.result("OK")
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+In Javalin 7:
+{% capture java %}
+var app = Javalin.create(config -> {
+    config.registerPlugin(new RateLimitPlugin());
+    config.routes.get("/api", ctx -> {
+        ctx.with(RateLimitPlugin.class).requestPerTimeUnit(100, TimeUnit.MINUTES);
+        ctx.result("OK");
+    });
+});
+{% endcapture %}
+{% capture kotlin %}
+val app = Javalin.create { config ->
+    config.registerPlugin(RateLimitPlugin())
+    config.routes.get("/api") { ctx ->
+        ctx.with(RateLimitPlugin::class).requestPerTimeUnit(100, TimeUnit.MINUTES)
+        ctx.result("OK")
+    }
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+You can also customize the key function used for rate limiting:
+{% capture java %}
+config.registerPlugin(new RateLimitPlugin(cfg -> {
+    cfg.keyFunction = ctx -> ctx.path(); // Rate limit by path only
+}));
+{% endcapture %}
+{% capture kotlin %}
+config.registerPlugin(RateLimitPlugin { cfg ->
+    cfg.keyFunction = { ctx -> ctx.path() } // Rate limit by path only
+})
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
 ### JavalinVue is now a plugin
 JavalinVue configuration has been moved to a bundled plugin for better modularity.
 
