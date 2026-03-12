@@ -7,16 +7,11 @@ title: Using AI agents to help prepare Javalin 7
 summary: How agentic pair programming transformed my workflow as a solo maintainer, and why I recommend Augment
 permalink: /blog/releasing-javalin-7
 ---
-
 <img src="/img/blog/releasing-javalin-7.png" alt="Javalin 7" style="border-radius:5px">
 
-<small markdown="1">
-**Disclosure**: As the maintainer of a major open-source project on GitHub, I receive some benefits from GitHub, including free GitHub Copilot credits. I'm also receiving free credits for Augment as part of their open-source program, and I was granted additional credits for working on Javalin 7. That said, the experiences shared in this post are based on my actual usage of these tools while working on the Javalin 7 release, but I want to be transparent about my relationship with the companies involved.
-</small>
+<small markdown="1">**Disclosure**: As the maintainer of a major open-source project on GitHub, I receive some benefits from GitHub, including free GitHub Copilot credits. I'm also receiving free credits for Augment as part of their open-source program, and I was granted additional credits for working on Javalin 7. Since writing this post, I've switched to using [Augment Intent](https://augment.dev/intent) with [Claude Code](https://claude.ai/code) as my primary development tool. I have full access to Claude Code through Anthropic's open-source maintainer program. The experiences shared in this post are based on my actual usage of these tools, but I want to be transparent about my relationships with the companies involved.</small>
 
-<small markdown="1">
-**Note**: This post was written in December 2025. AI coding tools are evolving rapidly, and the landscape may look very different by the time you read this. The specific comparisons and recommendations here reflect the state of these tools at the time of writing and will likely become outdated.
-</small>
+<small markdown="1">**Note**: This post was originally written in December 2025, with an update added in March 2026. AI coding tools are evolving rapidly, and the landscape may look very different by the time you read this. The specific comparisons and recommendations here reflect the state of these tools at the time of writing and will likely become outdated.</small>
 
 ## Introduction
 
@@ -113,22 +108,35 @@ I tried both Google Antigravity and Copilot for [splitting JavalinConfig into Ja
 To be clear, Augment isn't always the right choice. If you're doing autocomplete-style coding (writing new features from scratch, implementing well-defined algorithms, or making small isolated changes), Copilot works well and costs much less.
 
 For me, Augment's value is strongest for:
+
 - Tedious bulk updates across many files (dependency upgrades with API migrations)
 - Exploratory refactoring where you want to try something without committing hours
 - Peripheral complexity (build tooling, CI/CD, infrastructure)
 - Documentation and migration guides
 - Long-backlogged features that are easy but time-consuming
 
+## Update: Switching to Intent + Claude Code
+
+Since writing this post, I've moved to [Augment Intent](https://augment.dev/intent) with [Claude Code](https://docs.anthropic.com/en/docs/claude-code) as my main development tool. The reasons I preferred Augment, deep context understanding, automatic conventions, stepwise verification, are all still there, but the workflow around them is fundamentally better.
+
+Intent is a macOS app that orchestrates AI coding agents. It's not really an IDE and it's not a chatbot plugin for one either. It's a coordination layer: you get code, browser, terminal, and git in one window, and AI agents work alongside you in that workspace. You mainly interact with 1 agent (an "Orchestrator"), and this agent is responsible for delegating work to other more specialized agents.
+
+### How I get access
+
+I get full Claude Code access through Anthropic's open-source maintainer program, they provide free plans to OSS maintainers, similar to how GitHub provides free Copilot. Intent works with your existing Claude Code setup (bring your own agent), so there's no additional agent licensing on top. For open-source work, this makes the whole setup effectively free.
+
+### Why the switch felt natural
+
+Looking back at what I wrote about my workflow, small tasks, immediate review, spawning a second agent for code review, stepwise verification, I was already doing manually what Intent automates. The Coordinator + Specialist + Verifier pattern is pretty much a formalized version of my existing process.
+
 ## Conclusion
 
 Agentic pair programming has changed how I maintain Javalin. Without it, the project would make slower progress.
 
-For the work I do on Javalin — complex refactoring, architectural changes, large codebases — Augment has been the most effective of the three tools I tested. It costs more than the alternatives, so whether it's worth it depends on the kind of work you're doing. The [MCP integration with JetBrains IDEs](https://www.jetbrains.com/help/idea/mcp-server.html) is particularly useful.
+For the work I did on the Javalin 7 release, Augment was the most effective of the three tools I tested. Since then, I've switched to Intent + Claude Code, which takes the same strengths, deep context, automatic conventions, stepwise verification, and adds proper multi-agent orchestration and spec-driven development on top. For solo maintainers juggling a project alongside other responsibilities, having agents that can work in parallel and coordinate automatically is very nice.
 
-If you're doing autocomplete-style coding, Copilot works well and costs less. If you're doing complex refactoring or maintaining a large codebase solo, Augment may be worth evaluating.
+If you're doing autocomplete-style coding, Copilot still works well and costs less. If you're doing complex refactoring or maintaining a large codebase solo, the agentic approach, whether through Augment, Intent, or whatever comes next, is worth evaluating.
 
 Your mileage may vary, but this is what worked for me.
-
----
 
 {% include giscus.html discussion="302" %}
