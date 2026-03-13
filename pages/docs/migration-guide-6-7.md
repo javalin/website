@@ -510,7 +510,7 @@ Available modules:
 
 Your code doesn't need to change - the template renderer classes (`JavalinVelocity`, `JavalinFreemarker`, etc.) remain in the same package and work the same way.
 
-JTE `defaultTemplateEngine` now loads templates from the classpath by default, in line with the other rendering modules. To keep the Javalin 6.x behavior of loading templates from the `src/main/jte` directory, use `JavalinJte.directoryTemplateEngine()` when configuring `JavalinJte`. This option is available starting with Javalin 7.0.2.
+jte `defaultTemplateEngine` now loads templates from the classpath by default, in line with the other rendering modules. To keep the Javalin 6.x behavior of loading templates from the `src/main/jte` directory, use `JavalinJte.directoryTemplateEngine()` when configuring `JavalinJte`. This option is available starting with Javalin 7.1.0.
 
 Pebble was updated from version 3.1.6 to 4.1.0. Depending on your application, you might need to:
 * Provide custom Loader. See [https://github.com/PebbleTemplates/pebble/releases/tag/4.1.0](https://github.com/PebbleTemplates/pebble/releases/tag/4.1.0)
