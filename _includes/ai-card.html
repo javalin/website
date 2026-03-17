@@ -1,0 +1,8 @@
+<div class="jv-card ai-card" data-tool="{{ include.id }}">
+    <h2 class="jv-card-title">{{ include.title }}</h2>
+    <div class="ai-code-wrapper">
+        <pre><code id="ai-content-{{ include.id }}">{{ include.content }}</code></pre>
+        <button class="ai-copy-btn" onclick="copyInstructions('{{ include.id }}')">Copy</button>
+    </div>
+    <p class="ai-card-setup">{{ include.setup }}</p>
+</div>

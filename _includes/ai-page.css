@@ -1,0 +1,74 @@
+/* AI Instructions Page */
+.ai-intro {
+    margin-bottom: 8px;
+    line-height: 1.7;
+    font-size: 15px;
+}
+
+.ai-card {
+    padding: 24px;
+}
+
+.ai-card:hover {
+    transform: none;
+}
+
+.ai-card h2 {
+    margin: 0 0 16px 0;
+}
+
+/* Code block: just add max-height for scrolling */
+.ai-code-wrapper {
+    position: relative;
+}
+
+.ai-card pre {
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+.ai-card pre::-webkit-scrollbar-corner {
+    background: #333;
+}
+
+body.dark-mode .ai-card pre::-webkit-scrollbar-corner {
+    background: var(--jv-color-bg-main);
+}
+
+/* Copy button in top-right corner of code block */
+.ai-copy-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 2px 8px;
+    background: transparent;
+    border: 1px solid var(--jv-color-code-toolbar-border);
+    border-top: 0;
+    border-right: 0;
+    border-radius: 0 0 0 5px;
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.ai-copy-btn:hover {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.ai-copy-btn.copied {
+    color: #4ade80;
+}
+
+/* Setup info */
+.ai-card-setup {
+    margin-top: 12px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--jv-color-text-light);
+}
+
+.ai-card-setup code {
+    font-size: 13px;
+}

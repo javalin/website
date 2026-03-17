@@ -77,6 +77,8 @@ See the [migration guide](/migration-guide-javalin-6-to-7) for details on upgrad
 
 {% include sponsorOrStar.html %}
 
+Using AI tools? Check out the [AI instructions](/ai) for Claude Code, Cursor, Copilot, and more.
+
 ## Getting Started
 
 Add the dependency:
