@@ -58,7 +58,7 @@ src
 │   │       └── javalin
 │   │           └── omeglin
 │   │               ├── OmeglinMain.kt/java // main class
-│   │               └── Matchmaker.kt/java  // matchmaking logic
+│   │               └── Matchmakaking.kt/java  // matchmaking logic
 └── resources
     └── public
         ├── index.html                      // html for the frontend
