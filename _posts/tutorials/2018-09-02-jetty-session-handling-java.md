@@ -12,7 +12,7 @@ language: ["java", "kotlin"]
 ---
 
 ## What you will learn
-In this tutorial we'll have at look at Sessions. We'll learn about what they're used for,
+In this tutorial we'll have a look at Sessions. We'll learn about what they're used for,
 as well as different ways of persisting, caching and clustering sessions using Jetty.
 
 ## What is a session?
