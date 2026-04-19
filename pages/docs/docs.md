@@ -92,6 +92,15 @@ Start coding:
 You can no longer add routes after calling `.start()`. See the [migration guide](/migration-guide-javalin-6-to-7) for details.
 </div>
 
+## Modules
+Javalin core is a single `javalin` artifact, with optional satellite modules you add only when you need them.
+For example, `javalin-bundle` packages the core with Jackson, Logback, and test tools; the per-engine
+`javalin-rendering-*` artifacts add template rendering; `javalin-micrometer` adds metrics;
+and `javalin-ssl` provides simplified SSL/TLS setup.
+Every satellite module tracks the same version as `javalin` itself, and you can use the `javalin-bom` module
+to pin one version and have every `io.javalin:*` dependency resolve to it automatically.
+See the full module list at [/download#javalin-modules](/download#javalin-modules).
+
 ## Handlers
 Javalin has three main handler types: before-handlers, endpoint-handlers, and after-handlers.
 (There are also exception-handlers and error-handlers, but we'll get to them later).

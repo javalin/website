@@ -10,6 +10,7 @@ description: "Expose Micrometer metrics from a Javalin application using the Mic
 - [Getting Started](#getting-started)
 - [Provided Metrics](#provided-metrics)
 - [Custom Meters](#custom-meters)
+- [WebSocket Exception Tagging](#websocket-exception-tagging)
 </div>
 
 <h1 class="no-margin-top">Micrometer Plugin</h1>
@@ -103,3 +104,47 @@ Gauge
   .strongReference(true)
   .register(registry);
 ```
+
+## WebSocket Exception Tagging
+
+To tag exceptions thrown from WebSocket handlers in your Micrometer metrics, delegate to
+the static `wsExceptionHandler` from your own `wsException` handler. The plugin exposes
+it as a companion-object field, and its signature in the source is:
+
+```kotlin
+@JvmField
+val wsExceptionHandler = WsExceptionHandler<Exception> { e, ctx ->
+    val simpleName = e.javaClass.simpleName
+    ctx.attribute(EXCEPTION_HEADER, simpleName.ifBlank { e.javaClass.name })
+}
+```
+
+When invoked, it stores the exception's simple class name (falling back to the fully
+qualified name if the simple name is blank) on the `WsContext` as the
+`__micrometer_exception_name` attribute. By default — i.e. if you never delegate to
+this handler — WebSocket exceptions are not tagged in metrics.
+
+{% capture java %}
+Javalin.create(config -> {
+    config.registerPlugin(new MicrometerPlugin(plugin -> plugin.registry = registry));
+    // Delegate WebSocket exceptions to the Micrometer handler for tagging
+    config.routes.wsException(Exception.class, (e, ctx) -> {
+        MicrometerPlugin.wsExceptionHandler.handle(e, ctx);
+        ctx.closeSession(WsCloseStatus.SERVER_ERROR, e.getMessage());
+    });
+});
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { config ->
+    config.registerPlugin(MicrometerPlugin { it.registry = registry })
+    // Delegate WebSocket exceptions to the Micrometer handler for tagging
+    config.routes.wsException(Exception::class.java) { e, ctx ->
+        MicrometerPlugin.wsExceptionHandler.handle(e, ctx)
+        ctx.closeSession(WsCloseStatus.SERVER_ERROR, e.message)
+    }
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+Registering a `wsException` handler suppresses Javalin's default behavior of closing the
+socket on uncaught exceptions, so close the session yourself as shown above.

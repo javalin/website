@@ -91,10 +91,28 @@ Javalin.create(config -> {
 {% endcapture %}
 {% capture kotlin %}
 Javalin.create { config ->
-    config.fileRenderer((JavalinVelocity(myVelocityEngine)
+    config.fileRenderer(JavalinVelocity(myVelocityEngine))
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
 The configuration classes are not from Javalin, but from the template engine you are using,
 so please consult the documentation for that particular template engine to learn how to use them.
+
+### JTE: hot-reload from a directory
+By default, `JavalinJte` resolves templates from the classpath, which is what you want for production builds.
+For development, `JavalinJte.directoryTemplateEngine(path)` builds a `TemplateEngine` that loads templates directly
+from a filesystem directory so edits are picked up without a rebuild (this matches the Javalin 6.x default behavior).
+The `path` argument is optional and defaults to `src/main/jte`:
+
+{% capture java %}
+Javalin.create(config -> {
+    config.fileRenderer(new JavalinJte(JavalinJte.directoryTemplateEngine()));
+});
+{% endcapture %}
+{% capture kotlin %}
+Javalin.create { config ->
+    config.fileRenderer(JavalinJte(JavalinJte.directoryTemplateEngine()))
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
