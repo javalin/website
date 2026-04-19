@@ -802,6 +802,42 @@ config.routes.apiBuilder {
 Note that `path()` prefixes your paths with `/` (if you don't add it yourself).\\
 This means that `path("api", ...)` and `path("/api", ...)` are equivalent.
 
+### Scoping roles with path()
+You can attach `RouteRole`s to every endpoint inside a `path()` block by passing a `Collection<RouteRole>`
+as the second argument. Roles applied at an outer `path(...)` are inherited by nested `path(...)` blocks,
+and any roles supplied at a nested level are merged (and deduplicated) with the inherited ones. This applies
+to HTTP handlers as well as `ws(...)` and `sse(...)`.
+
+{% capture java %}
+config.routes.apiBuilder(() -> {
+    path("/users", List.of(Role.LOGGED_IN), () -> {
+        get(UserController::getAllUsers);                         // requires LOGGED_IN
+        post(UserController::createUser);                         // requires LOGGED_IN
+        path("/{id}", List.of(Role.ADMIN), () -> {
+            get(UserController::getUser);                         // requires LOGGED_IN + ADMIN
+            patch(UserController::updateUser);                    // requires LOGGED_IN + ADMIN
+            delete(UserController::deleteUser);                   // requires LOGGED_IN + ADMIN
+        });
+        ws("/events", UserController::webSocketEvents);           // requires LOGGED_IN
+    });
+});
+{% endcapture %}
+{% capture kotlin %}
+config.routes.apiBuilder {
+    path("/users", listOf(Role.LOGGED_IN)) {
+        get(UserController::getAllUsers)                          // requires LOGGED_IN
+        post(UserController::createUser)                          // requires LOGGED_IN
+        path("/{id}", listOf(Role.ADMIN)) {
+            get(UserController::getUser)                          // requires LOGGED_IN + ADMIN
+            patch(UserController::updateUser)                     // requires LOGGED_IN + ADMIN
+            delete(UserController::deleteUser)                    // requires LOGGED_IN + ADMIN
+        }
+        ws("/events", UserController::webSocketEvents)            // requires LOGGED_IN
+    }
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
 ### CrudHandler
 The `CrudHandler` is an interface that can be used within an `apiBuilder()` call:
 
@@ -1005,6 +1041,8 @@ config.routes.beforeMatched { ctx ->
 }
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+If you're using `apiBuilder`, you can also [scope roles to a `path()` block](#scoping-roles-with-path) to apply them to every endpoint inside.
 
 The roles are set when you declare your endpoints:
 
@@ -1242,6 +1280,8 @@ config.routes.sse("/sse") { client ->
 sendEvent("myMessage")                      // calls emit("message", "myMessage", noId)
 sendEvent("eventName", "myMessage")         // calls emit("eventName", "myMessage", noId)
 sendEvent("eventName", "myMessage", "id")   // calls emit("eventName", "myMessage", "id")
+sendData("myMessage")                       // calls emit("myMessage", noId) — no event name
+sendData("myMessage", "id")                 // calls emit("myMessage", "id")  — no event name
 sendComment("myComment")                    // calls emit("myComment")
 onClose(runnable)                           // callback which runs when a client closes its connection
 keepAlive()                                 // keeps the connection alive. useful if you want to keep a list of clients to broadcast to.
@@ -1249,6 +1289,10 @@ close()                                     // closes the connection
 terminated()                                // returns true if the connection has been closed
 ctx()                                       // the Context from when the client connected (to fetch query-params, etc)
 ```
+
+`sendData` emits an SSE message without an `event:` field, so browsers fire the generic `message` event for it
+(rather than a named event like with `sendEvent`). Data is serialized the same way as `sendEvent` —
+an `InputStream` is passed through as-is, anything else is serialized via the configured JSON mapper.
 
 ## Configuration
 You can pass a config object when creating a new instance of Javalin.
