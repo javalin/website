@@ -1,0 +1,30 @@
+<div class="basic-info-table" markdown="1">
+{{ include.content }}
+</div>
+<style>
+    .basic-info-table table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 16px 0;
+    }
+
+    .basic-info-table th,
+    .basic-info-table td {
+        padding: 10px 12px;
+        text-align: left;
+        vertical-align: top;
+        border: 1px solid var(--jv-color-border);
+    }
+
+    .basic-info-table th {
+        font-weight: 700;
+        font-family: var(--jv-font-heading);
+        background: var(--jv-color-bg-light);
+    }
+
+    .basic-info-table td:first-child,
+    .basic-info-table th:first-child {
+        white-space: normal;
+        word-break: break-word;
+    }
+</style>

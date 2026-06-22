@@ -229,11 +229,14 @@ Before reaching for JmDNS, consider whether an OS-level mDNS daemon (like
 [Avahi](https://avahi.org/) on Linux) would be a better fit. Since mDNS is directly tied to the
 underlying host and network stack, running it at the OS level is often simpler and more robust:
 
+{% capture mdnsTable %}
 | Scenario | Recommendation |
 |----------|---------------|
 | **Linux server you control** | Use **Avahi** — simpler, more efficient, and keeps service discovery separate from application logic. |
 | **Portable Java application** | Use **JmDNS** — works when you can't assume Avahi is installed, and behaves consistently across operating systems. |
 | **Containers** | Prefer **host-level mDNS** — run Avahi on the host and advertise the container's exposed port. JmDNS inside a container may advertise container-internal IPs instead of LAN IPs, and mDNS often behaves poorly on Docker bridge networks. Only use JmDNS inside a container if you're using host networking and want the application to manage discovery itself. |
+{% endcapture %}
+{% include macros/basicInfoTable.html content=mdnsTable %}
 
 The JmDNS approach shown in this tutorial is the right choice when you need a self-contained,
 cross-platform solution with no external dependencies. For a dedicated Linux server or a
