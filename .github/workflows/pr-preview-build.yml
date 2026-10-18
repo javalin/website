@@ -1,0 +1,61 @@
+# Builds the PR's site with no secrets and a read-only token, so it's safe to run
+# code from forks. The trusted half (surge deploy + PR comment) lives in
+# pr-preview-deploy.yml, which picks up the artifacts uploaded here.
+name: PR Preview Build
+run-name: Build preview of pr ${{ github.event.pull_request.number }} by ${{ github.event.pull_request.user.login }}
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      # Uploaded before any PR code runs, so the PR's code can't tamper with it.
+      # The deploy workflow still verifies it against the run's head SHA.
+      - name: Save PR number
+        run: echo "$PR_NUMBER" > pr-number
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+
+      - name: Upload PR number
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-number
+          path: pr-number
+
+      - name: Checkout the PR
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Setup Ruby and Gems
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3.4
+          bundler-cache: true
+
+      - name: Update contributor list
+        working-directory: _data
+        run: node update-contributors.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build jekyll site
+        run: bundle exec jekyll build
+
+      - name: Upload site
+        uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: _site
+          retention-days: 7
