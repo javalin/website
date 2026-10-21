@@ -12,11 +12,10 @@ rightmenu: true
 github: https://github.com/PVRLabs/experiments/tree/main/statlite/javalin-micrometer
 ---
 
-This tutorial adds request counts, HTTP errors, average latency, JVM heap, and
-process CPU history to a Javalin application. Javalin's Micrometer plugin records
-the metrics; a small JSON adapter exposes them to
-[StatLite](https://github.com/PVRLabs/statlite), which stores history in SQLite
-and serves a dashboard.
+This tutorial shows how to monitor a Javalin application with
+[StatLite](https://github.com/PVRLabs/statlite), an open-source monitoring tool
+I developed. It covers request counts, HTTP errors, average latency, JVM heap,
+and process CPU history.
 
 The flow is **Javalin → Micrometer → JSON adapter → StatLite**.
 
@@ -95,13 +94,48 @@ Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 }));
 ```
 
-The [maintained integration guide](https://github.com/PVRLabs/statlite/blob/main/docs/integrate/java/javalin.md)
-provides `StatLiteMetrics.java`; the runnable example already includes it.
-For your own application, copy that helper and adjust its package. It sums
-Micrometer's HTTP timers into cumulative request, error, and duration counters,
-adds available heap and CPU gauges, and emits `statlite-metrics/v1` JSON at
-`/statlite/metrics`. It excludes that route from application counters so
-monitoring does not create traffic in the dashboard.
+The core of `StatLiteMetrics.snapshot` sums Micrometer's HTTP timers into
+cumulative request, error, and duration counters:
+
+```java
+// Inside snapshot; Timer is io.micrometer.core.instrument.Timer.
+// The helper defines EXCLUDED_URIS = Set.of(PATH).
+double requests = 0, notFound = 0, clientErrors = 0, serverErrors = 0, seconds = 0;
+for (Timer timer : registry.find("http.server.requests").timers()) {
+    String uri = timer.getId().getTag("uri");
+    if (uri != null && EXCLUDED_URIS.contains(uri)) {
+        continue;
+    }
+    long count = timer.count();
+    requests += count;
+    seconds += timer.totalTime(java.util.concurrent.TimeUnit.SECONDS);
+    String code = timer.getId().getTag("status");
+    if ("404".equals(code)) {
+        notFound += count;
+    }
+    if (code != null && code.startsWith("4")) {
+        clientErrors += count;
+    }
+    if (code != null && code.startsWith("5")) {
+        serverErrors += count;
+    }
+}
+
+Map<String, Object> metrics = new LinkedHashMap<>();
+metrics.put("requests_total", requests);
+metrics.put("responses_404_total", notFound);
+metrics.put("responses_4xx_total", clientErrors);
+metrics.put("responses_5xx_total", serverErrors);
+metrics.put("request_duration_seconds_total", seconds);
+```
+
+These totals are cumulative; StatLite derives changes between polls rather
+than resetting the timers.
+
+The [full helper](https://github.com/PVRLabs/statlite/blob/main/docs/integrate/java/javalin.md)
+also adds heap and CPU gauges and wraps the metrics in `statlite-metrics/v1`
+JSON with application status and JVM start time. The runnable example includes
+it; for your own application, copy the helper and adjust its package.
 
 Reuse an existing cumulative registry and JVM meters when available. A step
 registry reports interval values and does not suit these cumulative counters.
@@ -131,9 +165,8 @@ curl -i http://127.0.0.1:18087/statlite/metrics
 Expect HTTP 200 and JSON containing `schema: statlite-metrics/v1`, `status`,
 `started_at`, and a `metrics` object. The HTTP counters start at zero.
 
-For normal monitoring, use a polling interval of **30 seconds or longer**.
-Save this as `statlite.yaml` in the example directory, replacing the example's
-fast demo configuration. It tells StatLite where to poll and store history:
+The example's `statlite.yaml` tells StatLite where to poll and store history.
+Use a polling interval of **30 seconds or longer**:
 
 ```yaml
 server:
@@ -148,24 +181,15 @@ targets:
     url: http://127.0.0.1:18087/statlite/metrics
 ```
 
-For this short demo, create `statlite-demo.yaml` with ten-second polling so the
-traffic probe can verify collection within its 15-second wait.
-
 From the same example directory in the second terminal:
 
 ```sh
 mkdir -p runtime
-sed 's/interval: "30s"/interval: "10s"/' statlite.yaml > statlite-demo.yaml
-statlite --config statlite-demo.yaml
+statlite --config statlite.yaml
 ```
 
 Open <http://127.0.0.1:19087/>. StatLite polls the adapter and serves the
 dashboard without additional dashboard configuration.
-
-> **Note:**
-> Use **30s or longer for production**. Keep `statlite-demo.yaml` strictly for
-> local demos; use `statlite.yaml` for normal monitoring. Shorter intervals
-> increase polling work and stored samples.
 
 ## Generate traffic and view history
 
@@ -178,14 +202,14 @@ python3 probe.py
 Each run sends 48 requests: 12 each to `/hello` (200), `/slow` (200 with a
 120 ms delay), `/missing` (404), and `/error` (500). The probe checks counter
 increases, verifies that metrics polls don't count as application traffic, and
-confirms collection in StatLite. Avoid other application traffic while it runs because its counter
-checks expect exact increases.
+waits for the expected metrics to appear in StatLite, allowing up to 90 seconds
+each for initial collection and collection after traffic. Avoid other application
+traffic while it runs because its counter checks expect exact increases.
 
-Each run generates roughly five seconds of traffic, then waits for StatLite to
-collect the results. Run it several times to build history; the screenshot below
-follows six consecutive runs with fresh StatLite storage.
+Run it several times to build history. The screenshot below shows six
+consecutive runs with fresh StatLite storage.
 
-![StatLite dashboard for the Javalin demo, showing request and error counts, average latency, JVM heap and process CPU.](/img/posts/statliteTutorial/dashboard.png)
+![StatLite dashboard for the Javalin demo, showing request and error counts, average latency, JVM heap and process CPU.](/img/posts/statliteTutorial/dashboard.webp)
 
 The request and error charts show changes between collected samples. Across
 the six runs, the app handled 288 requests, including 72 404 responses and 72
@@ -205,8 +229,6 @@ database-health reporting or a native Javalin integration, see the
 
 Stop the app and StatLite with Ctrl-C in their respective terminals when finished.
 History remains in `runtime/statlite.sqlite`.
-For normal monitoring, start StatLite with `statlite --config statlite.yaml`;
-that file retains the recommended 30-second interval.
 
 ## Apply it to your application
 
