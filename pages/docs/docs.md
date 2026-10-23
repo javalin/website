@@ -1051,6 +1051,25 @@ config.routes.beforeMatched { ctx ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
+`beforeMatched` does not run for WebSocket upgrade requests. To check the roles of a WebSocket endpoint, do it in
+[`wsBeforeUpgrade`](#wsbeforeupgrade), where `ctx.routeRoles()` returns the roles of the matched endpoint:
+
+{% capture java %}
+config.routes.wsBeforeUpgrade(ctx -> {
+    if (!ctx.routeRoles().contains(getUserRole(ctx))) {
+        throw new UnauthorizedResponse();
+    }
+});
+{% endcapture %}
+{% capture kotlin %}
+config.routes.wsBeforeUpgrade { ctx ->
+    if (!ctx.routeRoles().contains(getUserRole(ctx))) {
+        throw UnauthorizedResponse()
+    }
+}
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
 If you're using `apiBuilder`, you can also [scope roles to a `path()` block](#scoping-roles-with-path) to apply them to every endpoint inside.
 
 The roles are set when you declare your endpoints:
