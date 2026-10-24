@@ -1994,6 +1994,8 @@ config.routes.post("/upload") { ctx ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
+In Javalin 7.2.3 and earlier, `uploadedFile.filename()` returns the file name exactly as the client sent it, which can include directory components such as `../`. Later versions return only the file name.
+
 The corresponding HTML might look something like this:
 ```markup
 <form method="post" action="/upload" enctype="multipart/form-data">
