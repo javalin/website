@@ -134,7 +134,6 @@ securePort = 443;                      // Port to use on the SSL (secure) connec
 redirect = false;                      // Redirect all http requests to https.
 
 sniHostCheck = true;                   // Enable SNI hostname verification.
-useSniKeyManager = false;              // Select the certificate from the keystore by SNI host name.
 tlsConfig = TLSConfig.INTERMEDIATE;    // Set the TLS configuration.
 
 ```
@@ -170,6 +169,11 @@ keystoreFromPath("/path/to/keystore.jks", "keystorePassword");          // load 
 keystoreFromClasspath("keyStoreName.p12", "keystorePassword");          // load the keystore from the given path in the classpath.
 keystoreFromInputStream(keystoreInputStream, "keystorePassword");       // load the keystore from the given input stream.
 ```
+Custom key manager:
+
+```java
+keyManager(x509ExtendedKeyManager);                                     // load the identity from a custom key manager, see "Serving multiple certificates (SNI)".
+```
 
 Each of these methods are mutually exclusive, so only one of them can be used at a time.
 
@@ -187,25 +191,35 @@ withTrustConfig(Consumer<TrustConfig>);        // Set the trust configuration, e
 
 #### Serving multiple certificates (SNI)
 
-A single keystore can hold several certificates, for example one per hostname. By default, the plugin always serves
-the same certificate from the keystore, regardless of the hostname requested by the client.
+The keystore and PEM loading methods load a single identity, so a keystore holding several certificates always serves
+the same one, regardless of the hostname requested by the client.
 
-To select the certificate based on the SNI hostname sent by the client, enable the `useSniKeyManager` option.
-The plugin then serves the certificate whose names (Subject Alternative Names or Common Name, wildcards included)
-match the requested hostname, following the same rules as Jetty:
+To select the certificate based on the SNI hostname sent by the client, build a key manager with
+[ayza](https://github.com/Hakky54/ayza) (already a dependency of the plugin), with one identity per certificate
+and an identity route per hostname, and load it with `keyManager`:
 
 ```java
+// One keystore per certificate. With PEM files, use
+// KeyStoreUtils.createIdentityStore(PemUtils.loadPrivateKey(keyPath), password, "alpha", PemUtils.loadCertificate(certPath))
+X509ExtendedKeyManager keyManager = KeyManagerUtils.combine(
+    KeyManagerUtils.createKeyManager(KeyStoreUtils.loadKeyStore(Path.of("alpha.p12"), password), password),
+    KeyManagerUtils.createKeyManager(KeyStoreUtils.loadKeyStore(Path.of("beta.p12"), password), password)
+);
+// Route each alias to its hostname(s), the port is required
+KeyManagerUtils.addIdentityRoute(keyManager, "alpha", "https://alpha.example.com:443");
+KeyManagerUtils.addIdentityRoute(keyManager, "beta", "https://beta.example.com:443");
+
 new SslPlugin(ssl->{
-    ssl.keystoreFromPath("/path/to/keystore.p12", "keystorePassword"); // contains certificates for a.example.com and b.example.com
-    ssl.useSniKeyManager = true;
+    ssl.keyManager(keyManager);
 });
 ```
 
 Good to know:
- - Exact matches are preferred over wildcard matches, and certificates with different key types (e.g. RSA and EC) can be mixed.
- - If the client doesn't send a SNI hostname, or no certificate matches it, the same certificate as without this option is served.
- - The option only applies to identities loaded from a keystore, PEM loading methods always provide a single certificate.
- - When [hot reloading](#hot-reloading) the keystore, set `useSniKeyManager` again in the reload configuration.
+ - Each certificate must be its own identity: a keystore with several aliases has to be split into one keystore per alias.
+ - Certificates with different key types (e.g. RSA and EC) can be mixed.
+ - If the client doesn't send a SNI hostname, or no route matches it, one of the certificates is served.
+ - Wildcard hostnames (`*.example.com`) can't be routed, and hostnames are matched by substring: avoid routing both a domain and one of its subdomains (e.g. `example.com` and `api.example.com`).
+ - When [hot reloading](#hot-reloading), pass a new key manager with `keyManager` in the reload configuration.
 
 #### Trust Configuration
 
