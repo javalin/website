@@ -169,6 +169,11 @@ keystoreFromPath("/path/to/keystore.jks", "keystorePassword");          // load 
 keystoreFromClasspath("keyStoreName.p12", "keystorePassword");          // load the keystore from the given path in the classpath.
 keystoreFromInputStream(keystoreInputStream, "keystorePassword");       // load the keystore from the given input stream.
 ```
+Custom key manager:
+
+```java
+keyManager(x509ExtendedKeyManager);                                     // load the identity from a custom key manager, see "Serving multiple certificates (SNI)".
+```
 
 Each of these methods are mutually exclusive, so only one of them can be used at a time.
 
@@ -183,6 +188,38 @@ configConnectors(Consumer<ServerConnector>);   // Set a Consumer to configure th
 securityProvider = null;                       // Use a custom security provider
 withTrustConfig(Consumer<TrustConfig>);        // Set the trust configuration, explained below. (by default all clients are trusted)
 ```
+
+#### Serving multiple certificates (SNI)
+
+The keystore and PEM loading methods load a single identity, so a keystore holding several certificates always serves
+the same one, regardless of the hostname requested by the client.
+
+To select the certificate based on the SNI hostname sent by the client, build a key manager with
+[ayza](https://github.com/Hakky54/ayza) (already a dependency of the plugin), with one identity per certificate
+and an identity route per hostname, and load it with `keyManager`:
+
+```java
+// One keystore per certificate. With PEM files, use
+// KeyStoreUtils.createIdentityStore(PemUtils.loadPrivateKey(keyPath), password, "alpha", PemUtils.loadCertificate(certPath))
+X509ExtendedKeyManager keyManager = KeyManagerUtils.combine(
+    KeyManagerUtils.createKeyManager(KeyStoreUtils.loadKeyStore(Path.of("alpha.p12"), password), password),
+    KeyManagerUtils.createKeyManager(KeyStoreUtils.loadKeyStore(Path.of("beta.p12"), password), password)
+);
+// Route each alias to its hostname(s), the port is required
+KeyManagerUtils.addIdentityRoute(keyManager, "alpha", "https://alpha.example.com:443");
+KeyManagerUtils.addIdentityRoute(keyManager, "beta", "https://beta.example.com:443");
+
+new SslPlugin(ssl->{
+    ssl.keyManager(keyManager);
+});
+```
+
+Good to know:
+ - Each certificate must be its own identity: a keystore with several aliases has to be split into one keystore per alias.
+ - Certificates with different key types (e.g. RSA and EC) can be mixed.
+ - If the client doesn't send a SNI hostname, or no route matches it, one of the certificates is served.
+ - Wildcard hostnames (`*.example.com`) can't be routed, and hostnames are matched by substring: avoid routing both a domain and one of its subdomains (e.g. `example.com` and `api.example.com`).
+ - When [hot reloading](#hot-reloading), pass a new key manager with `keyManager` in the reload configuration.
 
 #### Trust Configuration
 
@@ -252,5 +289,7 @@ sslPlugin.reload(ssl->{
  - HTTP/3 is not supported yet, but it is planned to be added in the future. The IETF is still working on the final specification, so it is not prudent to implement it yet.
 
  - Jetty 11 ships with SNI verification enabled by default, if hostname spoofing is a not concern, you can disable it by setting the `sniHostCheck` option to `false`. This option is enabled by default for security reasons, but it can be disabled if you are using a reverse proxy that handles the hostname verification. Jetty might respond with an `HTTP ERROR 400 Invalid SNI` if the hostname verification fails.
+
+ - `sniHostCheck` only verifies that the `Host` header of a request matches the served certificate, it doesn't choose which certificate is served. To serve multiple certificates by SNI, see [Serving multiple certificates (SNI)](#serving-multiple-certificates-sni). The `jetty.sslContext.sniRequired` property belongs to the Jetty distribution's configuration files and isn't read by embedded Jetty, so it has no effect in Javalin.
 
 - mTLS (Mutual TLS) is supported, just add a `TrustConfig` to the `SslPlugin` to enable client certificate verification. See the [Advanced Configuration](#advanced-configuration) section for more information.
