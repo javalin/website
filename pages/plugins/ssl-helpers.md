@@ -134,7 +134,7 @@ securePort = 443;                      // Port to use on the SSL (secure) connec
 redirect = false;                      // Redirect all http requests to https.
 
 sniHostCheck = true;                   // Enable SNI hostname verification.
-usePkixKeyManager = false;             // Select the certificate from the keystore by SNI host name.
+useSniKeyManager = false;              // Select the certificate from the keystore by SNI host name.
 tlsConfig = TLSConfig.INTERMEDIATE;    // Set the TLS configuration.
 
 ```
@@ -190,22 +190,22 @@ withTrustConfig(Consumer<TrustConfig>);        // Set the trust configuration, e
 A single keystore can hold several certificates, for example one per hostname. By default, the plugin always serves
 the same certificate from the keystore, regardless of the hostname requested by the client.
 
-To select the certificate based on the SNI hostname sent by the client, enable the `usePkixKeyManager` option.
-The keystore is then loaded with the JDK `PKIX` key manager, which serves the certificate whose Subject Alternative Names
-match the requested hostname:
+To select the certificate based on the SNI hostname sent by the client, enable the `useSniKeyManager` option.
+The plugin then serves the certificate whose names (Subject Alternative Names or Common Name, wildcards included)
+match the requested hostname, following the same rules as Jetty:
 
 ```java
 new SslPlugin(ssl->{
     ssl.keystoreFromPath("/path/to/keystore.p12", "keystorePassword"); // contains certificates for a.example.com and b.example.com
-    ssl.usePkixKeyManager = true;
+    ssl.useSniKeyManager = true;
 });
 ```
 
 Good to know:
+ - Exact matches are preferred over wildcard matches, and certificates with different key types (e.g. RSA and EC) can be mixed.
+ - If the client doesn't send a SNI hostname, or no certificate matches it, the same certificate as without this option is served.
  - The option only applies to identities loaded from a keystore, PEM loading methods always provide a single certificate.
- - If the client doesn't send a SNI hostname, or no certificate matches it, one of the certificates is still served.
- - All the keys in the keystore must share the same password.
- - When [hot reloading](#hot-reloading) the keystore, set `usePkixKeyManager` again in the reload configuration.
+ - When [hot reloading](#hot-reloading) the keystore, set `useSniKeyManager` again in the reload configuration.
 
 #### Trust Configuration
 
@@ -276,6 +276,6 @@ sslPlugin.reload(ssl->{
 
  - Jetty 11 ships with SNI verification enabled by default, if hostname spoofing is a not concern, you can disable it by setting the `sniHostCheck` option to `false`. This option is enabled by default for security reasons, but it can be disabled if you are using a reverse proxy that handles the hostname verification. Jetty might respond with an `HTTP ERROR 400 Invalid SNI` if the hostname verification fails.
 
- - `sniHostCheck` only verifies that the `Host` header of a request matches the served certificate, it doesn't choose which certificate is served. To serve multiple certificates by SNI, see [Serving multiple certificates (SNI)](#serving-multiple-certificates-sni). Jetty's `jetty.sslContext.sniRequired` property has no effect when using this plugin.
+ - `sniHostCheck` only verifies that the `Host` header of a request matches the served certificate, it doesn't choose which certificate is served. To serve multiple certificates by SNI, see [Serving multiple certificates (SNI)](#serving-multiple-certificates-sni). The `jetty.sslContext.sniRequired` property belongs to the Jetty distribution's configuration files and isn't read by embedded Jetty, so it has no effect in Javalin.
 
 - mTLS (Mutual TLS) is supported, just add a `TrustConfig` to the `SslPlugin` to enable client certificate verification. See the [Advanced Configuration](#advanced-configuration) section for more information.
