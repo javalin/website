@@ -5,11 +5,11 @@ title: Monitoring a Javalin application with StatLite
 permalink: /tutorials/javalin-statlite
 summarytitle: Monitoring Javalin with StatLite
 summary: Add HTTP and JVM metrics history to a Javalin application using Micrometer and StatLite.
-date: 2026-10-13
+date: 2026-10-27
 author: <a href="https://github.com/ejboy">Ted Kupolov</a>
 language: ["java"]
 rightmenu: true
-github: https://github.com/PVRLabs/experiments/tree/main/statlite/javalin-micrometer
+github: https://github.com/javalin/javalin-statlite-example
 ---
 
 This tutorial shows how to monitor a Javalin application with
@@ -19,7 +19,7 @@ and process CPU history.
 
 The flow is **Javalin → Micrometer → JSON adapter → StatLite**.
 
-The [complete runnable example](https://github.com/PVRLabs/experiments/tree/main/statlite/javalin-micrometer)
+The [complete runnable example](https://github.com/javalin/javalin-statlite-example)
 contains the application, adapter, configuration, and traffic probe used here.
 You need Java 17 or newer, Maven, Python 3 for the probe, and a
 [StatLite binary](https://github.com/PVRLabs/statlite/blob/main/docs/install.md)
@@ -50,7 +50,7 @@ The example uses these Maven dependencies:
 Keep the Micrometer plugin at the same version as Javalin. It supplies the
 Micrometer API; no separate Micrometer version or Prometheus server is needed.
 The standalone example also includes `slf4j-simple` for logging; its
-[pom.xml](https://github.com/PVRLabs/experiments/blob/main/statlite/javalin-micrometer/pom.xml)
+[pom.xml](https://github.com/javalin/javalin-statlite-example/blob/main/pom.xml)
 contains the full build setup.
 
 Jackson Databind enables Javalin's default JSON mapper for `ctx.json()`.
@@ -148,11 +148,11 @@ successfully does not by itself establish readiness.
 
 ## Start the application and StatLite
 
-Clone the examples repository, then run the application from its demo directory:
+Clone the example repository, then run the application from its root directory:
 
 ```sh
-git clone https://github.com/PVRLabs/experiments.git
-cd experiments/statlite/javalin-micrometer
+git clone https://github.com/javalin/javalin-statlite-example.git
+cd javalin-statlite-example
 mvn compile exec:java
 ```
 
@@ -245,6 +245,6 @@ Readiness and optional database health should use authoritative, inexpensive
 or cached signals; a database check on every metrics poll is unnecessary.
 
 For the optional health-control and restart demonstration, follow the
-[example README](https://github.com/PVRLabs/experiments/tree/main/statlite/javalin-micrometer#health-and-restarts).
+[example README](https://github.com/javalin/javalin-statlite-example#health-and-restarts).
 Use the [integration guide](https://github.com/PVRLabs/statlite/blob/main/docs/integrate/java/javalin.md)
 for the maintained adapter and setup details.
