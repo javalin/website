@@ -1,0 +1,92 @@
+# Trusted half of the PR preview: runs with secrets, but never checks out or
+# executes PR code. It only deploys the static files built by pr-preview-build.yml.
+# workflow_run always uses this file from the default branch, so changes here
+# only take effect once merged.
+name: PR Preview Deploy
+
+on:
+  workflow_run:
+    workflows: [PR Preview Build]
+    types: [completed]
+
+permissions:
+  actions: read
+  pull-requests: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    if: github.event.workflow_run.event == 'pull_request'
+    steps:
+      - name: Download PR number
+        uses: actions/download-artifact@v4
+        with:
+          name: pr-number
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      # The artifact comes from a run that executed PR code, so treat it as untrusted:
+      # it must be a plain number, and that PR's head must be the commit this run built.
+      - name: Verify PR number
+        id: pr
+        run: |
+          PR_NUMBER=$(cat pr-number)
+          if ! [[ "$PR_NUMBER" =~ ^[0-9]+$ ]]; then
+            echo "Invalid PR number: $PR_NUMBER"
+            exit 1
+          fi
+          PR_HEAD_SHA=$(gh api "repos/$REPO/pulls/$PR_NUMBER" --jq .head.sha)
+          if [ "$PR_HEAD_SHA" != "$RUN_HEAD_SHA" ]; then
+            echo "PR #$PR_NUMBER head ($PR_HEAD_SHA) doesn't match built commit ($RUN_HEAD_SHA)"
+            exit 1
+          fi
+          echo "number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          RUN_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Download site
+        if: github.event.workflow_run.conclusion == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: site
+          path: site
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy to surge
+        if: github.event.workflow_run.conclusion == 'success'
+        run: |
+          rm -f site/CNAME
+          npm install -g surge
+          surge --project ./site --token "$SURGE_TOKEN" --domain "javalin-pr-$PR_NUMBER-preview.surge.sh"
+        env:
+          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+
+      - name: Update comment to Preview Ready
+        if: github.event.workflow_run.conclusion == 'success'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          number: ${{ steps.pr.outputs.number }}
+          message: |
+            ### ✅ Deploy Preview for javalin.io ready!
+            | Name | Link |
+            |-|-|
+            | 🔨 Latest commit | ${{ github.event.workflow_run.head_sha }} |
+            | 🔍 Latest build log | ${{ github.event.workflow_run.html_url }} |
+            | 🌐 Preview | https://javalin-pr-${{ steps.pr.outputs.number }}-preview.surge.sh |
+
+      - name: Update comment to Preview Failed
+        if: (failure() || github.event.workflow_run.conclusion != 'success') && steps.pr.outputs.number != ''
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          number: ${{ steps.pr.outputs.number }}
+          message: |
+            ### ❌ Deploy Preview for javalin.io failed.
+            | Name | Link |
+            |-|-|
+            | 🔨 Latest commit | ${{ github.event.workflow_run.head_sha }} |
+            | 🔍 Latest build log | ${{ github.event.workflow_run.html_url }} |
+            | 🔍 Latest deploy log | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |

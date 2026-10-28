@@ -1,87 +1,19 @@
-name: PR Preview
-run-name: Preview of pr ${{ github.event.pull_request.number }} by ${{ github.event.pull_request.user.login }}
+# Tears down a PR's preview when it closes. Building and deploying previews lives in
+# pr-preview-build.yml / pr-preview-deploy.yml. This job never checks out PR code,
+# which is what keeps pull_request_target safe here.
+name: PR Preview Teardown
+run-name: Tear down preview of pr ${{ github.event.pull_request.number }}
 
 on:
   pull_request_target:
-    types: [opened, reopened, synchronize, closed]
+    types: [closed]
 
 permissions:
   pull-requests: write # Required to add a comment to the PR
-  contents: read # Required to checkout the PR branch
 
 jobs:
-  Deploy:
-    runs-on: ubuntu-24.04
-    if: ${{ github.event.action != 'closed' }}
-    steps: 
-      - name: Create the comment to be updated
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          message: |
-            ### 👷 Deploy Preview for javalin.io processing.
-            | Name | Link |
-            |-|-|
-            | 🔨 Latest commit | ${{ github.event.pull_request.head.sha }} |
-            | 🔍 Latest deploy log | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |
-
-      - name: Checkout the PR branch
-        uses: actions/checkout@v3
-        with:
-          ref: refs/pull/${{ github.event.pull_request.number }}/merge
-
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v3.5.1
-        with:
-          node-version: 18
-        
-      - name: Setup Ruby and Gems
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 3.3.4
-          bundler-cache: true   
-
-      - name: Update contributor list
-        run: |
-          echo "Generating contributor list"
-          cd _data
-          node update-contributors.js
-          cd ..    
-
-      - name: Build jekyll site
-        run: bundle exec jekyll build
-
-      - name: Install surge
-        run: npm install -g surge
-    
-      - name: Deploy to surge
-        run: surge --project ./_site --token ${{ secrets.SURGE_TOKEN }} --domain javalin-pr-${{ github.event.pull_request.number }}-preview.surge.sh
-
-      - name: Update comment to Preview Ready
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          message: |
-            ### ✅ Deploy Preview for javalin.io ready!
-            | Name | Link |
-            |-|-|
-            | 🔨 Latest commit | ${{ github.event.pull_request.head.sha }} |
-            | 🔍 Latest deploy log | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |
-            | 🌐 Preview | https://javalin-pr-${{ github.event.pull_request.number }}-preview.surge.sh |
-  
-
-      - if: ${{ failure() }}
-        name: Update comment to Preview Failed
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          message: |
-            ### ❌ Deploy Preview for javalin.io failed.
-            | Name | Link |
-            |-|-|
-            | 🔨 Latest commit | ${{ github.event.pull_request.head.sha }} |
-            | 🔍 Latest deploy log | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |
-
   Teardown:
     runs-on: ubuntu-24.04
-    if: ${{ github.event.action == 'closed' }}
     steps:
       - name: Install surge
         run: npm install -g surge
