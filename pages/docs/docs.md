@@ -759,7 +759,7 @@ length()                                // the length of the data
 
 #### WsPingContext and WsPongContext
 ```java
-data()                                  // the ByteBuffer of data sent with the ping or pong
+data() // the ByteBuffer of data sent with the ping or pong
 ```
 
 Javalin replies to every ping with a pong automatically, so `onPing` is only needed if you want to observe pings.
