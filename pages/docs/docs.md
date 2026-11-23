@@ -552,7 +552,7 @@ config.routes.ws("/websocket/{path}") { ws ->
 {% endcapture %}
 {% include macros/docsSnippet.html java=java kotlin=kotlin %}
 
-There are a total of six events supported:
+There are a total of eight events supported:
 
 ```java
 ws.onConnect(WsConnectContext)
@@ -560,6 +560,8 @@ ws.onError(WsErrorContext)
 ws.onClose(WsCloseContext)
 ws.onMessage(WsMessageContext)
 ws.onBinaryMessage(WsBinaryMessageContext)
+ws.onPing(WsPingContext)
+ws.onPong(WsPongContext)
 ws.onUpgrade(WsUpgradeLogger)
 ```
 
@@ -754,6 +756,14 @@ data()                                  // receive a byte array of data from the
 offset()                                // the offset of the data
 length()                                // the length of the data
 ```
+
+#### WsPingContext and WsPongContext
+```java
+data() // the ByteBuffer of data sent with the ping or pong
+```
+
+Javalin replies to every ping with a pong automatically, so `onPing` is only needed if you want to observe pings.
+`onPing` and `onPong` were added in Javalin 7.3.0.
 
 #### WsCloseContext
 ```java

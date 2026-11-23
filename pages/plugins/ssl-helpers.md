@@ -170,7 +170,43 @@ keystoreFromClasspath("keyStoreName.p12", "keystorePassword");          // load 
 keystoreFromInputStream(keystoreInputStream, "keystorePassword");       // load the keystore from the given input stream.
 ```
 
+Custom key manager (added in Javalin 7.3.0):
+
+```java
+keyManager(x509ExtendedKeyManager);                                      // load the identity from a custom key manager.
+```
+
 Each of these methods are mutually exclusive, so only one of them can be used at a time.
+
+#### Multiple certificates (SNI)
+
+To serve a different certificate for each host name, combine one key manager per certificate
+and route each certificate alias to its host name, using the [Ayza](https://github.com/Hakky54/ayza)
+library that the plugin already depends on:
+
+{% capture java %}
+X509ExtendedKeyManager keyManager = KeyManagerUtils.combine(List.of(
+    KeyManagerUtils.createKeyManager(alphaKeyStore, password),
+    KeyManagerUtils.createKeyManager(betaKeyStore, password)
+));
+KeyManagerUtils.addIdentityRoute(keyManager, "alpha", "https://alpha.example.com:443");
+KeyManagerUtils.addIdentityRoute(keyManager, "beta", "https://beta.example.com:443");
+
+SslPlugin plugin = new SslPlugin(conf -> conf.keyManager(keyManager));
+{% endcapture %}
+{% capture kotlin %}
+val keyManager = KeyManagerUtils.combine(listOf(
+    KeyManagerUtils.createKeyManager(alphaKeyStore, password),
+    KeyManagerUtils.createKeyManager(betaKeyStore, password)
+))
+KeyManagerUtils.addIdentityRoute(keyManager, "alpha", "https://alpha.example.com:443")
+KeyManagerUtils.addIdentityRoute(keyManager, "beta", "https://beta.example.com:443")
+
+val plugin = SslPlugin { conf -> conf.keyManager(keyManager) }
+{% endcapture %}
+{% include macros/docsSnippet.html java=java kotlin=kotlin %}
+
+Here `"alpha"` and `"beta"` are the certificate aliases in the key stores. Clients that send no SNI host name, or an unknown one, still get one of the certificates.
 
 ### Advanced configuration
 
