@@ -6,7 +6,7 @@ import static io.javalin.apibuilder.ApiBuilder.*;
 
 void main() {
     var app = Javalin.create(config -> {
-        config.useVirtualThreads = true;
+        config.concurrency.useVirtualThreads = true;
         config.http.asyncTimeout = 10_000L;
         config.staticFiles.add("/public");
         config.staticFiles.enableWebjars();
@@ -31,7 +31,7 @@ import io.javalin.apibuilder.ApiBuilder.*
 
 fun main() {
     val app = Javalin.create { config ->
-        config.useVirtualThreads = true
+        config.concurrency.useVirtualThreads = true
         config.http.asyncTimeout = 10_000L
         config.staticFiles.add("/public")
         config.staticFiles.enableWebjars()
